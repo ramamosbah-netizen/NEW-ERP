@@ -14,7 +14,7 @@ export interface WhatsAppChat {
   assigned_to: string | null;
   last_message_at: string;
   created_at: string;
-  
+
   // Joins
   client?: { name: string } | null;
   contract?: { contract_number: string; site_name: string } | null;
@@ -34,7 +34,7 @@ export interface WhatsAppMessage {
   status: 'queued' | 'sent' | 'delivered' | 'read' | 'failed';
   metadata: Record<string, any> | null;
   created_at: string;
-  
+
   // Joins
   document?: {
     id: string;
@@ -79,7 +79,7 @@ export const whatsappService = {
         *,
         client:clients(name),
         contract:amc_contracts(contract_number, site_name),
-        agent:profiles!assigned_to(full_name)
+        agent:profiles!whatsapp_chats_assigned_to_fkey(full_name)
       `)
       .order('last_message_at', { ascending: false });
 
@@ -136,7 +136,7 @@ export const whatsappService = {
    * Changes the session status (AUTO_REPLY / HUMAN_AGENT / CLOSED) or assigned agent
    */
   async updateChatStatus(
-    chatId: string, 
+    chatId: string,
     status: 'AUTO_REPLY' | 'HUMAN_AGENT' | 'CLOSED',
     assignedTo?: string | null
   ): Promise<boolean> {
@@ -162,8 +162,8 @@ export const whatsappService = {
    * Manually links a chat session to a client and contract
    */
   async linkChatToClient(
-    chatId: string, 
-    clientId: string | null, 
+    chatId: string,
+    clientId: string | null,
     contractId: string | null
   ): Promise<boolean> {
     const { error } = await supabase

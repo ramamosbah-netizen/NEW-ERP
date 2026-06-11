@@ -23,8 +23,8 @@ export const taskService = {
       .select(`
         *,
         project:projects (name),
-        assignee:profiles!assignee_id (full_name),
-        creator:profiles!created_by (full_name)
+        assignee:profiles!tasks_assignee_id_fkey(full_name),
+        creator:profiles!tasks_created_by_fkey(full_name)
       `)
       .eq('is_active', true)
       .order('sort_order', { ascending: true })
@@ -60,8 +60,8 @@ export const taskService = {
       .select(`
         *,
         project:projects (name),
-        assignee:profiles!assignee_id (full_name),
-        creator:profiles!created_by (full_name)
+        assignee:profiles!tasks_assignee_id_fkey(full_name),
+        creator:profiles!tasks_created_by_fkey(full_name)
       `)
       .eq('id', id)
       .eq('is_active', true)
@@ -232,11 +232,11 @@ export const taskService = {
 
     return (profiles || []).map(p => {
       const userTasks = (tasks || []).filter(t => t.assignee_id === p.id);
-      
+
       const todo = userTasks.filter(t => t.status === 'TODO').length;
       const inProgress = userTasks.filter(t => t.status === 'IN_PROGRESS').length;
       const blocked = userTasks.filter(t => t.status === 'BLOCKED').length;
-      
+
       const overdue = userTasks.filter(t => {
         if (!t.due_date) return false;
         return new Date(t.due_date) < today;
@@ -266,7 +266,7 @@ export const taskService = {
     suggested_assignee_name?: string;
   }> {
     const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || '';
-    
+
     if (!apiKey) {
       console.warn('Gemini API key is not configured. Falling back to regex parser.');
       // Fallback simple parsing
@@ -315,7 +315,7 @@ Output raw JSON only. Do not format or add markdown block markers.`;
     const result = await response.json();
     const parsedText = result.candidates?.[0]?.content?.parts?.[0]?.text;
     if (!parsedText) throw new Error('Empty response from Gemini.');
-    
+
     return JSON.parse(parsedText.trim());
   }
 };

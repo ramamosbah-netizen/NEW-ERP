@@ -21,7 +21,7 @@ export const meetingService = {
       .select(`
         *,
         project:projects (name),
-        organizer:profiles!organizer_id (full_name)
+        organizer:profiles!meetings_organizer_id_fkey(full_name)
       `)
       .order('starts_at', { ascending: true });
 
@@ -48,7 +48,7 @@ export const meetingService = {
       .select(`
         *,
         project:projects (name),
-        organizer:profiles!organizer_id (full_name)
+        organizer:profiles!meetings_organizer_id_fkey(full_name)
       `)
       .eq('id', id)
       .single();
