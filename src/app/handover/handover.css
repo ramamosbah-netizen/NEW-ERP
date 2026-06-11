@@ -1,0 +1,68 @@
+/* Handover closeout CSS Stylesheet - Bloomberg obsidian Theme */
+
+.gate-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 1.5rem;
+  backdrop-filter: var(--glass-backdrop);
+  margin-bottom: 1.5rem;
+}
+
+.gate-status-panel {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+.gate-status-compliant {
+  background: rgba(0, 229, 160, 0.08);
+  border-color: rgba(0, 229, 160, 0.25);
+  color: var(--primary);
+}
+
+.gate-status-blocked {
+  background: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.25);
+  color: var(--error);
+}
+
+/* Checklist items list */
+.checklist-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.01);
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  transition: var(--transition-fast);
+}
+
+.checklist-row:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* Certificate Preview layout */
+.certificate-preview-box {
+  border: 2px double #c5a059; /* Gold double border */
+  border-radius: 8px;
+  padding: 2.5rem;
+  background: radial-gradient(circle at 50% 50%, #0d1127 0%, #060814 100%);
+  position: relative;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  font-family: var(--font-heading);
+}
+
+.certificate-title-gold {
+  color: #c5a059;
+  text-align: center;
+  font-family: var(--font-heading);
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  font-size: 1.5rem;
+}

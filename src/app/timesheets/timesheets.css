@@ -1,0 +1,177 @@
+/* ============================================================
+ * JEET ERP — Timesheets Styling
+ * Theme: Bloomberg Terminal Obsidian & Electric Mint
+ * ============================================================ */
+
+.timesheet-grid-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.timesheet-header-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.timesheet-stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.timesheet-stat-val {
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.timesheet-stat-lbl {
+  font-family: var(--font-condensed);
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  letter-spacing: 0.05em;
+}
+
+/* Suggesions Banner */
+.suggestion-banner {
+  background: rgba(0, 229, 160, 0.05);
+  border: 1px dashed var(--primary);
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.suggestion-pill {
+  background: rgba(13, 17, 39, 0.6);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 0.4rem 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  transition: var(--transition-fast);
+}
+
+.suggestion-pill:hover {
+  border-color: var(--primary);
+  background: rgba(20, 26, 56, 0.8);
+}
+
+/* Timesheet Grid Card */
+.timesheet-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.timesheet-row-grid {
+  display: grid;
+  grid-template-columns: 200px 140px 140px 1fr repeat(7, 70px) 45px;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.timesheet-row-grid.header {
+  font-family: var(--font-condensed);
+  font-weight: 700;
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 0.75rem;
+}
+
+.timesheet-input-hours {
+  width: 100%;
+  background: rgba(6, 8, 20, 0.8);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  border-radius: 4px;
+  padding: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-align: center;
+  outline: none;
+  transition: var(--transition-fast);
+}
+
+.timesheet-input-hours:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 5px rgba(0, 229, 160, 0.2);
+}
+
+.timesheet-input-hours.ot-active {
+  border-color: var(--secondary);
+  color: var(--secondary);
+}
+
+.timesheet-select-allocation {
+  background: rgba(6, 8, 20, 0.8);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  border-radius: 4px;
+  padding: 0.4rem;
+  font-family: var(--font-condensed);
+  font-size: 11px;
+  width: 100%;
+  outline: none;
+}
+
+.timesheet-select-allocation:focus {
+  border-color: var(--primary);
+}
+
+/* Date subheadings for weekly display */
+.timesheet-day-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+}
+
+.timesheet-day-name {
+  font-family: var(--font-condensed);
+  font-weight: bold;
+  font-size: 10px;
+  color: var(--text-secondary);
+}
+
+.timesheet-day-date {
+  font-size: 9px;
+  color: var(--text-muted);
+}
+
+.timesheet-day-date.weekend {
+  color: var(--secondary);
+}
+
+/* Overhead Anomaly Banner */
+.overhead-warning-banner {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 6px;
+  padding: 1rem;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--error);
+  font-size: 11px;
+  font-family: var(--font-mono);
+}

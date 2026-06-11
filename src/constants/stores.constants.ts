@@ -1,0 +1,65 @@
+// ============================================================
+// JEET ERP — Stores & Tools Module Constants
+// ============================================================
+
+export const LOCATION_TYPES = {
+  MAIN_STORE: 'MAIN_STORE',
+  SUB_STORE: 'SUB_STORE',
+  PROJECT_SITE: 'PROJECT_SITE',
+  VAN: 'VAN',
+} as const;
+
+export const TRANSACTION_TYPES = {
+  GRN_RECEIPT: 'GRN_RECEIPT',
+  ISSUE_TO_PROJECT: 'ISSUE_TO_PROJECT',
+  ISSUE_TO_TICKET: 'ISSUE_TO_TICKET',
+  RETURN_FROM_SITE: 'RETURN_FROM_SITE',
+  TRANSFER_OUT: 'TRANSFER_OUT',
+  TRANSFER_IN: 'TRANSFER_IN',
+  ADJUSTMENT_IN: 'ADJUSTMENT_IN',
+  ADJUSTMENT_OUT: 'ADJUSTMENT_OUT',
+  WRITE_OFF: 'WRITE_OFF',
+} as const;
+
+export const TRANSACTION_SOURCES = {
+  GRN: 'GRN',
+  MRF: 'MRF',
+  TICKET: 'TICKET',
+  VISIT: 'VISIT',
+  TRANSFER: 'TRANSFER',
+  COUNT: 'COUNT',
+  MANUAL: 'MANUAL',
+} as const;
+
+export const MRF_STATUSES = {
+  DRAFT: 'DRAFT',
+  SUBMITTED: 'SUBMITTED',
+  APPROVED: 'APPROVED',
+  PARTIALLY_ISSUED: 'PARTIALLY_ISSUED',
+  ISSUED: 'ISSUED',
+  REJECTED: 'REJECTED',
+} as const;
+
+export const TOOL_CATEGORIES = {
+  TEST_INSTRUMENT: 'TEST_INSTRUMENT',
+  POWER_TOOL: 'POWER_TOOL',
+  HAND_TOOL: 'HAND_TOOL',
+  ACCESS_EQUIPMENT: 'ACCESS_EQUIPMENT',
+  SAFETY: 'SAFETY',
+  IT_DEVICE: 'IT_DEVICE',
+} as const;
+
+export const TOOL_STATUSES = {
+  AVAILABLE: 'AVAILABLE',
+  ISSUED: 'ISSUED',
+  UNDER_MAINTENANCE: 'UNDER_MAINTENANCE',
+  UNDER_CALIBRATION: 'UNDER_CALIBRATION',
+  LOST: 'LOST',
+  RETIRED: 'RETIRED',
+} as const;
+
+export const TOOL_CONDITIONS = {
+  GOOD: 'GOOD',
+  FAIR: 'FAIR',
+  NEEDS_REPAIR: 'NEEDS_REPAIR',
+} as const;

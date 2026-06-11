@@ -1,0 +1,17 @@
+{
+  "name": "JEET Enterprise Resource Planning",
+  "short_name": "JEET ERP",
+  "description": "Unified consolidation and mobile operational layer for JEET ERP.",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#00E5A0",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}

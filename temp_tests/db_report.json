@@ -1,0 +1,3421 @@
+{
+  "tables": [
+    "air_ticket_entitlements",
+    "amc_billing_schedule",
+    "amc_contract_sequences",
+    "amc_contracts",
+    "amc_equipment",
+    "asset_disposals",
+    "asset_number_sequences",
+    "audit_log",
+    "boq_versions",
+    "boqs",
+    "checklist_template_items",
+    "checklist_templates",
+    "client_invoice_items",
+    "client_invoice_sequences",
+    "client_invoices",
+    "client_payment_sequences",
+    "client_payments",
+    "clients",
+    "company_holidays",
+    "comparison_approvals",
+    "comparison_items",
+    "comparison_scoring_weights",
+    "count_number_sequences",
+    "credit_note_sequences",
+    "credit_notes",
+    "depreciation_schedule",
+    "document_activity",
+    "document_categories",
+    "document_expiry_alerts",
+    "documents",
+    "employee_certifications",
+    "employee_compensation",
+    "employee_documents",
+    "employee_number_sequences",
+    "employees",
+    "escalation_timers",
+    "event_types",
+    "fixed_assets",
+    "fuel_logs",
+    "grn_items",
+    "grn_number_sequences",
+    "grn_returns",
+    "grns",
+    "handover_checklist_items",
+    "handover_packages",
+    "leave_balances",
+    "leave_requests",
+    "material_requisitions",
+    "meeting_action_items",
+    "meeting_attendees",
+    "meetings",
+    "mrf_items",
+    "mrf_number_sequences",
+    "notification_rules",
+    "notifications",
+    "payment_allocations",
+    "payroll_adjustments",
+    "payroll_lines",
+    "payroll_runs",
+    "permissions",
+    "po_approvals",
+    "po_items",
+    "po_number_sequences",
+    "ppm_visit_checklist_results",
+    "ppm_visits",
+    "pricing_adjustment_factors",
+    "pricing_items",
+    "pricing_labour_rates",
+    "pricing_price_history",
+    "pricing_rate_analyses",
+    "pricing_suppliers",
+    "pricing_templates",
+    "profiles",
+    "project_contacts",
+    "project_labour_costs",
+    "project_milestones",
+    "project_number_sequences",
+    "project_retention_ledger",
+    "project_status_history",
+    "projects",
+    "purchase_orders",
+    "push_subscriptions",
+    "quotation_approvals",
+    "quotation_lines",
+    "quotation_templates",
+    "quotations",
+    "role_permissions",
+    "roles",
+    "serial_units",
+    "service_ticket_sequences",
+    "service_tickets",
+    "settings",
+    "snags",
+    "stock_balances",
+    "stock_count_lines",
+    "stock_counts",
+    "stock_items",
+    "stock_locations",
+    "stock_transaction_sequences",
+    "stock_transactions",
+    "supplier_comparisons",
+    "supplier_invoice_items",
+    "supplier_invoice_sequences",
+    "supplier_invoices",
+    "supplier_offers",
+    "supplier_payment_allocations",
+    "supplier_payment_sequences",
+    "supplier_payments",
+    "supplier_performance_history",
+    "system_events",
+    "task_comments",
+    "task_rules",
+    "tasks",
+    "tc_devices",
+    "tc_package_sequences",
+    "tc_packages",
+    "tc_script_template_items",
+    "tc_script_templates",
+    "tc_test_results",
+    "tc_test_scripts",
+    "tc_witnesses",
+    "tender_documents",
+    "tenders",
+    "ticket_events",
+    "timesheet_entries",
+    "timesheets",
+    "tool_assignments",
+    "tool_maintenance",
+    "tool_number_sequences",
+    "tools",
+    "user_integrations",
+    "user_notification_preferences",
+    "user_roles",
+    "variation_orders",
+    "vat_periods",
+    "vehicle_assignments",
+    "vehicle_fines",
+    "vehicle_maintenance",
+    "vehicle_number_sequences",
+    "vehicles",
+    "vo_items",
+    "vo_number_sequences",
+    "vo_status_history",
+    "whatsapp_chats",
+    "whatsapp_messages",
+    "whatsapp_settings",
+    "whatsapp_templates"
+  ],
+  "foreignKeys": [
+    {
+      "table_name": "air_ticket_entitlements",
+      "column_name": "employee_id",
+      "foreign_table_name": "employees",
+      "foreign_column_name": "id",
+      "constraint_name": "air_ticket_entitlements_employee_id_fkey"
+    },
+    {
+      "table_name": "amc_billing_schedule",
+      "column_name": "contract_id",
+      "foreign_table_name": "amc_contracts",
+      "foreign_column_name": "id",
+      "constraint_name": "amc_billing_schedule_contract_id_fkey"
+    },
+    {
+      "table_name": "amc_contracts",
+      "column_name": "contract_document_id",
+      "foreign_table_name": "documents",
+      "foreign_column_name": "id",
+      "constraint_name": "amc_contracts_contract_document_id_fkey"
+    },
+    {
+      "table_name": "amc_contracts",
+      "column_name": "renewed_from_id",
+      "foreign_table_name": "amc_contracts",
+      "foreign_column_name": "id",
+      "constraint_name": "amc_contracts_renewed_from_id_fkey"
+    },
+    {
+      "table_name": "amc_contracts",
+      "column_name": "renewed_to_id",
+      "foreign_table_name": "amc_contracts",
+      "foreign_column_name": "id",
+      "constraint_name": "amc_contracts_renewed_to_id_fkey"
+    },
+    {
+      "table_name": "amc_equipment",
+      "column_name": "contract_id",
+      "foreign_table_name": "amc_contracts",
+      "foreign_column_name": "id",
+      "constraint_name": "amc_equipment_contract_id_fkey"
+    },
+    {
+      "table_name": "asset_disposals",
+      "column_name": "asset_id",
+      "foreign_table_name": "fixed_assets",
+      "foreign_column_name": "id",
+      "constraint_name": "asset_disposals_asset_id_fkey"
+    },
+    {
+      "table_name": "asset_disposals",
+      "column_name": "document_id",
+      "foreign_table_name": "documents",
+      "foreign_column_name": "id",
+      "constraint_name": "asset_disposals_document_id_fkey"
+    },
+    {
+      "table_name": "boq_versions",
+      "column_name": "boq_id",
+      "foreign_table_name": "boqs",
+      "foreign_column_name": "id",
+      "constraint_name": "boq_versions_boq_id_fkey"
+    },
+    {
+      "table_name": "boqs",
+      "column_name": "tender_id",
+      "foreign_table_name": "tenders",
+      "foreign_column_name": "id",
+      "constraint_name": "boqs_tender_id_fkey"
+    },
+    {
+      "table_name": "checklist_template_items",
+      "column_name": "template_id",
+      "foreign_table_name": "checklist_templates",
+      "foreign_column_name": "id",
+      "constraint_name": "checklist_template_items_template_id_fkey"
+    },
+    {
+      "table_name": "client_invoice_items",
+      "column_name": "invoice_id",
+      "foreign_table_name": "client_invoices",
+      "foreign_column_name": "id",
+      "constraint_name": "client_invoice_items_invoice_id_fkey"
+    },
+    {
+      "table_name": "client_invoices",
+      "column_name": "pdf_document_id",
+      "foreign_table_name": "documents",
+      "foreign_column_name": "id",
+      "constraint_name": "client_invoices_pdf_document_id_fkey"
+    },
+    {
+      "table_name": "comparison_approvals",
+      "column_name": "comparison_id",
+      "foreign_table_name": "supplier_comparisons",
+      "foreign_column_name": "id",
+      "constraint_name": "comparison_approvals_comparison_id_fkey"
+    },
+    {
+      "table_name": "comparison_items",
+      "column_name": "comparison_id",
+      "foreign_table_name": "supplier_comparisons",
+      "foreign_column_name": "id",
+      "constraint_name": "comparison_items_comparison_id_fkey"
+    },
+    {
+      "table_name": "comparison_items",
+      "column_name": "lowest_price_offer_id",
+      "foreign_table_name": "supplier_offers",
+      "foreign_column_name": "id",
+      "constraint_name": "fk_ci_lowest_offer"
+    },
+    {
+      "table_name": "comparison_items",
+      "column_name": "recommended_supplier_offer_id",
+      "foreign_table_name": "supplier_offers",
+      "foreign_column_name": "id",
+      "constraint_name": "fk_ci_recommended_offer"
+    },
+    {
+      "table_name": "comparison_items",
+      "column_name": "selected_supplier_offer_id",
+      "foreign_table_name": "supplier_offers",
+      "foreign_column_name": "id",
+      "constraint_name": "fk_ci_selected_offer"
+    },
+    {
+      "table_name": "credit_notes",
+      "column_name": "original_invoice_id",
+      "foreign_table_name": "client_invoices",
+      "foreign_column_name": "id",
+      "constraint_name": "credit_notes_original_invoice_id_fkey"
+    },
+    {
+      "table_name": "credit_notes",
+      "column_name": "pdf_document_id",
+      "foreign_table_name": "documents",
+      "foreign_column_name": "id",
+      "constraint_name": "credit_notes_pdf_document_id_fkey"
+    },
+    {
+      "table_name": "depreciation_schedule",
+      "column_name": "asset_id",
+      "foreign_table_name": "fixed_assets",
+      "foreign_column_name": "id",
+      "constraint_name": "depreciation_schedule_asset_id_fkey"
+    },
+    {
+      "table_name": "document_activity",
+      "column_name": "document_id",
+      "foreign_table_name": "documents",
+      "foreign_column_name": "id",
+      "constraint_name": "document_activity_document_id_fkey"
+    },
+    {
+      "table_name": "document_expiry_alerts",
+      "column_name": "document_id",
+      "foreign_table_name": "documents",
+      "foreign_column_name": "id",
+      "constraint_name": "document_expiry_alerts_document_id_fkey"
+    },
+    {
+      "table_name": "documents",
+      "column_name": "supersedes_id",
+      "foreign_table_name": "documents",
+      "foreign_column_name": "id",
+      "constraint_name": "documents_supersedes_id_fkey"
+    },
+    {
+      "table_name": "employee_certifications",
+      "column_name": "document_id",
+      "foreign_table_name": "documents",
+      "foreign_column_name": "id",
+      "constraint_name": "employee_certifications_document_id_fkey"
+    },
+    {
+      "table_name": "employee_certifications",
+      "column_name": "employee_id",
+      "foreign_table_name": "employees",
+      "foreign_column_name": "id",
+      "constraint_name": "employee_certifications_employee_id_fkey"
+    },
+    {
+      "table_name": "employee_compensation",
+      "column_name": "employee_id",
+      "foreign_table_name": "employees",
+      "foreign_column_name": "id",
+      "constraint_name": "employee_compensation_employee_id_fkey"
+    },
+    {
+      "table_name": "employee_documents",
+      "column_name": "document_id",
+      "foreign_table_name": "documents",
+      "foreign_column_name": "id",
+      "constraint_name": "employee_documents_document_id_fkey"
+    },
+    {
+      "table_name": "employee_documents",
+      "column_name": "employee_id",
+      "foreign_table_name": "employees",
+      "foreign_column_name": "id",
+      "constraint_name": "employee_documents_employee_id_fkey"
+    },
+    {
+      "table_name": "escalation_timers",
+      "column_name": "event_id",
+      "foreign_table_name": "system_events",
+      "foreign_column_name": "id",
+      "constraint_name": "escalation_timers_event_id_fkey"
+    },
+    {
+      "table_name": "escalation_timers",
+      "column_name": "notification_rule_id",
+      "foreign_table_name": "notification_rules",
+      "foreign_column_name": "id",
+      "constraint_name": "escalation_timers_notification_rule_id_fkey"
+    },
+    {
+      "table_name": "fixed_assets",
+      "column_name": "document_id",
+      "foreign_table_name": "documents",
+      "foreign_column_name": "id",
+      "constraint_name": "fixed_assets_document_id_fkey"
+    },
+    {
+      "table_name": "fixed_assets",
+      "column_name": "linked_vehicle_id",
+      "foreign_table_name": "vehicles",
+      "foreign_column_name": "id",
+      "constraint_name": "fixed_assets_linked_vehicle_id_fkey"
+    },
+    {
+      "table_name": "fixed_assets",
+      "column_name": "source_invoice_id",
+      "foreign_table_name": "supplier_invoices",
+      "foreign_column_name": "id",
+      "constraint_name": "fixed_assets_source_invoice_id_fkey"
+    },
+    {
+      "table_name": "fixed_assets",
+      "column_name": "supplier_id",
+      "foreign_table_name": "pricing_suppliers",
+      "foreign_column_name": "id",
+      "constraint_name": "fixed_assets_supplier_id_fkey"
+    },
+    {
+      "table_name": "fuel_logs",
+      "column_name": "driver_id",
+      "foreign_table_name": "employees",
+      "foreign_column_name": "id",
+      "constraint_name": "fuel_logs_driver_id_employees_fkey"
+    },
+    {
+      "table_name": "fuel_logs",
+      "column_name": "project_id",
+      "foreign_table_name": "projects",
+      "foreign_column_name": "id",
+      "constraint_name": "fuel_logs_project_id_projects_fkey"
+    },
+    {
+      "table_name": "fuel_logs",
+      "column_name": "receipt_document_id",
+      "foreign_table_name": "documents",
+      "foreign_column_name": "id",
+      "constraint_name": "fuel_logs_receipt_document_id_fkey"
+    },
+    {
+      "table_name": "fuel_logs",
+      "column_name": "vehicle_id",
+      "foreign_table_name": "vehicles",
+      "foreign_column_name": "id",
+      "constraint_name": "fuel_logs_vehicle_id_fkey"
+    },
+    {
+      "table_name": "grn_items",
+      "column_name": "grn_id",
+      "foreign_table_name": "grns",
+      "foreign_column_name": "id",
+      "constraint_name": "grn_items_grn_id_fkey"
+    },
+    {
+      "table_name": "grn_items",
+      "column_name": "po_item_id",
+      "foreign_table_name": "po_items",
+      "foreign_column_name": "id",
+      "constraint_name": "grn_items_po_item_id_fkey"
+    },
+    {
+      "table_name": "grn_returns",
+      "column_name": "grn_item_id",
+      "foreign_table_name": "grn_items",
+      "foreign_column_name": "id",
+      "constraint_name": "grn_returns_grn_item_id_fkey"
+    },
+    {
+      "table_name": "grns",
+      "column_name": "delivery_note_document_id",
+      "foreign_table_name": "documents",
+      "foreign_column_name": "id",
+      "constraint_name": "grns_delivery_note_document_id_fkey"
+    },
+    {
+      "table_name": "grns",
+      "column_name": "po_id",
+      "foreign_table_name": "purchase_orders",
+      "foreign_column_name": "id",
+      "constraint_name": "grns_po_id_fkey"
+    },
+    {
+      "table_name": "handover_checklist_items",
+      "column_name": "evidence_document_id",
+      "foreign_table_name": "documents",
+      "foreign_column_name": "id",
+      "constraint_name": "handover_checklist_items_evidence_document_id_fkey"
+    },
+    {
+      "table_name": "handover_checklist_items",
+      "column_name": "package_id",
+      "foreign_table_name": "handover_packages",
+      "foreign_column_name": "id",
+      "constraint_name": "handover_checklist_items_package_id_fkey"
+    },
+    {
+      "table_name": "handover_packages",
+      "column_name": "certificate_document_id",
+      "foreign_table_name": "documents",
+      "foreign_column_name": "id",
+      "constraint_name": "handover_packages_certificate_document_id_fkey"
+    },
+    {
+      "table_name": "handover_packages",
+      "column_name": "project_id",
+      "foreign_table_name": "projects",
+      "foreign_column_name": "id",
+      "constraint_name": "handover_packages_project_id_fkey"
+    },
+    {
+      "table_name": "leave_balances",
+      "column_name": "employee_id",
+      "foreign_table_name": "employees",
+      "foreign_column_name": "id",
+      "constraint_name": "leave_balances_employee_id_fkey"
+    },
+    {
+      "table_name": "leave_requests",
+      "column_name": "document_id",
+      "foreign_table_name": "documents",
+      "foreign_column_name": "id",
+      "constraint_name": "leave_requests_document_id_fkey"
+    },
+    {
+      "table_name": "leave_requests",
+      "column_name": "employee_id",
+      "foreign_table_name": "employees",
+      "foreign_column_name": "id",
+      "constraint_name": "leave_requests_employee_id_fkey"
+    },
+    {
+      "table_name": "material_requisitions",
+      "column_name": "location_id",
+      "foreign_table_name": "stock_locations",
+      "foreign_column_name": "id",
+      "constraint_name": "material_requisitions_location_id_fkey"
+    },
+    {
+      "table_name": "meeting_action_items",
+      "column_name": "assignee_id",
+      "foreign_table_name": "profiles",
+      "foreign_column_name": "id",
+      "constraint_name": "meeting_action_items_assignee_id_profiles_fkey"
+    },
+    {
+      "table_name": "meeting_action_items",
+      "column_name": "meeting_id",
+      "foreign_table_name": "meetings",
+      "foreign_column_name": "id",
+      "constraint_name": "meeting_action_items_meeting_id_fkey"
+    },
+    {
+      "table_name": "meeting_action_items",
+      "column_name": "task_id",
+      "foreign_table_name": "tasks",
+      "foreign_column_name": "id",
+      "constraint_name": "meeting_action_items_task_id_fkey"
+    },
+    {
+      "table_name": "meeting_attendees",
+      "column_name": "meeting_id",
+      "foreign_table_name": "meetings",
+      "foreign_column_name": "id",
+      "constraint_name": "meeting_attendees_meeting_id_fkey"
+    },
+    {
+      "table_name": "meetings",
+      "column_name": "organizer_id",
+      "foreign_table_name": "profiles",
+      "foreign_column_name": "id",
+      "constraint_name": "meetings_organizer_id_profiles_fkey"
+    },
+    {
+      "table_name": "meetings",
+      "column_name": "project_id",
+      "foreign_table_name": "projects",
+      "foreign_column_name": "id",
+      "constraint_name": "meetings_project_id_fkey"
+    },
+    {
+      "table_name": "mrf_items",
+      "column_name": "mrf_id",
+      "foreign_table_name": "material_requisitions",
+      "foreign_column_name": "id",
+      "constraint_name": "mrf_items_mrf_id_fkey"
+    },
+    {
+      "table_name": "mrf_items",
+      "column_name": "stock_item_id",
+      "foreign_table_name": "stock_items",
+      "foreign_column_name": "id",
+      "constraint_name": "mrf_items_stock_item_id_fkey"
+    },
+    {
+      "table_name": "notification_rules",
+      "column_name": "event_type",
+      "foreign_table_name": "event_types",
+      "foreign_column_name": "event_type",
+      "constraint_name": "notification_rules_event_type_fkey"
+    },
+    {
+      "table_name": "notifications",
+      "column_name": "event_id",
+      "foreign_table_name": "system_events",
+      "foreign_column_name": "id",
+      "constraint_name": "notifications_event_id_fkey"
+    },
+    {
+      "table_name": "payment_allocations",
+      "column_name": "invoice_id",
+      "foreign_table_name": "client_invoices",
+      "foreign_column_name": "id",
+      "constraint_name": "payment_allocations_invoice_id_fkey"
+    },
+    {
+      "table_name": "payment_allocations",
+      "column_name": "payment_id",
+      "foreign_table_name": "client_payments",
+      "foreign_column_name": "id",
+      "constraint_name": "payment_allocations_payment_id_fkey"
+    },
+    {
+      "table_name": "payroll_adjustments",
+      "column_name": "employee_id",
+      "foreign_table_name": "employees",
+      "foreign_column_name": "id",
+      "constraint_name": "payroll_adjustments_employee_id_fkey"
+    },
+    {
+      "table_name": "payroll_lines",
+      "column_name": "employee_id",
+      "foreign_table_name": "employees",
+      "foreign_column_name": "id",
+      "constraint_name": "payroll_lines_employee_id_fkey"
+    },
+    {
+      "table_name": "payroll_lines",
+      "column_name": "run_id",
+      "foreign_table_name": "payroll_runs",
+      "foreign_column_name": "id",
+      "constraint_name": "payroll_lines_run_id_fkey"
+    },
+    {
+      "table_name": "po_approvals",
+      "column_name": "po_id",
+      "foreign_table_name": "purchase_orders",
+      "foreign_column_name": "id",
+      "constraint_name": "po_approvals_po_id_fkey"
+    },
+    {
+      "table_name": "po_items",
+      "column_name": "comparison_item_id",
+      "foreign_table_name": "comparison_items",
+      "foreign_column_name": "id",
+      "constraint_name": "po_items_comparison_item_id_fkey"
+    },
+    {
+      "table_name": "po_items",
+      "column_name": "po_id",
+      "foreign_table_name": "purchase_orders",
+      "foreign_column_name": "id",
+      "constraint_name": "po_items_po_id_fkey"
+    },
+    {
+      "table_name": "po_items",
+      "column_name": "pricing_item_id",
+      "foreign_table_name": "pricing_items",
+      "foreign_column_name": "id",
+      "constraint_name": "po_items_pricing_item_id_fkey"
+    },
+    {
+      "table_name": "ppm_visit_checklist_results",
+      "column_name": "equipment_id",
+      "foreign_table_name": "amc_equipment",
+      "foreign_column_name": "id",
+      "constraint_name": "ppm_visit_checklist_results_equipment_id_fkey"
+    },
+    {
+      "table_name": "ppm_visit_checklist_results",
+      "column_name": "template_item_id",
+      "foreign_table_name": "checklist_template_items",
+      "foreign_column_name": "id",
+      "constraint_name": "ppm_visit_checklist_results_template_item_id_fkey"
+    },
+    {
+      "table_name": "ppm_visit_checklist_results",
+      "column_name": "visit_id",
+      "foreign_table_name": "ppm_visits",
+      "foreign_column_name": "id",
+      "constraint_name": "ppm_visit_checklist_results_visit_id_fkey"
+    },
+    {
+      "table_name": "ppm_visits",
+      "column_name": "contract_id",
+      "foreign_table_name": "amc_contracts",
+      "foreign_column_name": "id",
+      "constraint_name": "ppm_visits_contract_id_fkey"
+    },
+    {
+      "table_name": "ppm_visits",
+      "column_name": "report_document_id",
+      "foreign_table_name": "documents",
+      "foreign_column_name": "id",
+      "constraint_name": "ppm_visits_report_document_id_fkey"
+    },
+    {
+      "table_name": "pricing_price_history",
+      "column_name": "item_id",
+      "foreign_table_name": "pricing_items",
+      "foreign_column_name": "id",
+      "constraint_name": "pricing_price_history_item_id_fkey"
+    },
+    {
+      "table_name": "pricing_rate_analyses",
+      "column_name": "item_id",
+      "foreign_table_name": "pricing_items",
+      "foreign_column_name": "id",
+      "constraint_name": "pricing_rate_analyses_item_id_fkey"
+    },
+    {
+      "table_name": "project_contacts",
+      "column_name": "project_id",
+      "foreign_table_name": "projects",
+      "foreign_column_name": "id",
+      "constraint_name": "project_contacts_project_id_fkey"
+    },
+    {
+      "table_name": "project_labour_costs",
+      "column_name": "employee_id",
+      "foreign_table_name": "employees",
+      "foreign_column_name": "id",
+      "constraint_name": "project_labour_costs_employee_id_fkey"
+    },
+    {
+      "table_name": "project_labour_costs",
+      "column_name": "timesheet_entry_id",
+      "foreign_table_name": "timesheet_entries",
+      "foreign_column_name": "id",
+      "constraint_name": "project_labour_costs_timesheet_entry_id_fkey"
+    },
+    {
+      "table_name": "project_milestones",
+      "column_name": "project_id",
+      "foreign_table_name": "projects",
+      "foreign_column_name": "id",
+      "constraint_name": "project_milestones_project_id_fkey"
+    },
+    {
+      "table_name": "project_retention_ledger",
+      "column_name": "invoice_id",
+      "foreign_table_name": "client_invoices",
+      "foreign_column_name": "id",
+      "constraint_name": "project_retention_ledger_invoice_id_fkey"
+    },
+    {
+      "table_name": "project_status_history",
+      "column_name": "project_id",
+      "foreign_table_name": "projects",
+      "foreign_column_name": "id",
+      "constraint_name": "project_status_history_project_id_fkey"
+    },
+    {
+      "table_name": "projects",
+      "column_name": "boq_id",
+      "foreign_table_name": "boqs",
+      "foreign_column_name": "id",
+      "constraint_name": "projects_boq_id_fkey"
+    },
+    {
+      "table_name": "projects",
+      "column_name": "tender_id",
+      "foreign_table_name": "tenders",
+      "foreign_column_name": "id",
+      "constraint_name": "projects_tender_id_fkey"
+    },
+    {
+      "table_name": "purchase_orders",
+      "column_name": "comparison_id",
+      "foreign_table_name": "supplier_comparisons",
+      "foreign_column_name": "id",
+      "constraint_name": "purchase_orders_comparison_id_fkey"
+    },
+    {
+      "table_name": "purchase_orders",
+      "column_name": "pdf_document_id",
+      "foreign_table_name": "documents",
+      "foreign_column_name": "id",
+      "constraint_name": "purchase_orders_pdf_document_id_fkey"
+    },
+    {
+      "table_name": "purchase_orders",
+      "column_name": "project_id",
+      "foreign_table_name": "projects",
+      "foreign_column_name": "id",
+      "constraint_name": "purchase_orders_project_id_fkey"
+    },
+    {
+      "table_name": "purchase_orders",
+      "column_name": "supersedes_id",
+      "foreign_table_name": "purchase_orders",
+      "foreign_column_name": "id",
+      "constraint_name": "purchase_orders_supersedes_id_fkey"
+    },
+    {
+      "table_name": "purchase_orders",
+      "column_name": "supplier_id",
+      "foreign_table_name": "pricing_suppliers",
+      "foreign_column_name": "id",
+      "constraint_name": "purchase_orders_supplier_id_fkey"
+    },
+    {
+      "table_name": "quotation_approvals",
+      "column_name": "quotation_id",
+      "foreign_table_name": "quotations",
+      "foreign_column_name": "id",
+      "constraint_name": "quotation_approvals_quotation_id_fkey"
+    },
+    {
+      "table_name": "quotation_lines",
+      "column_name": "pricing_item_id",
+      "foreign_table_name": "pricing_items",
+      "foreign_column_name": "id",
+      "constraint_name": "quotation_lines_pricing_item_id_fkey"
+    },
+    {
+      "table_name": "quotation_lines",
+      "column_name": "quotation_id",
+      "foreign_table_name": "quotations",
+      "foreign_column_name": "id",
+      "constraint_name": "quotation_lines_quotation_id_fkey"
+    },
+    {
+      "table_name": "quotations",
+      "column_name": "boq_id",
+      "foreign_table_name": "boqs",
+      "foreign_column_name": "id",
+      "constraint_name": "quotations_boq_id_fkey"
+    },
+    {
+      "table_name": "quotations",
+      "column_name": "client_id",
+      "foreign_table_name": "clients",
+      "foreign_column_name": "id",
+      "constraint_name": "quotations_client_id_fkey"
+    },
+    {
+      "table_name": "quotations",
+      "column_name": "previous_quotation_id",
+      "foreign_table_name": "quotations",
+      "foreign_column_name": "id",
+      "constraint_name": "quotations_previous_quotation_id_fkey"
+    },
+    {
+      "table_name": "quotations",
+      "column_name": "project_id",
+      "foreign_table_name": "tenders",
+      "foreign_column_name": "id",
+      "constraint_name": "quotations_project_id_fkey"
+    },
+    {
+      "table_name": "role_permissions",
+      "column_name": "permission_id",
+      "foreign_table_name": "permissions",
+      "foreign_column_name": "id",
+      "constraint_name": "role_permissions_permission_id_fkey"
+    },
+    {
+      "table_name": "role_permissions",
+      "column_name": "role_id",
+      "foreign_table_name": "roles",
+      "foreign_column_name": "id",
+      "constraint_name": "role_permissions_role_id_fkey"
+    },
+    {
+      "table_name": "serial_units",
+      "column_name": "current_location_id",
+      "foreign_table_name": "stock_locations",
+      "foreign_column_name": "id",
+      "constraint_name": "serial_units_current_location_id_fkey"
+    },
+    {
+      "table_name": "serial_units",
+      "column_name": "installed_ticket_id",
+      "foreign_table_name": "service_tickets",
+      "foreign_column_name": "id",
+      "constraint_name": "serial_units_installed_ticket_id_fkey"
+    },
+    {
+      "table_name": "serial_units",
+      "column_name": "stock_item_id",
+      "foreign_table_name": "stock_items",
+      "foreign_column_name": "id",
+      "constraint_name": "serial_units_stock_item_id_fkey"
+    },
+    {
+      "table_name": "service_tickets",
+      "column_name": "chargeable_quote_id",
+      "foreign_table_name": "quotations",
+      "foreign_column_name": "id",
+      "constraint_name": "service_tickets_chargeable_quote_id_quotations_fkey"
+    },
+    {
+      "table_name": "service_tickets",
+      "column_name": "client_id",
+      "foreign_table_name": "clients",
+      "foreign_column_name": "id",
+      "constraint_name": "service_tickets_client_id_clients_fkey"
+    },
+    {
+      "table_name": "service_tickets",
+      "column_name": "contract_id",
+      "foreign_table_name": "amc_contracts",
+      "foreign_column_name": "id",
+      "constraint_name": "service_tickets_contract_id_fkey"
+    },
+    {
+      "table_name": "service_tickets",
+      "column_name": "equipment_id",
+      "foreign_table_name": "amc_equipment",
+      "foreign_column_name": "id",
+      "constraint_name": "service_tickets_equipment_id_fkey"
+    },
+    {
+      "table_name": "service_tickets",
+      "column_name": "invoice_id",
+      "foreign_table_name": "client_invoices",
+      "foreign_column_name": "id",
+      "constraint_name": "service_tickets_invoice_id_client_invoices_fkey"
+    },
+    {
+      "table_name": "service_tickets",
+      "column_name": "project_id",
+      "foreign_table_name": "projects",
+      "foreign_column_name": "id",
+      "constraint_name": "service_tickets_project_id_projects_fkey"
+    },
+    {
+      "table_name": "service_tickets",
+      "column_name": "technician_id",
+      "foreign_table_name": "profiles",
+      "foreign_column_name": "id",
+      "constraint_name": "service_tickets_technician_id_fkey"
+    },
+    {
+      "table_name": "snags",
+      "column_name": "project_id",
+      "foreign_table_name": "projects",
+      "foreign_column_name": "id",
+      "constraint_name": "snags_project_id_fkey"
+    },
+    {
+      "table_name": "stock_balances",
+      "column_name": "location_id",
+      "foreign_table_name": "stock_locations",
+      "foreign_column_name": "id",
+      "constraint_name": "stock_balances_location_id_fkey"
+    },
+    {
+      "table_name": "stock_balances",
+      "column_name": "stock_item_id",
+      "foreign_table_name": "stock_items",
+      "foreign_column_name": "id",
+      "constraint_name": "stock_balances_stock_item_id_fkey"
+    },
+    {
+      "table_name": "stock_count_lines",
+      "column_name": "stock_count_id",
+      "foreign_table_name": "stock_counts",
+      "foreign_column_name": "id",
+      "constraint_name": "stock_count_lines_stock_count_id_fkey"
+    },
+    {
+      "table_name": "stock_count_lines",
+      "column_name": "stock_item_id",
+      "foreign_table_name": "stock_items",
+      "foreign_column_name": "id",
+      "constraint_name": "stock_count_lines_stock_item_id_fkey"
+    },
+    {
+      "table_name": "stock_counts",
+      "column_name": "location_id",
+      "foreign_table_name": "stock_locations",
+      "foreign_column_name": "id",
+      "constraint_name": "stock_counts_location_id_fkey"
+    },
+    {
+      "table_name": "stock_items",
+      "column_name": "preferred_supplier_id",
+      "foreign_table_name": "pricing_suppliers",
+      "foreign_column_name": "id",
+      "constraint_name": "stock_items_preferred_supplier_id_fkey"
+    },
+    {
+      "table_name": "stock_items",
+      "column_name": "pricing_item_id",
+      "foreign_table_name": "pricing_items",
+      "foreign_column_name": "id",
+      "constraint_name": "stock_items_pricing_item_id_fkey"
+    },
+    {
+      "table_name": "stock_locations",
+      "column_name": "custodian_id",
+      "foreign_table_name": "employees",
+      "foreign_column_name": "id",
+      "constraint_name": "stock_locations_custodian_id_fkey"
+    },
+    {
+      "table_name": "stock_transactions",
+      "column_name": "counterparty_location_id",
+      "foreign_table_name": "stock_locations",
+      "foreign_column_name": "id",
+      "constraint_name": "stock_transactions_counterparty_location_id_fkey"
+    },
+    {
+      "table_name": "stock_transactions",
+      "column_name": "location_id",
+      "foreign_table_name": "stock_locations",
+      "foreign_column_name": "id",
+      "constraint_name": "stock_transactions_location_id_fkey"
+    },
+    {
+      "table_name": "stock_transactions",
+      "column_name": "stock_item_id",
+      "foreign_table_name": "stock_items",
+      "foreign_column_name": "id",
+      "constraint_name": "stock_transactions_stock_item_id_fkey"
+    },
+    {
+      "table_name": "supplier_comparisons",
+      "column_name": "boq_id",
+      "foreign_table_name": "boqs",
+      "foreign_column_name": "id",
+      "constraint_name": "supplier_comparisons_boq_id_fkey"
+    },
+    {
+      "table_name": "supplier_comparisons",
+      "column_name": "previous_comparison_id",
+      "foreign_table_name": "supplier_comparisons",
+      "foreign_column_name": "id",
+      "constraint_name": "supplier_comparisons_previous_comparison_id_fkey"
+    },
+    {
+      "table_name": "supplier_comparisons",
+      "column_name": "project_id",
+      "foreign_table_name": "tenders",
+      "foreign_column_name": "id",
+      "constraint_name": "supplier_comparisons_project_id_fkey"
+    },
+    {
+      "table_name": "supplier_invoice_items",
+      "column_name": "supplier_invoice_id",
+      "foreign_table_name": "supplier_invoices",
+      "foreign_column_name": "id",
+      "constraint_name": "supplier_invoice_items_supplier_invoice_id_fkey"
+    },
+    {
+      "table_name": "supplier_invoices",
+      "column_name": "source_document_id",
+      "foreign_table_name": "documents",
+      "foreign_column_name": "id",
+      "constraint_name": "supplier_invoices_source_document_id_fkey"
+    },
+    {
+      "table_name": "supplier_invoices",
+      "column_name": "supplier_id",
+      "foreign_table_name": "pricing_suppliers",
+      "foreign_column_name": "id",
+      "constraint_name": "supplier_invoices_supplier_id_fkey"
+    },
+    {
+      "table_name": "supplier_offers",
+      "column_name": "comparison_item_id",
+      "foreign_table_name": "comparison_items",
+      "foreign_column_name": "id",
+      "constraint_name": "supplier_offers_comparison_item_id_fkey"
+    },
+    {
+      "table_name": "supplier_payment_allocations",
+      "column_name": "payment_id",
+      "foreign_table_name": "supplier_payments",
+      "foreign_column_name": "id",
+      "constraint_name": "supplier_payment_allocations_payment_id_fkey"
+    },
+    {
+      "table_name": "supplier_payment_allocations",
+      "column_name": "supplier_invoice_id",
+      "foreign_table_name": "supplier_invoices",
+      "foreign_column_name": "id",
+      "constraint_name": "supplier_payment_allocations_supplier_invoice_id_fkey"
+    },
+    {
+      "table_name": "supplier_payments",
+      "column_name": "supplier_id",
+      "foreign_table_name": "pricing_suppliers",
+      "foreign_column_name": "id",
+      "constraint_name": "supplier_payments_supplier_id_fkey"
+    },
+    {
+      "table_name": "system_events",
+      "column_name": "event_type",
+      "foreign_table_name": "event_types",
+      "foreign_column_name": "event_type",
+      "constraint_name": "system_events_event_type_fkey"
+    },
+    {
+      "table_name": "task_comments",
+      "column_name": "task_id",
+      "foreign_table_name": "tasks",
+      "foreign_column_name": "id",
+      "constraint_name": "task_comments_task_id_fkey"
+    },
+    {
+      "table_name": "task_comments",
+      "column_name": "user_id",
+      "foreign_table_name": "profiles",
+      "foreign_column_name": "id",
+      "constraint_name": "task_comments_user_id_profiles_fkey"
+    },
+    {
+      "table_name": "task_rules",
+      "column_name": "event_type",
+      "foreign_table_name": "event_types",
+      "foreign_column_name": "event_type",
+      "constraint_name": "task_rules_event_type_fkey"
+    },
+    {
+      "table_name": "tasks",
+      "column_name": "assignee_id",
+      "foreign_table_name": "profiles",
+      "foreign_column_name": "id",
+      "constraint_name": "tasks_assignee_id_profiles_fkey"
+    },
+    {
+      "table_name": "tasks",
+      "column_name": "created_by",
+      "foreign_table_name": "profiles",
+      "foreign_column_name": "id",
+      "constraint_name": "tasks_created_by_profiles_fkey"
+    },
+    {
+      "table_name": "tasks",
+      "column_name": "parent_recurring_id",
+      "foreign_table_name": "tasks",
+      "foreign_column_name": "id",
+      "constraint_name": "tasks_parent_recurring_id_fkey"
+    },
+    {
+      "table_name": "tasks",
+      "column_name": "project_id",
+      "foreign_table_name": "projects",
+      "foreign_column_name": "id",
+      "constraint_name": "tasks_project_id_fkey"
+    },
+    {
+      "table_name": "tasks",
+      "column_name": "source_event_id",
+      "foreign_table_name": "system_events",
+      "foreign_column_name": "id",
+      "constraint_name": "tasks_source_event_id_fkey"
+    },
+    {
+      "table_name": "tasks",
+      "column_name": "task_rule_id",
+      "foreign_table_name": "task_rules",
+      "foreign_column_name": "id",
+      "constraint_name": "tasks_task_rule_id_fkey"
+    },
+    {
+      "table_name": "tc_devices",
+      "column_name": "package_id",
+      "foreign_table_name": "tc_packages",
+      "foreign_column_name": "id",
+      "constraint_name": "tc_devices_package_id_fkey"
+    },
+    {
+      "table_name": "tc_packages",
+      "column_name": "method_statement_document_id",
+      "foreign_table_name": "documents",
+      "foreign_column_name": "id",
+      "constraint_name": "tc_packages_method_statement_document_id_fkey"
+    },
+    {
+      "table_name": "tc_packages",
+      "column_name": "project_id",
+      "foreign_table_name": "projects",
+      "foreign_column_name": "id",
+      "constraint_name": "tc_packages_project_id_fkey"
+    },
+    {
+      "table_name": "tc_script_template_items",
+      "column_name": "template_id",
+      "foreign_table_name": "tc_script_templates",
+      "foreign_column_name": "id",
+      "constraint_name": "tc_script_template_items_template_id_fkey"
+    },
+    {
+      "table_name": "tc_test_results",
+      "column_name": "device_id",
+      "foreign_table_name": "tc_devices",
+      "foreign_column_name": "id",
+      "constraint_name": "tc_test_results_device_id_fkey"
+    },
+    {
+      "table_name": "tc_test_results",
+      "column_name": "retest_of_id",
+      "foreign_table_name": "tc_test_results",
+      "foreign_column_name": "id",
+      "constraint_name": "tc_test_results_retest_of_id_fkey"
+    },
+    {
+      "table_name": "tc_test_results",
+      "column_name": "script_id",
+      "foreign_table_name": "tc_test_scripts",
+      "foreign_column_name": "id",
+      "constraint_name": "tc_test_results_script_id_fkey"
+    },
+    {
+      "table_name": "tc_test_results",
+      "column_name": "snag_id",
+      "foreign_table_name": "snags",
+      "foreign_column_name": "id",
+      "constraint_name": "tc_test_results_snag_id_fkey"
+    },
+    {
+      "table_name": "tc_test_results",
+      "column_name": "tested_by",
+      "foreign_table_name": "profiles",
+      "foreign_column_name": "id",
+      "constraint_name": "tc_test_results_tested_by_fkey"
+    },
+    {
+      "table_name": "tc_test_scripts",
+      "column_name": "package_id",
+      "foreign_table_name": "tc_packages",
+      "foreign_column_name": "id",
+      "constraint_name": "tc_test_scripts_package_id_fkey"
+    },
+    {
+      "table_name": "tc_witnesses",
+      "column_name": "package_id",
+      "foreign_table_name": "tc_packages",
+      "foreign_column_name": "id",
+      "constraint_name": "tc_witnesses_package_id_fkey"
+    },
+    {
+      "table_name": "tender_documents",
+      "column_name": "tender_id",
+      "foreign_table_name": "tenders",
+      "foreign_column_name": "id",
+      "constraint_name": "tender_documents_tender_id_fkey"
+    },
+    {
+      "table_name": "ticket_events",
+      "column_name": "ticket_id",
+      "foreign_table_name": "service_tickets",
+      "foreign_column_name": "id",
+      "constraint_name": "ticket_events_ticket_id_fkey"
+    },
+    {
+      "table_name": "timesheet_entries",
+      "column_name": "ticket_id",
+      "foreign_table_name": "service_tickets",
+      "foreign_column_name": "id",
+      "constraint_name": "timesheet_entries_ticket_id_fkey"
+    },
+    {
+      "table_name": "timesheet_entries",
+      "column_name": "timesheet_id",
+      "foreign_table_name": "timesheets",
+      "foreign_column_name": "id",
+      "constraint_name": "timesheet_entries_timesheet_id_fkey"
+    },
+    {
+      "table_name": "timesheet_entries",
+      "column_name": "visit_id",
+      "foreign_table_name": "ppm_visits",
+      "foreign_column_name": "id",
+      "constraint_name": "timesheet_entries_visit_id_fkey"
+    },
+    {
+      "table_name": "timesheets",
+      "column_name": "employee_id",
+      "foreign_table_name": "employees",
+      "foreign_column_name": "id",
+      "constraint_name": "timesheets_employee_id_fkey"
+    },
+    {
+      "table_name": "tool_assignments",
+      "column_name": "issued_to",
+      "foreign_table_name": "employees",
+      "foreign_column_name": "id",
+      "constraint_name": "tool_assignments_issued_to_fkey"
+    },
+    {
+      "table_name": "tool_assignments",
+      "column_name": "tool_id",
+      "foreign_table_name": "tools",
+      "foreign_column_name": "id",
+      "constraint_name": "tool_assignments_tool_id_fkey"
+    },
+    {
+      "table_name": "tool_maintenance",
+      "column_name": "certificate_document_id",
+      "foreign_table_name": "documents",
+      "foreign_column_name": "id",
+      "constraint_name": "tool_maintenance_certificate_document_id_fkey"
+    },
+    {
+      "table_name": "tool_maintenance",
+      "column_name": "tool_id",
+      "foreign_table_name": "tools",
+      "foreign_column_name": "id",
+      "constraint_name": "tool_maintenance_tool_id_fkey"
+    },
+    {
+      "table_name": "tools",
+      "column_name": "calibration_cert_document_id",
+      "foreign_table_name": "documents",
+      "foreign_column_name": "id",
+      "constraint_name": "tools_calibration_cert_document_id_fkey"
+    },
+    {
+      "table_name": "tools",
+      "column_name": "current_custodian_id",
+      "foreign_table_name": "employees",
+      "foreign_column_name": "id",
+      "constraint_name": "tools_current_custodian_id_fkey"
+    },
+    {
+      "table_name": "tools",
+      "column_name": "current_location_id",
+      "foreign_table_name": "stock_locations",
+      "foreign_column_name": "id",
+      "constraint_name": "tools_current_location_id_fkey"
+    },
+    {
+      "table_name": "tools",
+      "column_name": "supplier_id",
+      "foreign_table_name": "pricing_suppliers",
+      "foreign_column_name": "id",
+      "constraint_name": "tools_supplier_id_fkey"
+    },
+    {
+      "table_name": "user_roles",
+      "column_name": "role_id",
+      "foreign_table_name": "roles",
+      "foreign_column_name": "id",
+      "constraint_name": "user_roles_role_id_fkey"
+    },
+    {
+      "table_name": "variation_orders",
+      "column_name": "client_approval_document_id",
+      "foreign_table_name": "documents",
+      "foreign_column_name": "id",
+      "constraint_name": "variation_orders_client_approval_document_id_fkey"
+    },
+    {
+      "table_name": "variation_orders",
+      "column_name": "instruction_document_id",
+      "foreign_table_name": "documents",
+      "foreign_column_name": "id",
+      "constraint_name": "variation_orders_instruction_document_id_fkey"
+    },
+    {
+      "table_name": "variation_orders",
+      "column_name": "pdf_document_id",
+      "foreign_table_name": "documents",
+      "foreign_column_name": "id",
+      "constraint_name": "variation_orders_pdf_document_id_fkey"
+    },
+    {
+      "table_name": "variation_orders",
+      "column_name": "project_id",
+      "foreign_table_name": "projects",
+      "foreign_column_name": "id",
+      "constraint_name": "variation_orders_project_id_fkey"
+    },
+    {
+      "table_name": "vehicle_assignments",
+      "column_name": "driver_id",
+      "foreign_table_name": "employees",
+      "foreign_column_name": "id",
+      "constraint_name": "vehicle_assignments_driver_id_employees_fkey"
+    },
+    {
+      "table_name": "vehicle_assignments",
+      "column_name": "project_id",
+      "foreign_table_name": "projects",
+      "foreign_column_name": "id",
+      "constraint_name": "vehicle_assignments_project_id_projects_fkey"
+    },
+    {
+      "table_name": "vehicle_assignments",
+      "column_name": "vehicle_id",
+      "foreign_table_name": "vehicles",
+      "foreign_column_name": "id",
+      "constraint_name": "vehicle_assignments_vehicle_id_fkey"
+    },
+    {
+      "table_name": "vehicle_fines",
+      "column_name": "document_id",
+      "foreign_table_name": "documents",
+      "foreign_column_name": "id",
+      "constraint_name": "vehicle_fines_document_id_fkey"
+    },
+    {
+      "table_name": "vehicle_fines",
+      "column_name": "driver_id",
+      "foreign_table_name": "employees",
+      "foreign_column_name": "id",
+      "constraint_name": "vehicle_fines_driver_id_employees_fkey"
+    },
+    {
+      "table_name": "vehicle_fines",
+      "column_name": "vehicle_id",
+      "foreign_table_name": "vehicles",
+      "foreign_column_name": "id",
+      "constraint_name": "vehicle_fines_vehicle_id_fkey"
+    },
+    {
+      "table_name": "vehicle_maintenance",
+      "column_name": "invoice_document_id",
+      "foreign_table_name": "documents",
+      "foreign_column_name": "id",
+      "constraint_name": "vehicle_maintenance_invoice_document_id_fkey"
+    },
+    {
+      "table_name": "vehicle_maintenance",
+      "column_name": "vehicle_id",
+      "foreign_table_name": "vehicles",
+      "foreign_column_name": "id",
+      "constraint_name": "vehicle_maintenance_vehicle_id_fkey"
+    },
+    {
+      "table_name": "vehicles",
+      "column_name": "assigned_driver_id",
+      "foreign_table_name": "employees",
+      "foreign_column_name": "id",
+      "constraint_name": "vehicles_assigned_driver_id_employees_fkey"
+    },
+    {
+      "table_name": "vehicles",
+      "column_name": "fixed_asset_id",
+      "foreign_table_name": "fixed_assets",
+      "foreign_column_name": "id",
+      "constraint_name": "fk_vehicles_fixed_asset"
+    },
+    {
+      "table_name": "vo_items",
+      "column_name": "pricing_item_id",
+      "foreign_table_name": "pricing_items",
+      "foreign_column_name": "id",
+      "constraint_name": "vo_items_pricing_item_id_fkey"
+    },
+    {
+      "table_name": "vo_items",
+      "column_name": "vo_id",
+      "foreign_table_name": "variation_orders",
+      "foreign_column_name": "id",
+      "constraint_name": "vo_items_vo_id_fkey"
+    },
+    {
+      "table_name": "vo_status_history",
+      "column_name": "vo_id",
+      "foreign_table_name": "variation_orders",
+      "foreign_column_name": "id",
+      "constraint_name": "vo_status_history_vo_id_fkey"
+    },
+    {
+      "table_name": "whatsapp_chats",
+      "column_name": "assigned_to",
+      "foreign_table_name": "profiles",
+      "foreign_column_name": "id",
+      "constraint_name": "whatsapp_chats_assigned_to_profiles_fkey"
+    },
+    {
+      "table_name": "whatsapp_chats",
+      "column_name": "client_id",
+      "foreign_table_name": "clients",
+      "foreign_column_name": "id",
+      "constraint_name": "whatsapp_chats_client_id_fkey"
+    },
+    {
+      "table_name": "whatsapp_chats",
+      "column_name": "contract_id",
+      "foreign_table_name": "amc_contracts",
+      "foreign_column_name": "id",
+      "constraint_name": "whatsapp_chats_contract_id_fkey"
+    },
+    {
+      "table_name": "whatsapp_messages",
+      "column_name": "chat_id",
+      "foreign_table_name": "whatsapp_chats",
+      "foreign_column_name": "id",
+      "constraint_name": "whatsapp_messages_chat_id_fkey"
+    },
+    {
+      "table_name": "whatsapp_messages",
+      "column_name": "dms_document_id",
+      "foreign_table_name": "documents",
+      "foreign_column_name": "id",
+      "constraint_name": "whatsapp_messages_dms_document_id_fkey"
+    }
+  ],
+  "policies": [
+    {
+      "schemaname": "public",
+      "tablename": "amc_billing_schedule",
+      "policyname": "Allow auth read on amc_billing_schedule",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "amc_billing_schedule",
+      "policyname": "Allow staff write on amc_billing_schedule",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "amc_contract_sequences",
+      "policyname": "Allow auth read on amc_contract_sequences",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "amc_contract_sequences",
+      "policyname": "Allow auth write on amc_contract_sequences",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "asset_disposals",
+      "policyname": "Allow select on asset_disposals for authenticated",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "asset_number_sequences",
+      "policyname": "Allow auth read/write on asset_number_sequences",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "audit_log",
+      "policyname": "Allow audit read for admin and account",
+      "cmd": "SELECT",
+      "qual": "(EXISTS ( SELECT 1\n   FROM (user_roles ur\n     JOIN roles r ON ((ur.role_id = r.id)))\n  WHERE ((ur.user_id = auth.uid()) AND (r.role_key = ANY (ARRAY['admin'::text, 'accountant'::text])))))",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "audit_log",
+      "policyname": "Allow write to audit_log for logged in sessions",
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "boq_versions",
+      "policyname": "Allow authenticated read to BOQ versions",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "boq_versions",
+      "policyname": "Allow insert to BOQ versions",
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "boqs",
+      "policyname": "Allow authenticated read to BOQs",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "boqs",
+      "policyname": "Allow creator insert BOQs",
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "(( SELECT auth.uid() AS uid) = created_by)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "boqs",
+      "policyname": "Allow updates to BOQs",
+      "cmd": "UPDATE",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "checklist_template_items",
+      "policyname": "Allow admin write on checklist_template_items",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "checklist_template_items",
+      "policyname": "Allow auth read on checklist_template_items",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "checklist_templates",
+      "policyname": "Allow admin write on checklist_templates",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "checklist_templates",
+      "policyname": "Allow auth read on checklist_templates",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "client_invoice_items",
+      "policyname": "Allow auth read on client_invoice_items",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "client_invoice_items",
+      "policyname": "Allow auth write on client_invoice_items",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "client_invoice_sequences",
+      "policyname": "Allow auth read on client_invoice_sequences",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "client_invoice_sequences",
+      "policyname": "Allow auth write on client_invoice_sequences",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "client_invoices",
+      "policyname": "Allow auth read on client_invoices",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "client_invoices",
+      "policyname": "Allow auth write on client_invoices",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "client_payment_sequences",
+      "policyname": "Allow auth read on client_payment_sequences",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "client_payment_sequences",
+      "policyname": "Allow auth write on client_payment_sequences",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "client_payments",
+      "policyname": "Allow auth read on client_payments",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "client_payments",
+      "policyname": "Allow auth write on client_payments",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "clients",
+      "policyname": "Allow authenticated read to clients",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "clients",
+      "policyname": "Allow authenticated write to clients",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "company_holidays",
+      "policyname": "Allow admin write on company_holidays",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "company_holidays",
+      "policyname": "Allow auth read on company_holidays",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "comparison_approvals",
+      "policyname": "Allow authenticated read to comparison_approvals",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "comparison_approvals",
+      "policyname": "Allow authenticated write to comparison_approvals",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "comparison_items",
+      "policyname": "Allow authenticated read to comparison_items",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "comparison_items",
+      "policyname": "Allow authenticated write to comparison_items",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "comparison_scoring_weights",
+      "policyname": "Allow authenticated read to comparison_scoring_weights",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "comparison_scoring_weights",
+      "policyname": "Allow authenticated write to comparison_scoring_weights",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "count_number_sequences",
+      "policyname": "Allow auth read/write on count_number_sequences",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "credit_note_sequences",
+      "policyname": "Allow auth read on credit_note_sequences",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "credit_note_sequences",
+      "policyname": "Allow auth write on credit_note_sequences",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "credit_notes",
+      "policyname": "Allow auth read on credit_notes",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "credit_notes",
+      "policyname": "Allow auth write on credit_notes",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "depreciation_schedule",
+      "policyname": "Allow select on depreciation_schedule for authenticated",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_activity",
+      "policyname": "Allow authenticated read to document_activity",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_activity",
+      "policyname": "Allow authenticated write to document_activity",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_categories",
+      "policyname": "Allow admin write to document_categories",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_categories",
+      "policyname": "Allow authenticated read to document_categories",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_expiry_alerts",
+      "policyname": "Allow authenticated read to document_expiry_alerts",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "document_expiry_alerts",
+      "policyname": "Allow authenticated write to document_expiry_alerts",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "documents",
+      "policyname": "Allow authenticated read to documents",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "documents",
+      "policyname": "Allow authenticated write to documents",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "employee_certifications",
+      "policyname": "Allow select certifications for authenticated",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "employee_documents",
+      "policyname": "Allow select employee_documents for authenticated",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "employee_number_sequences",
+      "policyname": "Allow authenticated read on employee_number_sequences",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "employee_number_sequences",
+      "policyname": "Allow privileged write on employee_number_sequences",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "employees",
+      "policyname": "Allow select on employees for authenticated",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "escalation_timers",
+      "policyname": "Allow authenticated read to escalation_timers",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "event_types",
+      "policyname": "Allow admin write to event_types",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "event_types",
+      "policyname": "Allow authenticated read to event_types",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "fixed_assets",
+      "policyname": "Allow select on fixed_assets for authenticated",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "fuel_logs",
+      "policyname": "Allow select on fuel_logs for authenticated",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "fuel_logs",
+      "policyname": "Allow write on fuel_logs for authenticated users",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "grn_items",
+      "policyname": "Allow authenticated read to grn_items",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "grn_items",
+      "policyname": "Allow authenticated write to grn_items",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "grn_number_sequences",
+      "policyname": "Allow authenticated read to grn_number_sequences",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "grn_number_sequences",
+      "policyname": "Allow authenticated write to grn_number_sequences",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "grn_returns",
+      "policyname": "Allow authenticated read to grn_returns",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "grn_returns",
+      "policyname": "Allow authenticated write to grn_returns",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "grns",
+      "policyname": "Allow authenticated read to grns",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "grns",
+      "policyname": "Allow authenticated write to grns",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "handover_checklist_items",
+      "policyname": "Allow auth read on handover_checklist_items",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "handover_checklist_items",
+      "policyname": "Allow auth write on handover_checklist_items",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "handover_packages",
+      "policyname": "Allow auth read on handover_packages",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "handover_packages",
+      "policyname": "Allow auth write on handover_packages",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "leave_requests",
+      "policyname": "Allow leave_requests select/insert for own",
+      "cmd": "ALL",
+      "qual": "(employee_id IN ( SELECT employees.id\n   FROM employees\n  WHERE (employees.user_id = auth.uid())))",
+      "with_check": "(employee_id IN ( SELECT employees.id\n   FROM employees\n  WHERE (employees.user_id = auth.uid())))"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "material_requisitions",
+      "policyname": "Allow select on material_requisitions for authenticated",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "meeting_action_items",
+      "policyname": "Allow authenticated read to meeting_action_items",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "meeting_action_items",
+      "policyname": "Allow authenticated write to meeting_action_items",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "meeting_attendees",
+      "policyname": "Allow authenticated read to meeting_attendees",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "meeting_attendees",
+      "policyname": "Allow authenticated write to meeting_attendees",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "meetings",
+      "policyname": "Allow authenticated read to meetings",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "meetings",
+      "policyname": "Allow authenticated write to meetings",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "mrf_items",
+      "policyname": "Allow select on mrf_items for authenticated",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "mrf_items",
+      "policyname": "Allow write on mrf_items for authenticated",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "mrf_number_sequences",
+      "policyname": "Allow auth read/write on mrf_number_sequences",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "notification_rules",
+      "policyname": "Allow admin write to notification_rules",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "notification_rules",
+      "policyname": "Allow authenticated read to notification_rules",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "notifications",
+      "policyname": "Allow users to read own notifications",
+      "cmd": "SELECT",
+      "qual": "(auth.uid() = user_id)",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "notifications",
+      "policyname": "Allow users to update own notifications",
+      "cmd": "UPDATE",
+      "qual": "(auth.uid() = user_id)",
+      "with_check": "(auth.uid() = user_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "payment_allocations",
+      "policyname": "Allow auth read on payment_allocations",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "payment_allocations",
+      "policyname": "Allow auth write on payment_allocations",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "payroll_lines",
+      "policyname": "Allow select own payslips",
+      "cmd": "SELECT",
+      "qual": "(employee_id IN ( SELECT employees.id\n   FROM employees\n  WHERE (employees.user_id = auth.uid())))",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "permissions",
+      "policyname": "Allow admin write to permissions",
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM (user_roles ur\n     JOIN roles r ON ((ur.role_id = r.id)))\n  WHERE ((ur.user_id = auth.uid()) AND (r.role_key = 'admin'::text))))",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "permissions",
+      "policyname": "Allow authenticated read to permissions",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "po_approvals",
+      "policyname": "Allow authenticated read to po_approvals",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "po_approvals",
+      "policyname": "Allow authenticated write to po_approvals",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "po_items",
+      "policyname": "Allow authenticated read to po_items",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "po_items",
+      "policyname": "Allow authenticated write to po_items",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "po_number_sequences",
+      "policyname": "Allow authenticated read to po_number_sequences",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "po_number_sequences",
+      "policyname": "Allow authenticated write to po_number_sequences",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "pricing_adjustment_factors",
+      "policyname": "factors_insert",
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "pricing_adjustment_factors",
+      "policyname": "factors_select",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "pricing_adjustment_factors",
+      "policyname": "factors_update",
+      "cmd": "UPDATE",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "pricing_items",
+      "policyname": "pricing_items_insert",
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "pricing_items",
+      "policyname": "pricing_items_select",
+      "cmd": "SELECT",
+      "qual": "(is_deleted = false)",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "pricing_items",
+      "policyname": "pricing_items_update",
+      "cmd": "UPDATE",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "pricing_labour_rates",
+      "policyname": "labour_rates_insert",
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "pricing_labour_rates",
+      "policyname": "labour_rates_select",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "pricing_labour_rates",
+      "policyname": "labour_rates_update",
+      "cmd": "UPDATE",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "pricing_price_history",
+      "policyname": "price_history_insert",
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "pricing_price_history",
+      "policyname": "price_history_select",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "pricing_rate_analyses",
+      "policyname": "rate_analyses_insert",
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "pricing_rate_analyses",
+      "policyname": "rate_analyses_select",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "pricing_suppliers",
+      "policyname": "suppliers_insert",
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "pricing_suppliers",
+      "policyname": "suppliers_select",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "pricing_suppliers",
+      "policyname": "suppliers_update",
+      "cmd": "UPDATE",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "pricing_templates",
+      "policyname": "templates_insert",
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "pricing_templates",
+      "policyname": "templates_select",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "pricing_templates",
+      "policyname": "templates_update",
+      "cmd": "UPDATE",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "profiles",
+      "policyname": "Allow public read access to profiles",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "profiles",
+      "policyname": "Allow users to update own profile",
+      "cmd": "UPDATE",
+      "qual": "(auth.uid() = id)",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "project_contacts",
+      "policyname": "Allow authenticated read to project_contacts",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "project_contacts",
+      "policyname": "Allow authenticated write to project_contacts",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "project_labour_costs",
+      "policyname": "Allow admin write on project_labour_costs",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "project_labour_costs",
+      "policyname": "Allow select on project_labour_costs for authenticated",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "project_milestones",
+      "policyname": "Allow authenticated read to project_milestones",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "project_milestones",
+      "policyname": "Allow authenticated write to project_milestones",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "project_retention_ledger",
+      "policyname": "Allow auth read on project_retention_ledger",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "project_retention_ledger",
+      "policyname": "Allow auth write on project_retention_ledger",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "project_status_history",
+      "policyname": "Allow authenticated read to project_status_history",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "project_status_history",
+      "policyname": "Allow authenticated write to project_status_history",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "projects",
+      "policyname": "Allow authenticated read to projects",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "projects",
+      "policyname": "Allow authenticated write to projects",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "purchase_orders",
+      "policyname": "Allow authenticated read to purchase_orders",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "purchase_orders",
+      "policyname": "Allow authenticated write to purchase_orders",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "push_subscriptions",
+      "policyname": "Allow push subscriptions management by owner",
+      "cmd": "ALL",
+      "qual": "(auth.uid() = user_id)",
+      "with_check": "(auth.uid() = user_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "quotation_approvals",
+      "policyname": "Allow authenticated read to quotation approvals",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "quotation_approvals",
+      "policyname": "Allow authenticated write to quotation approvals",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "quotation_lines",
+      "policyname": "Allow authenticated read to quotation lines",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "quotation_lines",
+      "policyname": "Allow authenticated write to quotation lines",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "quotation_templates",
+      "policyname": "Allow authenticated read to quotation templates",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "quotation_templates",
+      "policyname": "Allow authenticated write to quotation templates",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "quotations",
+      "policyname": "Allow authenticated read to quotations",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "quotations",
+      "policyname": "Allow authenticated write to quotations",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "role_permissions",
+      "policyname": "Allow admin write to role_permissions",
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM (user_roles ur\n     JOIN roles r ON ((ur.role_id = r.id)))\n  WHERE ((ur.user_id = auth.uid()) AND (r.role_key = 'admin'::text))))",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "role_permissions",
+      "policyname": "Allow authenticated read to role_permissions",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "roles",
+      "policyname": "Allow admin write to roles",
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = auth.uid()) AND (p.role = 'admin'::text))))",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "roles",
+      "policyname": "Allow authenticated read to roles",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "serial_units",
+      "policyname": "Allow select on serial_units for authenticated",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "service_ticket_sequences",
+      "policyname": "Allow auth read on service_ticket_sequences",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "service_ticket_sequences",
+      "policyname": "Allow auth write on service_ticket_sequences",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "settings",
+      "policyname": "Allow admin write to settings",
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM (user_roles ur\n     JOIN roles r ON ((ur.role_id = r.id)))\n  WHERE ((ur.user_id = auth.uid()) AND (r.role_key = 'admin'::text))))",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "settings",
+      "policyname": "Allow authenticated read to settings",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "snags",
+      "policyname": "Allow auth read on snags",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "snags",
+      "policyname": "Allow auth write on snags",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "stock_balances",
+      "policyname": "Allow select on stock_balances for authenticated",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "stock_count_lines",
+      "policyname": "Allow select on stock_count_lines for authenticated",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "stock_count_lines",
+      "policyname": "Allow write on stock_count_lines for authenticated",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "stock_counts",
+      "policyname": "Allow select on stock_counts for authenticated",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "stock_items",
+      "policyname": "Allow select on stock_items for authenticated",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "stock_locations",
+      "policyname": "Allow select on stock_locations for authenticated",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "stock_transaction_sequences",
+      "policyname": "Allow auth read/write on stock_transaction_sequences",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "stock_transactions",
+      "policyname": "Allow select on stock_transactions for authenticated",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_comparisons",
+      "policyname": "Allow authenticated read to supplier_comparisons",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_comparisons",
+      "policyname": "Allow authenticated write to supplier_comparisons",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_invoice_items",
+      "policyname": "Allow auth read on supplier_invoice_items",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_invoice_items",
+      "policyname": "Allow auth write on supplier_invoice_items",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_invoice_sequences",
+      "policyname": "Allow auth read on supplier_invoice_sequences",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_invoice_sequences",
+      "policyname": "Allow auth write on supplier_invoice_sequences",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_invoices",
+      "policyname": "Allow auth read on supplier_invoices",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_invoices",
+      "policyname": "Allow auth write on supplier_invoices",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_offers",
+      "policyname": "Allow authenticated read to supplier_offers",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_offers",
+      "policyname": "Allow authenticated write to supplier_offers",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_payment_allocations",
+      "policyname": "Allow auth read on supplier_payment_allocations",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_payment_allocations",
+      "policyname": "Allow auth write on supplier_payment_allocations",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_payment_sequences",
+      "policyname": "Allow auth read on supplier_payment_sequences",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_payment_sequences",
+      "policyname": "Allow auth write on supplier_payment_sequences",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_payments",
+      "policyname": "Allow auth read on supplier_payments",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_payments",
+      "policyname": "Allow auth write on supplier_payments",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_performance_history",
+      "policyname": "Allow authenticated read to supplier_performance_history",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "supplier_performance_history",
+      "policyname": "Allow authenticated write to supplier_performance_history",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "system_events",
+      "policyname": "Allow authenticated insert to system_events",
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "system_events",
+      "policyname": "Allow authenticated read to system_events",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "task_comments",
+      "policyname": "Allow authenticated insert to task_comments",
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "(auth.uid() = user_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "task_comments",
+      "policyname": "Allow authenticated read to task_comments",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "task_rules",
+      "policyname": "Allow admin write to task_rules",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "task_rules",
+      "policyname": "Allow authenticated read to task_rules",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "tasks",
+      "policyname": "Allow authenticated write to tasks",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "tc_devices",
+      "policyname": "Allow auth read on tc_devices",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "tc_devices",
+      "policyname": "Allow auth write on tc_devices",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "tc_package_sequences",
+      "policyname": "Allow auth read on tc_package_sequences",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "tc_package_sequences",
+      "policyname": "Allow auth write on tc_package_sequences",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "tc_packages",
+      "policyname": "Allow auth read on tc_packages",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "tc_packages",
+      "policyname": "Allow auth write on tc_packages",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "tc_script_template_items",
+      "policyname": "Allow admin write on tc_script_template_items",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "tc_script_template_items",
+      "policyname": "Allow auth read on tc_script_template_items",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "tc_script_templates",
+      "policyname": "Allow admin write on tc_script_templates",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "tc_script_templates",
+      "policyname": "Allow auth read on tc_script_templates",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "tc_test_results",
+      "policyname": "Allow auth read on tc_test_results",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "tc_test_results",
+      "policyname": "Allow auth write on tc_test_results",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "tc_test_scripts",
+      "policyname": "Allow auth read on tc_test_scripts",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "tc_test_scripts",
+      "policyname": "Allow auth write on tc_test_scripts",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "tc_witnesses",
+      "policyname": "Allow auth read on tc_witnesses",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "tc_witnesses",
+      "policyname": "Allow auth write on tc_witnesses",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "tender_documents",
+      "policyname": "Users can delete own tender documents",
+      "cmd": "DELETE",
+      "qual": "(auth.uid() = uploaded_by)",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "tender_documents",
+      "policyname": "Users can insert own tender documents",
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "(auth.uid() = uploaded_by)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "tender_documents",
+      "policyname": "Users can view own tender documents",
+      "cmd": "SELECT",
+      "qual": "(auth.uid() = uploaded_by)",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "tenders",
+      "policyname": "Users can delete own tenders",
+      "cmd": "DELETE",
+      "qual": "(auth.uid() = created_by)",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "tenders",
+      "policyname": "Users can insert own tenders",
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "(auth.uid() = created_by)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "tenders",
+      "policyname": "Users can update own tenders",
+      "cmd": "UPDATE",
+      "qual": "(auth.uid() = created_by)",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "tenders",
+      "policyname": "Users can view own tenders",
+      "cmd": "SELECT",
+      "qual": "(auth.uid() = created_by)",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "timesheet_entries",
+      "policyname": "Allow entries access for timesheet owner",
+      "cmd": "ALL",
+      "qual": "(timesheet_id IN ( SELECT timesheets.id\n   FROM timesheets\n  WHERE (timesheets.employee_id IN ( SELECT employees.id\n           FROM employees\n          WHERE (employees.user_id = auth.uid())))))",
+      "with_check": "(timesheet_id IN ( SELECT timesheets.id\n   FROM timesheets\n  WHERE (timesheets.employee_id IN ( SELECT employees.id\n           FROM employees\n          WHERE (employees.user_id = auth.uid())))))"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "timesheets",
+      "policyname": "Allow timesheets access for own",
+      "cmd": "ALL",
+      "qual": "(employee_id IN ( SELECT employees.id\n   FROM employees\n  WHERE (employees.user_id = auth.uid())))",
+      "with_check": "(employee_id IN ( SELECT employees.id\n   FROM employees\n  WHERE (employees.user_id = auth.uid())))"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "tool_assignments",
+      "policyname": "Allow select on tool_assignments for authenticated",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "tool_maintenance",
+      "policyname": "Allow select on tool_maintenance for authenticated",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "tool_number_sequences",
+      "policyname": "Allow auth read/write on tool_number_sequences",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "tools",
+      "policyname": "Allow select on tools for authenticated",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "user_integrations",
+      "policyname": "Allow users to update own integrations",
+      "cmd": "ALL",
+      "qual": "(auth.uid() = user_id)",
+      "with_check": "(auth.uid() = user_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "user_integrations",
+      "policyname": "Allow users to view own integrations",
+      "cmd": "SELECT",
+      "qual": "(auth.uid() = user_id)",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "user_notification_preferences",
+      "policyname": "Allow users to update own preferences",
+      "cmd": "ALL",
+      "qual": "(auth.uid() = user_id)",
+      "with_check": "(auth.uid() = user_id)"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "user_notification_preferences",
+      "policyname": "Allow users to view own preferences",
+      "cmd": "SELECT",
+      "qual": "(auth.uid() = user_id)",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "user_roles",
+      "policyname": "Allow admin write to user_roles",
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM profiles p\n  WHERE ((p.id = auth.uid()) AND (p.role = 'admin'::text))))",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "user_roles",
+      "policyname": "Allow authenticated read to user_roles",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "variation_orders",
+      "policyname": "Allow auth read on variation_orders",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "variation_orders",
+      "policyname": "Allow auth write on variation_orders",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "vat_periods",
+      "policyname": "Allow auth read on vat_periods",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "vat_periods",
+      "policyname": "Allow auth write on vat_periods",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "vehicle_assignments",
+      "policyname": "Allow select on vehicle_assignments for authenticated",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "vehicle_fines",
+      "policyname": "Allow select on vehicle_fines for authenticated",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "vehicle_maintenance",
+      "policyname": "Allow select on vehicle_maintenance for authenticated",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "vehicle_number_sequences",
+      "policyname": "Allow auth read/write on vehicle_number_sequences",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "vehicles",
+      "policyname": "Allow select on vehicles for authenticated",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "vo_items",
+      "policyname": "Allow auth read on vo_items",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "vo_items",
+      "policyname": "Allow auth write on vo_items",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "vo_number_sequences",
+      "policyname": "Allow auth read on vo_number_sequences",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "vo_number_sequences",
+      "policyname": "Allow auth write on vo_number_sequences",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "vo_status_history",
+      "policyname": "Allow auth read on vo_status_history",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "vo_status_history",
+      "policyname": "Allow auth write on vo_status_history",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "whatsapp_chats",
+      "policyname": "Allow authenticated read/write access to whatsapp_chats",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "whatsapp_messages",
+      "policyname": "Allow authenticated read/write access to whatsapp_messages",
+      "cmd": "ALL",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "schemaname": "public",
+      "tablename": "whatsapp_settings",
+      "policyname": "Allow authenticated read to whatsapp_settings",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "schemaname": "public",
+      "tablename": "whatsapp_templates",
+      "policyname": "Allow authenticated read to whatsapp_templates",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    }
+  ]
+}

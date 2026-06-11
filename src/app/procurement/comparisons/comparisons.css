@@ -1,0 +1,539 @@
+/* ============================================================
+   Supplier Comparison Module Styles
+   Professional Matrix Grid — Frozen Columns, Score Tooltips,
+   Supplier Group Headers, Interactive Cells, Weight Sliders
+   ============================================================ */
+
+/* Matrix Table Wrapper with Horizontal Scroll */
+.matrix-scroll-container {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: calc(100vh - 340px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  background: rgba(6, 8, 20, 0.92);
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  position: relative;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 229, 160, 0.3) rgba(0, 0, 0, 0.2);
+}
+
+.matrix-scroll-container::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.matrix-scroll-container::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.matrix-scroll-container::-webkit-scrollbar-thumb {
+  background: rgba(0, 229, 160, 0.25);
+  border-radius: 4px;
+}
+
+.matrix-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 229, 160, 0.4);
+}
+
+.matrix-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.8rem;
+}
+
+.matrix-table th,
+.matrix-table td {
+  padding: 0.55rem 0.7rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-right: 1px solid rgba(255, 255, 255, 0.03);
+  vertical-align: middle;
+}
+
+.matrix-table th {
+  background: rgba(10, 14, 36, 0.98);
+  color: var(--text-secondary);
+  font-weight: 600;
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+}
+
+/* Zebra rows */
+.matrix-table tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.015);
+}
+
+/* Row hover */
+.matrix-table tbody tr:hover {
+  background: rgba(0, 229, 160, 0.04);
+}
+
+.matrix-table tbody tr:hover td.frozen-left,
+.matrix-table tbody tr:hover td.frozen-left-2,
+.matrix-table tbody tr:hover td.frozen-right {
+  background: #0a0e24;
+}
+
+/* ---- Frozen Columns: LEFT ---- */
+.matrix-table th.frozen-left,
+.matrix-table td.frozen-left {
+  position: sticky;
+  left: 0;
+  background: #060814;
+  z-index: 5;
+  border-right: 2px solid rgba(255, 255, 255, 0.08);
+}
+
+.matrix-table th.frozen-left-2,
+.matrix-table td.frozen-left-2 {
+  position: sticky;
+  left: 40px;
+  background: #060814;
+  z-index: 5;
+  border-right: 2px solid rgba(255, 255, 255, 0.08);
+}
+
+.matrix-table th.frozen-left,
+.matrix-table th.frozen-left-2 {
+  z-index: 15;
+}
+
+/* ---- Frozen Columns: RIGHT ---- */
+.matrix-table th.frozen-right,
+.matrix-table td.frozen-right {
+  position: sticky;
+  right: 0;
+  background: #060814;
+  z-index: 5;
+  border-left: 2px solid rgba(0, 229, 160, 0.15);
+}
+
+.matrix-table th.frozen-right {
+  z-index: 15;
+}
+
+/* ---- Supplier Group Column Headers ---- */
+.supplier-group-header {
+  border-bottom: 2px solid rgba(0, 229, 160, 0.2);
+  text-align: center;
+  font-size: 0.82rem !important;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: none !important;
+  color: var(--text-primary) !important;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 229, 160, 0.06) 0%,
+    rgba(10, 14, 36, 0.98) 100%
+  ) !important;
+}
+
+.supplier-group-recommended {
+  border: 1px solid rgba(0, 229, 160, 0.25);
+  box-shadow: inset 0 0 12px rgba(0, 229, 160, 0.06);
+  background: rgba(0, 229, 160, 0.03);
+}
+
+/* ---- Tags & Badges ---- */
+.best-tag {
+  background: linear-gradient(135deg, rgba(0, 229, 160, 0.2), rgba(0, 229, 160, 0.1));
+  color: #00E5A0;
+  border: 1px solid rgba(0, 229, 160, 0.35);
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: 0 0 8px rgba(0, 229, 160, 0.15);
+  animation: pulse-best 2.5s infinite alternate;
+}
+
+@keyframes pulse-best {
+  from { box-shadow: 0 0 6px rgba(0, 229, 160, 0.1); }
+  to   { box-shadow: 0 0 14px rgba(0, 229, 160, 0.3); }
+}
+
+.lowest-tag {
+  background: linear-gradient(135deg, rgba(34, 211, 238, 0.2), rgba(34, 211, 238, 0.08));
+  color: #22d3ee;
+  border: 1px solid rgba(34, 211, 238, 0.35);
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ---- Non-Compliant Indicator ---- */
+.non-compliant-row {
+  border: 1px solid rgba(239, 68, 68, 0.35) !important;
+  background: rgba(239, 68, 68, 0.03) !important;
+  color: #f87171;
+}
+
+/* ---- Score Chip ---- */
+.score-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 38px;
+  padding: 0.2rem 0.45rem;
+  border-radius: 6px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-align: center;
+  position: relative;
+  cursor: help;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.score-chip:hover {
+  transform: scale(1.1);
+}
+
+.score-chip-high {
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.score-chip-mid {
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.score-chip-low {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* ---- Score Breakdown Tooltip ---- */
+.score-chip:hover .score-tooltip {
+  display: block;
+  animation: fadeInTooltip 0.15s ease;
+}
+
+@keyframes fadeInTooltip {
+  from { opacity: 0; transform: translateX(-50%) translateY(4px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.score-tooltip {
+  display: none;
+  position: absolute;
+  bottom: 130%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(145deg, #0d1127, #0a0e24);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 0.7rem 0.8rem;
+  width: 160px;
+  text-align: left;
+  z-index: 1000;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6);
+  font-family: var(--font-body);
+  font-weight: normal;
+  color: var(--text-primary);
+}
+
+.score-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: rgba(255, 255, 255, 0.12);
+}
+
+.score-tooltip-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.68rem;
+  margin-bottom: 0.25rem;
+  color: var(--text-secondary);
+}
+
+.score-tooltip-item:last-child {
+  margin-bottom: 0;
+}
+
+.score-tooltip-item span:last-child {
+  font-weight: 600;
+  font-family: var(--font-mono);
+}
+
+/* ---- Override Glow ---- */
+.override-warning-glow {
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.35);
+  border-color: rgba(245, 158, 11, 0.7) !important;
+  background: rgba(245, 158, 11, 0.04) !important;
+  animation: pulse-amber 2s infinite alternate;
+}
+
+@keyframes pulse-amber {
+  from { box-shadow: 0 0 5px rgba(245, 158, 11, 0.15); }
+  to   { box-shadow: 0 0 14px rgba(245, 158, 11, 0.4); }
+}
+
+/* ---- Table Footer (Sticky Totals) ---- */
+.matrix-sticky-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
+}
+
+.matrix-sticky-footer tr {
+  background: rgba(6, 8, 20, 0.98) !important;
+}
+
+.matrix-sticky-footer td {
+  border-top: 2px solid rgba(0, 229, 160, 0.2);
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: var(--text-primary);
+  padding: 0.8rem;
+}
+
+/* ---- Comparison-specific status badges ---- */
+.c-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.c-badge-draft {
+  background: rgba(148, 163, 184, 0.12);
+  color: #94a3b8;
+  border-color: rgba(148, 163, 184, 0.25);
+}
+
+.c-badge-pricing_in_progress {
+  background: rgba(14, 165, 233, 0.12);
+  color: #0ea5e9;
+  border-color: rgba(14, 165, 233, 0.25);
+}
+
+.c-badge-pending_commercial {
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+  border-color: rgba(245, 158, 11, 0.25);
+}
+
+.c-badge-pending_gm {
+  background: rgba(168, 85, 247, 0.12);
+  color: #a855f7;
+  border-color: rgba(168, 85, 247, 0.25);
+}
+
+.c-badge-approved {
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+  border-color: rgba(16, 185, 129, 0.25);
+}
+
+.c-badge-rejected {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.25);
+}
+
+.c-badge-superseded {
+  background: rgba(100, 116, 139, 0.12);
+  color: #64748b;
+  border-color: rgba(100, 116, 139, 0.25);
+}
+
+.c-badge-revised {
+  background: rgba(59, 130, 246, 0.12);
+  color: #3b82f6;
+  border-color: rgba(59, 130, 246, 0.25);
+}
+
+/* ---- Input Cells in Matrix ---- */
+.matrix-table input[type="number"],
+.matrix-table input[type="text"] {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.matrix-table input[type="number"]:focus,
+.matrix-table input[type="text"]:focus {
+  outline: none;
+  border-color: rgba(0, 229, 160, 0.5);
+  box-shadow: 0 0 8px rgba(0, 229, 160, 0.15);
+  background: rgba(0, 229, 160, 0.03);
+}
+
+.matrix-table input[type="number"]:hover,
+.matrix-table input[type="text"]:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.matrix-table input[type="checkbox"] {
+  accent-color: #00E5A0;
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+}
+
+.matrix-table select {
+  transition: border-color 0.2s ease;
+}
+
+.matrix-table select:focus {
+  border-color: rgba(0, 229, 160, 0.5);
+  outline: none;
+}
+
+/* ---- KPI blocks ---- */
+.proc-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.proc-kpi-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.proc-kpi-title {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.proc-kpi-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-family: var(--font-heading);
+}
+
+.proc-kpi-desc {
+  font-size: 0.68rem;
+  color: var(--text-secondary);
+}
+
+/* ---- Margin status colors ---- */
+.text-healthy { color: #10b981; }
+.text-warning { color: #f59e0b; }
+.text-critical { color: #ef4444; }
+
+/* ---- Weight Slider Styling ---- */
+.weight-slider-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 1.2rem;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+}
+
+.weight-slider-row {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.weight-slider-label {
+  width: 140px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.weight-slider-input-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.weight-slider {
+  flex: 1;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 3px;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+.weight-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--primary);
+  box-shadow: 0 0 10px var(--primary-glow);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+.weight-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.weight-slider-value {
+  width: 50px;
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+/* ---- Supplier Total Column Emphasis ---- */
+.matrix-table td .supplier-total-value {
+  font-weight: 700;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+}
+
+/* ---- Responsive footer totals ---- */
+.matrix-sticky-footer .frozen-left,
+.matrix-sticky-footer .frozen-left-2,
+.matrix-sticky-footer .frozen-right {
+  background: rgba(6, 8, 20, 0.98) !important;
+}
