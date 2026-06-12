@@ -86,6 +86,9 @@ type Profile = {
   email: string;
 };
 
+const fmtNum = (v: number) =>
+  new Intl.NumberFormat('en-AE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(v);
+
 export default function BOQDashboard({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const resolvedParams = use(params);
@@ -947,6 +950,40 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
   };
 
   // --- Column Resize Drag Action ---
+  // Excel-style keyboard navigation: Enter/↓ moves to the same column in the
+  // next row, ↑ moves up; Enter on the last row appends a new line.
+  const handleGridKeyDown = useCallback((e: React.KeyboardEvent) => {
+    const input = e.target as HTMLInputElement;
+    if (input.tagName !== 'INPUT' || input.type === 'checkbox') return;
+    if (!['Enter', 'ArrowDown', 'ArrowUp'].includes(e.key)) return;
+
+    const cell = input.closest('td') as HTMLTableCellElement | null;
+    const row = input.closest('tr');
+    if (!cell || !row) return;
+
+    const goUp = e.key === 'ArrowUp';
+    const targetRow = (goUp ? row.previousElementSibling : row.nextElementSibling) as HTMLTableRowElement | null;
+
+    if (!targetRow) {
+      if (e.key === 'Enter' && isEditable) {
+        e.preventDefault();
+        addItem();
+      }
+      return;
+    }
+
+    const nextInput = targetRow.cells?.[cell.cellIndex]?.querySelector(
+      'input:not([type=checkbox])'
+    ) as HTMLInputElement | null;
+
+    if (nextInput && !nextInput.disabled) {
+      e.preventDefault();
+      nextInput.focus();
+      nextInput.select?.();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isEditable]);
+
   const startResize = useCallback((e: React.MouseEvent, colKey: string) => {
     e.preventDefault();
     const startX = e.clientX;
@@ -1238,7 +1275,7 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
             )}
 
             {/* Table Grid Wrapper with Horizontal Scrolling */}
-            <div className="boq-table-scroll-container">
+            <div className="boq-table-scroll-container" onKeyDown={handleGridKeyDown}>
               <table className="boq-estimator-grid">
                 <thead>
                   {/* Tier 1 Header: Group Groupings */}
@@ -1770,6 +1807,44 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
                     );
                   })}
                 </tbody>
+
+                {/* Pinned column totals */}
+                <tfoot>
+                  <tr className="boq-totals-row">
+                    <td className="col-num-val">Σ</td>
+                    <td></td>
+                    <td></td>
+                    <td className="t-label">TOTALS</td>
+                    <td className="t-label">{items.length} line{items.length === 1 ? '' : 's'}</td>
+                    <td></td>
+                    <td className="t-num">{items.reduce((s, i) => s + (Number(i.quantity) || 0), 0)}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td className="t-num">{fmtNum(items.reduce((s, i) => s + (i.material_total_cost || 0), 0))}</td>
+                    <td></td><td></td><td></td>
+                    <td className="t-num">{fmtNum(items.reduce((s, i) => s + (i.labor_technician_cost || 0), 0))}</td>
+                    <td></td><td></td><td></td>
+                    <td className="t-num">{fmtNum(items.reduce((s, i) => s + (i.labor_engineer_cost || 0), 0))}</td>
+                    <td></td><td></td><td></td>
+                    <td className="t-num">{fmtNum(items.reduce((s, i) => s + (i.labor_pm_cost || 0), 0))}</td>
+                    <td className="t-num">{fmtNum(items.reduce((s, i) => s + (i.gross_labour_cost || 0), 0))}</td>
+                    <td className="t-num">{fmtNum(items.reduce((s, i) => s + (i.subcontract_cost || 0), 0))}</td>
+                    <td className="t-num">{fmtNum(items.reduce((s, i) => s + (i.equipment_cost || 0), 0))}</td>
+                    <td className="t-num">{fmtNum(items.reduce((s, i) => s + (i.logistics_cost || 0), 0))}</td>
+                    <td></td>
+                    <td className="t-num">{fmtNum(items.reduce((s, i) => s + (i.wastage_cost || 0), 0))}</td>
+                    <td></td>
+                    <td className="t-num">{fmtNum(items.reduce((s, i) => s + (i.risk_cost || 0), 0))}</td>
+                    <td></td>
+                    <td className="t-num">{fmtNum(items.reduce((s, i) => s + (i.site_overhead_cost || 0), 0))}</td>
+                    <td className="t-num t-strong">{fmtNum(items.reduce((s, i) => s + (i.total_cost || 0), 0))}</td>
+                    <td></td>
+                    <td className="t-num">{fmtNum(items.reduce((s, i) => s + (i.profit_value || 0), 0))}</td>
+                    <td></td>
+                    <td className="t-num t-strong">{fmtNum(items.reduce((s, i) => s + (i.total_price || 0), 0))}</td>
+                  </tr>
+                </tfoot>
               </table>
             </div>
 
