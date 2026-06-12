@@ -87,7 +87,8 @@ export default function TenderDetail({ params }: { params: Promise<{ id: string 
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
   const [statusNote, setStatusNote] = useState('');
   const [selectedStatus, setSelectedStatus] = useState<Tender['status']>('Draft');
-  const [boq, setBoq] = useState<{ id: string; status: string } | null>(null);
+  const [boq, setBoq] = useState<{ id: string; status: string; total?: number } | null>(null);
+  const [linkedProject, setLinkedProject] = useState<{ id: string; number: string | null } | null>(null);
 
   useEffect(() => {
     const fetchTenderDetails = async () => {
@@ -128,17 +129,35 @@ export default function TenderDetail({ params }: { params: Promise<{ id: string 
           setDocuments(docData as TenderDocument[] || []);
         }
 
-        // 4. Fetch linked BOQ
+        // 4. Fetch linked BOQ (latest version) with total selling price
         const { data: boqData, error: boqError } = await supabase
           .from('boqs')
-          .select('id, status')
+          .select('id, status, version, financials')
           .eq('tender_id', tenderId)
+          .order('version', { ascending: false })
+          .limit(1)
           .maybeSingle();
 
         if (boqError) {
           console.warn('Could not load BOQ:', boqError);
-        } else {
-          setBoq(boqData);
+        } else if (boqData) {
+          setBoq({
+            id: boqData.id,
+            status: boqData.status,
+            total: Number((boqData as any).financials?.total_selling_price) || 0,
+          });
+        }
+
+        // 5. Fetch project created from this tender (if quotation accepted)
+        const { data: projectData } = await supabase
+          .from('projects')
+          .select('id, project_number')
+          .eq('tender_id', tenderId)
+          .limit(1)
+          .maybeSingle();
+
+        if (projectData) {
+          setLinkedProject({ id: projectData.id, number: (projectData as any).project_number || null });
         }
 
       } catch (err: any) {
@@ -208,7 +227,7 @@ export default function TenderDetail({ params }: { params: Promise<{ id: string 
 
   const formatBudget = (budget: number | null) => {
     if (budget === null || budget === undefined) return 'Unspecified';
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(budget);
+    return new Intl.NumberFormat('en-AE', { maximumFractionDigits: 0 }).format(budget) + ' AED';
   };
 
   const formatDate = (dateStr: string) => {
@@ -338,11 +357,30 @@ export default function TenderDetail({ params }: { params: Promise<{ id: string 
                 </span>
               </div>
               <div className="flex flex-col gap-1 bg-bg-dark/30 p-3 rounded-lg border border-border-color/30">
-                <span className="text-[10px] text-text-muted font-bold uppercase tracking-wider">Approved Budget Sum</span>
-                <span className="text-xs font-bold text-success font-mono">
-                  {formatBudget(tender.budget)}
+                <span className="text-[10px] text-text-muted font-bold uppercase tracking-wider">
+                  {boq && (boq.total || 0) > 0 ? 'Budget Sum (from BOQ)' : 'Approved Budget Sum'}
                 </span>
+                <span className="text-xs font-bold text-success font-mono" title={boq && (boq.total || 0) > 0 ? 'Auto-filled from the latest BOQ total selling price' : 'Manually entered budget'}>
+                  {boq && (boq.total || 0) > 0 ? formatBudget(boq.total!) : formatBudget(tender.budget)}
+                </span>
+                {boq && (
+                  <Link href={`/tenders/${tenderId}/boq`} className="text-[10px] font-mono text-primary hover:underline no-underline mt-0.5">
+                    BOQ: {boq.status.replace(/_/g, ' ').toUpperCase()}
+                  </Link>
+                )}
               </div>
+              {linkedProject && (
+                <div className="flex flex-col gap-1 bg-bg-dark/30 p-3 rounded-lg border border-border-color/30">
+                  <span className="text-[10px] text-text-muted font-bold uppercase tracking-wider">Awarded Project</span>
+                  <Link
+                    href={`/projects/${linkedProject.id}`}
+                    className="text-xs font-bold text-primary font-mono hover:underline no-underline"
+                    title="Project created from the accepted quotation"
+                  >
+                    {linkedProject.number || `PRJ-${linkedProject.id.slice(0, 8).toUpperCase()}`}
+                  </Link>
+                </div>
+              )}
             </div>
           </Card>
 
