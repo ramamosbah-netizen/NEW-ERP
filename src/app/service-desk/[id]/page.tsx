@@ -42,6 +42,7 @@ import {
   TICKET_INTAKE_LABELS
 } from '@/constants/amc.constants';
 import type { ServiceTicketStatus, TicketPriority, TicketPartItem } from '@/types/ticket.types';
+import WorkflowPanel from '@/components/workflow/WorkflowPanel';
 
 function SLACountdown({ dueDate, label, met }: { dueDate: string; label: string; met?: boolean | null }) {
   const [now, setNow] = useState(new Date());
@@ -258,6 +259,15 @@ export default function TicketDetailPage() {
           {actionError}
         </div>
       )}
+
+      {/* Configurable workflow (Admin Center → Workflows) */}
+      <WorkflowPanel
+        moduleKey="SERVICE_REQ"
+        entityId={ticketId}
+        context={{ status: ticket.status, priority: ticket.priority }}
+        onStatusChange={() => refetch()}
+        className="mb-6"
+      />
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '1.5rem', alignItems: 'start' }}>
         {/* LEFT: Main Content */}

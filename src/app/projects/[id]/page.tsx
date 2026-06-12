@@ -24,6 +24,7 @@ import { DocumentDetailDrawer } from '@/components/documents/DocumentDetailDrawe
 import ProjectFinanceTab from '@/app/projects/tabs/ProjectFinanceTab';
 import ProjectVOTab from '@/app/projects/tabs/ProjectVOTab';
 import ProjectFileTab from '@/app/projects/tabs/ProjectFileTab';
+import WorkflowPanel from '@/components/workflow/WorkflowPanel';
 
 import { 
   ArrowLeft, 
@@ -301,6 +302,16 @@ export default function ProjectDetailPage({ params }: Props) {
 
       {/* TAB CONTENT: OVERVIEW */}
       {activeTab === 'overview' && (
+        <>
+        {/* Configurable workflow (Admin Center → Workflows) */}
+        <WorkflowPanel
+          moduleKey="PRJ"
+          entityId={projectId}
+          context={{ status: project.status }}
+          onStatusChange={() => refetch()}
+          className="mb-6"
+        />
+
         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem', alignItems: 'start' }}>
           
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -383,6 +394,7 @@ export default function ProjectDetailPage({ params }: Props) {
             </div>
           </div>
         </div>
+        </>
       )}
 
       {/* TAB CONTENT: DOCUMENTS */}

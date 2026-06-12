@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { useClientInvoice } from '@/hooks/useClientInvoices';
 import { INVOICE_TYPE_LABELS, INVOICE_STATUS_LABELS, INVOICE_STATUS_COLORS } from '@/constants/finance.constants';
 import { ArrowLeft, FileText, CheckCircle, XCircle, Send, AlertCircle, Calendar } from 'lucide-react';
+import WorkflowPanel from '@/components/workflow/WorkflowPanel';
 
 export default function InvoiceDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -126,6 +127,14 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
         </div>
 
         {/* Info Grid */}
+        {/* Configurable workflow (Admin Center → Workflows) */}
+        <WorkflowPanel
+          moduleKey="INV"
+          entityId={id}
+          context={{ status: invoice.status, total: Number(invoice.total_incl_vat) || 0 }}
+          className="mb-6"
+        />
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Main Info */}
           <div className="md:col-span-2 bg-slate-950/40 border border-slate-900 rounded p-6 flex flex-col gap-6">

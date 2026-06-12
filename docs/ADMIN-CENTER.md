@@ -16,6 +16,14 @@ The Process Platform requires one database migration:
 The migration is idempotent (safe to run twice) and seeds 14 default numbering rules plus an
 example Purchase Order approval workflow.
 
+Optionally also run `supabase/migrations/20260612130000_seed_default_workflows.sql` to seed
+ready-made workflows for QTN (quotations), VO, GRN, INV (client invoices), TND (tenders),
+SERVICE_REQ (tickets), PRJ (projects) and LEAVE — each editable in the Workflow Builder.
+
+The WorkflowPanel is already wired into these detail pages: Purchase Orders, Quotations,
+Variation Orders, Goods Receipts, Client Invoices, Tenders, Service Desk tickets and Projects.
+As soon as a module has an active workflow, the panel appears on its detail page automatically.
+
 ---
 
 ## Areas

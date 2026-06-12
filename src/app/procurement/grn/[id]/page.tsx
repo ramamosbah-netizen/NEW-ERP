@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { useGRN } from '@/hooks/useGRNs';
 import { GRN_STATUS_LABELS, GRN_STATUS_COLORS, GRN_LOCATION_LABELS, GRN_REJECTION_REASONS } from '@/constants/po.constants';
 import { ArrowLeft, Truck, Calendar, User, FileText, MapPin, AlertOctagon, CheckCircle } from 'lucide-react';
+import WorkflowPanel from '@/components/workflow/WorkflowPanel';
 import '@/app/procurement/comparisons/comparisons.css';
 
 interface PageProps {
@@ -181,6 +182,12 @@ export default function GRNDetailPage({ params }: PageProps) {
 
         {/* Right column: actions and status */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          {/* Configurable workflow (Admin Center → Workflows) */}
+          <WorkflowPanel
+            moduleKey="GRN"
+            entityId={grnId}
+            context={{ status: grn.status }}
+          />
           {/* General Remarks Card */}
           {grn.notes && (
             <div className="quote-card">

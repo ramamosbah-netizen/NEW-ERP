@@ -13,7 +13,8 @@ import { useVO } from '@/hooks/useVOs';
 import { supabase } from '@/lib/supabase';
 import { VO_STATUS_COLORS, VO_STATUS_LABELS, VO_TYPE_LABELS, VO_PRICING_BASIS_LABELS, VO_WORK_STATUS_LABELS } from '@/constants/vo.constants';
 import { voApprovalService } from '@/services/voApprovalService';
-import { 
+import WorkflowPanel from '@/components/workflow/WorkflowPanel';
+import {
   ArrowLeft, 
   RefreshCw, 
   ShieldAlert, 
@@ -199,6 +200,15 @@ export default function VODetailPage({ params }: VODetailPageProps) {
         )}
 
         {/* Primary KPI Metrics Strip */}
+        {/* Configurable workflow (Admin Center → Workflows) */}
+        <WorkflowPanel
+          moduleKey="VO"
+          entityId={id}
+          context={{ status: vo.status, vo_type: vo.vo_type }}
+          onStatusChange={() => refetch()}
+          className="mb-4"
+        />
+
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-slate-950/20 border border-slate-900 p-4 rounded">
           <div>
             <span className="text-slate-500 block uppercase font-mono text-[9px]">Variation Selling Value</span>

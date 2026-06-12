@@ -29,6 +29,7 @@ import { PageHeader } from '@/components/ui/PageHeader';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { StatusChip } from '@/components/ui/StatusChip';
+import WorkflowPanel from '@/components/workflow/WorkflowPanel';
 
 type StatusLog = {
   status: string;
@@ -300,6 +301,14 @@ export default function TenderDetail({ params }: { params: Promise<{ id: string 
       />
 
       {/* Responsive Grid layout */}
+      {/* Configurable workflow (Admin Center → Workflows) */}
+      <WorkflowPanel
+        moduleKey="TND"
+        entityId={tenderId}
+        context={{ status: tender.status, budget: Number(tender.budget) || 0 }}
+        className="mb-6"
+      />
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* Left Columns - Details */}

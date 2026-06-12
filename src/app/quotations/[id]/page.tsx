@@ -27,6 +27,7 @@ import {
 } from 'lucide-react';
 import { useQuotation } from '@/hooks/useQuotations';
 import { quotationPDFService } from '@/lib/quotation-pdf';
+import WorkflowPanel from '@/components/workflow/WorkflowPanel';
 import '../quotations.css';
 
 const fmtAED = (v: number) => {
@@ -335,6 +336,16 @@ export default function QuotationDetailPage({ params }: { params: Promise<{ id: 
 
       {/* TAB CONTENT: OVERVIEW */}
       {activeTab === 'overview' && (
+        <>
+        {/* Configurable workflow (Admin Center → Workflows) */}
+        <WorkflowPanel
+          moduleKey="QTN"
+          entityId={id}
+          context={{ status: quotation.status, grand_total: Number(quotation.grand_total_with_vat) || 0 }}
+          onStatusChange={() => refetch()}
+          className="mb-6"
+        />
+
         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem', alignItems: 'start' }}>
           
           {/* Main Info */}
@@ -427,6 +438,7 @@ export default function QuotationDetailPage({ params }: { params: Promise<{ id: 
             </div>
           </div>
         </div>
+        </>
       )}
 
       {/* TAB CONTENT: LINE ITEMS */}
