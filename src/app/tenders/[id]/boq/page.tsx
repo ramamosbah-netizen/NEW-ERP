@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, use, useRef } from 'react';
+import React, { useState, useEffect, useCallback, use, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
@@ -25,6 +25,11 @@ import {
   XCircle,
   Award,
   ChevronDown,
+  Calendar,
+  User,
+  Settings,
+  Mail,
+  FileSignature
 } from 'lucide-react';
 import {
   type BOQItem,
@@ -43,7 +48,12 @@ import {
   getNextApprovalStatus,
 } from '@/lib/boq-calculations';
 import { exportBOQToPDF, exportBOQToExcel } from '@/lib/boq-export';
+import { PageHeader } from '@/components/ui/PageHeader';
+import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
+import { StatusChip } from '@/components/ui/StatusChip';
 import './boq.css';
+
 
 // --- Types ---
 type ApprovalEntry = {
@@ -1042,146 +1052,185 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
   }
 
   // --- Main estimation Dashboard ---
-  return (
-    <div className="boq-container boq-animate-in" style={{ paddingBottom: '100px' }}>
-      {/* Header */}
-      <div className="boq-header">
-        <div className="boq-header-left">
-          <Link href={`/tenders/${tenderId}`} className="logout-btn" style={{ textDecoration: 'none', background: 'transparent', border: '1px solid var(--border-color)', color: 'var(--text-secondary)', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.4rem 0.8rem', fontSize: '0.85rem' }}>
-            <ArrowLeft size={14} /> Back to Tender
-          </Link>
-          <h1 className="boq-title">Bill of Quantities Workspace</h1>
-          <span className="boq-tender-ref">
-            <Layers size={14} /> {tender.project_name} — {tender.client_name}
-          </span>
-        </div>
+  const breadcrumbs = [
+    { label: 'COE Cockpit', href: '/dashboard' },
+    { label: 'Tenders Registry', href: '/tenders' },
+    { label: tender.title.length > 20 ? `${tender.title.substring(0, 20)}...` : tender.title, href: `/tenders/${tenderId}` },
+    { label: 'BOQ Workspace' }
+  ];
 
-        <div className="boq-header-actions">
-          <span className="boq-version-badge">
-            <GitBranch size={12} /> v{boqVersion}
-          </span>
-          <span className={`boq-status-badge boq-status-${boqStatus}`}>
-            {BOQ_STATUS_LABELS[boqStatus]}
-          </span>
-          {isEditable ? (
-            <button className="action-btn btn-primary" onClick={handleSave} disabled={saving} style={{ padding: '0.6rem 1.2rem', fontSize: '0.85rem' }}>
-              {saving ? 'Saving...' : 'Save Estimations'}
-            </button>
-          ) : (
-            <button className="action-btn btn-secondary" onClick={handleCreateRevision} disabled={saving} style={{ padding: '0.6rem 1.2rem', fontSize: '0.85rem', display: 'inline-flex', alignItems: 'center', gap: '0.4rem', background: 'transparent', border: '1px solid var(--border-color)', color: 'var(--text-secondary)' }}>
-              <GitBranch size={14} /> Create Revision
-            </button>
-          )}
-          {boqStatus === 'finalized' && (
-            activeQuotation ? (
-              <Link href={`/quotations/${activeQuotation.id}`} className="action-btn btn-secondary" style={{ padding: '0.6rem 1.2rem', fontSize: '0.85rem', color: '#00E5A0', borderColor: 'rgba(0, 229, 160, 0.3)', background: 'rgba(0, 229, 160, 0.05)', display: 'inline-flex', alignItems: 'center', gap: '0.4rem', textDecoration: 'none' }}>
-                <FileText size={14} /> Quote: {activeQuotation.quotation_number} ({activeQuotation.status})
-              </Link>
-            ) : (
-              <Link href={`/quotations/new/${boqId}`} className="action-btn btn-primary" style={{ padding: '0.6rem 1.2rem', fontSize: '0.85rem', background: '#00E5A0', color: '#060814', display: 'inline-flex', alignItems: 'center', gap: '0.4rem', textDecoration: 'none' }}>
-                <Plus size={14} /> Create Quotation
-              </Link>
-            )
-          )}
-          <button className="boq-export-btn boq-export-pdf" onClick={handleExportPDF}>
-            <FileText size={14} /> PDF
-          </button>
-          <button className="boq-export-btn boq-export-excel" onClick={handleExportExcel}>
-            <FileSpreadsheet size={14} /> Excel
-          </button>
-        </div>
-      </div>
+  const actions = (
+    <div className="flex items-center gap-2 flex-wrap">
+      {isEditable ? (
+        <Button variant="primary" size="sm" onClick={handleSave} isLoading={saving} className="font-bold uppercase tracking-wider">
+          Save Estimations
+        </Button>
+      ) : (
+        <Button variant="secondary" size="sm" onClick={handleCreateRevision} isLoading={saving} className="flex items-center gap-1.5 font-bold uppercase tracking-wider">
+          <GitBranch size={13} /> Create Revision
+        </Button>
+      )}
+
+      {boqStatus === 'finalized' && (
+        activeQuotation ? (
+          <Link href={`/quotations/${activeQuotation.id}`} className="no-underline">
+            <Button variant="secondary" size="sm" className="text-secondary border-secondary/35 bg-secondary/5 flex items-center gap-1 font-bold">
+              <FileText size={13} /> Quote: {activeQuotation.quotation_number}
+            </Button>
+          </Link>
+        ) : (
+          <Link href={`/quotations/new/${boqId}`} className="no-underline">
+            <Button variant="primary" size="sm" className="flex items-center gap-1 font-bold">
+              <Plus size={13} /> Create Quotation
+            </Button>
+          </Link>
+        )
+      )}
+
+      <Button variant="secondary" size="sm" onClick={handleExportPDF} className="flex items-center gap-1.5 font-bold uppercase tracking-wider text-red-400 border-red-500/20 hover:bg-red-500/5">
+        <FileText size={13} /> PDF
+      </Button>
+      <Button variant="secondary" size="sm" onClick={handleExportExcel} className="flex items-center gap-1.5 font-bold uppercase tracking-wider text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/5">
+        <FileSpreadsheet size={13} /> Excel
+      </Button>
+    </div>
+  );
+
+  return (
+    <div className="flex flex-col gap-6" style={{ paddingBottom: '100px' }}>
+      {/* Page Header */}
+      <PageHeader 
+        title="Bill of Quantities Workspace" 
+        subtitle={`${tender.project_name} — Client: ${tender.client_name}`}
+        referenceId={`BOQ-v${boqVersion}`}
+        status={boqStatus}
+        breadcrumbs={breadcrumbs}
+        actions={actions}
+      />
 
       {/* Messages */}
       {errorMsg && (
-        <div className="boq-readonly-banner" style={{ borderColor: 'rgba(239, 68, 68, 0.3)', background: 'rgba(239, 68, 68, 0.08)', color: '#fca5a5' }}>
-          <AlertCircle size={18} />
-          <span className="banner-text">{errorMsg}</span>
+        <div className="flex gap-3 bg-red-500/10 border border-red-500/20 rounded-lg p-4 text-red-200 text-xs items-start">
+          <AlertCircle className="flex-shrink-0 text-red-400 mt-0.5" size={18} />
+          <div>
+            <strong>Estimator Workspace Error</strong>
+            <p className="mt-1 leading-relaxed">{errorMsg}</p>
+          </div>
         </div>
       )}
       {successMsg && (
-        <div className="boq-readonly-banner" style={{ borderColor: 'rgba(16, 185, 129, 0.3)', background: 'rgba(16, 185, 129, 0.08)', color: '#6ee7b7' }}>
-          <Check size={18} />
-          <span className="banner-text">{successMsg}</span>
+        <div className="flex gap-3 bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-4 text-emerald-250 text-xs items-start">
+          <CheckCircle className="flex-shrink-0 text-emerald-400 mt-0.5" size={18} />
+          <div>
+            <strong>Action Complete</strong>
+            <p className="mt-1 leading-relaxed">{successMsg}</p>
+          </div>
         </div>
       )}
 
-      {/* Read-only banner */}
+      {/* Read-only banner if locked */}
       {!isEditable && (
-        <div className="boq-readonly-banner">
-          <Lock size={18} />
-          <span className="banner-text">
-            BOQ estimation is locked in <strong>{BOQ_STATUS_LABELS[boqStatus]}</strong>.
-            {boqStatus === 'finalized' && activeQuotation && (
-              <> | Linked Active Quotation: <strong>{activeQuotation.quotation_number} ({activeQuotation.status})</strong></>
-            )}
-            {' Create a new revision to resume editing or authorize approvals.'}
-          </span>
+        <div className="flex gap-3 bg-amber-500/10 border border-amber-500/20 rounded-lg p-4 text-amber-200 text-xs items-start">
+          <Lock className="flex-shrink-0 text-amber-400 mt-0.5" size={18} />
+          <div>
+            <strong>BOQ Workspace Locked</strong>
+            <p className="mt-1 leading-relaxed">
+              This worksheet estimation is finalized and read-only in the <strong className="text-white">{BOQ_STATUS_LABELS[boqStatus]}</strong> stage.
+              {boqStatus === 'finalized' && activeQuotation && (
+                <span> Linked Active Quotation: <strong className="text-white">{activeQuotation.quotation_number} ({activeQuotation.status})</strong></span>
+              )}
+              {'. Instantiate a new revision to unlock line adjustments.'}
+            </p>
+          </div>
         </div>
       )}
 
       {/* Workflow Progress Bar */}
-      <div className="boq-workflow-bar">
-        <div className="boq-workflow-steps">
-          <div className="boq-wf-track" style={{ width: progressWidth }}></div>
+      <div className="bg-[#0b0f2a] border border-white/5 rounded-xl p-4">
+        <div className="relative flex justify-between items-center w-full">
+          <div className="absolute top-[14px] left-[20px] right-[20px] h-[2px] bg-white/5 z-0" />
+          <div className="absolute top-[14px] left-[20px] h-[2px] bg-gradient-to-r from-secondary to-primary z-10 transition-all duration-500" style={{ width: progressWidth }} />
           {BOQ_STATUSES.map((status, idx) => (
             <div
               key={status}
-              className={`boq-wf-step ${idx < currentStepIndex ? 'done' : ''} ${idx === currentStepIndex ? 'current' : ''}`}
+              className={`flex flex-col items-center relative z-20 flex-1`}
             >
-              <div className="boq-wf-circle">
+              <div className={`w-[30px] h-[30px] rounded-full flex items-center justify-center text-[10px] font-bold border transition-all ${
+                idx < currentStepIndex 
+                  ? 'bg-secondary border-secondary text-bg-dark shadow-[0_0_12px_var(--secondary-glow)]' 
+                  : idx === currentStepIndex
+                  ? 'bg-bg-card border-primary text-primary shadow-[0_0_12px_rgba(0,229,160,0.3)]'
+                  : 'bg-bg-card border-white/10 text-text-muted'
+              }`}>
                 {idx < currentStepIndex ? <Check size={14} /> : idx + 1}
               </div>
-              <span className="boq-wf-label">{BOQ_STATUS_LABELS[status]}</span>
+              <span className={`text-[9px] font-semibold mt-1.5 text-center max-w-[70px] leading-tight ${
+                idx < currentStepIndex
+                  ? 'text-text-primary'
+                  : idx === currentStepIndex
+                  ? 'text-primary font-bold'
+                  : 'text-text-muted'
+              }`}>{BOQ_STATUS_LABELS[status]}</span>
             </div>
           ))}
         </div>
       </div>
 
       {/* Main Layout */}
-      <div className="boq-layout">
-        <div className="boq-items-section">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+        <div className="lg:col-span-2 flex flex-col gap-6">
           
-          {/* Grouped Estimation Sheet Card */}
-          <div className="boq-card" style={{ padding: '1rem', overflow: 'hidden' }}>
-            <div className="boq-card-header" style={{ marginBottom: '0.8rem' }}>
-              <h3 className="boq-card-title">
-                <FileText size={18} style={{ color: 'var(--secondary)' }} />
-                Estimator Sheet
+          {/* Estimator Sheet Card */}
+          <Card className="flex flex-col gap-4 p-4 overflow-hidden" borderAccent="none">
+            <div className="flex justify-between items-center border-b border-white/5 pb-2.5">
+              <h3 className="font-heading font-bold text-sm text-slate-200 uppercase tracking-wider flex items-center gap-2">
+                <FileText size={16} className="text-secondary" />
+                Line Items Estimator Sheet
               </h3>
-              <button className="boq-add-item-btn" onClick={addItem} disabled={!isEditable}>
-                <Plus size={14} /> Add Item
-              </button>
+              <Button 
+                variant="secondary" 
+                size="sm" 
+                onClick={addItem} 
+                disabled={!isEditable}
+                className="flex items-center gap-1 text-[11px] font-bold"
+              >
+                <Plus size={12} /> Add Item Line
+              </Button>
             </div>
 
             {/* Bulk actions bar */}
             {isEditable && (
-              <div className="boq-bulk-actions-bar">
-                <span className="bulk-selected-count">{selectedIds.size} rows selected</span>
-                <div className="bulk-buttons">
-                  <button onClick={handleBulkDuplicate} disabled={selectedIds.size === 0} className="bulk-btn">
-                    <Copy size={13} /> Duplicate
-                  </button>
-                  <button onClick={handleBulkDelete} disabled={selectedIds.size === 0} className="bulk-btn danger">
-                    <Trash2 size={13} /> Delete
-                  </button>
-                  <button onClick={() => handleBulkOverride(true)} disabled={selectedIds.size === 0} className="bulk-btn">
-                    Enable Override
-                  </button>
-                  <button onClick={() => handleBulkOverride(false)} disabled={selectedIds.size === 0} className="bulk-btn">
+              <div className="flex flex-wrap justify-between items-center bg-[#0b0f2a] border border-white/5 rounded-lg p-3 gap-3">
+                <span className="text-xs font-bold text-primary font-heading">{selectedIds.size} lines selected</span>
+                <div className="flex flex-wrap gap-2 items-center">
+                  <Button onClick={handleBulkDuplicate} disabled={selectedIds.size === 0} size="sm" variant="secondary" className="text-[10px] py-1 px-2.5 h-8 flex items-center gap-1 font-bold">
+                    <Copy size={11} /> Duplicate
+                  </Button>
+                  <Button onClick={handleBulkDelete} disabled={selectedIds.size === 0} size="sm" variant="secondary" className="text-[10px] py-1 px-2.5 h-8 flex items-center gap-1 font-bold text-red-400 border-red-500/20 hover:bg-red-500/5">
+                    <Trash2 size={11} /> Delete
+                  </Button>
+                  <Button onClick={() => handleBulkOverride(true)} disabled={selectedIds.size === 0} size="sm" variant="secondary" className="text-[10px] py-1 px-2.5 h-8 font-bold">
+                    Override
+                  </Button>
+                  <Button onClick={() => handleBulkOverride(false)} disabled={selectedIds.size === 0} size="sm" variant="secondary" className="text-[10px] py-1 px-2.5 h-8 font-bold">
                     Inherit Globals
-                  </button>
-                  <div className="bulk-input-group">
+                  </Button>
+                  
+                  <div className="flex items-center ml-2 border border-white/5 rounded-lg overflow-hidden h-8 bg-bg-dark">
                     <input 
                       type="number" 
                       placeholder="Qty" 
                       value={bulkQty} 
                       onChange={e => setBulkQty(e.target.value !== '' ? Number(e.target.value) : '')}
                       disabled={selectedIds.size === 0}
-                      className="bulk-input"
+                      className="w-[50px] bg-transparent text-right text-xs outline-none text-white px-2"
                     />
-                    <button onClick={handleBulkUpdateQty} disabled={selectedIds.size === 0 || bulkQty === ''} className="bulk-btn-apply">
-                      Apply Qty
+                    <button 
+                      onClick={handleBulkUpdateQty} 
+                      disabled={selectedIds.size === 0 || bulkQty === ''} 
+                      className="bg-primary/10 border-l border-white/5 hover:bg-primary/20 text-primary px-3 text-[10px] font-bold h-full cursor-pointer transition-colors"
+                    >
+                      Apply
                     </button>
                   </div>
                 </div>
@@ -1629,7 +1678,7 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
                             value={item.subcontract_cost || 0}
                             onChange={e => updateItem(item.id, 'subcontract_cost', parseFloat(e.target.value) || 0)}
                             disabled={!isEditable}
-                            placeholder="e.g. Civil, containment..."
+                            placeholder="e.g. Civil..."
                           />
                         </td>
 
@@ -1642,7 +1691,7 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
                             value={item.equipment_cost || 0}
                             onChange={e => updateItem(item.id, 'equipment_cost', parseFloat(e.target.value) || 0)}
                             disabled={!isEditable}
-                            placeholder="e.g. Fusion splicer, scaffolding..."
+                            placeholder="e.g. Fusion..."
                           />
                         </td>
 
@@ -1655,7 +1704,7 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
                             value={item.logistics_cost || 0}
                             onChange={e => updateItem(item.id, 'logistics_cost', parseFloat(e.target.value) || 0)}
                             disabled={!isEditable}
-                            placeholder="e.g. Delivery, fuel..."
+                            placeholder="e.g. Fuel..."
                           />
                         </td>
 
@@ -1725,22 +1774,22 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
             </div>
 
             <div className="boq-supply-total-row" style={{ marginTop: '0.8rem' }}>
-              <span className="boq-supply-total-label">Supply Total</span>
+              <span className="boq-supply-total-label">Subtotal Material Supply</span>
               <span className="boq-supply-total-value">{formatCurrency(financials.supply_total)}</span>
             </div>
-          </div>
+          </Card>
 
           {/* Global Cost Settings Panel */}
-          <div className="boq-cost-card" style={{ marginTop: '1.5rem' }}>
-            <h3 className="boq-cost-title">
-              <Calculator size={18} style={{ color: 'var(--accent)' }} />
+          <Card className="flex flex-col gap-4 p-4" borderAccent="none">
+            <h3 className="font-heading font-bold text-sm text-slate-200 uppercase tracking-wider flex items-center gap-2 border-b border-white/5 pb-2.5">
+              <Calculator size={16} className="text-accent" />
               Global Estimating Settings Panel
             </h3>
 
             <div className="boq-settings-panel-grid">
               
               <div className="settings-section">
-                <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.6rem', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '0.2rem' }}>Markup Buffers (Inherited by Items)</div>
+                <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Markup Buffers (Inherited by Lines)</div>
                 
                 <div className="boq-cost-row">
                   <span className="boq-cost-label">Global Wastage %</span>
@@ -1792,7 +1841,7 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
               </div>
 
               <div className="settings-section">
-                <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.6rem', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '0.2rem' }}>Global Labour Rates (AED/Hour)</div>
+                <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', marginBottom: '0.4rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Global Labour Rates (AED/Hour)</div>
                 
                 <div className="boq-cost-row">
                   <span className="boq-cost-label">Technician Hourly Rate</span>
@@ -1831,176 +1880,242 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
                 </div>
               </div>
 
-              <div className="settings-section actions-panel">
-                <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '0.6rem', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '0.2rem' }}>Apply Global Configurations</div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', height: '100%', justifyContent: 'center' }}>
-                  <button 
-                    className="action-btn btn-secondary settings-apply-btn" 
+              <div className="settings-section actions-panel justify-center">
+                <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-muted)', marginBottom: '0.6rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Apply Configurations</div>
+                <div className="flex flex-col gap-2">
+                  <Button 
+                    variant="secondary"
+                    size="sm"
                     onClick={applyGlobalsToAll}
                     disabled={!isEditable}
+                    className="w-full text-xs font-bold uppercase tracking-wider h-9"
                   >
                     Apply To All Items
-                  </button>
-                  <button 
-                    className="action-btn btn-secondary settings-apply-btn" 
+                  </Button>
+                  <Button 
+                    variant="secondary"
+                    size="sm"
                     onClick={applyGlobalsToSelected}
                     disabled={!isEditable}
+                    className="w-full text-xs font-bold uppercase tracking-wider h-9"
                   >
-                    Apply To Selected Items ({selectedIds.size})
-                  </button>
+                    Apply To Selected ({selectedIds.size})
+                  </Button>
                 </div>
               </div>
             </div>
-          </div>
+          </Card>
         </div>
 
-        {/* Right Sidebar: Signatures & Versions */}
-        <div className="boq-sidebar">
+        {/* Right Sidebar */}
+        <div className="flex flex-col gap-6">
+          
           {/* Approval Actions */}
-          <div className="boq-approval-card">
-            <h3 className="boq-approval-title">
-              <Shield size={16} style={{ color: 'var(--primary)' }} />
+          <Card className="flex flex-col gap-4" borderAccent="none">
+            <h3 className="font-heading font-bold text-sm text-slate-200 uppercase tracking-wider flex items-center gap-2 border-b border-white/5 pb-2.5">
+              <Shield size={16} className="text-primary shrink-0" />
               Workflow Actions
             </h3>
 
             {profile && (
-              <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.8rem' }}>
-                Logged in as: <strong style={{ color: 'var(--text-secondary)' }}>{profile.full_name}</strong> — Role: <strong style={{ color: 'var(--primary)' }}>{profile.role}</strong>
+              <div className="text-[10px] text-text-muted font-mono leading-relaxed bg-[#0b0f2a] border border-white/5 p-2 rounded-lg">
+                User: <span className="text-text-primary font-semibold">{profile.full_name}</span><br />
+                Role: <span className="text-primary font-bold uppercase">{profile.role}</span>
               </div>
             )}
 
-            <textarea className="boq-note-input" placeholder="Add an approval/rejection note..." value={approvalNote} onChange={(e) => setApprovalNote(e.target.value)} />
+            <textarea 
+              className="w-full bg-bg-dark border border-border-color rounded-lg px-3 py-2 text-xs text-text-primary placeholder-text-muted outline-none transition-all duration-100 min-h-[60px] resize-none focus:border-border-focus"
+              placeholder="Add an approval/rejection note..." 
+              value={approvalNote} 
+              onChange={(e) => setApprovalNote(e.target.value)} 
+            />
 
-            <div className="boq-approval-actions">
+            <div className="flex flex-col gap-2 mt-1">
               {boqStatus === 'draft' && (
-                <button className="boq-approve-btn submit" onClick={handleSubmit} disabled={saving}>
-                  <Send size={14} /> Submit for Review
-                </button>
+                <Button 
+                  onClick={handleSubmit} 
+                  disabled={saving}
+                  variant="primary"
+                  className="w-full flex items-center justify-center gap-1.5 font-bold uppercase tracking-wider text-xs"
+                >
+                  <Send size={12} /> Submit for Review
+                </Button>
               )}
 
               {profile && canRoleApprove(profile.role, boqStatus) && (
-                <button className="boq-approve-btn approve" onClick={handleApprove} disabled={saving}>
-                  <CheckCircle size={14} /> Approve ({BOQ_STATUS_LABELS[getNextApprovalStatus(profile.role, boqStatus) || boqStatus]})
-                </button>
+                <Button 
+                  onClick={handleApprove} 
+                  disabled={saving}
+                  variant="primary"
+                  className="w-full flex items-center justify-center gap-1.5 font-bold uppercase tracking-wider text-xs bg-emerald-500/10 border-emerald-500/20 text-emerald-450 hover:bg-emerald-500/20"
+                >
+                  <CheckCircle size={12} /> Approve ({BOQ_STATUS_LABELS[getNextApprovalStatus(profile.role, boqStatus) || boqStatus]})
+                </Button>
               )}
 
               {profile && canRoleApprove(profile.role, boqStatus) && (
-                <button className="boq-approve-btn reject" onClick={handleReject} disabled={saving}>
-                  <XCircle size={14} /> Reject → Return to Draft
-                </button>
+                <Button 
+                  onClick={handleReject} 
+                  disabled={saving}
+                  variant="secondary"
+                  className="w-full flex items-center justify-center gap-1.5 font-bold uppercase tracking-wider text-xs text-red-400 border-red-500/20 hover:bg-red-500/5"
+                >
+                  <XCircle size={12} /> Reject to Draft
+                </Button>
               )}
 
               {boqStatus === 'finance_approved' && profile && (profile.role === 'admin' || profile.role === 'manager') && (
-                <button className="boq-approve-btn finalize" onClick={handleFinalize} disabled={saving}>
-                  <Award size={14} /> Finalize BOQ
-                </button>
+                <Button 
+                  onClick={handleFinalize} 
+                  disabled={saving}
+                  variant="primary"
+                  className="w-full flex items-center justify-center gap-1.5 font-bold uppercase tracking-wider text-xs bg-purple-500/10 border-purple-500/20 text-purple-400 hover:bg-purple-500/20"
+                >
+                  <Award size={12} /> Finalize BOQ
+                </Button>
               )}
             </div>
-          </div>
+          </Card>
 
-          {/* Approval History */}
+          {/* Approval History Log */}
           {approvalHistory.length > 0 && (
-            <div className="boq-approval-card">
-              <h3 className="boq-approval-title">
-                <Clock size={16} style={{ color: 'var(--secondary)' }} />
-                Approval History
+            <Card className="flex flex-col gap-4" borderAccent="none">
+              <h3 className="font-heading font-bold text-sm text-slate-200 uppercase tracking-wider flex items-center gap-2 border-b border-white/5 pb-2.5">
+                <Clock size={16} className="text-secondary shrink-0" />
+                Workflow History Log
               </h3>
-              <div className="boq-version-timeline">
-                {approvalHistory.map((entry, idx) => (
-                  <div key={idx} className="boq-version-item">
-                    <div className={`boq-version-dot ${idx === 0 ? 'latest' : ''}`}></div>
-                    <div className="boq-version-content">
-                      <div className="boq-version-header">
-                        <span className="boq-version-label">{entry.stage}</span>
-                        <span className="boq-version-date">{new Date(entry.approved_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+              
+              <div className="relative border-l border-border-color pl-4 ml-2.5 flex flex-col gap-4 py-1">
+                {approvalHistory.map((entry, idx) => {
+                  const isActive = idx === 0;
+                  return (
+                    <div key={idx} className="relative flex flex-col gap-1.5 bg-bg-dark/30 hover:bg-bg-dark/50 border border-border-color/40 p-3 rounded-lg transition-colors group">
+                      {/* Timeline dot */}
+                      <span className={`absolute -left-[21px] top-4 h-2.5 w-2.5 rounded-full border ${
+                        isActive 
+                          ? 'bg-primary border-primary shadow-[0_0_8px_var(--primary-glow)]' 
+                          : 'bg-bg-dark border-border-color'
+                      }`} />
+                      
+                      <div className="flex justify-between items-center gap-2">
+                        <span className={`text-[10px] font-bold uppercase tracking-wider ${isActive ? 'text-primary' : 'text-text-secondary'}`}>
+                          {entry.stage}
+                        </span>
+                        <span className="text-[9px] text-text-muted font-mono shrink-0">
+                          {new Date(entry.approved_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                        </span>
                       </div>
-                      <div className="boq-version-meta">{entry.approved_by} ({entry.email})</div>
-                      {entry.note && <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontStyle: 'italic', marginTop: '0.2rem' }}>&quot;{entry.note}&quot;</div>}
+                      
+                      <div className="flex items-center gap-1 text-[10px] text-text-muted font-mono leading-none">
+                        <User size={10} className="shrink-0" />
+                        <span>{entry.approved_by}</span>
+                      </div>
+                      
+                      {entry.note && (
+                        <p className="text-[10px] text-text-secondary bg-bg-dark/50 px-2 py-1 rounded border border-border-color/20 mt-0.5 italic leading-normal">
+                          "{entry.note}"
+                        </p>
+                      )}
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
-            </div>
+            </Card>
           )}
 
-          {/* Version History */}
+          {/* Version History Log */}
           {versions.length > 0 && (
-            <div className="boq-approval-card">
-              <h3 className="boq-approval-title">
-                <GitBranch size={16} style={{ color: 'var(--accent)' }} />
-                Version History
+            <Card className="flex flex-col gap-4" borderAccent="none">
+              <h3 className="font-heading font-bold text-sm text-slate-200 uppercase tracking-wider flex items-center gap-2 border-b border-white/5 pb-2.5">
+                <GitBranch size={16} className="text-accent shrink-0" />
+                Snapshot Version Log
               </h3>
-              <div className="boq-version-timeline">
-                {versions.map((v, idx) => (
-                  <div key={v.id} className="boq-version-item">
-                    <div className={`boq-version-dot ${idx === 0 ? 'latest' : ''}`}></div>
-                    <div className="boq-version-content">
-                      <div className="boq-version-header">
-                        <span className="boq-version-label">v{v.version}</span>
-                        <span className="boq-version-date">{new Date(v.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
+              
+              <div className="relative border-l border-border-color pl-4 ml-2.5 flex flex-col gap-4 py-1">
+                {versions.map((v, idx) => {
+                  const isActive = idx === 0;
+                  return (
+                    <div key={v.id} className="relative flex flex-col gap-1.5 bg-bg-dark/30 hover:bg-bg-dark/50 border border-border-color/40 p-3 rounded-lg transition-colors group">
+                      {/* Timeline dot */}
+                      <span className={`absolute -left-[21px] top-4 h-2.5 w-2.5 rounded-full border ${
+                        isActive 
+                          ? 'bg-accent border-accent shadow-[0_0_8px_var(--accent-glow)]' 
+                          : 'bg-bg-dark border-border-color'
+                      }`} />
+                      
+                      <div className="flex justify-between items-center gap-2">
+                        <span className={`text-[10px] font-bold uppercase tracking-wider ${isActive ? 'text-accent' : 'text-text-secondary'}`}>
+                          Version v{v.version}
+                        </span>
+                        <span className="text-[9px] text-text-muted font-mono shrink-0">
+                          {new Date(v.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                        </span>
                       </div>
-                      <div className="boq-version-meta">Snapshot saved</div>
+                      
+                      <div className="flex items-center gap-1 text-[10px] text-text-muted font-mono leading-none">
+                        <User size={10} className="shrink-0" />
+                        <span>Snapshot Saved</span>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
-            </div>
+            </Card>
           )}
         </div>
       </div>
 
       {/* Premium Sticky Summary Footer */}
-      <div className="boq-sticky-summary-footer">
-        <div className="summary-footer-inner">
-          <div className="summary-item">
-            <span className="label">Materials Cost</span>
-            <span className="value">{formatCurrency(financials.supply_total)}</span>
-          </div>
-          <div className="summary-item">
-            <span className="label">Labour Cost</span>
-            <span className="value">{formatCurrency(financials.labor_total)}</span>
-          </div>
-          <div className="summary-item">
-            <span className="label">Subcontract Cost</span>
-            <span className="value">{formatCurrency(financials.subcontract_cost)}</span>
-          </div>
-          <div className="summary-item">
-            <span className="label">Equipment Cost</span>
-            <span className="value">{formatCurrency(financials.equipment_cost)}</span>
-          </div>
-          <div className="summary-item">
-            <span className="label">Logistics Cost</span>
-            <span className="value">{formatCurrency(financials.logistics_cost)}</span>
-          </div>
-          <div className="summary-item">
-            <span className="label">Total Wastage</span>
-            <span className="value">{formatCurrency(financials.wastage_value)}</span>
-          </div>
-          <div className="summary-item">
-            <span className="label">Total Risk</span>
-            <span className="value">{formatCurrency(financials.risk_cost)}</span>
-          </div>
-          <div className="summary-item border-highlight">
-            <span className="label">Site Overhead</span>
-            <span className="value">{formatCurrency(financials.overhead_value)}</span>
-          </div>
-          <div className="summary-item highlight-total-cost">
-            <span className="label">Total Cost</span>
-            <span className="value">{formatCurrency(financials.direct_total + financials.indirect_total)}</span>
-          </div>
-          <div className="summary-item">
-            <span className="label">Total Profit</span>
-            <span className="value">{formatCurrency(financials.profit_value)}</span>
-          </div>
-          <div className="summary-item highlight-selling-price">
-            <span className="label">Grand Selling Price</span>
-            <span className="value">{formatCurrency(financials.total_selling_price)}</span>
-          </div>
+      <div className="boq-sticky-summary-footer bg-bg-dark/95 border-t border-border-color backdrop-blur-md shadow-[0_-8px_32px_rgba(0,0,0,0.6)] py-2 select-none h-[80px]">
+        <div className="summary-footer-inner flex justify-between items-center w-full max-w-[1800px] mx-auto px-6 gap-3 overflow-x-auto">
+          {[
+            { label: 'Materials Cost', value: financials.supply_total, type: 'normal' },
+            { label: 'Labour Cost', value: financials.labor_total, type: 'normal' },
+            { label: 'Subcontract Cost', value: financials.subcontract_cost, type: 'normal' },
+            { label: 'Equipment Cost', value: financials.equipment_cost, type: 'normal' },
+            { label: 'Logistics Cost', value: financials.logistics_cost, type: 'normal' },
+            { label: 'Total Wastage', value: financials.wastage_value, type: 'normal' },
+            { label: 'Total Risk', value: financials.risk_cost, type: 'normal' },
+            { label: 'Site Overhead', value: financials.overhead_value, type: 'normal', isBorder: true },
+            { label: 'Total Cost', value: financials.direct_total + financials.indirect_total, type: 'total-cost' },
+            { label: 'Total Profit', value: financials.profit_value, type: 'normal' },
+            { label: 'Grand Selling Price', value: financials.total_selling_price, type: 'grand-total' }
+          ].map((item, index) => {
+            const isNormal = item.type === 'normal';
+            const isTotalCost = item.type === 'total-cost';
+            const isGrandTotal = item.type === 'grand-total';
+
+            return (
+              <div 
+                key={index} 
+                className={`flex flex-col items-start px-3 py-1.5 rounded-lg transition-all hover:-translate-y-0.5 whitespace-nowrap min-w-[110px] ${
+                  isGrandTotal 
+                    ? 'bg-primary/10 border border-primary/20 shadow-[0_0_12px_rgba(0,229,160,0.1)] px-4' 
+                    : isTotalCost
+                    ? 'bg-amber-500/10 border border-amber-500/20 px-3'
+                    : 'bg-bg-card border border-border-color/30'
+                } ${item.isBorder ? 'border-r-2 border-r-border-color/20 pr-4' : ''}`}
+              >
+                <span className="text-[9px] text-text-muted font-bold uppercase tracking-wider">{item.label}</span>
+                <span className={`text-xs font-mono font-bold mt-0.5 ${
+                  isGrandTotal 
+                    ? 'text-primary text-sm' 
+                    : isTotalCost
+                    ? 'text-warning'
+                    : 'text-text-primary'
+                }`}>
+                  {formatCurrency(item.value)}
+                </span>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
   );
 }
+
 
 // --- Suggestions Autocomplete Dropdown ---
 function SuggestionsDropdown({

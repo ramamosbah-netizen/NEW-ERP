@@ -64,7 +64,7 @@ export const FormField = React.forwardRef<HTMLInputElement | HTMLTextAreaElement
           >
             {props.placeholder && <option value="">{props.placeholder}</option>}
             {options.map((opt) => (
-              <option key={opt.value} value={opt.value} className="bg-[#0a0e24] text-white">
+              <option key={opt.value} value={opt.value} className="bg-[var(--bg-card)] text-[var(--text-primary)]">
                 {opt.label}
               </option>
             ))}
@@ -85,8 +85,8 @@ export const FormField = React.forwardRef<HTMLInputElement | HTMLTextAreaElement
               className="sr-only peer"
               {...inputProps}
             />
-            <div className="relative w-9 h-5 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary peer-checked:after:bg-[#060814]"></div>
-            <span className="ml-2 text-xs font-semibold text-slate-300">
+            <div className="relative w-9 h-5 bg-slate-700/20 dark:bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary peer-checked:after:bg-[var(--bg-dark)]"></div>
+            <span className="ml-2 text-xs font-semibold text-[var(--text-secondary)]">
               {isChecked ? 'Enabled' : 'Disabled'}
             </span>
           </label>
@@ -101,11 +101,11 @@ export const FormField = React.forwardRef<HTMLInputElement | HTMLTextAreaElement
               type="checkbox"
               id={fieldId}
               disabled={disabled}
-              className="w-4 h-4 rounded bg-black/30 border border-white/7 text-primary focus:ring-offset-[#060814] focus:ring-2 focus:ring-primary focus:ring-opacity-25"
+              className="w-4 h-4 rounded bg-[var(--bg-dark)] border border-[var(--border-color)] text-primary focus:ring-offset-[var(--bg-dark)] focus:ring-2 focus:ring-primary focus:ring-opacity-25"
               {...(props as React.InputHTMLAttributes<HTMLInputElement>)}
             />
             {label && (
-              <span className="text-xs font-semibold text-slate-300">
+              <span className="text-xs font-semibold text-[var(--text-secondary)]">
                 {label} {required && <span className="text-red-500">*</span>}
               </span>
             )}
@@ -130,7 +130,7 @@ export const FormField = React.forwardRef<HTMLInputElement | HTMLTextAreaElement
         {label && type !== 'checkbox' && type !== 'toggle' && (
           <label
             htmlFor={fieldId}
-            className="text-xs font-bold text-slate-400 uppercase tracking-wider select-none leading-none"
+            className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider select-none leading-none"
           >
             {label} {required && <span className="text-red-500 ml-0.5">*</span>}
           </label>
@@ -139,11 +139,11 @@ export const FormField = React.forwardRef<HTMLInputElement | HTMLTextAreaElement
         <div className="relative">{renderInput()}</div>
         
         {helpText && !error && (
-          <p className="text-[10px] text-slate-500 leading-normal">{helpText}</p>
+          <p className="text-[10px] text-[var(--text-muted)] leading-normal">{helpText}</p>
         )}
         
         {error && (
-          <p className="text-[10px] text-red-400 font-medium leading-none mt-0.5 animate-pulse">
+          <p className="text-[10px] text-red-500 dark:text-red-400 font-medium leading-none mt-0.5 animate-pulse">
             {error}
           </p>
         )}

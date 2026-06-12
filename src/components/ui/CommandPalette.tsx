@@ -33,7 +33,7 @@ export const CommandPalette: React.FC = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
-  // Toggle command palette on Cmd/Ctrl + K
+  // Toggle command palette on Cmd/Ctrl + K and custom events
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
@@ -46,8 +46,16 @@ export const CommandPalette: React.FC = () => {
       }
     };
 
+    const handleOpenEvent = () => {
+      setIsOpen(true);
+    };
+
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('open-command-palette', handleOpenEvent);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('open-command-palette', handleOpenEvent);
+    };
   }, []);
 
   // Focus input when opened
@@ -105,11 +113,11 @@ export const CommandPalette: React.FC = () => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-[#060814]/85 backdrop-blur-md z-[1000] flex items-start justify-center pt-[15vh] px-4">
-      <div className="w-full max-w-lg bg-[#0a0e24] border border-white/10 rounded-xl shadow-2xl shadow-black/80 overflow-hidden flex flex-col max-h-[50vh]">
+    <div className="fixed inset-0 bg-slate-900/60 dark:bg-black/80 backdrop-blur-md z-[1000] flex items-start justify-center pt-[15vh] px-4">
+      <div className="w-full max-w-lg bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[50vh]">
         {/* Search Input bar */}
-        <div className="flex items-center gap-3 px-4 border-b border-white/6 py-3">
-          <Search size={18} className="text-slate-400" />
+        <div className="flex items-center gap-3 px-4 border-b border-[var(--border-color)] py-3">
+          <Search size={18} className="text-[var(--text-muted)]" />
           <input
             ref={inputRef}
             type="text"
@@ -119,17 +127,17 @@ export const CommandPalette: React.FC = () => {
               setSearch(e.target.value);
               setSelectedIndex(0);
             }}
-            className="w-full bg-transparent text-sm text-white placeholder-slate-500 outline-none"
+            className="w-full bg-transparent text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] outline-none"
           />
-          <kbd className="text-[10px] bg-white/6 text-slate-400 border border-white/10 px-1.5 py-0.5 rounded shadow select-none">
+          <kbd className="text-[10px] bg-[var(--bg-dark)] text-[var(--text-muted)] border border-[var(--border-color)] px-1.5 py-0.5 rounded shadow select-none">
             ESC
           </kbd>
         </div>
 
         {/* Results list */}
-        <div ref={listRef} className="overflow-y-auto p-2 divide-y divide-transparent max-h-[350px]">
+        <div ref={listRef} className="overflow-y-auto p-2 divide-y divide-transparent max-h-[350px] custom-scrollbar">
           {filteredCommands.length === 0 ? (
-            <div className="text-slate-500 text-xs py-8 text-center font-medium">
+            <div className="text-[var(--text-muted)] text-xs py-8 text-center font-medium">
               No matching pages or actions found.
             </div>
           ) : (
@@ -146,22 +154,22 @@ export const CommandPalette: React.FC = () => {
                     setIsOpen(false);
                   }}
                   className={`flex items-center justify-between px-3.5 py-2.5 rounded-lg cursor-pointer transition-colors duration-150 ${
-                    isSelected ? 'bg-primary/10 text-white border-l-2 border-l-primary' : 'hover:bg-white/4 text-slate-300'
+                    isSelected ? 'bg-[var(--primary-glow)] text-[var(--text-primary)] border-l-2 border-l-[var(--primary)]' : 'hover:bg-[var(--bg-card-hover)] text-[var(--text-secondary)]'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <Icon size={16} className={isSelected ? 'text-primary' : 'text-slate-500'} />
+                    <Icon size={16} className={isSelected ? 'text-[var(--primary)]' : 'text-[var(--text-muted)]'} />
                     <div>
                       <span className="text-xs font-semibold block leading-none mb-1">
                         {cmd.name}
                       </span>
-                      <span className="text-[10px] text-slate-500">
+                      <span className="text-[10px] text-[var(--text-muted)]">
                         {cmd.category}
                       </span>
                     </div>
                   </div>
                   {isSelected && (
-                    <span className="text-[9px] text-primary font-bold uppercase tracking-wider bg-primary/5 px-1.5 py-0.5 rounded border border-primary/10">
+                    <span className="text-[9px] text-[var(--primary)] font-bold uppercase tracking-wider bg-[var(--primary-glow)] px-1.5 py-0.5 rounded border border-[var(--primary)]/10">
                       Jump
                     </span>
                   )}
@@ -172,7 +180,7 @@ export const CommandPalette: React.FC = () => {
         </div>
 
         {/* Footer shortcuts helper */}
-        <div className="bg-[#0b0f2a] border-t border-white/6 px-4 py-2 flex items-center justify-between text-[9px] text-slate-500 font-semibold select-none">
+        <div className="bg-[var(--bg-dark)] border-t border-[var(--border-color)] px-4 py-2 flex items-center justify-between text-[9px] text-[var(--text-muted)] font-semibold select-none">
           <div className="flex items-center gap-3">
             <span>↑↓ Navigate</span>
             <span>↵ Enter</span>

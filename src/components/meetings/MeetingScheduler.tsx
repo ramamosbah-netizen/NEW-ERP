@@ -153,9 +153,9 @@ export const MeetingScheduler: React.FC<Props> = ({ onMeetingCreated, projectId 
       {isOpen && (
         <div className="quote-modal-overlay">
           <div className="quote-modal max-w-2xl">
-            <div className="quote-modal-header">
-              <h3 className="font-semibold text-slate-200 text-base flex items-center gap-2">
-                <Calendar size={18} className="text-emerald-400" />
+            <div className="quote-modal-header bg-bg-dark/50">
+              <h3 className="font-semibold text-text-primary text-base flex items-center gap-2">
+                <Calendar size={18} className="text-primary" />
                 Schedule Coordination Meeting
               </h3>
               <button
@@ -163,7 +163,7 @@ export const MeetingScheduler: React.FC<Props> = ({ onMeetingCreated, projectId 
                   resetForm();
                   setIsOpen(false);
                 }}
-                className="text-slate-400 hover:text-slate-200"
+                className="text-text-secondary hover:text-text-primary cursor-pointer"
               >
                 ✕
               </button>
@@ -171,8 +171,8 @@ export const MeetingScheduler: React.FC<Props> = ({ onMeetingCreated, projectId 
 
             <form onSubmit={handleSubmit} className="quote-modal-body space-y-4">
               {error && (
-                <div className="p-3 bg-red-950/40 border border-red-500/20 text-red-300 rounded-lg flex items-start gap-2 text-xs">
-                  <AlertCircle size={16} className="text-red-400 mt-0.5 flex-shrink-0" />
+                <div className="p-3 bg-error-glow border border-error/20 text-error rounded-lg flex items-start gap-2 text-xs">
+                  <AlertCircle size={16} className="text-error mt-0.5 flex-shrink-0" />
                   <span>{error}</span>
                 </div>
               )}
@@ -258,12 +258,12 @@ export const MeetingScheduler: React.FC<Props> = ({ onMeetingCreated, projectId 
               </div>
 
               {/* Attendee Picker - Internal Team */}
-              <div className="border-t border-slate-900/60 pt-4 space-y-2">
-                <label className="flex items-center gap-1.5 text-xs font-bold text-slate-300 uppercase tracking-wide">
-                  <Users size={13} className="text-emerald-400" />
+              <div className="border-t border-border-color pt-4 space-y-2">
+                <label className="flex items-center gap-1.5 text-xs font-bold text-text-secondary uppercase tracking-wide">
+                  <Users size={13} className="text-primary" />
                   Select Internal Team Members
                 </label>
-                <div className="max-h-28 overflow-y-auto border border-slate-900 rounded-lg p-2 grid grid-cols-2 gap-2 bg-slate-950/40 custom-scrollbar">
+                <div className="max-h-28 overflow-y-auto border border-border-color rounded-lg p-2 grid grid-cols-2 gap-2 bg-bg-dark/40 custom-scrollbar">
                   {profiles.map(p => {
                     const selected = selectedProfileIds.includes(p.id);
                     return (
@@ -271,15 +271,15 @@ export const MeetingScheduler: React.FC<Props> = ({ onMeetingCreated, projectId 
                         key={p.id}
                         type="button"
                         onClick={() => toggleProfileSelect(p.id)}
-                        className={`p-1.5 rounded text-left text-xs transition-all border flex items-center justify-between ${
+                        className={`p-1.5 rounded text-left text-xs transition-all border flex items-center justify-between cursor-pointer ${
                           selected
-                            ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
-                            : 'bg-slate-900 border-slate-900 text-slate-400 hover:border-slate-800'
+                            ? 'bg-success-glow border-success/30 text-success'
+                            : 'bg-bg-dark border-border-color text-text-secondary hover:border-border-color'
                         }`}
                       >
                         <div className="truncate pr-1">
                           <div className="font-semibold truncate">{p.full_name}</div>
-                          <div className="text-[9px] text-slate-500 truncate">{p.role}</div>
+                          <div className="text-[9px] text-text-muted truncate">{p.role}</div>
                         </div>
                         {selected && <span className="text-[10px] font-bold">✓</span>}
                       </button>
@@ -290,8 +290,8 @@ export const MeetingScheduler: React.FC<Props> = ({ onMeetingCreated, projectId 
 
               {/* Attendee Picker - External Guests */}
               <div className="space-y-2 pt-1">
-                <label className="flex items-center gap-1.5 text-xs font-bold text-slate-300 uppercase tracking-wide">
-                  <Mail size={13} className="text-emerald-400" />
+                <label className="flex items-center gap-1.5 text-xs font-bold text-text-secondary uppercase tracking-wide">
+                  <Mail size={13} className="text-primary" />
                   Invite External Guests (Suppliers, Clients)
                 </label>
                 <div className="flex gap-2">
@@ -300,19 +300,19 @@ export const MeetingScheduler: React.FC<Props> = ({ onMeetingCreated, projectId 
                     placeholder="Guest Name"
                     value={externalName}
                     onChange={(e) => setExternalName(e.target.value)}
-                    className="flex-1 bg-slate-950 border border-slate-850 rounded px-2.5 py-1 text-xs text-slate-200 outline-none"
+                    className="flex-1 bg-bg-dark border border-border-color rounded px-2.5 py-1 text-xs text-text-primary outline-none"
                   />
                   <input
                     type="email"
                     placeholder="Guest Email"
                     value={externalEmail}
                     onChange={(e) => setExternalEmail(e.target.value)}
-                    className="flex-1 bg-slate-950 border border-slate-850 rounded px-2.5 py-1 text-xs text-slate-200 outline-none"
+                    className="flex-1 bg-bg-dark border border-border-color rounded px-2.5 py-1 text-xs text-text-primary outline-none"
                   />
                   <button
                     type="button"
                     onClick={addExternalAttendee}
-                    className="bg-slate-900 border border-slate-800 text-slate-300 hover:text-emerald-400 hover:border-emerald-500/20 text-xs px-3 rounded font-semibold transition-all"
+                    className="bg-bg-dark border border-border-color text-text-secondary hover:text-primary hover:border-primary/20 text-xs px-3 rounded font-semibold transition-all cursor-pointer"
                   >
                     Add
                   </button>
@@ -323,13 +323,13 @@ export const MeetingScheduler: React.FC<Props> = ({ onMeetingCreated, projectId 
                     {externalAttendees.map((ext, idx) => (
                       <span
                         key={idx}
-                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-slate-900 border border-slate-850 text-[10px] text-slate-300 font-mono"
+                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-bg-dark border border-border-color text-[10px] text-text-secondary font-mono"
                       >
                         {ext.name} ({ext.email})
                         <button
                           type="button"
                           onClick={() => removeExternalAttendee(idx)}
-                          className="text-slate-500 hover:text-red-400"
+                          className="text-text-muted hover:text-error cursor-pointer"
                         >
                           <X size={10} />
                         </button>
@@ -340,21 +340,21 @@ export const MeetingScheduler: React.FC<Props> = ({ onMeetingCreated, projectId 
               </div>
 
               {/* Submit Actions */}
-              <div className="flex justify-end gap-2 pt-4 border-t border-slate-900/60">
+              <div className="flex justify-end gap-2 pt-4 border-t border-border-color">
                 <button
                   type="button"
                   onClick={() => {
                     resetForm();
                     setIsOpen(false);
                   }}
-                  className="quote-btn quote-btn-secondary"
+                  className="quote-btn quote-btn-secondary cursor-pointer"
                   disabled={loading}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="quote-btn quote-btn-primary"
+                  className="quote-btn quote-btn-primary cursor-pointer"
                   disabled={loading}
                 >
                   {loading ? 'Scheduling...' : 'Schedule Meeting'}

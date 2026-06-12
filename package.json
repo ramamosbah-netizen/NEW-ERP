@@ -9,7 +9,10 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@fileforge/react-print": "^0.1.150",
+    "@hookform/resolvers": "^5.4.0",
     "@supabase/supabase-js": "^2.108.0",
+    "@tanstack/react-table": "^8.21.3",
     "jspdf": "^4.2.1",
     "jspdf-autotable": "^5.0.8",
     "lucide-react": "^1.17.0",
@@ -17,6 +20,7 @@
     "pg": "^8.21.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "react-hook-form": "^7.78.0",
     "recharts": "^3.8.1",
     "xlsx": "^0.18.5",
     "zod": "^4.4.3"

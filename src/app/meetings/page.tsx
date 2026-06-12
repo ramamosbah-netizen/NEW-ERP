@@ -117,12 +117,12 @@ export default function MeetingsPage() {
 
   return (
     <div className="flex flex-col min-h-screen w-full relative z-10">
-<main className="quote-container flex-1 py-8 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 space-y-6">
+      <main className="quote-container flex-1 py-8 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 space-y-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
             <h1 className="quote-header-title flex items-center gap-2">
-              <Calendar className="text-emerald-400" size={26} />
+              <Calendar className="text-primary" size={26} />
               Meetings & Minutes Manager
             </h1>
             <p className="quote-header-subtitle">Central coordination logs linking project agendas, RSVPs, and AI task generators.</p>
@@ -133,7 +133,7 @@ export default function MeetingsPage() {
                 refetch();
                 if (selectedMeetingId) refetchDetail();
               }}
-              className="quote-btn quote-btn-secondary text-xs"
+              className="quote-btn quote-btn-secondary text-xs cursor-pointer"
               disabled={loading}
             >
               <RefreshCw className={loading ? 'animate-spin' : ''} size={14} />
@@ -147,13 +147,13 @@ export default function MeetingsPage() {
         <div className="quote-card flex flex-col md:flex-row justify-between items-center gap-4 py-4">
           <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
             {/* Project Filter */}
-            <div className="flex items-center gap-1 bg-slate-950 border border-slate-900 rounded-lg px-2 py-0.5">
-              <Layers size={12} className="text-slate-500" />
+            <div className="flex items-center gap-1 bg-bg-dark border border-border-color rounded-lg px-2 py-0.5">
+              <Layers size={12} className="text-text-muted" />
               <select
                 name="project_id"
                 value={filters.project_id}
                 onChange={handleFilterChange}
-                className="bg-transparent text-xs text-slate-300 py-1 outline-none font-mono"
+                className="bg-transparent text-xs text-text-secondary py-1 outline-none font-mono"
               >
                 <option value="">All Projects</option>
                 {projects.map(p => (
@@ -163,13 +163,13 @@ export default function MeetingsPage() {
             </div>
 
             {/* Status Filter */}
-            <div className="flex items-center gap-1 bg-slate-950 border border-slate-900 rounded-lg px-2 py-0.5">
-              <Clock size={12} className="text-slate-500" />
+            <div className="flex items-center gap-1 bg-bg-dark border border-border-color rounded-lg px-2 py-0.5">
+              <Clock size={12} className="text-text-muted" />
               <select
                 name="status"
                 value={filters.status}
                 onChange={handleFilterChange}
-                className="bg-transparent text-xs text-slate-300 py-1 outline-none font-mono"
+                className="bg-transparent text-xs text-text-secondary py-1 outline-none font-mono"
               >
                 <option value="">All Meetings</option>
                 <option value="SCHEDULED">Scheduled</option>
@@ -180,23 +180,23 @@ export default function MeetingsPage() {
           </div>
 
           {/* View Toggles */}
-          <div className="flex bg-slate-950/60 border border-slate-900 p-0.5 rounded-lg">
+          <div className="flex bg-bg-dark/60 border border-border-color p-0.5 rounded-lg">
             <button
               onClick={() => setViewMode('calendar')}
-              className={`px-3 py-1.5 rounded text-xs font-semibold flex items-center gap-1.5 transition-all ${
+              className={`px-3 py-1.5 rounded text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
                 viewMode === 'calendar'
-                  ? 'bg-emerald-500 text-slate-950 font-bold'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-primary text-bg-dark font-bold'
+                  : 'text-text-secondary hover:text-text-primary'
               }`}
             >
               Calendar View
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={`px-3 py-1.5 rounded text-xs font-semibold flex items-center gap-1.5 transition-all ${
+              className={`px-3 py-1.5 rounded text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
                 viewMode === 'list'
-                  ? 'bg-emerald-500 text-slate-950 font-bold'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-primary text-bg-dark font-bold'
+                  : 'text-text-secondary hover:text-text-primary'
               }`}
             >
               Agenda List
@@ -207,11 +207,11 @@ export default function MeetingsPage() {
         {/* Board Main Area */}
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 gap-3">
-            <RefreshCw className="animate-spin text-emerald-400" size={32} />
-            <span className="text-slate-400 font-mono text-sm">RETRIEVING COORDINATION AGENDAS...</span>
+            <RefreshCw className="animate-spin text-primary" size={32} />
+            <span className="text-text-secondary font-mono text-sm">RETRIEVING COORDINATION AGENDAS...</span>
           </div>
         ) : error ? (
-          <div className="p-4 bg-red-950/20 border border-red-500/10 text-red-300 rounded-xl text-center text-xs">
+          <div className="p-4 bg-error-glow border border-error/10 text-error rounded-xl text-center text-xs">
             Failed to fetch meetings list: {error.message}
           </div>
         ) : viewMode === 'calendar' ? (
@@ -226,8 +226,8 @@ export default function MeetingsPage() {
             onSelectTask={(t) => setSelectedTaskId(t.id)}
           />
         ) : meetings.length === 0 ? (
-          <div className="quote-card py-20 text-center text-slate-500 text-sm">
-            <Calendar size={48} className="mx-auto mb-4 opacity-10 text-slate-400" />
+          <div className="quote-card py-20 text-center text-text-muted text-sm">
+            <Calendar size={48} className="mx-auto mb-4 opacity-10 text-text-secondary" />
             No meetings found. Schedule a coordination meeting above.
           </div>
         ) : (
@@ -254,28 +254,28 @@ export default function MeetingsPage() {
                           setActiveTab('details');
                           setIsEditingMinutes(false);
                         }}
-                        className="cursor-pointer hover:bg-slate-900/40 border-b border-slate-900/60"
+                        className="cursor-pointer hover:bg-bg-card-hover/20 border-b border-border-color"
                       >
                         <td className="py-4">
-                          <div className="font-semibold text-xs text-slate-200">{m.title}</div>
-                          <div className="text-[10px] text-slate-500 font-mono mt-1 flex items-center gap-1.5">
+                          <div className="font-semibold text-xs text-text-primary">{m.title}</div>
+                          <div className="text-[10px] text-text-muted font-mono mt-1 flex items-center gap-1.5">
                             <Clock size={10} />
                             {formatDate(m.starts_at)} @ {formatTime(m.starts_at)} - {formatTime(m.ends_at)}
                           </div>
                         </td>
-                        <td className="py-4 text-xs text-slate-400 font-mono">
+                        <td className="py-4 text-xs text-text-secondary font-mono">
                           {m.project_name || '-'}
                         </td>
-                        <td className="py-4 text-xs text-slate-400 truncate max-w-[180px]">
-                          {m.location || <span className="text-slate-650 italic">Not specified</span>}
+                        <td className="py-4 text-xs text-text-secondary truncate max-w-[180px]">
+                          {m.location || <span className="text-text-muted italic">Not specified</span>}
                         </td>
                         <td className="py-4 text-xs">
                           <span className={`px-2 py-0.5 rounded text-[9px] font-bold font-mono tracking-wider border ${
                             m.status === 'COMPLETED'
-                              ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                              ? 'bg-success-glow text-success border-success/20'
                               : m.status === 'CANCELLED'
-                              ? 'bg-red-500/10 text-red-400 border-red-500/20'
-                              : 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20'
+                              ? 'bg-error-glow text-error border border-error-glow/20'
+                              : 'bg-secondary-glow text-secondary border border-secondary-glow/20'
                           }`}>
                             {m.status}
                           </span>
@@ -285,10 +285,10 @@ export default function MeetingsPage() {
                             <div className="flex items-center gap-1.5">
                               <button
                                 onClick={() => handleRSVP(m.id, 'ACCEPTED')}
-                                className={`p-1 rounded text-xs transition-colors border ${
+                                className={`p-1 rounded text-xs transition-colors border cursor-pointer ${
                                   myRsvp === 'ACCEPTED'
-                                    ? 'bg-emerald-500/20 border-emerald-500/45 text-emerald-400'
-                                    : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-emerald-400'
+                                    ? 'bg-success-glow border-success/45 text-success'
+                                    : 'bg-bg-dark border-border-color text-text-secondary hover:text-primary'
                                 }`}
                                 title="Accept invitation"
                               >
@@ -296,10 +296,10 @@ export default function MeetingsPage() {
                               </button>
                               <button
                                 onClick={() => handleRSVP(m.id, 'DECLINED')}
-                                className={`p-1 rounded text-xs transition-colors border ${
+                                className={`p-1 rounded text-xs transition-colors border cursor-pointer ${
                                   myRsvp === 'DECLINED'
-                                    ? 'bg-red-500/20 border-red-500/45 text-red-400'
-                                    : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-red-400'
+                                    ? 'bg-error-glow border-error/45 text-error'
+                                    : 'bg-bg-dark border-border-color text-text-secondary hover:text-error'
                                 }`}
                                 title="Decline invitation"
                               >
@@ -307,7 +307,7 @@ export default function MeetingsPage() {
                               </button>
                             </div>
                           ) : (
-                            <span className="text-slate-600 italic text-[11px]">Closed</span>
+                            <span className="text-text-muted italic text-[11px]">Closed</span>
                           )}
                         </td>
                       </tr>
@@ -324,38 +324,38 @@ export default function MeetingsPage() {
       {selectedMeetingId && meetingDetail && (
         <div className="quote-modal-overlay">
           <div className="quote-modal max-w-2xl">
-            <div className="quote-modal-header bg-slate-900/50">
+            <div className="quote-modal-header bg-bg-dark/50">
               <div>
-                <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-widest block font-bold">
+                <span className="text-[10px] font-mono text-primary uppercase tracking-widest block font-bold">
                   Agenda Inspector
                 </span>
-                <h3 className="font-semibold text-slate-200 text-sm mt-0.5">{meetingDetail.title}</h3>
+                <h3 className="font-semibold text-text-primary text-sm mt-0.5">{meetingDetail.title}</h3>
               </div>
               <button
                 onClick={() => setSelectedMeetingId(null)}
-                className="text-slate-400 hover:text-slate-200"
+                className="text-text-secondary hover:text-text-primary cursor-pointer"
               >
                 ✕
               </button>
             </div>
 
             {/* Content Tabs */}
-            <div className="quote-tabs px-6 pt-3 bg-slate-950">
+            <div className="quote-tabs px-6 pt-3 bg-bg-dark">
               <button
                 onClick={() => { setActiveTab('details'); setIsEditingMinutes(false); }}
-                className={`quote-tab ${activeTab === 'details' && !isEditingMinutes ? 'active' : ''}`}
+                className={`quote-tab cursor-pointer ${activeTab === 'details' && !isEditingMinutes ? 'active' : ''}`}
               >
                 Information
               </button>
               <button
                 onClick={() => { setActiveTab('attendees'); setIsEditingMinutes(false); }}
-                className={`quote-tab ${activeTab === 'attendees' && !isEditingMinutes ? 'active' : ''}`}
+                className={`quote-tab cursor-pointer ${activeTab === 'attendees' && !isEditingMinutes ? 'active' : ''}`}
               >
                 Attendees ({meetingDetail.attendees?.length || 0})
               </button>
               <button
                 onClick={() => { setActiveTab('minutes'); }}
-                className={`quote-tab ${activeTab === 'minutes' || isEditingMinutes ? 'active' : ''}`}
+                className={`quote-tab cursor-pointer ${activeTab === 'minutes' || isEditingMinutes ? 'active' : ''}`}
               >
                 Minutes & Tasks
               </button>
@@ -367,38 +367,38 @@ export default function MeetingsPage() {
               {activeTab === 'details' && (
                 <div className="space-y-4 text-left">
                   {/* Meta box */}
-                  <div className="p-4 bg-slate-900/30 border border-slate-900 rounded-xl grid grid-cols-2 gap-4 text-xs">
+                  <div className="p-4 bg-bg-dark/30 border border-border-color rounded-xl grid grid-cols-2 gap-4 text-xs">
                     <div>
-                      <span className="text-slate-500 block">Date & Time</span>
-                      <span className="font-mono text-slate-200 font-bold block mt-1">
+                      <span className="text-text-muted block">Date & Time</span>
+                      <span className="font-mono text-text-primary font-bold block mt-1">
                         {formatDate(meetingDetail.starts_at)}
                       </span>
-                      <span className="font-mono text-slate-400 text-[10px] block">
+                      <span className="font-mono text-text-secondary text-[10px] block">
                         {formatTime(meetingDetail.starts_at)} - {formatTime(meetingDetail.ends_at)} (UAE GST)
                       </span>
                     </div>
 
                     <div>
-                      <span className="text-slate-500 block">Location / Call</span>
+                      <span className="text-text-muted block">Location / Call</span>
                       {meetingDetail.location ? (
-                        <span className="font-semibold text-cyan-400 block mt-1 truncate max-w-[200px]">
+                        <span className="font-semibold text-secondary block mt-1 truncate max-w-[200px]">
                           {meetingDetail.location}
                         </span>
                       ) : (
-                        <span className="text-slate-650 italic block mt-1">Not specified</span>
+                        <span className="text-text-muted italic block mt-1">Not specified</span>
                       )}
                     </div>
 
-                    <div className="border-t border-slate-950/40 pt-2.5 mt-1">
-                      <span className="text-slate-500 block">Organizer</span>
-                      <span className="text-slate-300 font-bold block mt-0.5">
+                    <div className="border-t border-border-color pt-2.5 mt-1">
+                      <span className="text-text-muted block">Organizer</span>
+                      <span className="text-text-secondary font-bold block mt-0.5">
                         {meetingDetail.organizer_name}
                       </span>
                     </div>
 
-                    <div className="border-t border-slate-950/40 pt-2.5 mt-1">
-                      <span className="text-slate-500 block">Associated Project</span>
-                      <span className="text-slate-300 font-mono block mt-0.5 truncate max-w-[200px]">
+                    <div className="border-t border-border-color pt-2.5 mt-1">
+                      <span className="text-text-muted block">Associated Project</span>
+                      <span className="text-text-secondary font-mono block mt-0.5 truncate max-w-[200px]">
                         {meetingDetail.project_name || 'Unlinked'}
                       </span>
                     </div>
@@ -407,8 +407,8 @@ export default function MeetingsPage() {
                   {/* Agenda */}
                   {meetingDetail.agenda && (
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Agenda Details</label>
-                      <div className="p-3.5 bg-slate-950 border border-slate-900 rounded-xl text-slate-300 text-xs leading-relaxed whitespace-pre-wrap">
+                      <label className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Agenda Details</label>
+                      <div className="p-3.5 bg-bg-dark border border-border-color rounded-xl text-text-primary text-xs leading-relaxed whitespace-pre-wrap">
                         {meetingDetail.agenda}
                       </div>
                     </div>
@@ -416,21 +416,21 @@ export default function MeetingsPage() {
 
                   {/* RSVP Call to Action */}
                   {meetingDetail.status === 'SCHEDULED' && (
-                    <div className="p-4 bg-slate-900/10 border border-slate-900 rounded-xl flex items-center justify-between">
+                    <div className="p-4 bg-bg-dark/10 border border-border-color rounded-xl flex items-center justify-between">
                       <div>
-                        <div className="text-xs font-semibold text-slate-200">Confirm your RSVP Response</div>
-                        <p className="text-[10px] text-slate-500 mt-0.5">Let the organizer know if you are attending.</p>
+                        <div className="text-xs font-semibold text-text-primary">Confirm your RSVP Response</div>
+                        <p className="text-[10px] text-text-muted mt-0.5">Let the organizer know if you are attending.</p>
                       </div>
                       <div className="flex gap-2">
                         <button
                           onClick={() => handleRSVP(meetingDetail.id, 'ACCEPTED')}
-                          className={`quote-btn bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/25 px-3 py-1 text-xs`}
+                          className={`quote-btn bg-success-glow border border-success/30 text-success hover:bg-success-glow/80 px-3 py-1 text-xs cursor-pointer`}
                         >
                           ✓ Accept
                         </button>
                         <button
                           onClick={() => handleRSVP(meetingDetail.id, 'DECLINED')}
-                          className={`quote-btn bg-red-500/15 border border-red-500/30 text-red-300 hover:bg-red-500/25 px-3 py-1 text-xs`}
+                          className={`quote-btn bg-error-glow border border-error/30 text-error hover:bg-error-glow/80 px-3 py-1 text-xs cursor-pointer`}
                         >
                           ✕ Decline
                         </button>
@@ -443,13 +443,13 @@ export default function MeetingsPage() {
               {/* ATTENDEES TAB */}
               {activeTab === 'attendees' && (
                 <div className="space-y-3 text-left">
-                  <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider">Attendee Checklist</h4>
-                  <div className="divide-y divide-slate-900/60 max-h-[300px] overflow-y-auto pr-1">
+                  <h4 className="text-xs font-bold text-text-muted uppercase tracking-wider">Attendee Checklist</h4>
+                  <div className="divide-y divide-border-color max-h-[300px] overflow-y-auto pr-1">
                     {(meetingDetail.attendees || []).map((att) => (
                       <div key={att.id} className="py-2.5 flex items-center justify-between text-xs">
                         <div>
-                          <div className="font-semibold text-slate-200">{att.full_name}</div>
-                          {att.email && <div className="text-[10px] text-slate-500 font-mono mt-0.5">{att.email}</div>}
+                          <div className="font-semibold text-text-primary">{att.full_name}</div>
+                          {att.email && <div className="text-[10px] text-text-muted font-mono mt-0.5">{att.email}</div>}
                         </div>
                         <div>
                           {getRSVPBadge(att.response)}
@@ -476,7 +476,7 @@ export default function MeetingsPage() {
                   ) : meetingDetail.minutes ? (
                     <div className="space-y-4">
                       {/* Published details */}
-                      <div className="flex justify-between items-center text-[10px] text-slate-500 border-b border-slate-900 pb-2">
+                      <div className="flex justify-between items-center text-[10px] text-text-muted border-b border-border-color pb-2">
                         <span>Status: Completed</span>
                         {meetingDetail.minutes_published_at && (
                           <span>Published: {formatDate(meetingDetail.minutes_published_at)} {formatTime(meetingDetail.minutes_published_at)}</span>
@@ -485,19 +485,19 @@ export default function MeetingsPage() {
 
                       {/* Minutes Content */}
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Minutes Content</label>
-                        <div className="p-3.5 bg-slate-950 border border-slate-900 rounded-xl text-slate-300 text-xs leading-relaxed whitespace-pre-wrap font-mono">
+                        <label className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Minutes Content</label>
+                        <div className="p-3.5 bg-bg-dark border border-border-color rounded-xl text-text-primary text-xs leading-relaxed whitespace-pre-wrap font-mono">
                           {meetingDetail.minutes}
                         </div>
                       </div>
 
                       {/* Created action items */}
                       <div className="space-y-2">
-                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Action Items & Deliverables</label>
+                        <label className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Action Items & Deliverables</label>
                         {(!meetingDetail.action_items || meetingDetail.action_items.length === 0) ? (
-                          <p className="text-xs text-slate-650 italic">No action items were assigned.</p>
+                          <p className="text-xs text-text-muted italic">No action items were assigned.</p>
                         ) : (
-                          <div className="divide-y divide-slate-900/60 border border-slate-900 rounded-xl overflow-hidden bg-slate-950/20">
+                          <div className="divide-y divide-border-color border border-border-color rounded-xl overflow-hidden bg-bg-dark/20">
                             {meetingDetail.action_items.map((ai) => (
                               <div
                                 key={ai.id}
@@ -506,18 +506,18 @@ export default function MeetingsPage() {
                                     setSelectedTaskId(ai.task_id);
                                   }
                                 }}
-                                className="p-2.5 flex items-center justify-between text-xs hover:bg-slate-900/20 cursor-pointer group"
+                                className="p-2.5 flex items-center justify-between text-xs hover:bg-bg-dark/20 cursor-pointer group"
                               >
                                 <div className="min-w-0 flex-1">
-                                  <div className="font-semibold text-slate-300 group-hover:text-emerald-400 truncate pr-2">
+                                  <div className="font-semibold text-text-secondary group-hover:text-primary truncate pr-2">
                                     {ai.description}
                                   </div>
-                                  <div className="text-[9px] text-slate-500 flex items-center gap-2 mt-0.5">
+                                  <div className="text-[9px] text-text-muted flex items-center gap-2 mt-0.5">
                                     <span>Assignee: {ai.assignee_name || 'Unassigned'}</span>
                                     {ai.due_date && <span>Due: {formatDate(ai.due_date)}</span>}
                                   </div>
                                 </div>
-                                <span className="text-[8px] font-mono font-bold text-slate-500 border border-slate-800 px-1 py-0.5 rounded">
+                                <span className="text-[8px] font-mono font-bold text-text-muted border border-border-color px-1 py-0.5 rounded">
                                   TASK
                                 </span>
                               </div>
@@ -528,16 +528,16 @@ export default function MeetingsPage() {
                     </div>
                   ) : (
                     <div className="py-8 text-center space-y-4">
-                      <FileText size={36} className="mx-auto text-slate-600 opacity-20" />
+                      <FileText size={36} className="mx-auto text-text-secondary opacity-20" />
                       <div>
-                        <h4 className="text-xs font-semibold text-slate-400">Minutes not published yet</h4>
-                        <p className="text-[10px] text-slate-500 mt-0.5">Publish minutes to record discussions and auto-generate task items.</p>
+                        <h4 className="text-xs font-semibold text-text-secondary">Minutes not published yet</h4>
+                        <p className="text-[10px] text-text-muted mt-0.5">Publish minutes to record discussions and auto-generate task items.</p>
                       </div>
                       {(isOrganizer || true) && (
                         <button
                           type="button"
                           onClick={() => setIsEditingMinutes(true)}
-                          className="quote-btn quote-btn-primary text-xs"
+                          className="quote-btn quote-btn-primary text-xs cursor-pointer"
                         >
                           <Sparkles size={12} />
                           Publish Minutes (AI Assisted)
@@ -556,7 +556,7 @@ export default function MeetingsPage() {
       {/* Task Drawer Inspector Overlay */}
       {selectedTaskId && (
         <>
-          <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50" onClick={() => setSelectedTaskId(null)} />
+          <div className="fixed inset-0 bg-bg-dark/60 backdrop-blur-sm z-50" onClick={() => setSelectedTaskId(null)} />
           <TaskDetailDrawer
             taskId={selectedTaskId}
             onClose={() => setSelectedTaskId(null)}

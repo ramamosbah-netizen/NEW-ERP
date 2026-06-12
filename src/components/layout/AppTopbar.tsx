@@ -4,10 +4,10 @@
 
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
-import { LogOut, Menu, ChevronRight, Sliders, Command, Sun, Moon } from 'lucide-react';
+import { LogOut, Menu, ChevronRight, Sliders, Command, Sun, Moon, Search, User, Settings as SettingsIcon } from 'lucide-react';
 import NotificationBell from '@/components/notifications/NotificationBell';
 
 // Human-readable route labels
@@ -95,9 +95,23 @@ export default function AppTopbar({ onMobileMenuToggle }: AppTopbarProps) {
   const [userProfile, setUserProfile] = useState<{
     full_name: string;
     role: string;
+    email?: string;
   } | null>(null);
   const [isCompact, setIsCompact] = useState(false);
   const [isDark, setIsDark] = useState(true);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const profileRef = useRef<HTMLDivElement>(null);
+
+  // Click outside to close profile dropdown
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
+        setProfileOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   useEffect(() => {
     const saved = localStorage.getItem('erp-density-compact');
@@ -145,16 +159,21 @@ export default function AppTopbar({ onMobileMenuToggle }: AppTopbarProps) {
       if (user) {
         supabase
           .from('profiles')
-          .select('full_name, role')
+          .select('full_name, role, email')
           .eq('id', user.id)
           .single()
           .then(({ data }) => {
             if (data) {
-              setUserProfile(data);
+              setUserProfile({
+                full_name: data.full_name,
+                role: data.role,
+                email: data.email || user.email || '',
+              });
             } else {
               setUserProfile({
                 full_name: user.user_metadata?.full_name || 'ERP User',
                 role: user.user_metadata?.role || 'engineer',
+                email: user.email || '',
               });
             }
           });
@@ -174,8 +193,8 @@ export default function AppTopbar({ onMobileMenuToggle }: AppTopbarProps) {
     .filter(seg => !seg.startsWith('%5B') && !seg.startsWith('['));
 
   return (
-    <header className="erp-topbar" id="erp-topbar">
-      <div className="topbar-left">
+    <header className="erp-topbar px-4 md:px-6 relative flex items-center justify-between" id="erp-topbar">
+      <div className="topbar-left flex items-center gap-3">
         {/* Mobile hamburger */}
         <button
           className="topbar-hamburger"
@@ -187,13 +206,12 @@ export default function AppTopbar({ onMobileMenuToggle }: AppTopbarProps) {
         </button>
 
         {/* Breadcrumb */}
-        <div className="topbar-breadcrumb">
+        <div className="topbar-breadcrumb hidden sm:flex items-center gap-1.5">
           {segments.length === 0 ? (
             <span className="topbar-breadcrumb-segment current">Home</span>
           ) : (
             segments.map((seg, idx) => {
               const isLast = idx === segments.length - 1;
-              // Check if segment is a UUID (dynamic param)
               const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}/.test(seg);
               const label = isUUID
                 ? `#${seg.substring(0, 8)}`
@@ -202,10 +220,10 @@ export default function AppTopbar({ onMobileMenuToggle }: AppTopbarProps) {
               return (
                 <React.Fragment key={idx}>
                   {idx > 0 && (
-                    <ChevronRight size={10} className="topbar-breadcrumb-sep" />
+                    <ChevronRight size={10} className="topbar-breadcrumb-sep opacity-50" />
                   )}
                   <span
-                    className={`topbar-breadcrumb-segment ${isLast ? 'current' : ''}`}
+                    className={`topbar-breadcrumb-segment ${isLast ? 'current font-bold text-primary' : 'text-text-secondary'}`}
                   >
                     {label}
                   </span>
@@ -216,17 +234,26 @@ export default function AppTopbar({ onMobileMenuToggle }: AppTopbarProps) {
         </div>
       </div>
 
-      <div className="topbar-right">
-        {/* Global Search Shortcut hint */}
-        <div className="hidden md:flex items-center gap-1 bg-[var(--bg-dark)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[10px] text-[var(--text-muted)] font-mono font-bold">
-          <Command size={10} />
-          <span>K</span>
+      {/* Global search and quick controls */}
+      <div className="flex-1 max-w-xs md:max-w-sm mx-4 relative hidden md:block">
+        <div 
+          onClick={() => window.dispatchEvent(new Event('open-command-palette'))}
+          className="w-full bg-[var(--bg-dark)] border border-[var(--border-color)] rounded-lg pl-9 pr-12 py-1.5 text-xs text-[var(--text-secondary)] hover:border-[var(--text-muted)] cursor-pointer flex items-center gap-2 select-none"
+        >
+          <Search size={14} className="text-text-muted" />
+          <span>Search directories & pages...</span>
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-0.5 bg-bg-card border border-[var(--border-color)] px-1.5 py-0.5 rounded text-[8px] text-[var(--text-muted)] font-mono font-bold">
+            <Command size={8} />
+            <span>K</span>
+          </div>
         </div>
+      </div>
 
+      <div className="topbar-right flex items-center gap-2 md:gap-3">
         {/* Density Toggle */}
         <button
           onClick={toggleDensity}
-          className="topbar-logout"
+          className="topbar-logout w-8 h-8 rounded-lg flex items-center justify-center bg-bg-dark/50 border border-border-color/80 text-text-muted hover:text-primary transition-colors cursor-pointer"
           title={isCompact ? 'Comfortable Mode' : 'Compact Mode'}
           style={{ color: isCompact ? 'var(--primary)' : 'var(--text-muted)' }}
         >
@@ -236,7 +263,7 @@ export default function AppTopbar({ onMobileMenuToggle }: AppTopbarProps) {
         {/* Theme Toggle */}
         <button
           onClick={toggleTheme}
-          className="topbar-logout"
+          className="topbar-logout w-8 h-8 rounded-lg flex items-center justify-center bg-bg-dark/50 border border-border-color/80 text-text-muted hover:text-warning transition-colors cursor-pointer"
           title={isDark ? 'Light Mode' : 'Dark Mode'}
           style={{ color: isDark ? 'var(--text-muted)' : 'var(--warning)' }}
         >
@@ -246,21 +273,75 @@ export default function AppTopbar({ onMobileMenuToggle }: AppTopbarProps) {
         {/* Notification Bell */}
         <NotificationBell />
 
-        {/* User Profile & Logout */}
+        {/* User Profile Dropdown Card */}
         {userProfile && (
-          <div className="topbar-user">
-            <div className="topbar-user-info">
-              <div className="topbar-user-name">{userProfile.full_name}</div>
-              <div className="topbar-user-role">{userProfile.role}</div>
-            </div>
+          <div className="relative" ref={profileRef}>
             <button
-              className="topbar-logout"
-              onClick={handleLogout}
-              title="Sign Out"
-              id="topbar-logout"
+              onClick={() => setProfileOpen(!profileOpen)}
+              className="flex items-center gap-2 px-2 py-1 rounded-lg border border-border-color hover:bg-bg-card-hover/40 transition-colors text-left"
             >
-              <LogOut size={15} />
+              <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-primary/25 to-primary/10 border border-primary/30 flex items-center justify-center text-[10px] font-bold text-primary font-mono select-none">
+                {userProfile.full_name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'U'}
+              </div>
+              <div className="hidden md:block leading-tight pr-1">
+                <div className="text-[11px] font-bold text-text-primary truncate max-w-[90px]">{userProfile.full_name}</div>
+                <div className="text-[8px] font-mono text-text-muted uppercase tracking-wider">{userProfile.role}</div>
+              </div>
             </button>
+
+            {profileOpen && (
+              <div className="absolute right-0 mt-2.5 w-60 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl shadow-2xl p-4 flex flex-col gap-3.5 z-[100] animate-fadeIn">
+                <div className="flex items-center gap-3 border-b border-[var(--border-color)] pb-3">
+                  <div className="w-10 h-10 rounded-full bg-[var(--primary-glow)] border border-[var(--primary)]/20 flex items-center justify-center text-xs font-bold text-[var(--primary)] font-mono">
+                    {userProfile.full_name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
+                  </div>
+                  <div className="flex flex-col truncate">
+                    <span className="text-xs font-bold text-text-primary leading-tight">{userProfile.full_name}</span>
+                    <span className="text-[9px] text-text-muted truncate mt-0.5">{userProfile.email || 'user@jeetmep.ae'}</span>
+                    <span className="text-[8px] font-mono text-[var(--primary)] bg-[var(--primary-glow)] border border-[var(--primary)]/20 rounded px-1.5 py-0.5 mt-1 self-start uppercase tracking-wider font-semibold">
+                      {userProfile.role}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-1">
+                  <button
+                    onClick={() => {
+                      setProfileOpen(false);
+                      router.push('/admin/settings');
+                    }}
+                    className="flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-[var(--bg-card-hover)] rounded-lg text-left transition-colors cursor-pointer"
+                  >
+                    <SettingsIcon size={13} className="text-text-muted" />
+                    <span>Account Settings</span>
+                  </button>
+                  
+                  <button
+                    onClick={() => {
+                      setProfileOpen(false);
+                      window.dispatchEvent(new Event('open-command-palette'));
+                    }}
+                    className="flex items-center justify-between px-3 py-2 text-xs font-semibold text-text-secondary hover:text-text-primary hover:bg-[var(--bg-card-hover)] rounded-lg text-left transition-colors cursor-pointer"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <User size={13} className="text-text-muted" />
+                      <span>Search Commands</span>
+                    </div>
+                    <kbd className="text-[9px] bg-[var(--bg-dark)] text-[var(--text-muted)] border border-[var(--border-color)] px-1 py-0.5 rounded shadow font-mono">
+                      ⌘K
+                    </kbd>
+                  </button>
+                </div>
+
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-red-500 dark:text-red-400 hover:bg-red-500/10 border border-red-500/20 dark:border-red-500/10 rounded-lg text-left transition-colors cursor-pointer mt-1"
+                >
+                  <LogOut size={13} />
+                  <span>Sign Out Account</span>
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>

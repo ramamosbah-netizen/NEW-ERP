@@ -203,7 +203,7 @@ export function DataTable<T extends Record<string, any>>({
                 <tr
                   key={rIdx}
                   onClick={() => onRowClick && onRowClick(row)}
-                  className={`transition-colors duration-100 ${
+                  className={`transition-colors duration-100 odd:bg-[var(--bg-dark)]/25 ${
                     onRowClick ? 'cursor-pointer hover:bg-[var(--bg-card-hover)]' : 'hover:bg-[var(--bg-card-hover)]/40'
                   }`}
                 >
@@ -214,8 +214,8 @@ export function DataTable<T extends Record<string, any>>({
                     return (
                       <td
                         key={col.key}
-                        className={`px-4 py-3 whitespace-nowrap ${
-                          isSticky ? 'sticky left-0 bg-[var(--bg-card)] font-medium text-[var(--text-primary)] border-r border-[var(--border-color)] shadow-[2px_0_5px_rgba(0,0,0,0.05)]' : ''
+                        className={`px-4 py-2.5 whitespace-nowrap ${
+                          isSticky ? 'sticky left-0 bg-inherit font-medium text-[var(--text-primary)] border-r border-[var(--border-color)] shadow-[2px_0_5px_rgba(0,0,0,0.03)]' : ''
                         } ${col.isNumeric ? 'font-mono' : ''}`}
                         style={{ textAlign: alignment }}
                       >

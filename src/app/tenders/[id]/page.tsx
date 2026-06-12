@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, use } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
@@ -15,14 +15,20 @@ import {
   Clock, 
   AlertCircle, 
   Download, 
-  Check, 
   FileText, 
   Layers,
   Settings,
   Lock,
-  Unlock
+  Unlock,
+  AlertTriangle,
+  History,
+  ShieldCheck,
+  CheckCircle2
 } from 'lucide-react';
-import '@/app/tenders/tenders.css';
+import { PageHeader } from '@/components/ui/PageHeader';
+import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
+import { StatusChip } from '@/components/ui/StatusChip';
 
 type StatusLog = {
   status: string;
@@ -199,44 +205,42 @@ export default function TenderDetail({ params }: { params: Promise<{ id: string 
     }
   };
 
-  // Status Badge styles helper
-  const getStatusClass = (status: Tender['status']) => {
-    switch (status) {
-      case 'Draft': return 'status-draft';
-      case 'Submitted': return 'status-submitted';
-      case 'Under Review': return 'status-review';
-      case 'Approved': return 'status-approved';
-      case 'Rejected': return 'status-rejected';
-      case 'Completed': return 'status-completed';
-      default: return 'status-draft';
-    }
+  const formatBudget = (budget: number | null) => {
+    if (budget === null || budget === undefined) return 'Unspecified';
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(budget);
   };
 
-  // Helper to structure scope of work (renders list bullets nicely if split by line)
+  const formatDate = (dateStr: string) => {
+    return new Date(dateStr).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
   const renderScopeOfWork = (scopeText: string) => {
-    if (!scopeText) return <p className="detail-text-block">No scope details provided.</p>;
+    if (!scopeText) return <p className="text-text-muted text-xs italic">No scope details provided.</p>;
     
-    // Split scope text if it contains standard bullet lines
     const lines = scopeText.split('\n');
     const hasBullets = lines.some(l => l.trim().startsWith('-') || l.trim().startsWith('•') || l.trim().startsWith('*'));
 
     if (!hasBullets) {
-      return <div className="detail-text-block">{scopeText}</div>;
+      return <div className="text-xs text-text-secondary leading-relaxed whitespace-pre-wrap">{scopeText}</div>;
     }
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      <div className="flex flex-col gap-2">
         {lines.map((line, index) => {
           const trimmed = line.trim();
           if (trimmed.startsWith('-') || trimmed.startsWith('•') || trimmed.startsWith('*')) {
             const cleanText = trimmed.substring(1).trim();
             return (
-              <ul key={index} className="detail-bullets">
-                <li>{cleanText}</li>
+              <ul key={index} className="list-disc list-inside pl-2 text-xs text-text-secondary">
+                <li className="leading-relaxed">{cleanText}</li>
               </ul>
             );
           }
-          return trimmed ? <p key={index} className="detail-text-block" style={{ margin: '0' }}>{line}</p> : null;
+          return trimmed ? <p key={index} className="text-xs text-text-secondary leading-relaxed mt-1">{line}</p> : null;
         })}
       </div>
     );
@@ -244,361 +248,385 @@ export default function TenderDetail({ params }: { params: Promise<{ id: string 
 
   if (loading) {
     return (
-      <div className="loading-overlay">
-        <div className="loading-spinner"></div>
-        <p style={{ fontFamily: 'var(--font-heading)', color: 'var(--text-secondary)' }}>Retrieving Tender Profile...</p>
+      <div className="min-h-screen bg-[#060814] flex flex-col items-center justify-center text-center p-6">
+        <div className="h-10 w-10 border-2 border-emerald-450 border-t-transparent animate-spin rounded-full mb-3"></div>
+        <h2 className="text-sm font-bold font-mono text-slate-400 uppercase tracking-widest">Retrieving Tender Profile...</h2>
       </div>
     );
   }
 
   if (errorMsg || !tender) {
     return (
-      <div className="tenders-container">
-        <div className="tenders-header">
-          <Link href="/tenders" className="logout-btn" style={{ textDecoration: 'none', background: 'transparent', border: '1px solid var(--border-color)', color: 'var(--text-secondary)', display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
-            <ArrowLeft size={14} /> Back to Dashboard
+      <div className="flex flex-col gap-6">
+        <div className="border-b border-white/5 pb-4">
+          <Link href="/tenders" className="inline-flex items-center gap-1.5 text-xs text-text-secondary hover:text-text-primary transition-colors mb-2 font-semibold">
+            <ArrowLeft size={14} /> Back to Tenders Registry
           </Link>
         </div>
-        <div className="db-warning-banner" style={{ border: '1px solid rgba(239, 68, 68, 0.3)', background: 'rgba(239, 68, 68, 0.1)', color: '#fca5a5', marginTop: '2rem' }}>
-          <AlertCircle size={24} style={{ color: 'var(--error)' }} />
+        <div className="flex gap-3 bg-red-500/10 border border-red-500/20 rounded-lg p-4 text-red-200 text-xs items-start max-w-xl mx-auto mt-8">
+          <AlertCircle className="flex-shrink-0 text-red-400 mt-0.5" size={18} />
           <div>
-            <strong>Failed to load Tender details</strong>
-            <p style={{ marginTop: '0.4rem' }}>{errorMsg || 'Tender record not found or access denied.'}</p>
+            <strong>Failed to Load Tender details</strong>
+            <p className="mt-1 leading-relaxed">{errorMsg || 'Tender record not found or access permissions invalid.'}</p>
           </div>
         </div>
       </div>
     );
   }
 
+  const breadcrumbs = [
+    { label: 'COE Cockpit', href: '/dashboard' },
+    { label: 'Tenders Registry', href: '/tenders' },
+    { label: tender.title.length > 25 ? `${tender.title.substring(0, 25)}...` : tender.title }
+  ];
+
+  const headerActions = (
+    <Link href={`/tenders/${tender.id}/edit`} className="no-underline">
+      <Button variant="primary" size="sm" className="flex items-center gap-1.5 font-bold uppercase tracking-wider">
+        <Edit size={14} /> Edit Tender
+      </Button>
+    </Link>
+  );
+
   return (
-    <div className="tenders-container">
-      {/* Header Panel */}
-      <div className="tenders-header">
-        <div>
-          <Link href="/tenders" className="logout-btn" style={{ textDecoration: 'none', background: 'transparent', border: '1px solid var(--border-color)', color: 'var(--text-secondary)', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem', padding: '0.4rem 0.8rem', fontSize: '0.85rem' }}>
-            <ArrowLeft size={14} /> Back to Tenders
-          </Link>
-          <h1 className="tenders-title" style={{ fontSize: '1.8rem' }}>{tender.title}</h1>
-        </div>
+    <div className="flex flex-col gap-6">
+      {/* Page Header */}
+      <PageHeader 
+        title={tender.title} 
+        referenceId={`TND-${tender.id.substring(0, 8).toUpperCase()}`}
+        status={tender.status}
+        breadcrumbs={breadcrumbs}
+        actions={headerActions}
+      />
 
-        <Link href={`/tenders/${tender.id}/edit`} className="action-btn btn-primary" style={{ textDecoration: 'none' }}>
-          <Edit size={16} />
-          <span>Edit Tender</span>
-        </Link>
-      </div>
-
-      {/* Main Grid: Details on Left, Meta/Status on Right */}
-      <div className="detail-grid">
+      {/* Responsive Grid layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        {/* Left Side: Tender Contents */}
-        <div className="detail-main">
+        {/* Left Columns - Details */}
+        <div className="lg:col-span-2 flex flex-col gap-6">
           
-          {/* Section 1: Project Details */}
-          <div className="detail-section-card">
-            <h3 className="detail-section-title">
-              <Layers size={18} style={{ color: 'var(--secondary)' }} />
-              Project Information
+          {/* Project Info card */}
+          <Card className="flex flex-col gap-4" borderAccent="none">
+            <h3 className="font-heading font-bold text-sm text-slate-200 uppercase tracking-wider flex items-center gap-2 border-b border-white/5 pb-2.5">
+              <Layers className="text-secondary shrink-0" size={16} />
+              Project Parameters
             </h3>
             
-            <div className="specs-meta-grid">
-              <div className="specs-meta-item">
-                <div className="specs-meta-label">Project Name</div>
-                <div className="specs-meta-val">{tender.project_name}</div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="flex flex-col gap-1 bg-bg-dark/30 p-3 rounded-lg border border-border-color/30">
+                <span className="text-[10px] text-text-muted font-bold uppercase tracking-wider">Project Scope Title</span>
+                <span className="text-xs font-semibold text-text-primary">{tender.project_name}</span>
               </div>
-              <div className="specs-meta-item">
-                <div className="specs-meta-label">Client / Agency</div>
-                <div className="specs-meta-val">{tender.client_name}</div>
+              <div className="flex flex-col gap-1 bg-bg-dark/30 p-3 rounded-lg border border-border-color/30">
+                <span className="text-[10px] text-text-muted font-bold uppercase tracking-wider">Client Authority</span>
+                <span className="text-xs font-semibold text-text-primary">{tender.client_name}</span>
               </div>
-              <div className="specs-meta-item">
-                <div className="specs-meta-label">Location</div>
-                <div className="specs-meta-val">{tender.location}</div>
+              <div className="flex flex-col gap-1 bg-bg-dark/30 p-3 rounded-lg border border-border-color/30">
+                <span className="text-[10px] text-text-muted font-bold uppercase tracking-wider">Project Location</span>
+                <span className="text-xs font-semibold text-text-primary inline-flex items-center gap-1">
+                  <MapPin size={12} className="text-text-muted shrink-0" />
+                  {tender.location}
+                </span>
               </div>
-              <div className="specs-meta-item">
-                <div className="specs-meta-label">Budget allocation</div>
-                <div className="specs-meta-val" style={{ color: 'var(--success)' }}>
-                  {tender.budget ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(tender.budget) : 'Unspecified'}
-                </div>
+              <div className="flex flex-col gap-1 bg-bg-dark/30 p-3 rounded-lg border border-border-color/30">
+                <span className="text-[10px] text-text-muted font-bold uppercase tracking-wider">Approved Budget Sum</span>
+                <span className="text-xs font-bold text-success font-mono">
+                  {formatBudget(tender.budget)}
+                </span>
               </div>
             </div>
-          </div>
+          </Card>
 
-          {/* Section 2: Scope of work */}
-          <div className="detail-section-card">
-            <h3 className="detail-section-title">
-              <FileText size={18} style={{ color: 'var(--accent)' }} />
-              Scope of Work
+          {/* Scope of work card */}
+          <Card className="flex flex-col gap-4" borderAccent="none">
+            <h3 className="font-heading font-bold text-sm text-slate-200 uppercase tracking-wider flex items-center gap-2 border-b border-white/5 pb-2.5">
+              <FileText className="text-accent shrink-0" size={16} />
+              Scope of Work Summary
             </h3>
-            <div style={{ background: 'rgba(0, 0, 0, 0.2)', padding: '1.2rem', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
+            <div className="bg-bg-dark/50 p-4 rounded-xl border border-border-color/50">
               {renderScopeOfWork(tender.scope_of_work)}
             </div>
-          </div>
+          </Card>
 
-          {/* Section 3: Technical Specifications */}
-          <div className="detail-section-card">
-            <h3 className="detail-section-title">
-              <Settings size={18} style={{ color: 'var(--primary)' }} />
-              Technical Specifications
+          {/* Technical Specs card */}
+          <Card className="flex flex-col gap-4" borderAccent="none">
+            <h3 className="font-heading font-bold text-sm text-slate-200 uppercase tracking-wider flex items-center gap-2 border-b border-white/5 pb-2.5">
+              <Settings className="text-primary shrink-0" size={16} />
+              Technical Specifications & Compliance
             </h3>
             
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-              <div className="specs-meta-grid">
-                <div className="specs-meta-item">
-                  <div className="specs-meta-label">Discipline / Branch</div>
-                  <div className="specs-meta-val">{tender.tech_discipline || 'Electrical'}</div>
+            <div className="flex flex-col gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="flex flex-col gap-1 bg-bg-dark/30 p-3 rounded-lg border border-border-color/30">
+                  <span className="text-[10px] text-text-muted font-bold uppercase tracking-wider">Engineering Discipline</span>
+                  <span className="text-xs font-semibold text-text-primary">{tender.tech_discipline || 'Unspecified'}</span>
                 </div>
-                <div className="specs-meta-item">
-                  <div className="specs-meta-label">Design Standards</div>
-                  <div className="specs-meta-val">{tender.tech_standards || 'IEC / ISO default'}</div>
+                <div className="flex flex-col gap-1 bg-bg-dark/30 p-3 rounded-lg border border-border-color/30">
+                  <span className="text-[10px] text-text-muted font-bold uppercase tracking-wider">Applicable Design Standards</span>
+                  <span className="text-xs font-semibold text-text-primary">{tender.tech_standards || 'Unspecified'}</span>
                 </div>
               </div>
 
-              <div>
-                <h4 style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '0.5rem' }}>
-                  Equipment & Components Required
-                </h4>
-                <div className="detail-text-block" style={{ background: 'rgba(0,0,0,0.15)', padding: '1rem', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.03)' }}>
-                  {tender.tech_equipment_list || 'No equipment guidelines defined.'}
+              <div className="flex flex-col gap-2">
+                <span className="text-[10px] text-text-muted font-bold uppercase tracking-wider">Required Machinery / Components</span>
+                <div className="bg-bg-dark/30 p-3 rounded-lg border border-border-color/30 text-xs text-text-secondary whitespace-pre-wrap leading-relaxed">
+                  {tender.tech_equipment_list || 'No required items specified.'}
                 </div>
               </div>
 
               {tender.tech_notes && (
-                <div>
-                  <h4 style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '0.5rem' }}>
-                    Technical Notes
-                  </h4>
-                  <div className="detail-text-block" style={{ background: 'rgba(0,0,0,0.15)', padding: '1rem', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.03)' }}>
+                <div className="flex flex-col gap-2">
+                  <span className="text-[10px] text-text-muted font-bold uppercase tracking-wider">Technical Engineering Notes</span>
+                  <div className="bg-bg-dark/30 p-3 rounded-lg border border-border-color/30 text-xs text-text-secondary whitespace-pre-wrap leading-relaxed">
                     {tender.tech_notes}
                   </div>
                 </div>
               )}
             </div>
-          </div>
+          </Card>
 
-          {/* Section 4: Client Requirements */}
-          <div className="detail-section-card">
-            <h3 className="detail-section-title">
-              <User size={18} style={{ color: 'var(--secondary)' }} />
-              Client Requisitions & Compliance
+          {/* Client requisitions */}
+          <Card className="flex flex-col gap-4" borderAccent="none">
+            <h3 className="font-heading font-bold text-sm text-slate-200 uppercase tracking-wider flex items-center gap-2 border-b border-white/5 pb-2.5">
+              <User className="text-secondary shrink-0" size={16} />
+              Client Specific Mandates
             </h3>
             
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
-              <div className="specs-meta-grid">
-                <div className="specs-meta-item">
-                  <div className="specs-meta-label">Federal Regulations & Compliance</div>
-                  <div className="specs-meta-val">{tender.client_compliance || 'Standard corporate compliance'}</div>
+            <div className="flex flex-col gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="flex flex-col gap-1 bg-bg-dark/30 p-3 rounded-lg border border-border-color/30">
+                  <span className="text-[10px] text-text-muted font-bold uppercase tracking-wider">Compliance Framework</span>
+                  <span className="text-xs font-semibold text-text-primary">{tender.client_compliance || 'Standard SLA Guidelines'}</span>
                 </div>
-                <div className="specs-meta-item">
-                  <div className="specs-meta-label">Warranty Requisites</div>
-                  <div className="specs-meta-val">{tender.client_warranty || '12 Months SLA'}</div>
+                <div className="flex flex-col gap-1 bg-bg-dark/30 p-3 rounded-lg border border-border-color/30">
+                  <span className="text-[10px] text-text-muted font-bold uppercase tracking-wider">Warranty Requisites</span>
+                  <span className="text-xs font-semibold text-text-primary">{tender.client_warranty || '12 Months SLA'}</span>
                 </div>
               </div>
 
               {tender.client_delivery_expectations && (
-                <div>
-                  <h4 style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '0.4rem' }}>
-                    Delivery & Deployment Expectations
-                  </h4>
-                  <p className="detail-text-block" style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                <div className="flex flex-col gap-2">
+                  <span className="text-[10px] text-text-muted font-bold uppercase tracking-wider">Deployment & Execution Timelines</span>
+                  <div className="bg-bg-dark/30 p-3 rounded-lg border border-border-color/30 text-xs text-text-secondary leading-relaxed">
                     {tender.client_delivery_expectations}
-                  </p>
+                  </div>
                 </div>
               )}
 
               {tender.client_special_requests && (
-                <div>
-                  <h4 style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textTransform: 'uppercase', marginBottom: '0.4rem' }}>
-                    Special Bid Requests
-                  </h4>
-                  <p className="detail-text-block" style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                <div className="flex flex-col gap-2">
+                  <span className="text-[10px] text-text-muted font-bold uppercase tracking-wider">Special Tender Requests</span>
+                  <div className="bg-bg-dark/30 p-3 rounded-lg border border-border-color/30 text-xs text-text-secondary leading-relaxed">
                     {tender.client_special_requests}
-                  </p>
+                  </div>
                 </div>
               )}
             </div>
-          </div>
-
+          </Card>
         </div>
 
-        {/* Right Side: Side panels */}
-        <div className="detail-sidebar">
+        {/* Right Columns - Metadata, Action, Logs */}
+        <div className="flex flex-col gap-6">
           
-          {/* Status & Deadline Card */}
-          <div className="detail-section-card" style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
-            <h3 className="detail-section-title" style={{ fontSize: '1.1rem', marginBottom: '0.5rem' }}>
+          {/* Bid Status & Deadline Card */}
+          <Card className="flex flex-col gap-4" borderAccent="none">
+            <h3 className="font-heading font-bold text-sm text-slate-200 uppercase tracking-wider border-b border-white/5 pb-2.5">
               Bid Status & Deadline
             </h3>
             
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span className="specs-meta-label" style={{ fontSize: '0.85rem' }}>Current Status</span>
-              <span className={`status-badge ${getStatusClass(tender.status)}`} style={{ fontSize: '0.8rem' }}>
-                {tender.status}
-              </span>
+            <div className="flex flex-col gap-3">
+              <div className="flex justify-between items-center bg-bg-dark/30 px-3 py-2 rounded-lg border border-border-color/30">
+                <span className="text-[10px] text-text-muted font-bold uppercase">Current Stage</span>
+                <StatusChip status={tender.status} />
+              </div>
+
+              <div className="flex justify-between items-center bg-bg-dark/30 px-3 py-2 rounded-lg border border-border-color/30">
+                <span className="text-[10px] text-text-muted font-bold uppercase">Deadline</span>
+                <span className="inline-flex items-center gap-1.5 font-mono text-xs text-text-primary font-semibold">
+                  <Calendar size={13} className="text-text-muted" />
+                  {formatDate(tender.deadline_date)}
+                </span>
+              </div>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span className="specs-meta-label" style={{ fontSize: '0.85rem' }}>Deadline date</span>
-              <span className="tender-deadline" style={{ fontSize: '0.9rem' }}>
-                <Calendar size={14} /> {new Date(tender.deadline_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-              </span>
-            </div>
+            {/* Status updates transition form */}
+            <div className="border-t border-white/5 pt-4 mt-2">
+              <form onSubmit={handleStatusChange} className="flex flex-col gap-3">
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[10px] text-text-muted font-bold uppercase tracking-wider">Transition Stage</label>
+                  <select 
+                    className="w-full bg-bg-dark border border-border-color hover:border-border-focus rounded-lg px-3 py-2 text-xs font-semibold text-text-secondary outline-none transition-colors cursor-pointer"
+                    value={selectedStatus}
+                    onChange={(e) => setSelectedStatus(e.target.value as any)}
+                    disabled={isUpdatingStatus}
+                  >
+                    <option value="Draft">Draft</option>
+                    <option value="Submitted">Submitted</option>
+                    <option value="Under Review">Under Review</option>
+                    <option value="Approved">Approved</option>
+                    <option value="Rejected">Rejected</option>
+                    <option value="Completed">Completed</option>
+                  </select>
+                </div>
 
-            <div style={{ borderTop: '1px solid rgba(255, 255, 255, 0.05)', paddingTop: '1.2rem' }}>
-              <form onSubmit={handleStatusChange} style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-                <label className="form-label" style={{ fontSize: '0.8rem' }}>Transition Status</label>
-                <select 
-                  className="filter-select"
-                  style={{ width: '100%', padding: '0.6rem 2rem 0.6rem 0.8rem', fontSize: '0.85rem' }}
-                  value={selectedStatus}
-                  onChange={(e) => setSelectedStatus(e.target.value as any)}
-                  disabled={isUpdatingStatus}
-                >
-                  <option value="Draft">Draft</option>
-                  <option value="Submitted">Submitted</option>
-                  <option value="Under Review">Under Review</option>
-                  <option value="Approved">Approved</option>
-                  <option value="Rejected">Rejected</option>
-                  <option value="Completed">Completed</option>
-                </select>
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[10px] text-text-muted font-bold uppercase tracking-wider">Change Comments</label>
+                  <textarea 
+                    className="w-full bg-bg-dark border border-border-color rounded-lg px-3 py-2 text-xs text-text-primary placeholder-text-muted outline-none transition-all duration-100 min-h-[60px] resize-none focus:border-border-focus"
+                    placeholder="Provide transition log details..."
+                    value={statusNote}
+                    onChange={(e) => setStatusNote(e.target.value)}
+                    disabled={isUpdatingStatus}
+                  />
+                </div>
 
-                <textarea 
-                  className="form-textarea" 
-                  style={{ minHeight: '60px', fontSize: '0.85rem', padding: '0.6rem' }}
-                  placeholder="Optional log comments..."
-                  value={statusNote}
-                  onChange={(e) => setStatusNote(e.target.value)}
-                  disabled={isUpdatingStatus}
-                />
-
-                <button 
+                <Button 
                   type="submit" 
-                  className="action-btn btn-primary"
-                  style={{ width: '100%', padding: '0.6rem', fontSize: '0.85rem' }}
+                  variant="secondary"
+                  size="sm"
+                  className="w-full font-bold uppercase tracking-wider mt-1"
                   disabled={isUpdatingStatus || selectedStatus === tender.status}
                 >
                   Update Status
-                </button>
+                </Button>
               </form>
             </div>
-          </div>
+          </Card>
 
           {/* BOQ Management Card */}
-          <div className="detail-section-card" style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
-            <h3 className="detail-section-title" style={{ fontSize: '1.1rem', marginBottom: '0.5rem' }}>
+          <Card className="flex flex-col gap-4" borderAccent="none">
+            <h3 className="font-heading font-bold text-sm text-slate-200 uppercase tracking-wider border-b border-white/5 pb-2.5">
               Bill of Quantities (BOQ)
             </h3>
             
             {tender.status !== 'Approved' && tender.status !== 'Completed' ? (
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.8rem', padding: '1.2rem 0.5rem', background: 'rgba(255,255,255,0.01)', border: '1px dashed rgba(255,255,255,0.1)', borderRadius: '12px', textAlign: 'center' }}>
-                <Lock size={28} style={{ color: 'var(--text-muted)', opacity: 0.5 }} />
-                <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 500 }}>
-                  BOQ will be available after tender approval
+              <div className="flex flex-col items-center justify-center gap-2.5 py-6 px-4 bg-bg-dark/30 border border-dashed border-border-color rounded-xl text-center">
+                <Lock size={24} className="text-text-muted opacity-40 shrink-0" />
+                <div>
+                  <div className="text-xs font-bold text-text-secondary">BOQ Costing Locked</div>
+                  <p className="text-[10px] text-text-muted mt-1 leading-normal max-w-[200px] mx-auto">
+                    Commercial estimators will be unlocked once this tender stage transitions to Approved.
+                  </p>
                 </div>
               </div>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.85rem' }}>
-                  <span className="specs-meta-label">BOQ Status</span>
+              <div className="flex flex-col gap-3">
+                <div className="flex justify-between items-center bg-bg-dark/30 px-3 py-2 rounded-lg border border-border-color/30 text-xs">
+                  <span className="text-[10px] text-text-muted font-bold uppercase">Estimating State</span>
                   {boq ? (
-                    <span className="status-badge" style={{ fontSize: '0.75rem', background: 'rgba(6, 182, 212, 0.1)', borderColor: 'rgba(6, 182, 212, 0.3)', color: 'var(--secondary)' }}>
-                      {boq.status}
-                    </span>
+                    <StatusChip status={boq.status} />
                   ) : (
-                    <span className="status-badge status-draft" style={{ fontSize: '0.75rem' }}>
-                      Not Created
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider border border-amber-500/25 bg-amber-500/10 text-amber-400">
+                      Not Instantiated
                     </span>
                   )}
                 </div>
                 
-                <Link 
-                  href={`/tenders/${tender.id}/boq`}
-                  className={`action-btn ${boq ? 'btn-accent' : 'btn-primary'}`}
-                  style={{ textDecoration: 'none', padding: '0.6rem', fontSize: '0.85rem', width: '100%', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
-                >
-                  <Unlock size={14} />
-                  <span>{boq ? 'Manage BOQ Costing' : 'Create BOQ Costing'}</span>
+                <Link href={`/tenders/${tender.id}/boq`} className="no-underline">
+                  <Button 
+                    variant="primary" 
+                    size="sm" 
+                    className="w-full flex items-center justify-center gap-1.5 font-bold uppercase tracking-wider"
+                  >
+                    <Unlock size={14} />
+                    {boq ? 'Manage BOQ Costing' : 'Create BOQ Costing'}
+                  </Button>
                 </Link>
               </div>
             )}
-          </div>
+          </Card>
 
           {/* Documents Attachment Card */}
-          <div className="detail-section-card">
-            <h3 className="detail-section-title" style={{ fontSize: '1.1rem' }}>
-              Tender Documents
+          <Card className="flex flex-col gap-4" borderAccent="none">
+            <h3 className="font-heading font-bold text-sm text-slate-200 uppercase tracking-wider border-b border-white/5 pb-2.5">
+              Tender Specifications Files
             </h3>
 
             {documents.length === 0 ? (
-              <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                No specification files attached to this tender.
-              </p>
+              <div className="text-center py-6 text-xs text-text-muted italic">
+                No specification files attached to this tender registry.
+              </div>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+              <div className="flex flex-col gap-2.5">
                 {documents.map((doc) => (
                   <div 
                     key={doc.id}
-                    className="file-item"
-                    style={{ background: 'rgba(0,0,0,0.15)', padding: '0.6rem 0.8rem' }}
+                    className="flex items-center justify-between bg-bg-dark/30 hover:bg-bg-dark/50 border border-border-color/55 px-3 py-2 rounded-lg transition-colors group"
                   >
-                    <div className="file-info" style={{ gap: '0.6rem' }}>
-                      <FileText size={14} style={{ color: 'var(--primary)', flexShrink: 0 }} />
-                      <div className="file-name" style={{ fontSize: '0.8rem' }} title={doc.file_name}>
+                    <div className="flex items-center gap-2 min-w-0">
+                      <FileText size={14} className="text-primary shrink-0" />
+                      <span className="text-xs font-medium text-text-secondary group-hover:text-text-primary truncate max-w-[170px]" title={doc.file_name}>
                         {doc.file_name}
-                      </div>
+                      </span>
                     </div>
                     
-                    <a 
-                      href="#"
-                      className="file-action-btn"
+                    <button 
+                      className="text-text-muted hover:text-primary transition-colors p-1"
                       onClick={(e) => {
                         e.preventDefault();
-                        alert(`Starting mock download of document: ${doc.file_name}`);
+                        alert(`Starting download of specification artifact: ${doc.file_name}`);
                       }}
                     >
-                      <Download size={14} />
-                    </a>
+                      <Download size={13} />
+                    </button>
                   </div>
                 ))}
               </div>
             )}
-          </div>
+          </Card>
 
           {/* Status History Timeline */}
-          <div className="detail-section-card">
-            <h3 className="detail-section-title" style={{ fontSize: '1.1rem' }}>
-              Status History Log
+          <Card className="flex flex-col gap-4" borderAccent="none">
+            <h3 className="font-heading font-bold text-sm text-slate-200 uppercase tracking-wider border-b border-white/5 pb-2.5 flex items-center gap-1.5">
+              <History size={15} className="text-text-muted" />
+              Audit & Transition Trail
             </h3>
             
-            <div className="timeline">
+            <div className="relative border-l border-border-color pl-4 ml-2.5 flex flex-col gap-5 py-1">
               {tender.status_history && tender.status_history.length > 0 ? (
-                tender.status_history.map((log, index) => (
-                  <div key={index} className="timeline-item">
-                    <div className={`timeline-dot ${index === 0 ? 'active' : ''}`}></div>
-                    <div className="timeline-content">
-                      <div className="timeline-header">
-                        <span className="timeline-status" style={{ color: index === 0 ? 'var(--secondary)' : 'var(--text-primary)' }}>
+                tender.status_history.map((log, index) => {
+                  const isActive = index === 0;
+                  return (
+                    <div key={index} className="relative flex flex-col gap-1">
+                      {/* Timeline dot */}
+                      <span className={`absolute -left-[21px] top-1 h-2.5 w-2.5 rounded-full border ${
+                        isActive 
+                          ? 'bg-primary border-primary shadow-[0_0_8px_var(--primary-glow)]' 
+                          : 'bg-bg-dark border-border-color'
+                      }`} />
+                      
+                      <div className="flex justify-between items-center gap-2">
+                        <span className={`text-[11px] font-bold uppercase tracking-wider ${isActive ? 'text-primary' : 'text-text-secondary'}`}>
                           {log.status}
                         </span>
-                        <span className="timeline-date">
+                        <span className="text-[9px] text-text-muted font-mono shrink-0">
                           {new Date(log.updated_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                         </span>
                       </div>
-                      <div className="timeline-user">Updated by: {log.updated_by}</div>
-                      {log.note && <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.3rem', fontStyle: 'italic' }}>"{log.note}"</p>}
+                      
+                      <span className="text-[10px] text-text-muted font-mono leading-none">
+                        by: {log.updated_by}
+                      </span>
+                      
+                      {log.note && (
+                        <p className="text-[10.5px] text-text-secondary bg-bg-dark/40 px-2 py-1 rounded border border-border-color/30 mt-1 italic leading-normal">
+                          "{log.note}"
+                        </p>
+                      )}
                     </div>
-                  </div>
-                ))
+                  );
+                })
               ) : (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-                  <Clock size={14} />
-                  <span>No transitions logged yet.</span>
+                <div className="flex items-center gap-1.5 text-xs text-text-muted italic py-2">
+                  <Clock size={12} />
+                  <span>No transitions logged.</span>
                 </div>
               )}
             </div>
-          </div>
-
+          </Card>
         </div>
-
       </div>
     </div>
   );
 }
+

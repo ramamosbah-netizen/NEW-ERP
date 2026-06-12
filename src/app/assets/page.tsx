@@ -145,30 +145,30 @@ export default function AssetRegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#060814] text-[#f8fafc]">
-<main className="max-w-[1600px] mx-auto px-6 py-8">
+    <div className="min-h-screen bg-bg-dark text-text-primary">
+      <main className="max-w-[1600px] mx-auto px-6 py-8">
         
         {/* HEADER */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-900 pb-6 mb-8">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border-color pb-6 mb-8">
           <div>
-            <h1 className="font-heading font-extrabold text-2xl tracking-tight text-slate-100">
+            <h1 className="font-heading font-extrabold text-2xl tracking-tight text-text-primary">
               Fixed Asset Register
             </h1>
-            <p className="text-xs text-[#94a3b8] mt-1 uppercase tracking-widest font-mono">
+            <p className="text-xs text-text-muted mt-1 uppercase tracking-widest font-mono">
               Capitalized assets registry, straight-line schedules & external accounting exports
             </p>
           </div>
           <div className="flex items-center gap-3">
             <Link
               href="/assets/depreciation"
-              className="flex items-center gap-1.5 px-4 py-2 text-xs font-semibold bg-slate-900 border border-slate-800 text-slate-200 rounded-lg hover:bg-slate-800 transition-all font-mono"
+              className="flex items-center gap-1.5 px-4 py-2 text-xs font-semibold bg-bg-card border border-border-color text-text-secondary rounded-lg hover:bg-bg-card-hover transition-all font-mono"
             >
-              <Calculator size={14} className="text-[var(--primary)]" />
+              <Calculator size={14} className="text-primary" />
               Depreciation Run
             </Link>
             <button
               onClick={() => setShowAddModal(true)}
-              className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold bg-[var(--primary)] text-slate-950 hover:bg-[var(--primary-hover)] rounded-lg font-mono transition-all"
+              className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold bg-primary text-bg-dark hover:bg-primary-hover rounded-lg font-mono transition-all cursor-pointer"
             >
               <Plus size={14} />
               Capitalize Asset
@@ -178,28 +178,28 @@ export default function AssetRegisterPage() {
 
         {/* LEDGER AGGREGATES CARDS */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="p-5 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl">
-            <span className="text-[10px] font-mono text-slate-500 uppercase tracking-widest block">Gross Capitalized Cost</span>
-            <div className="text-2xl font-heading font-bold text-slate-100 mt-2 font-mono">
+          <div className="p-5 bg-bg-card border border-border-color rounded-xl">
+            <span className="text-[10px] font-mono text-text-muted uppercase tracking-widest block">Gross Capitalized Cost</span>
+            <div className="text-2xl font-heading font-bold text-text-primary mt-2 font-mono">
               {formatAED(totalCost)}
             </div>
-            <div className="text-[10px] text-slate-500 font-mono mt-1">Initial acquisition value of all items</div>
+            <div className="text-[10px] text-text-muted font-mono mt-1">Initial acquisition value of all items</div>
           </div>
           
-          <div className="p-5 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl">
-            <span className="text-[10px] font-mono text-slate-500 uppercase tracking-widest block">Accumulated Depreciation</span>
-            <div className="text-2xl font-heading font-bold text-amber-400 mt-2 font-mono">
+          <div className="p-5 bg-bg-card border border-border-color rounded-xl">
+            <span className="text-[10px] font-mono text-text-muted uppercase tracking-widest block">Accumulated Depreciation</span>
+            <div className="text-2xl font-heading font-bold text-warning mt-2 font-mono">
               {formatAED(totalAccumDep)}
             </div>
-            <div className="text-[10px] text-slate-500 font-mono mt-1">Total posted amortization MTD</div>
+            <div className="text-[10px] text-text-muted font-mono mt-1">Total posted amortization MTD</div>
           </div>
 
-          <div className="p-5 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl">
-            <span className="text-[10px] font-mono text-slate-500 uppercase tracking-widest block">Net Book Value (NBV)</span>
-            <div className="text-2xl font-heading font-bold text-[var(--primary)] mt-2 font-mono">
+          <div className="p-5 bg-bg-card border border-border-color rounded-xl">
+            <span className="text-[10px] font-mono text-text-muted uppercase tracking-widest block">Net Book Value (NBV)</span>
+            <div className="text-2xl font-heading font-bold text-primary mt-2 font-mono">
               {formatAED(totalNBV)}
             </div>
-            <div className="text-[10px] text-slate-500 font-mono mt-1">Current balance sheet valuation</div>
+            <div className="text-[10px] text-text-muted font-mono mt-1">Current balance sheet valuation</div>
           </div>
         </div>
 
@@ -207,24 +207,24 @@ export default function AssetRegisterPage() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
           
           {/* Category Totals bar */}
-          <div className="p-5 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl flex flex-col h-[400px]">
-            <h3 className="font-heading font-bold text-xs uppercase tracking-widest text-slate-300 border-b border-slate-900 pb-3 mb-4 flex items-center gap-1.5">
-              <BarChart3 size={13} className="text-[var(--primary)]" />
+          <div className="p-5 bg-bg-card border border-border-color rounded-xl flex flex-col h-[400px]">
+            <h3 className="font-heading font-bold text-xs uppercase tracking-widest text-text-secondary border-b border-border-color pb-3 mb-4 flex items-center gap-1.5">
+              <BarChart3 size={13} className="text-primary" />
               Category Valuations
             </h3>
             <div className="overflow-y-auto flex-1 pr-1 gap-4 flex flex-col">
               {Object.keys(DEFAULT_USEFUL_LIVES).map(cat => {
                 const vals = categorySummary[cat] || { cost: 0, accum: 0, nbv: 0 };
                 return (
-                  <div key={cat} className="p-2.5 bg-slate-950/40 border border-slate-900 rounded-lg text-xs font-mono">
-                    <span className="block text-[10px] text-slate-400 font-bold uppercase">{cat.replace(/_/g, ' ')}</span>
+                  <div key={cat} className="p-2.5 bg-bg-dark/40 border border-border-color rounded-lg text-xs font-mono">
+                    <span className="block text-[10px] text-text-secondary font-bold uppercase">{cat.replace(/_/g, ' ')}</span>
                     <div className="flex justify-between mt-2">
-                      <span className="text-slate-500">Cost:</span>
-                      <span className="text-slate-300 font-bold">{formatAED(vals.cost)}</span>
+                      <span className="text-text-muted">Cost:</span>
+                      <span className="text-text-secondary font-bold">{formatAED(vals.cost)}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-500">NBV:</span>
-                      <span className="text-[var(--primary)] font-bold">{formatAED(vals.nbv)}</span>
+                      <span className="text-text-muted">NBV:</span>
+                      <span className="text-primary font-bold">{formatAED(vals.nbv)}</span>
                     </div>
                   </div>
                 );
@@ -233,22 +233,22 @@ export default function AssetRegisterPage() {
           </div>
 
           {/* MAIN ASSETS GRID */}
-          <div className="lg:col-span-3 p-6 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl flex flex-col min-h-[400px]">
+          <div className="lg:col-span-3 p-6 bg-bg-card border border-border-color rounded-xl flex flex-col min-h-[400px]">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-              <h3 className="font-heading font-extrabold text-sm uppercase tracking-wider text-slate-200">
+              <h3 className="font-heading font-extrabold text-sm uppercase tracking-wider text-text-secondary">
                 Capitalized Assets Register ({filteredAssets.length} items)
               </h3>
               
               <div className="flex flex-wrap items-center gap-3">
                 {/* Search */}
                 <div className="relative">
-                  <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                  <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
                   <input 
                     type="text"
                     placeholder="Search name, asset number, location..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-56 bg-slate-950/60 border border-slate-900 rounded-lg pl-9 pr-4 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-[var(--primary)] transition-all"
+                    className="w-56 bg-bg-dark/60 border border-border-color rounded-lg pl-9 pr-4 py-1.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-primary transition-all"
                   />
                 </div>
 
@@ -256,7 +256,7 @@ export default function AssetRegisterPage() {
                 <select
                   value={categoryFilter}
                   onChange={(e) => setCategoryFilter(e.target.value)}
-                  className="bg-slate-950/60 border border-slate-900 rounded-lg px-3 py-1.5 text-xs text-slate-400 focus:outline-none focus:border-[var(--primary)]"
+                  className="bg-bg-dark/60 border border-border-color rounded-lg px-3 py-1.5 text-xs text-text-secondary focus:outline-none focus:border-primary"
                 >
                   <option value="">All Categories</option>
                   <option value="VEHICLE">Vehicles</option>
@@ -272,7 +272,7 @@ export default function AssetRegisterPage() {
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  className="bg-slate-950/60 border border-slate-900 rounded-lg px-3 py-1.5 text-xs text-slate-400 focus:outline-none focus:border-[var(--primary)]"
+                  className="bg-bg-dark/60 border border-border-color rounded-lg px-3 py-1.5 text-xs text-text-secondary focus:outline-none focus:border-primary"
                 >
                   <option value="">All Statuses</option>
                   <option value="ACTIVE">Active</option>
@@ -284,18 +284,18 @@ export default function AssetRegisterPage() {
             </div>
 
             {loading ? (
-              <div className="h-60 flex-1 flex items-center justify-center text-xs font-mono text-slate-500">
+              <div className="h-60 flex-1 flex items-center justify-center text-xs font-mono text-text-muted">
                 <RefreshCw className="animate-spin mr-2" size={15} /> Loading Asset Register...
               </div>
             ) : filteredAssets.length === 0 ? (
-              <div className="h-60 flex-1 flex items-center justify-center text-xs font-mono text-slate-500 border border-dashed border-slate-900 rounded-lg">
+              <div className="h-60 flex-1 flex items-center justify-center text-xs font-mono text-text-muted border border-dashed border-border-color rounded-lg">
                 No capitalized assets registered.
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="border-b border-slate-900 text-[10px] font-mono text-slate-500 uppercase tracking-widest">
+                    <tr className="border-b border-border-color text-[10px] font-mono text-text-muted uppercase tracking-widest">
                       <th className="pb-3">Asset Number</th>
                       <th className="pb-3">Name</th>
                       <th className="pb-3">Category</th>
@@ -307,38 +307,38 @@ export default function AssetRegisterPage() {
                       <th className="pb-3 text-right">Action</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-950/40 text-xs">
+                  <tbody className="divide-y divide-border-color/40 text-xs">
                     {filteredAssets.map(a => (
-                      <tr key={a.id} className="hover:bg-slate-900/10 group">
-                        <td className="py-4 font-mono font-bold text-[var(--primary)]">
+                      <tr key={a.id} className="hover:bg-bg-card-hover/20 group">
+                        <td className="py-4 font-mono font-bold text-primary">
                           {a.asset_number}
                         </td>
                         <td className="py-4">
-                          <span className="font-bold text-slate-200 block">{a.name}</span>
-                          <span className="text-[10px] text-slate-500 font-mono mt-0.5 block">{a.location || '—'}</span>
+                          <span className="font-bold text-text-primary block">{a.name}</span>
+                          <span className="text-[10px] text-text-muted font-mono mt-0.5 block">{a.location || '—'}</span>
                         </td>
-                        <td className="py-4 text-[10px] text-slate-400 font-mono uppercase">
+                        <td className="py-4 text-[10px] text-text-secondary font-mono uppercase">
                           {a.category.replace(/_/g, ' ')}
                         </td>
-                        <td className="py-4 font-mono text-[10px] text-slate-400">
+                        <td className="py-4 font-mono text-[10px] text-text-secondary">
                           {new Date(a.acquisition_date).toLocaleDateString('en-GB')}
                         </td>
-                        <td className="py-4 font-mono text-slate-300">
+                        <td className="py-4 font-mono text-text-secondary">
                           {formatAED(a.acquisition_cost)}
                         </td>
-                        <td className="py-4 font-mono text-amber-500">
+                        <td className="py-4 font-mono text-warning">
                           {formatAED(a.accumulated_depreciation)}
                         </td>
-                        <td className="py-4 font-mono font-bold text-slate-200">
+                        <td className="py-4 font-mono font-bold text-text-primary">
                           {formatAED(a.net_book_value)}
                         </td>
                         <td className="py-4">
                           <span className={`inline-block px-2 py-0.5 rounded text-[9px] font-mono uppercase font-bold border ${
                             a.status === 'ACTIVE'
-                              ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                              ? 'bg-success-glow text-success border-success/20'
                               : a.status === 'FULLY_DEPRECIATED'
-                              ? 'bg-blue-500/10 text-blue-400 border-blue-500/20'
-                              : 'bg-red-500/10 text-red-400 border-red-500/20'
+                              ? 'bg-secondary-glow text-secondary border-secondary-glow/20'
+                              : 'bg-error-glow text-error border-error-glow/20'
                           }`}>
                             {a.status.replace(/_/g, ' ')}
                           </span>
@@ -346,7 +346,7 @@ export default function AssetRegisterPage() {
                         <td className="py-4 text-right">
                           <Link
                             href={`/assets/${a.id}`}
-                            className="inline-flex items-center gap-1 text-xs text-slate-400 group-hover:text-[var(--primary)] font-bold transition-all"
+                            className="inline-flex items-center gap-1 text-xs text-text-secondary group-hover:text-primary font-bold transition-all"
                           >
                             Ledger
                             <ChevronRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
@@ -363,34 +363,34 @@ export default function AssetRegisterPage() {
 
         {/* MODAL: CAPITALIZE ASSET */}
         {showAddModal && (
-          <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-[#0c0f24] border border-slate-800 rounded-2xl w-full max-w-lg p-6 relative overflow-y-auto max-h-[90vh]">
-              <h2 className="font-heading font-extrabold text-sm uppercase tracking-wider text-slate-100 mb-4">
+          <div className="fixed inset-0 z-50 bg-bg-dark/80 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="bg-bg-card border border-border-color rounded-2xl w-full max-w-lg p-6 relative overflow-y-auto max-h-[90vh]">
+              <h2 className="font-heading font-extrabold text-sm uppercase tracking-wider text-text-primary mb-4">
                 Capitalize New Asset
               </h2>
               <form onSubmit={handleFormSubmit} className="flex flex-col gap-4 text-xs">
                 <div className="grid grid-cols-2 gap-3">
                   <div className="col-span-2">
-                    <label className="block text-slate-400 mb-1.5 font-mono">Asset Name / Tag</label>
+                    <label className="block text-text-secondary mb-1.5 font-mono">Asset Name / Tag</label>
                     <input
                       type="text"
                       value={form.name}
                       onChange={(e) => setForm({ ...form, name: e.target.value })}
                       required
                       placeholder="e.g. Server Room Backup UPS / Pickup Vehicle"
-                      className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-[var(--primary)]"
+                      className="w-full bg-bg-dark border border-border-color rounded-lg p-2.5 text-text-primary focus:outline-none focus:border-primary"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-slate-400 mb-1.5 font-mono">Asset Category</label>
+                    <label className="block text-text-secondary mb-1.5 font-mono">Asset Category</label>
                     <select
                       value={form.category}
                       onChange={(e) => handleCategoryChange(e.target.value as any)}
                       required
-                      className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-[var(--primary)]"
+                      className="w-full bg-bg-dark border border-border-color rounded-lg p-2.5 text-text-primary focus:outline-none focus:border-primary"
                     >
                       <option value="VEHICLE">Vehicle (Owned)</option>
                       <option value="IT_EQUIPMENT">IT Equipment</option>
@@ -403,51 +403,51 @@ export default function AssetRegisterPage() {
                   </div>
 
                   <div>
-                    <label className="block text-slate-400 mb-1.5 font-mono">Acquisition Date</label>
+                    <label className="block text-text-secondary mb-1.5 font-mono">Acquisition Date</label>
                     <input
                       type="date"
                       value={form.acquisition_date}
                       onChange={(e) => setForm({ ...form, acquisition_date: e.target.value })}
                       required
-                      className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-[var(--primary)]"
+                      className="w-full bg-bg-dark border border-border-color rounded-lg p-2.5 text-text-primary focus:outline-none focus:border-primary"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-3 gap-3">
                   <div>
-                    <label className="block text-slate-400 mb-1.5 font-mono">Cost (AED)</label>
+                    <label className="block text-text-secondary mb-1.5 font-mono">Cost (AED)</label>
                     <input
                       type="number"
                       value={form.acquisition_cost || ''}
                       onChange={(e) => setForm({ ...form, acquisition_cost: Number(e.target.value) })}
                       required
                       min={1}
-                      className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 font-mono focus:outline-none focus:border-[var(--primary)]"
+                      className="w-full bg-bg-dark border border-border-color rounded-lg p-2.5 text-text-primary font-mono focus:outline-none focus:border-primary"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-slate-400 mb-1.5 font-mono">Salvage Value (AED)</label>
+                    <label className="block text-text-secondary mb-1.5 font-mono">Salvage Value (AED)</label>
                     <input
                       type="number"
                       value={form.salvage_value}
                       onChange={(e) => setForm({ ...form, salvage_value: Number(e.target.value) })}
                       required
                       min={0}
-                      className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 font-mono focus:outline-none focus:border-[var(--primary)]"
+                      className="w-full bg-bg-dark border border-border-color rounded-lg p-2.5 text-text-primary font-mono focus:outline-none focus:border-primary"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-slate-400 mb-1.5 font-mono">Life (Months)</label>
+                    <label className="block text-text-secondary mb-1.5 font-mono">Life (Months)</label>
                     <input
                       type="number"
                       value={form.useful_life_months}
                       onChange={(e) => setForm({ ...form, useful_life_months: Number(e.target.value) })}
                       required
                       min={1}
-                      className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 font-mono focus:outline-none focus:border-[var(--primary)]"
+                      className="w-full bg-bg-dark border border-border-color rounded-lg p-2.5 text-text-primary font-mono focus:outline-none focus:border-primary"
                     />
                   </div>
                 </div>
@@ -455,11 +455,11 @@ export default function AssetRegisterPage() {
                 {/* Conditional vehicle binding link */}
                 {form.category === 'VEHICLE' && (
                   <div>
-                    <label className="block text-slate-400 mb-1.5 font-mono">Link Owned Vehicle Profile</label>
+                    <label className="block text-text-secondary mb-1.5 font-mono">Link Owned Vehicle Profile</label>
                     <select
                       value={form.linked_vehicle_id}
                       onChange={(e) => setForm({ ...form, linked_vehicle_id: e.target.value })}
-                      className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-[var(--primary)]"
+                      className="w-full bg-bg-dark border border-border-color rounded-lg p-2.5 text-text-primary focus:outline-none focus:border-primary"
                     >
                       <option value="">Create asset standalone...</option>
                       {vehicles.map(v => (
@@ -471,11 +471,11 @@ export default function AssetRegisterPage() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-slate-400 mb-1.5 font-mono">Custodian</label>
+                    <label className="block text-text-secondary mb-1.5 font-mono">Custodian</label>
                     <select
                       value={form.custodian_id}
                       onChange={(e) => setForm({ ...form, custodian_id: e.target.value })}
-                      className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-[var(--primary)]"
+                      className="w-full bg-bg-dark border border-border-color rounded-lg p-2.5 text-text-primary focus:outline-none focus:border-primary"
                     >
                       <option value="">No Custodian...</option>
                       {employees.map(emp => (
@@ -485,25 +485,25 @@ export default function AssetRegisterPage() {
                   </div>
 
                   <div>
-                    <label className="block text-slate-400 mb-1.5 font-mono">Location / Site</label>
+                    <label className="block text-text-secondary mb-1.5 font-mono">Location / Site</label>
                     <input
                       type="text"
                       value={form.location}
                       onChange={(e) => setForm({ ...form, location: e.target.value })}
                       placeholder="e.g. Head Office / DIP Store"
-                      className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-[var(--primary)]"
+                      className="w-full bg-bg-dark border border-border-color rounded-lg p-2.5 text-text-primary focus:outline-none focus:border-primary"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-slate-400 mb-1.5 font-mono">Asset Description / Auditor Notes</label>
+                  <label className="block text-text-secondary mb-1.5 font-mono">Asset Description / Auditor Notes</label>
                   <textarea
-                    value={form.description}
-                    onChange={(e) => setForm({ ...form, description: e.target.value })}
-                    placeholder="Enter any auditing specifications, serial markings, purchase vendor details..."
-                    rows={2}
-                    className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-[var(--primary)]"
+                     value={form.description}
+                     onChange={(e) => setForm({ ...form, description: e.target.value })}
+                     placeholder="Enter any auditing specifications, serial markings, purchase vendor details..."
+                     rows={2}
+                     className="w-full bg-bg-dark border border-border-color rounded-lg p-2.5 text-text-primary focus:outline-none focus:border-primary"
                   />
                 </div>
 
@@ -511,14 +511,14 @@ export default function AssetRegisterPage() {
                   <button
                     type="button"
                     onClick={() => setShowAddModal(false)}
-                    className="px-4 py-2 bg-slate-900 border border-slate-800 text-slate-400 rounded-lg hover:text-slate-200 font-semibold"
+                    className="px-4 py-2 bg-bg-dark border border-border-color text-text-secondary rounded-lg hover:text-text-primary font-semibold cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={saving}
-                    className="px-4 py-2 bg-[var(--primary)] text-slate-950 rounded-lg font-bold hover:bg-[var(--primary-hover)] flex items-center gap-1.5"
+                    className="px-4 py-2 bg-primary text-bg-dark rounded-lg font-bold hover:bg-primary-hover flex items-center gap-1.5 cursor-pointer"
                   >
                     {saving && <RefreshCw size={12} className="animate-spin" />}
                     Capitalize

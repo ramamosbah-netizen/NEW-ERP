@@ -39,22 +39,22 @@ export const Drawer: React.FC<DrawerProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-[#060814]/75 backdrop-blur-sm z-[950] flex justify-end">
+    <div className="fixed inset-0 bg-slate-900/60 dark:bg-black/60 backdrop-blur-sm z-[950] flex justify-end">
       {/* Backdrop closer click */}
       <div className="absolute inset-0 -z-10" onClick={onClose} />
 
       {/* Drawer content board */}
       <div
-        className={`w-full ${sizeClasses[size]} h-full bg-[#0a0e24] border-l border-white/8 shadow-2xl shadow-black/80 flex flex-col justify-between animate-in slide-in-from-right duration-250`}
+        className={`w-full ${sizeClasses[size]} h-full bg-[var(--bg-card)] border-l border-[var(--border-color)] shadow-2xl flex flex-col justify-between animate-in slide-in-from-right duration-250`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-white/6 px-5 py-4 gap-4">
-          <h2 className="font-heading font-semibold text-white text-base truncate">
+        <div className="flex items-center justify-between border-b border-[var(--border-color)] px-5 py-4 gap-4">
+          <h2 className="font-heading font-semibold text-[var(--text-primary)] text-base truncate">
             {title || 'Details'}
           </h2>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/4 transition-all"
+            className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] p-1 rounded-lg hover:bg-[var(--bg-card-hover)] transition-all cursor-pointer"
             title="Close"
           >
             <X size={16} />
@@ -62,13 +62,13 @@ export const Drawer: React.FC<DrawerProps> = ({
         </div>
 
         {/* Scrolling content */}
-        <div className="flex-1 overflow-y-auto p-5 select-text custom-scrollbar">
+        <div className="flex-1 overflow-y-auto p-5 select-text custom-scrollbar text-[var(--text-primary)]">
           {children}
         </div>
 
         {/* Footer sticky bar */}
         {footer && (
-          <div className="flex justify-end items-center gap-2 border-t border-white/6 px-5 py-3 bg-[#0b0f2a]/50">
+          <div className="flex justify-end items-center gap-2 border-t border-[var(--border-color)] px-5 py-3 bg-[var(--bg-dark)]/50">
             {footer}
           </div>
         )}

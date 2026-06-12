@@ -137,8 +137,8 @@ export const MinutesEditor: React.FC<Props> = ({ meetingId, onPublished, onCance
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {error && (
-        <div className="p-3 bg-red-950/40 border border-red-500/20 text-red-300 rounded-lg flex items-start gap-2 text-xs">
-          <AlertCircle size={16} className="text-red-400 mt-0.5 flex-shrink-0" />
+        <div className="p-3 bg-error-glow border border-error/20 text-error rounded-lg flex items-start gap-2 text-xs">
+          <AlertCircle size={16} className="text-error mt-0.5 flex-shrink-0" />
           <span>{error}</span>
         </div>
       )}
@@ -157,16 +157,16 @@ export const MinutesEditor: React.FC<Props> = ({ meetingId, onPublished, onCance
       </div>
 
       {/* AI Extraction Button */}
-      <div className="flex justify-between items-center bg-slate-900/25 border border-slate-900 rounded-xl p-4">
+      <div className="flex justify-between items-center bg-bg-dark/25 border border-border-color rounded-xl p-4">
         <div>
-          <h4 className="text-xs font-semibold text-slate-200">AI Action Item Extractor</h4>
-          <p className="text-[10px] text-slate-500 mt-0.5">Gemini will auto-parse the text to suggest action items, assignees, and dates.</p>
+          <h4 className="text-xs font-semibold text-text-primary">AI Action Item Extractor</h4>
+          <p className="text-[10px] text-text-muted mt-0.5">Gemini will auto-parse the text to suggest action items, assignees, and dates.</p>
         </div>
         <button
           type="button"
           onClick={handleAIExtract}
           disabled={aiExtracting || !minutesText.trim()}
-          className="quote-btn bg-emerald-500 text-slate-950 hover:bg-emerald-400 font-bold"
+          className="quote-btn bg-primary text-bg-dark hover:bg-primary-hover font-bold cursor-pointer"
         >
           {aiExtracting ? (
             <>
@@ -185,13 +185,13 @@ export const MinutesEditor: React.FC<Props> = ({ meetingId, onPublished, onCance
       {/* Action Items List Grid */}
       <div className="space-y-3">
         <div className="flex justify-between items-center">
-          <label className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+          <label className="text-xs font-bold text-text-secondary uppercase tracking-wider">
             Action Items & Task Deliverables ({actionItems.length})
           </label>
           <button
             type="button"
             onClick={addActionItem}
-            className="text-xs text-emerald-400 hover:text-emerald-300 transition-colors flex items-center gap-1 font-bold font-mono"
+            className="text-xs text-primary hover:text-primary-hover transition-colors flex items-center gap-1 font-bold font-mono cursor-pointer"
           >
             <Plus size={14} />
             ADD MANUAL ITEM
@@ -199,7 +199,7 @@ export const MinutesEditor: React.FC<Props> = ({ meetingId, onPublished, onCance
         </div>
 
         {actionItems.length === 0 ? (
-          <div className="text-center py-8 border border-dashed border-slate-900 rounded-xl text-slate-500 text-xs italic">
+          <div className="text-center py-8 border border-dashed border-border-color rounded-xl text-text-muted text-xs italic">
             No action items assigned. Click "AI Extract" or "Add Manual Item".
           </div>
         ) : (
@@ -207,7 +207,7 @@ export const MinutesEditor: React.FC<Props> = ({ meetingId, onPublished, onCance
             {actionItems.map((item, idx) => (
               <div
                 key={idx}
-                className="flex flex-col sm:flex-row gap-3 p-3 bg-slate-950/60 border border-slate-900 rounded-xl items-start sm:items-center"
+                className="flex flex-col sm:flex-row gap-3 p-3 bg-bg-dark/60 border border-border-color rounded-xl items-start sm:items-center"
               >
                 {/* Description */}
                 <input
@@ -216,16 +216,16 @@ export const MinutesEditor: React.FC<Props> = ({ meetingId, onPublished, onCance
                   placeholder="Task description"
                   value={item.description}
                   onChange={(e) => updateActionItem(idx, 'description', e.target.value)}
-                  className="flex-1 bg-slate-900 border border-slate-800 rounded px-2.5 py-1.5 text-xs text-slate-200 outline-none focus:border-emerald-500"
+                  className="flex-1 bg-bg-dark border border-border-color rounded px-2.5 py-1.5 text-xs text-text-primary outline-none focus:border-primary"
                 />
 
                 {/* Assignee */}
                 <div className="flex items-center gap-1.5 w-full sm:w-[150px]">
-                  <User size={12} className="text-slate-500" />
+                  <User size={12} className="text-text-secondary" />
                   <select
                     value={item.assignee_id || ''}
                     onChange={(e) => updateActionItem(idx, 'assignee_id', e.target.value)}
-                    className="flex-1 bg-slate-900 border border-slate-800 rounded px-1.5 py-1 text-[11px] text-slate-300 outline-none"
+                    className="flex-1 bg-bg-dark border border-border-color rounded px-1.5 py-1 text-[11px] text-text-secondary outline-none"
                   >
                     <option value="">Unassigned</option>
                     {profiles.map(p => (
@@ -236,12 +236,12 @@ export const MinutesEditor: React.FC<Props> = ({ meetingId, onPublished, onCance
 
                 {/* Due Date */}
                 <div className="flex items-center gap-1.5 w-full sm:w-[130px]">
-                  <Calendar size={12} className="text-slate-500" />
+                  <Calendar size={12} className="text-text-secondary" />
                   <input
                     type="date"
                     value={item.due_date || ''}
                     onChange={(e) => updateActionItem(idx, 'due_date', e.target.value)}
-                    className="flex-1 bg-slate-900 border border-slate-800 rounded px-1.5 py-1 text-[11px] text-slate-300 font-mono outline-none"
+                    className="flex-1 bg-bg-dark border border-border-color rounded px-1.5 py-1 text-[11px] text-text-secondary font-mono outline-none"
                   />
                 </div>
 
@@ -249,7 +249,7 @@ export const MinutesEditor: React.FC<Props> = ({ meetingId, onPublished, onCance
                 <button
                   type="button"
                   onClick={() => removeActionItem(idx)}
-                  className="text-slate-500 hover:text-red-400 p-1 self-end sm:self-center"
+                  className="text-text-secondary hover:text-error p-1 self-end sm:self-center cursor-pointer"
                 >
                   <Trash size={14} />
                 </button>
@@ -260,18 +260,18 @@ export const MinutesEditor: React.FC<Props> = ({ meetingId, onPublished, onCance
       </div>
 
       {/* Form Buttons */}
-      <div className="flex justify-end gap-3 pt-4 border-t border-slate-900/60">
+      <div className="flex justify-end gap-3 pt-4 border-t border-border-color">
         <button
           type="button"
           onClick={onCancel}
-          className="quote-btn quote-btn-secondary"
+          className="quote-btn quote-btn-secondary cursor-pointer"
           disabled={loading}
         >
           Cancel
         </button>
         <button
           type="submit"
-          className="quote-btn quote-btn-primary"
+          className="quote-btn quote-btn-primary cursor-pointer"
           disabled={loading}
         >
           {loading ? 'Publishing...' : 'Publish Minutes & Create Tasks'}

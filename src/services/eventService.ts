@@ -43,7 +43,12 @@ export const eventService = {
         .single();
 
       if (error) {
-        console.error('Failed to insert system event:', error);
+        console.error('Failed to insert system event:', {
+          message: error.message,
+          code: error.code,
+          details: error.details,
+          hint: error.hint,
+        });
         throw error;
       }
 

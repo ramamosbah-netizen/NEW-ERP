@@ -6,6 +6,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import settingsService from '@/services/settingsService';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -153,7 +154,12 @@ const NAV_SECTIONS = [
 const STORAGE_KEY = 'erp-sidebar-collapsed';
 const SECTIONS_KEY = 'erp-sidebar-sections';
 
-export default function AppSidebar() {
+interface AppSidebarProps {
+  mobileOpen?: boolean;
+  onMobileClose?: () => void;
+}
+
+export default function AppSidebar({ mobileOpen = false, onMobileClose }: AppSidebarProps) {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
   const [openSections, setOpenSections] = useState<Record<string, boolean>>(() => {
@@ -162,7 +168,7 @@ export default function AppSidebar() {
     NAV_SECTIONS.forEach(s => { defaults[s.id] = true; });
     return defaults;
   });
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [enabledModules, setEnabledModules] = useState<Record<string, boolean>>({});
 
   // Load persisted state
   useEffect(() => {
@@ -176,6 +182,52 @@ export default function AppSidebar() {
       // Ignore
     }
   }, []);
+
+  // Load enabled modules and listen to events
+  useEffect(() => {
+    const loadModules = async () => {
+      // 1. Quick initial cache load
+      try {
+        const savedModules = localStorage.getItem('erp-enabled-modules');
+        if (savedModules) {
+          setEnabledModules(JSON.parse(savedModules));
+        }
+      } catch {
+        // Ignore
+      }
+
+      // 2. Fresh query from settings database
+      try {
+        const globalModules = await settingsService.getSettingByKey<Record<string, boolean>>('system.enabled_modules', {});
+        setEnabledModules(globalModules);
+        localStorage.setItem('erp-enabled-modules', JSON.stringify(globalModules));
+      } catch (err) {
+        console.error('Failed to fetch global modules config:', err);
+      }
+    };
+    
+    loadModules();
+    
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'erp-enabled-modules') {
+        loadModules();
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('erp-modules-updated', loadModules);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('erp-modules-updated', loadModules);
+    };
+  }, []);
+
+  // Filter navigation sections based on enabled modules
+  const visibleSections = NAV_SECTIONS.map(section => {
+    const visibleItems = section.items.filter(item => enabledModules[item.href] !== false);
+    return { ...section, items: visibleItems };
+  }).filter(section => section.items.length > 0);
 
   // Persist collapsed state
   useEffect(() => {
@@ -209,8 +261,8 @@ export default function AppSidebar() {
 
   // Close mobile sidebar when navigating
   useEffect(() => {
-    setMobileOpen(false);
-  }, [pathname]);
+    onMobileClose?.();
+  }, [pathname, onMobileClose]);
 
   return (
     <>
@@ -218,7 +270,7 @@ export default function AppSidebar() {
       {mobileOpen && (
         <div 
           className="sidebar-overlay visible" 
-          onClick={() => setMobileOpen(false)} 
+          onClick={onMobileClose} 
         />
       )}
 
@@ -239,7 +291,7 @@ export default function AppSidebar() {
 
         {/* Nav Sections */}
         <nav className="sidebar-nav">
-          {NAV_SECTIONS.map((section, sIdx) => (
+          {visibleSections.map((section, sIdx) => (
             <div key={section.id} className="sidebar-section">
               {/* Section Header */}
               {!collapsed && (

@@ -1,21 +1,25 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { 
   Briefcase, 
   Search, 
-  Filter, 
   Plus, 
   Calendar, 
   Clock, 
-  ArrowLeft, 
   AlertCircle,
-  FileText
+  MapPin,
+  DollarSign
 } from 'lucide-react';
-import '@/app/tenders/tenders.css';
+import { PageHeader } from '@/components/ui/PageHeader';
+import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
+import { StatusChip } from '@/components/ui/StatusChip';
+import { TanstackDataTable } from '@/components/tables/TanstackDataTable';
+import { ColumnDef } from '@tanstack/react-table';
 
 type Tender = {
   id: string;
@@ -78,28 +82,15 @@ export default function TendersDashboard() {
   // Handle filtering and search
   const filteredTenders = tenders.filter((t) => {
     const matchesSearch = 
-      t.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      t.client_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      t.project_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      t.location.toLowerCase().includes(searchTerm.toLowerCase());
+      (t.title || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (t.client_name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (t.project_name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (t.location || '').toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesStatus = statusFilter === 'all' || t.status === statusFilter;
 
     return matchesSearch && matchesStatus;
   });
-
-  // Status Badge styles helper
-  const getStatusClass = (status: Tender['status']) => {
-    switch (status) {
-      case 'Draft': return 'status-draft';
-      case 'Submitted': return 'status-submitted';
-      case 'Under Review': return 'status-review';
-      case 'Approved': return 'status-approved';
-      case 'Rejected': return 'status-rejected';
-      case 'Completed': return 'status-completed';
-      default: return 'status-draft';
-    }
-  };
 
   const formatBudget = (budget: number | null) => {
     if (budget === null || budget === undefined) return 'N/A';
@@ -114,62 +105,138 @@ export default function TendersDashboard() {
     });
   };
 
-  if (loading) {
-    return (
-      <div className="loading-overlay">
-        <div className="loading-spinner"></div>
-        <p style={{ fontFamily: 'var(--font-heading)', color: 'var(--text-secondary)' }}>Loading ERP Tenders Workspace...</p>
-      </div>
-    );
-  }
+  // Define column structure for TanstackDataTable
+  const columns: ColumnDef<Tender>[] = [
+    {
+      accessorKey: 'title',
+      header: 'Tender Title',
+      cell: ({ row }) => (
+        <div className="flex flex-col gap-0.5">
+          <Link 
+            href={`/tenders/${row.original.id}`}
+            className="text-primary hover:text-primary-hover font-bold hover:underline truncate max-w-[280px]"
+          >
+            {row.original.title}
+          </Link>
+          <span className="text-[10px] text-text-muted font-mono max-w-[280px] truncate">
+            {row.original.project_name || 'No Project Name'}
+          </span>
+        </div>
+      )
+    },
+    {
+      accessorKey: 'client_name',
+      header: 'Client Agency',
+      cell: ({ getValue }) => <span className="font-semibold text-text-primary">{String(getValue() || '—')}</span>
+    },
+    {
+      accessorKey: 'location',
+      header: 'Location / Site',
+      cell: ({ getValue }) => (
+        <span className="inline-flex items-center gap-1 text-xs text-text-secondary">
+          <MapPin size={12} className="text-text-muted shrink-0" />
+          <span className="truncate max-w-[150px]">{String(getValue() || '—')}</span>
+        </span>
+      )
+    },
+    {
+      accessorKey: 'deadline_date',
+      header: 'Deadline',
+      cell: ({ getValue }) => (
+        <span className="inline-flex items-center gap-1.5 font-mono text-xs text-text-secondary">
+          <Calendar size={12} className="text-text-muted shrink-0" />
+          {formatDate(String(getValue()))}
+        </span>
+      )
+    },
+    {
+      accessorKey: 'budget',
+      header: 'Budget Sum',
+      cell: ({ getValue }) => {
+        const val = getValue() as number | null;
+        return val ? (
+          <span className="inline-flex items-center gap-1 font-mono font-bold text-success text-xs">
+            <DollarSign size={12} className="shrink-0" />
+            {formatBudget(val).replace('$', '')}
+          </span>
+        ) : (
+          <span className="text-text-muted">—</span>
+        );
+      }
+    },
+    {
+      accessorKey: 'status',
+      header: 'Status',
+      cell: ({ getValue }) => <StatusChip status={String(getValue() || 'Draft')} />
+    },
+    {
+      accessorKey: 'updated_at',
+      header: 'Last Calibrated',
+      cell: ({ getValue }) => (
+        <span className="inline-flex items-center gap-1 text-[10px] text-text-muted font-mono">
+          <Clock size={10} className="shrink-0" />
+          {new Date(String(getValue())).toLocaleDateString()}
+        </span>
+      )
+    }
+  ];
+
+  const breadcrumbs = [
+    { label: 'COE Cockpit', href: '/dashboard' },
+    { label: 'Tenders Registry' }
+  ];
+
+  const actions = (
+    <Link href="/tenders/new" className="no-underline">
+      <Button variant="primary" size="sm" className="flex items-center gap-1.5 font-bold uppercase tracking-wider">
+        <Plus size={16} /> New Tender
+      </Button>
+    </Link>
+  );
 
   return (
-    <div className="tenders-container">
-      {/* Header Row */}
-      <div className="tenders-header">
-        <div>
-          <Link href="/dashboard" className="logout-btn" style={{ textDecoration: 'none', background: 'transparent', border: '1px solid var(--border-color)', color: 'var(--text-secondary)', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem', padding: '0.4rem 0.8rem', fontSize: '0.85rem' }}>
-            <ArrowLeft size={14} /> Back to Dashboard
-          </Link>
-          <h1 className="tenders-title">Tenders & Bid Management</h1>
-        </div>
-        
-        <Link href="/tenders/new" className="action-btn btn-primary" style={{ textDecoration: 'none' }}>
-          <Plus size={18} />
-          <span>New Tender</span>
-        </Link>
-      </div>
+    <div className="flex flex-col gap-6">
+      {/* Page Header */}
+      <PageHeader 
+        title="Tenders & Bid Management" 
+        subtitle="Unified register for pre-award commercial bids, cost estimations, and client compliance parameters."
+        breadcrumbs={breadcrumbs}
+        actions={actions}
+      />
 
       {errorMsg && (
-        <div className="db-warning-banner" style={{ border: '1px solid rgba(239, 68, 68, 0.3)', background: 'rgba(239, 68, 68, 0.1)', color: '#fca5a5' }}>
-          <AlertCircle size={24} style={{ color: 'var(--error)' }} />
+        <div className="flex gap-3 bg-red-500/10 border border-red-500/20 rounded-lg p-4 text-red-200 text-xs items-start">
+          <AlertCircle className="flex-shrink-0 text-red-400 mt-0.5" size={18} />
           <div>
             <strong>Database Connection Error</strong>
-            <p style={{ marginTop: '0.4rem' }}>{errorMsg}</p>
-            <p style={{ marginTop: '0.4rem', fontSize: '0.8rem' }}>
-              Ensure you ran the SQL script in <code>supabase/schema-tenders.sql</code> in the SQL editor of your Supabase project dashboard.
+            <p className="mt-1 leading-relaxed">{errorMsg}</p>
+            <p className="mt-1 leading-relaxed text-[10px] text-red-400/80">
+              Ensure the database setup from the original schemas is active and migrated in the Supabase instance.
             </p>
           </div>
         </div>
       )}
 
-      {/* Main panel for controls & list */}
-      <div className="tenders-panel">
-        <div className="controls-row">
-          <div className="search-input-wrapper">
-            <Search className="search-icon" size={18} />
+      {/* Modern Filter panel & Tanstack Table */}
+      <Card className="flex flex-col gap-4" borderAccent="none">
+        {/* Controls and Select Filter Row */}
+        <div className="flex flex-col sm:flex-row justify-between gap-4 items-stretch sm:items-center">
+          <div className="relative flex-1 max-w-md">
+            <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-text-muted">
+              <Search size={16} />
+            </span>
             <input 
               type="text" 
-              className="search-input" 
-              placeholder="Search tenders by title, client, or location..."
+              className="w-full bg-bg-dark border border-border-color rounded-lg pl-9 pr-4 py-2 text-sm text-text-primary placeholder-text-muted outline-none transition-all duration-100 focus:border-border-focus focus:ring-2 focus:ring-primary-glow"
+              placeholder="Search by title, client, or site..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
 
-          <div style={{ position: 'relative' }}>
+          <div className="flex gap-2">
             <select 
-              className="filter-select"
+              className="bg-bg-dark border border-border-color hover:border-border-focus rounded-lg px-3 py-2 text-xs font-semibold text-text-secondary outline-none transition-colors cursor-pointer"
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
             >
@@ -184,64 +251,35 @@ export default function TendersDashboard() {
           </div>
         </div>
 
+        {/* Empty state fallback or DataTable */}
         {filteredTenders.length === 0 ? (
-          <div className="empty-state">
-            <Briefcase size={64} className="empty-state-icon" />
-            <h3 className="empty-state-title">No Tenders Found</h3>
-            <p style={{ maxWidth: '400px', margin: '0 auto 1.5rem auto' }}>
+          <div className="flex flex-col items-center justify-center gap-3 text-center py-16 px-4 bg-bg-dark/40 rounded-lg border border-border-color border-dashed">
+            <Briefcase size={48} className="text-text-muted opacity-40 animate-pulse" />
+            <h3 className="text-sm font-bold text-text-primary uppercase tracking-wider">No Tenders Found</h3>
+            <p className="text-xs text-text-muted max-w-[360px] leading-relaxed">
               {searchTerm || statusFilter !== 'all' 
-                ? "No tenders match your active search terms or status filters." 
-                : "Get started by creating your first corporate procurement proposal."}
+                ? "No pre-award bids match your current search query or filter settings." 
+                : "Create your first corporate procurement proposal to initiate bid estimating workflows."}
             </p>
             {!searchTerm && statusFilter === 'all' && (
-              <Link href="/tenders/new" className="action-btn btn-secondary" style={{ textDecoration: 'none' }}>
-                <Plus size={16} /> Create Tender
+              <Link href="/tenders/new" className="no-underline mt-2">
+                <Button variant="secondary" size="sm" className="flex items-center gap-1">
+                  <Plus size={14} /> Create Tender
+                </Button>
               </Link>
             )}
           </div>
         ) : (
-          <div className="tenders-grid">
-            {filteredTenders.map((tender) => (
-              <div 
-                key={tender.id} 
-                className="tender-card"
-                onClick={() => router.push(`/tenders/${tender.id}`)}
-              >
-                <div>
-                  <div className="tender-card-header">
-                    <span className={`status-badge ${getStatusClass(tender.status)}`}>
-                      {tender.status}
-                    </span>
-                    <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                      Budget: <strong style={{ color: 'var(--text-primary)' }}>{formatBudget(tender.budget)}</strong>
-                    </span>
-                  </div>
-
-                  <h3 className="tender-card-title">{tender.title}</h3>
-                  <div className="tender-client">{tender.client_name} • {tender.project_name}</div>
-                </div>
-
-                <div>
-                  <div className="tender-card-details">
-                    <div className="tender-detail-row">
-                      <span className="tender-deadline">
-                        <Calendar size={14} /> Deadline: {formatDate(tender.deadline_date)}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="tender-card-footer">
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                      <Clock size={12} /> Last updated: {new Date(tender.updated_at).toLocaleDateString()}
-                    </span>
-                    <span style={{ color: 'var(--secondary)', fontWeight: 600 }}>View Details &rarr;</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <TanstackDataTable
+            columns={columns}
+            data={filteredTenders}
+            loading={loading}
+            emptyText="No matching records in tenders database."
+            onRowClick={(row) => router.push(`/tenders/${row.id}`)}
+          />
         )}
-      </div>
+      </Card>
     </div>
   );
 }
+

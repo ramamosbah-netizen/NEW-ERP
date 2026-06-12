@@ -73,27 +73,27 @@ export const CalendarGrid: React.FC<Props> = ({ meetings, tasks, onSelectMeeting
   return (
     <div className="quote-card overflow-hidden">
       {/* Control Header */}
-      <div className="flex items-center justify-between pb-4 border-b border-slate-900/60 mb-5">
+      <div className="flex items-center justify-between pb-4 border-b border-border-color mb-5">
         <h3 className="quote-card-title flex items-center gap-2">
-          <CalIcon size={16} className="text-emerald-400" />
+          <CalIcon size={16} className="text-primary" />
           {monthNames[month]} {year}
         </h3>
         <div className="flex gap-2">
           <button
             onClick={handlePrevMonth}
-            className="p-1.5 rounded bg-slate-900 border border-slate-800 text-slate-400 hover:text-emerald-400 hover:border-emerald-500/20 transition-all"
+            className="p-1.5 rounded bg-bg-dark border border-border-color text-text-secondary hover:text-primary hover:border-primary/20 transition-all cursor-pointer"
           >
             <ChevronLeft size={16} />
           </button>
           <button
             onClick={() => setCurrentDate(new Date())}
-            className="px-2.5 py-1 rounded bg-slate-900 border border-slate-800 text-[10px] font-bold font-mono text-slate-400 hover:text-emerald-400 hover:border-emerald-500/20 transition-all uppercase tracking-wider"
+            className="px-2.5 py-1 rounded bg-bg-dark border border-border-color text-[10px] font-bold font-mono text-text-secondary hover:text-primary hover:border-primary/20 transition-all uppercase tracking-wider cursor-pointer"
           >
             Today
           </button>
           <button
             onClick={handleNextMonth}
-            className="p-1.5 rounded bg-slate-900 border border-slate-800 text-slate-400 hover:text-emerald-400 hover:border-emerald-500/20 transition-all"
+            className="p-1.5 rounded bg-bg-dark border border-border-color text-text-secondary hover:text-primary hover:border-primary/20 transition-all cursor-pointer"
           >
             <ChevronRight size={16} />
           </button>
@@ -101,9 +101,9 @@ export const CalendarGrid: React.FC<Props> = ({ meetings, tasks, onSelectMeeting
       </div>
 
       {/* Weekdays indicator */}
-      <div className="grid grid-cols-7 text-center font-mono text-[10px] font-extrabold text-slate-500 uppercase tracking-widest pb-2.5 border-b border-slate-900/40">
+      <div className="grid grid-cols-7 text-center font-mono text-[10px] font-extrabold text-text-muted uppercase tracking-widest pb-2.5 border-b border-border-color">
         {weekdays.map(d => (
-          <div key={d} className={d === 'Fri' || d === 'Sat' ? 'text-slate-650' : 'text-slate-400'}>
+          <div key={d} className={d === 'Fri' || d === 'Sat' ? 'text-text-muted' : 'text-text-secondary'}>
             {d}
           </div>
         ))}
@@ -116,7 +116,7 @@ export const CalendarGrid: React.FC<Props> = ({ meetings, tasks, onSelectMeeting
             return (
               <div
                 key={`empty-${idx}`}
-                className="min-h-[95px] rounded-lg bg-slate-950/10 border border-transparent"
+                className="min-h-[95px] rounded-lg bg-bg-dark/10 border border-transparent"
               />
             );
           }
@@ -127,21 +127,21 @@ export const CalendarGrid: React.FC<Props> = ({ meetings, tasks, onSelectMeeting
           return (
             <div
               key={`day-${day}`}
-              className={`min-h-[105px] p-2 rounded-lg border flex flex-col justify-between transition-all bg-slate-950/35 hover:bg-slate-900/20 ${
+              className={`min-h-[105px] p-2 rounded-lg border flex flex-col justify-between transition-all bg-bg-dark/35 hover:bg-bg-card-hover/20 ${
                 isToday
-                  ? 'border-emerald-500/40 bg-emerald-500/5 shadow-[inset_0_0_12px_rgba(0,229,160,0.06)]'
-                  : 'border-slate-900 hover:border-slate-800'
+                  ? 'border-primary/45 bg-primary/5 shadow-[inset_0_0_12px_var(--primary-glow)]'
+                  : 'border-border-color hover:border-border-color'
               }`}
             >
               {/* Day Number */}
               <div className="flex justify-between items-center">
                 <span className={`text-[11px] font-mono font-bold ${
-                  isToday ? 'text-emerald-400 font-extrabold' : 'text-slate-500'
+                  isToday ? 'text-primary font-extrabold' : 'text-text-muted'
                 }`}>
                   {String(day).padStart(2, '0')}
                 </span>
                 {(dayMeetings.length > 0 || dayTasks.length > 0) && (
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_4px_var(--primary)]" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary shadow-[0_0_4px_var(--primary)]" />
                 )}
               </div>
 
@@ -152,7 +152,7 @@ export const CalendarGrid: React.FC<Props> = ({ meetings, tasks, onSelectMeeting
                   <div
                     key={m.id}
                     onClick={() => onSelectMeeting(m)}
-                    className="p-1 rounded bg-cyan-950/20 border border-cyan-900/35 text-cyan-300 text-[9px] truncate cursor-pointer hover:border-cyan-500/30 flex items-center gap-1 font-sans"
+                    className="p-1 rounded bg-secondary-glow/20 border border-secondary/35 text-secondary text-[9px] truncate cursor-pointer hover:border-secondary/50 flex items-center gap-1 font-sans"
                     title={`Meeting: ${m.title}`}
                   >
                     <Users size={8} className="flex-shrink-0" />
@@ -167,14 +167,14 @@ export const CalendarGrid: React.FC<Props> = ({ meetings, tasks, onSelectMeeting
                     <div
                       key={t.id}
                       onClick={() => onSelectTask(t)}
-                      className={`p-1 rounded bg-slate-900/40 border border-slate-850 text-[9px] truncate cursor-pointer flex items-center gap-1 font-sans ${
+                      className={`p-1 rounded bg-bg-dark/40 border border-border-color text-[9px] truncate cursor-pointer flex items-center gap-1 font-sans ${
                         isDone
-                          ? 'border-slate-900/10 text-slate-600 line-through'
-                          : 'text-slate-300 hover:border-emerald-500/20'
+                          ? 'border-border-color/10 text-text-muted line-through'
+                          : 'text-text-secondary hover:border-primary/20'
                       }`}
                       title={`Task: ${t.title}`}
                     >
-                      <CheckSquare size={8} className="flex-shrink-0 text-slate-500" />
+                      <CheckSquare size={8} className="flex-shrink-0 text-text-muted" />
                       <span className="truncate">{t.title}</span>
                     </div>
                   );
