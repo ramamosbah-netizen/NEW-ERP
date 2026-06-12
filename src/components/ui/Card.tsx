@@ -7,6 +7,7 @@ interface CardProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'> 
   headerActions?: React.ReactNode;
   hoverable?: boolean;
   borderAccent?: 'none' | 'primary' | 'secondary' | 'accent' | 'success' | 'danger' | 'warning';
+  padding?: boolean;
 }
 
 export const Card = React.forwardRef<HTMLDivElement, CardProps>(
@@ -20,24 +21,22 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
       headerActions,
       hoverable = false,
       borderAccent = 'none',
+      padding = true,
       ...props
     },
     ref
   ) => {
-    // Base styles: dynamic, flat and matte theme-aware
-    const baseClass = 'bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg shadow-sm transition-all duration-150';
-    
-    const hoverClass = hoverable ? 'hover:border-[var(--text-muted)] hover:bg-[var(--bg-card-hover)]' : '';
-    
-    // Border accents
-    const borderAccentClasses = {
-      none: '',
-      primary: 'border-l-4 border-l-[var(--primary)]',
-      secondary: 'border-l-4 border-l-[var(--secondary)]',
-      accent: 'border-l-4 border-l-[var(--accent)]',
-      success: 'border-l-4 border-l-[var(--success)]',
-      danger: 'border-l-4 border-l-[var(--error)]',
-      warning: 'border-l-4 border-l-[var(--warning)]',
+    const base = 'bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg transition-colors duration-100';
+    const hover = hoverable ? 'hover:border-[var(--text-muted)]' : '';
+
+    const accents: Record<NonNullable<CardProps['borderAccent']>, string> = {
+      none:      '',
+      primary:   'border-l-2 border-l-[var(--text-primary)]',
+      secondary: 'border-l-2 border-l-[var(--text-muted)]',
+      accent:    'border-l-2 border-l-[var(--accent)]',
+      success:   'border-l-2 border-l-[var(--success)]',
+      danger:    'border-l-2 border-l-[var(--error)]',
+      warning:   'border-l-2 border-l-[var(--warning)]',
     };
 
     const hasHeader = title || subtitle || Icon || headerActions;
@@ -45,34 +44,32 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
     return (
       <div
         ref={ref}
-        className={`${baseClass} ${hoverClass} ${borderAccentClasses[borderAccent]} ${className}`}
+        className={`${base} ${hover} ${accents[borderAccent]} ${className}`}
         {...props}
       >
         {hasHeader && (
-          <div className="flex justify-between items-start border-b border-[var(--border-color)] px-5 py-4 gap-4">
-            <div className="flex items-start gap-3 min-w-0">
-              {Icon && <Icon className="text-[var(--text-secondary)] mt-0.5 flex-shrink-0" size={18} />}
+          <div className="flex justify-between items-start border-b border-[var(--border-color)] px-4 py-3 gap-3">
+            <div className="flex items-start gap-2.5 min-w-0">
+              {Icon && <Icon className="text-[var(--text-muted)] mt-0.5 flex-shrink-0" size={16} />}
               <div className="min-w-0">
                 {title && (
-                  <h3 className="font-heading font-semibold text-[var(--text-primary)] text-base leading-5 truncate">
+                  <h3 className="font-semibold text-[var(--text-primary)] text-sm leading-5 truncate">
                     {title}
                   </h3>
                 )}
                 {subtitle && (
-                  <p className="text-[var(--text-secondary)] text-xs mt-0.5 truncate leading-4">
+                  <p className="text-[var(--text-muted)] text-xs mt-0.5 leading-4">
                     {subtitle}
                   </p>
                 )}
               </div>
             </div>
             {headerActions && (
-              <div className="flex items-center gap-2 flex-shrink-0">
-                {headerActions}
-              </div>
+              <div className="flex items-center gap-2 flex-shrink-0">{headerActions}</div>
             )}
           </div>
         )}
-        <div className="p-5">{children}</div>
+        <div className={padding ? 'p-4' : ''}>{children}</div>
       </div>
     );
   }

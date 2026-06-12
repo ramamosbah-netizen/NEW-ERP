@@ -33,12 +33,11 @@ export const FormField = React.forwardRef<HTMLInputElement | HTMLTextAreaElement
 
     // Common input styling class (supporting compact density via variables)
     const baseInputStyle =
-      'w-full bg-[var(--bg-dark)] border border-[var(--border-color)] rounded-lg text-[var(--text-primary)] font-body placeholder-[var(--text-muted)] outline-none transition-all duration-100 focus:border-[var(--border-focus)] focus:ring-2 focus:ring-[var(--primary-glow)] disabled:opacity-50 disabled:cursor-not-allowed';
-    
-    const errorStyle = error ? 'border-red-500/50 focus:border-red-500 focus:ring-red-500/10' : '';
+      'w-full bg-[var(--bg-card)] border border-[var(--border-color)] rounded-md text-[var(--text-primary)] placeholder-[var(--text-muted)] outline-none transition-colors duration-100 focus:border-[var(--border-focus)] focus:ring-2 focus:ring-[var(--primary-glow)] disabled:opacity-40 disabled:cursor-not-allowed disabled:bg-[var(--bg-card-hover)]';
 
-    // Density variables in CSS override: padding and heights will adapt automatically
-    const sizePaddingStyle = 'px-3 py-2 text-sm'; // Default Comfortable padding
+    const errorStyle = error ? 'border-[var(--status-danger-border)] focus:border-[var(--error)] focus:ring-[var(--error-glow)]' : '';
+
+    const sizePaddingStyle = 'px-3 py-2 text-sm';
 
     const renderInput = () => {
       if (type === 'textarea') {
@@ -130,7 +129,7 @@ export const FormField = React.forwardRef<HTMLInputElement | HTMLTextAreaElement
         {label && type !== 'checkbox' && type !== 'toggle' && (
           <label
             htmlFor={fieldId}
-            className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider select-none leading-none"
+            className="text-xs font-medium text-[var(--text-secondary)] select-none leading-none"
           >
             {label} {required && <span className="text-red-500 ml-0.5">*</span>}
           </label>

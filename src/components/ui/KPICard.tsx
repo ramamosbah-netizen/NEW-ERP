@@ -1,7 +1,5 @@
 import React from 'react';
-import { Card } from './Card';
-import { ArrowUpRight, ArrowDownRight, TrendingUp, HelpCircle } from 'lucide-react';
-import { ResponsiveContainer, AreaChart, Area } from 'recharts';
+import { ArrowUpRight, ArrowDownRight, Minus, HelpCircle } from 'lucide-react';
 
 interface KPICardProps {
   title: string;
@@ -25,109 +23,87 @@ export const KPICard: React.FC<KPICardProps> = ({
   trend = 'neutral',
   tooltip,
   sparklineData,
-  borderAccent = 'none',
   icon: Icon,
   className = '',
   valuePrefix = '',
 }) => {
   const isNumeric = typeof value === 'number';
-  
-  // Format numeric values standard (AED or plain)
   const displayValue = isNumeric
     ? new Intl.NumberFormat('en-AE', { minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(value as number)
     : value;
 
-  // Dynamic, theme-aware trend styling
-  const trendConfig = {
-    up: {
-      color: 'var(--success)',
-      bg: 'var(--success-glow)',
-      icon: ArrowUpRight,
-    },
-    down: {
-      color: 'var(--error)',
-      bg: 'var(--error-glow)',
-      icon: ArrowDownRight,
-    },
-    neutral: {
-      color: 'var(--text-secondary)',
-      bg: 'rgba(148, 163, 184, 0.15)',
-      icon: TrendingUp,
-    },
-  };
+  const trendIcon = {
+    up:      <ArrowUpRight size={12} className="text-[var(--success)]" />,
+    down:    <ArrowDownRight size={12} className="text-[var(--error)]" />,
+    neutral: <Minus size={12} className="text-[var(--text-muted)]" />,
+  }[trend];
 
-  const currentTrend = trendConfig[trend];
-  const TrendIcon = currentTrend.icon;
+  const trendColor = {
+    up:      'text-[var(--success)]',
+    down:    'text-[var(--error)]',
+    neutral: 'text-[var(--text-muted)]',
+  }[trend];
 
-  const sparkData = sparklineData?.map((val, idx) => ({ id: idx, value: val })) || [];
+  const sparkMax = sparklineData ? Math.max(...sparklineData) : 0;
+  const sparkMin = sparklineData ? Math.min(...sparklineData) : 0;
+  const sparkRange = sparkMax - sparkMin || 1;
 
   return (
-    <Card borderAccent={borderAccent} className={`flex flex-col justify-between overflow-hidden relative ${className}`}>
-      <div className="flex justify-between items-start gap-4 mb-2">
-        <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider leading-none">
+    <div className={`bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg p-4 flex flex-col gap-3 ${className}`}>
+      <div className="flex items-start justify-between gap-2">
+        <span className="text-xs font-medium text-[var(--text-muted)] leading-none">
           {title}
         </span>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           {tooltip && (
             <div className="group relative cursor-help">
-              <HelpCircle size={14} className="text-[var(--text-muted)] hover:text-[var(--text-primary)]" />
-              <div className="absolute right-0 bottom-full mb-1.5 hidden group-hover:block w-48 p-2 bg-[var(--bg-card)] border border-[var(--border-color)] text-[10px] text-[var(--text-primary)] rounded shadow-xl z-50">
+              <HelpCircle size={13} className="text-[var(--text-muted)] opacity-60 hover:opacity-100" />
+              <div className="absolute right-0 bottom-full mb-1.5 hidden group-hover:block w-52 p-2.5 bg-[var(--bg-card)] border border-[var(--border-color)] text-xs text-[var(--text-secondary)] rounded-lg shadow-lg z-50 leading-relaxed">
                 {tooltip}
               </div>
             </div>
           )}
-          {Icon && <Icon className="text-[var(--text-muted)]" size={18} />}
+          {Icon && <Icon className="text-[var(--text-muted)] opacity-50" size={15} />}
         </div>
       </div>
 
-      <div className="flex items-baseline gap-1.5 mb-2.5">
+      <div className="flex items-baseline gap-1">
         {valuePrefix && (
-          <span className="text-sm font-bold text-[var(--text-muted)] font-mono">
-            {valuePrefix}
-          </span>
+          <span className="text-xs text-[var(--text-muted)] font-mono">{valuePrefix}</span>
         )}
-        <span className="text-2xl font-extrabold text-[var(--text-primary)] font-mono tracking-tight leading-none">
+        <span className="text-xl font-semibold text-[var(--text-primary)] tracking-tight leading-none">
           {displayValue}
         </span>
       </div>
 
-      <div className="flex items-center justify-between gap-4 mt-auto">
-        <div className="flex items-center gap-1.5">
+      <div className="flex items-end justify-between gap-3 mt-auto">
+        <div className={`flex items-center gap-1 text-xs ${trendColor}`}>
+          {trendIcon}
           {change !== undefined && (
-            <span
-              className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold"
-              style={{ color: currentTrend.color, backgroundColor: currentTrend.bg }}
-            >
-              <TrendIcon size={12} className="mr-0.5" />
-              {change > 0 ? `+${change}%` : `${change}%`}
-            </span>
+            <span>{change > 0 ? `+${change}` : change}%</span>
           )}
           {changeText && (
-            <span className="text-[10px] text-[var(--text-muted)]">
-              {changeText}
-            </span>
+            <span className="text-[var(--text-muted)]">{changeText}</span>
           )}
         </div>
 
-        {/* Responsive Mini Sparkline */}
-        {sparkData.length > 0 && (
-          <div className="h-7 w-20 flex-shrink-0">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={sparkData}>
-                <Area
-                  type="monotone"
-                  dataKey="value"
-                  stroke={borderAccent !== 'none' ? currentTrend.color : 'var(--primary)'}
-                  strokeWidth={1.5}
-                  fill={borderAccent !== 'none' ? currentTrend.color : 'var(--primary)'}
-                  fillOpacity={0.08}
-                  dot={false}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
+        {sparklineData && sparklineData.length > 1 && (
+          <svg width="64" height="24" viewBox={`0 0 64 24`} className="flex-shrink-0 opacity-60">
+            <polyline
+              points={sparklineData.map((v, i) => {
+                const x = (i / (sparklineData.length - 1)) * 60 + 2;
+                const y = 22 - ((v - sparkMin) / sparkRange) * 18;
+                return `${x},${y}`;
+              }).join(' ')}
+              fill="none"
+              stroke="var(--text-muted)"
+              strokeWidth="1.5"
+              strokeLinejoin="round"
+              strokeLinecap="round"
+            />
+          </svg>
         )}
       </div>
-    </Card>
+    </div>
   );
 };
