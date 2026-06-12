@@ -48,13 +48,31 @@ export default function SettingsHubPage() {
 
   // Tab State
   const [activeTab, setActiveTab] = useState<
-    'COMPANY' | 'USERS_ROLES' | 'MODULE_CONTROL' | 'FINANCE' | 'PROCUREMENT' | 'INVENTORY' | 
-    'PROJECTS' | 'MAINTENANCE' | 'HR' | 'NOTIFICATIONS' | 'TEMPLATES' | 
+    'COMPANY' | 'USERS_ROLES' | 'SESSIONS' | 'MODULE_CONTROL' | 'FINANCE' | 'PROCUREMENT' | 'INVENTORY' |
+    'PROJECTS' | 'MAINTENANCE' | 'HR' | 'NOTIFICATIONS' | 'TEMPLATES' |
     'INTEGRATIONS' | 'SYSTEM_ADMIN' | 'SECURITY' | 'BACKUP'
   >('COMPANY');
 
   // --- Module Control State ---
   const [enabledModules, setEnabledModulesState] = useState<Record<string, boolean>>({});
+
+  // --- Sessions Tab State ---
+  type SessionUser = {
+    id: string;
+    email: string;
+    full_name: string;
+    legacy_role: string;
+    roles: { id: string; role_key: string; name: string; is_active: boolean }[];
+    created_at: string;
+    last_sign_in_at: string | null;
+    email_confirmed_at: string | null;
+    is_banned: boolean;
+    banned_until: string | null;
+  };
+  const [sessionUsers, setSessionUsers] = useState<SessionUser[]>([]);
+  const [sessionsLoading, setSessionsLoading] = useState<boolean>(false);
+  const [sessionActionBusy, setSessionActionBusy] = useState<string | null>(null);
+  const [sessionSearch, setSessionSearch] = useState<string>('');
 
   // --- Add User Modal State ---
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
@@ -795,6 +813,56 @@ export default function SettingsHubPage() {
     }
   };
 
+  // --- Sessions Tab Handlers ---
+  const loadSessions = async () => {
+    setSessionsLoading(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      const res = await fetch('/api/admin/users', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to load sessions');
+      setSessionUsers(data.users || []);
+    } catch (err: any) {
+      showFeedback(false, err.message || 'Failed to load session data.');
+    } finally {
+      setSessionsLoading(false);
+    }
+  };
+
+  const handleSessionAction = async (userId: string, action: 'signout' | 'ban' | 'unban') => {
+    const labels = { signout: 'Force sign-out', ban: 'Ban account', unban: 'Unban account' };
+    if (action !== 'unban' && !window.confirm(`${labels[action]} — are you sure?`)) return;
+    setSessionActionBusy(userId + action);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      const res = await fetch('/api/admin/sessions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ userId, action })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Action failed');
+      showFeedback(true, data.message || 'Done.');
+      await loadSessions();
+    } catch (err: any) {
+      showFeedback(false, err.message || 'Session action failed.');
+    } finally {
+      setSessionActionBusy(null);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === 'SESSIONS') loadSessions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab]);
+
   // --- Edit User Modal Handlers ---
   const handleOpenEditUser = (user: UserWithRoles) => {
     setEditingUser(user);
@@ -1117,6 +1185,7 @@ export default function SettingsHubPage() {
                   { id: 'COMPANY', label: 'Company & Branding', icon: Building },
                   { id: 'MODULE_CONTROL', label: 'Module Control', icon: Sliders },
                   { id: 'USERS_ROLES', label: 'Users & Roles', icon: Users },
+                  { id: 'SESSIONS', label: 'Sessions & Access', icon: Key },
                   { id: 'FINANCE', label: 'Finance & Tax', icon: DollarSign },
                   { id: 'PROCUREMENT', label: 'Procurement', icon: Sliders },
                   { id: 'INVENTORY', label: 'Inventory & Assets', icon: Layers },
@@ -1163,6 +1232,7 @@ export default function SettingsHubPage() {
                     group: 'Access Control',
                     items: [
                       { id: 'USERS_ROLES', label: 'Users, Roles & Perms', icon: Users },
+                      { id: 'SESSIONS', label: 'Sessions & Account Access', icon: Key },
                     ]
                   },
                   {
@@ -2038,6 +2108,141 @@ export default function SettingsHubPage() {
                           </form>
                         </div>
                       </div>
+                    </div>
+                  )}
+
+                  {/* SESSIONS & ACCOUNT ACCESS */}
+                  {activeTab === 'SESSIONS' && (
+                    <div className="flex flex-col gap-5 animate-fadeIn">
+                      <div className="border-b border-[var(--border-color)] pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div>
+                          <h3 className="text-sm font-semibold text-[var(--text-primary)] flex items-center gap-1.5">
+                            <Key size={15} className="text-[var(--text-muted)]" /> Sessions & account access
+                          </h3>
+                          <p className="text-xs text-[var(--text-muted)] mt-1">
+                            Review sign-in activity, revoke active sessions, and ban or unban accounts. Revoked users stay signed in until their access token expires (max 1 hour).
+                          </p>
+                        </div>
+                        <button
+                          onClick={loadSessions}
+                          disabled={sessionsLoading}
+                          className="quote-btn quote-btn-secondary self-start sm:self-center"
+                        >
+                          <RefreshCw size={13} className={sessionsLoading ? 'animate-spin' : ''} /> Refresh
+                        </button>
+                      </div>
+
+                      <input
+                        type="text"
+                        placeholder="Search by name or email…"
+                        value={sessionSearch}
+                        onChange={e => setSessionSearch(e.target.value)}
+                        className="quote-filter-input max-w-sm"
+                      />
+
+                      {sessionsLoading ? (
+                        <div className="py-16 flex flex-col items-center gap-3">
+                          <div className="h-6 w-6 rounded-full border-2 border-[var(--border-color)] border-t-[var(--text-primary)] animate-spin" />
+                          <span className="text-xs text-[var(--text-muted)]">Loading account data…</span>
+                        </div>
+                      ) : (
+                        <div className="quote-table-wrap">
+                          <table className="quote-table">
+                            <thead>
+                              <tr>
+                                <th>User</th>
+                                <th>Roles</th>
+                                <th>Last sign-in</th>
+                                <th>Status</th>
+                                <th style={{ textAlign: 'right' }}>Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {sessionUsers
+                                .filter(u =>
+                                  !sessionSearch ||
+                                  u.full_name?.toLowerCase().includes(sessionSearch.toLowerCase()) ||
+                                  u.email?.toLowerCase().includes(sessionSearch.toLowerCase())
+                                )
+                                .map(u => (
+                                  <tr key={u.id}>
+                                    <td>
+                                      <div className="flex flex-col">
+                                        <span className="font-medium text-[var(--text-primary)] text-xs">{u.full_name}</span>
+                                        <span className="text-[var(--text-muted)] text-xs">{u.email}</span>
+                                      </div>
+                                    </td>
+                                    <td>
+                                      <div className="flex flex-wrap gap-1">
+                                        {u.roles.length === 0 ? (
+                                          <span className="q-badge q-badge-draft">{u.legacy_role}</span>
+                                        ) : (
+                                          u.roles.map(r => (
+                                            <span key={r.id} className={`q-badge ${r.role_key === 'admin' ? 'q-badge-approved' : 'q-badge-draft'}`}>
+                                              {r.name}
+                                            </span>
+                                          ))
+                                        )}
+                                      </div>
+                                    </td>
+                                    <td>
+                                      <span className="font-mono text-xs text-[var(--text-secondary)]">
+                                        {u.last_sign_in_at
+                                          ? new Date(u.last_sign_in_at).toLocaleString('en-AE', { dateStyle: 'medium', timeStyle: 'short' })
+                                          : 'Never'}
+                                      </span>
+                                    </td>
+                                    <td>
+                                      {u.is_banned ? (
+                                        <span className="q-badge q-badge-rejected">Banned</span>
+                                      ) : !u.email_confirmed_at ? (
+                                        <span className="q-badge q-badge-pending_commercial">Unconfirmed</span>
+                                      ) : (
+                                        <span className="q-badge q-badge-approved">Active</span>
+                                      )}
+                                    </td>
+                                    <td>
+                                      <div className="flex gap-1.5 justify-end">
+                                        <button
+                                          onClick={() => handleSessionAction(u.id, 'signout')}
+                                          disabled={sessionActionBusy !== null}
+                                          className="quote-btn quote-btn-secondary !px-2.5 !py-1.5 !text-[11px]"
+                                          title="Revoke all refresh tokens"
+                                        >
+                                          {sessionActionBusy === u.id + 'signout' ? '…' : 'Sign out'}
+                                        </button>
+                                        {u.is_banned ? (
+                                          <button
+                                            onClick={() => handleSessionAction(u.id, 'unban')}
+                                            disabled={sessionActionBusy !== null}
+                                            className="quote-btn quote-btn-secondary !px-2.5 !py-1.5 !text-[11px]"
+                                          >
+                                            {sessionActionBusy === u.id + 'unban' ? '…' : 'Unban'}
+                                          </button>
+                                        ) : (
+                                          <button
+                                            onClick={() => handleSessionAction(u.id, 'ban')}
+                                            disabled={sessionActionBusy !== null}
+                                            className="quote-btn quote-btn-danger !px-2.5 !py-1.5 !text-[11px]"
+                                          >
+                                            {sessionActionBusy === u.id + 'ban' ? '…' : 'Ban'}
+                                          </button>
+                                        )}
+                                      </div>
+                                    </td>
+                                  </tr>
+                                ))}
+                              {sessionUsers.length === 0 && (
+                                <tr>
+                                  <td colSpan={5} className="text-center py-10 text-xs text-[var(--text-muted)]">
+                                    No accounts found.
+                                  </td>
+                                </tr>
+                              )}
+                            </tbody>
+                          </table>
+                        </div>
+                      )}
                     </div>
                   )}
 
