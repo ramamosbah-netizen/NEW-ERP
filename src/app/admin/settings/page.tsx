@@ -11,6 +11,8 @@ import type { AuditLog } from '@/types/audit.types';
 import Can from '@/lib/permissions/Can';
 import { supabase } from '@/lib/supabase';
 import { NAV_SECTIONS } from '@/components/layout/AppSidebar';
+import { PageHeader } from '@/components/ui/PageHeader';
+import Link from 'next/link';
 import { 
   Settings, 
   Building, 
@@ -55,6 +57,23 @@ export default function SettingsHubPage() {
 
   // --- Module Control State ---
   const [enabledModules, setEnabledModulesState] = useState<Record<string, boolean>>({});
+
+  // Deep-link support: /admin/settings?tab=SESSIONS (used by the Admin Center hub)
+  useEffect(() => {
+    const VALID_TABS = [
+      'COMPANY', 'USERS_ROLES', 'SESSIONS', 'MODULE_CONTROL', 'FINANCE', 'PROCUREMENT',
+      'INVENTORY', 'PROJECTS', 'MAINTENANCE', 'HR', 'NOTIFICATIONS', 'TEMPLATES',
+      'INTEGRATIONS', 'SYSTEM_ADMIN', 'SECURITY', 'BACKUP',
+    ];
+    try {
+      const requested = new URLSearchParams(window.location.search).get('tab');
+      if (requested && VALID_TABS.includes(requested.toUpperCase())) {
+        setActiveTab(requested.toUpperCase() as any);
+      }
+    } catch {
+      // Ignore malformed URLs
+    }
+  }, []);
 
   // --- Sessions Tab State ---
   type SessionUser = {
@@ -1130,36 +1149,24 @@ export default function SettingsHubPage() {
           </div>
         }
       >
-        <div className="flex-1 flex flex-col gap-6 p-6 max-w-6xl w-full mx-auto z-10 relative">
-          {/* Header */}
-          <header className="flex flex-col md:flex-row md:items-center justify-between border-b border-border-color/85 pb-5 mb-2">
-            <div className="flex items-center gap-3.5">
-              <div className="rounded-2xl bg-bg-card border border-border-color p-2.5 shadow-lg shadow-black/20 shadow-inner relative overflow-hidden group">
-                <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <Settings className="text-primary animate-spin-slow group-hover:scale-110 transition-transform duration-300" size={24} />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold font-heading tracking-tight bg-gradient-to-r from-text-primary via-slate-200 to-primary bg-clip-text text-transparent flex items-center gap-2">
-                  Central Configuration Hub
-                  <span className="hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[9px] font-bold font-mono bg-primary/10 text-primary border border-primary/20 tracking-normal uppercase">
-                    <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" /> SYSTEM READY
-                  </span>
-                </h1>
-                <p className="text-xs text-text-muted font-mono mt-0.5 uppercase tracking-wide flex items-center gap-1.5">
-                  Enterprise Settings Engine <span className="text-border-color">•</span> Multi-Module Calibration Control Matrix
-                </p>
-              </div>
-            </div>
-            {saving ? (
-              <div className="text-xs text-primary font-mono flex items-center gap-1.5 self-start md:self-auto mt-3 md:mt-0 bg-primary/5 border border-primary/25 px-3 py-1.5 rounded-xl shadow-[0_0_15px_var(--primary-glow)] animate-pulse">
-                <RefreshCw className="animate-spin" size={13} /> Syncing parameters...
-              </div>
-            ) : (
-              <div className="hidden md:flex text-[10px] text-text-muted font-mono items-center gap-1.5 border border-border-color bg-bg-card/45 px-3 py-1.5 rounded-xl select-none">
-                <Lock size={11} className="text-primary" /> Cryptographic Admin Session
-              </div>
-            )}
-          </header>
+        <div className="flex-1 flex flex-col gap-6 w-full z-10 relative">
+          {/* Header — consistent with the other Admin Center pages */}
+          <PageHeader
+            title="Global Settings"
+            subtitle="Company profile, finance & tax, operational thresholds, notifications, integrations, security and backup"
+            breadcrumbs={[{ label: 'Admin', href: '/admin' }, { label: 'Settings' }]}
+            actions={
+              saving ? (
+                <span className="text-xs text-[var(--text-muted)] flex items-center gap-1.5">
+                  <RefreshCw className="animate-spin" size={13} /> Saving…
+                </span>
+              ) : (
+                <span className="hidden md:flex text-xs text-[var(--text-muted)] items-center gap-1.5 border border-[var(--border-color)] bg-[var(--bg-card)] px-2.5 py-1.5 rounded-md select-none">
+                  <Lock size={11} /> Admin session
+                </span>
+              )
+            }
+          />
 
           {/* Feedback alerts */}
           {successMsg && (
@@ -1289,6 +1296,37 @@ export default function SettingsHubPage() {
                     </div>
                   </div>
                 ))}
+
+                {/* Platform Builder — dedicated Admin Center pages */}
+                <div className="flex flex-col gap-1.5">
+                  <span className="text-[9px] font-bold text-text-muted tracking-widest uppercase font-mono px-2 mb-1">
+                    Platform Builder
+                  </span>
+                  <div className="flex flex-col gap-1">
+                    {[
+                      { href: '/admin/workflows', label: 'Workflow Builder', icon: Share2 },
+                      { href: '/admin/rules', label: 'Business Rules', icon: Sliders },
+                      { href: '/admin/numbering', label: 'Document Numbering', icon: Key },
+                      { href: '/admin/forms', label: 'Forms Builder', icon: FileCheck },
+                      { href: '/admin/templates', label: 'Document Templates', icon: FileText },
+                    ].map(link => {
+                      const IconComponent = link.icon;
+                      return (
+                        <Link
+                          key={link.href}
+                          href={link.href}
+                          className="flex items-center justify-between gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold w-full text-left text-text-secondary border border-transparent hover:bg-bg-card-hover/30 hover:text-text-primary transition-all no-underline group"
+                        >
+                          <span className="flex items-center gap-2.5 min-w-0">
+                            <IconComponent size={14} className="shrink-0 text-text-muted group-hover:scale-110 transition-transform" />
+                            <span className="truncate">{link.label}</span>
+                          </span>
+                          <ArrowUpRight size={11} className="shrink-0 text-text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
             </div>
 
