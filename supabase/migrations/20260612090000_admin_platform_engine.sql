@@ -235,23 +235,11 @@ create table if not exists public.document_templates (
 
 -- ------------------------------------------------------------
 -- 9. NOTIFICATION RULES
--- recipients jsonb: [{"type":"ROLE"|"USER"|"DEPARTMENT"|"CREATOR"|"ASSIGNEE","value":"..."}]
--- ------------------------------------------------------------
-create table if not exists public.notification_rules (
-  id uuid primary key default gen_random_uuid(),
-  module_key text not null,
-  event_key text not null,                 -- ON_CREATE | ON_SUBMIT | ON_APPROVE | ON_REJECT | ON_RETURN | ON_CLOSE | ON_ESCALATE | ON_OVERDUE
-  name text not null,
-  channels text[] not null default '{IN_APP}',  -- IN_APP | EMAIL | SMS | WHATSAPP
-  recipients jsonb not null default '[]'::jsonb,
-  subject_template text,
-  body_template text,
-  is_active boolean not null default true,
-  created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
-);
-
-create index if not exists notification_rules_module on public.notification_rules (module_key, event_key) where (is_active = true);
+-- NOTE: the ERP already has a notification_rules table (event_type,
+-- recipient_strategy, channels, templates, escalation) used by the
+-- existing notifications system. Workflow transitions carry their own
+-- notification config (workflow_transitions.notifications jsonb), so
+-- no new table is needed here.
 
 -- ------------------------------------------------------------
 -- RLS: read for all authenticated users (modules consume configs),
@@ -283,7 +271,7 @@ begin
   foreach t in array array[
     'workflow_definitions','workflow_statuses','workflow_transitions',
     'business_rules','numbering_rules','form_definitions',
-    'document_templates','notification_rules'
+    'document_templates'
   ] loop
     execute format('alter table public.%I enable row level security', t);
     execute format('drop policy if exists "%s_read" on public.%I', t, t);

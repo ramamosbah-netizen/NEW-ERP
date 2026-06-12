@@ -145,6 +145,8 @@ const NAV_SECTIONS = [
     id: 'admin',
     label: 'Administration',
     items: [
+      { href: '/admin', label: 'Admin Center', icon: Layers },
+      { href: '/admin/workflows', label: 'Workflows', icon: GitCompare },
       { href: '/admin/settings', label: 'Settings', icon: Settings },
       { href: '/admin/audit', label: 'Audit Log', icon: AlertTriangle },
     ],
@@ -256,6 +258,8 @@ export default function AppSidebar({ mobileOpen = false, onMobileClose }: AppSid
     if (href === '/dashboard') return pathname === '/dashboard';
     // For finance sub-routes: /finance should only match exact
     if (href === '/finance') return pathname === '/finance';
+    // Admin hub should only match exact (sub-pages have their own links)
+    if (href === '/admin') return pathname === '/admin';
     return pathname === href || (pathname?.startsWith(href + '/') ?? false);
   };
 

@@ -286,22 +286,22 @@ export interface DocumentTemplate {
 }
 
 // ---------- Notification rules ----------
-export type NotificationEventKey =
-  | 'ON_CREATE' | 'ON_SUBMIT' | 'ON_APPROVE' | 'ON_REJECT'
-  | 'ON_RETURN' | 'ON_CLOSE' | 'ON_ESCALATE' | 'ON_OVERDUE';
-
+// Matches the EXISTING notification_rules table used by the
+// notifications system (do not redefine it in migrations).
 export interface NotificationRule {
   id: string;
-  module_key: string;
-  event_key: NotificationEventKey;
-  name: string;
+  event_type: string;                  // e.g. 'quotation.submitted'
+  recipient_strategy: 'ROLE' | 'USER' | 'CREATOR' | 'ASSIGNEE';
+  recipient_value: string | null;
   channels: NotificationChannel[];
-  recipients: NotificationRecipient[];
-  subject_template: string | null;
+  severity: string;
+  title_template: string | null;
   body_template: string | null;
+  link_template: string | null;
+  is_digest_eligible: boolean;
+  escalation_hours: number | null;
+  escalation_to_role: string | null;
   is_active: boolean;
-  created_at: string;
-  updated_at: string;
 }
 
 // ---------- Module catalog (for pickers) ----------
