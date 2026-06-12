@@ -41,19 +41,19 @@ export const Modal: React.FC<ModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-[#060814]/80 backdrop-blur-sm z-[950] flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[950] flex items-center justify-center p-4">
       {/* Modal Card wrapper */}
       <div
-        className={`w-full ${sizeClasses[size]} bg-[#0a0e24] border border-white/8 rounded-xl shadow-2xl shadow-black/70 overflow-hidden flex flex-col max-h-[90vh] animate-in fade-in-0 zoom-in-95 duration-200`}
+        className={`w-full ${sizeClasses[size]} bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg shadow-xl overflow-hidden flex flex-col max-h-[90vh] animate-in fade-in-0 zoom-in-95 duration-100`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-white/6 px-5 py-4 gap-4">
-          <h2 className="font-heading font-semibold text-white text-base truncate">
+        <div className="flex items-center justify-between border-b border-[var(--border-color)] px-5 py-4 gap-4">
+          <h2 className="font-heading font-semibold text-[var(--text-primary)] text-base truncate">
             {title || 'Details'}
           </h2>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/4 transition-all"
+            className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] p-1 rounded-lg hover:bg-[var(--bg-card-hover)] transition-all cursor-pointer"
             title="Close"
           >
             <X size={16} />
@@ -67,7 +67,7 @@ export const Modal: React.FC<ModalProps> = ({
 
         {/* Footer */}
         {footer && (
-          <div className="flex justify-end items-center gap-2 border-t border-white/6 px-5 py-3 bg-[#0b0f2a]/50">
+          <div className="flex justify-end items-center gap-2 border-t border-[var(--border-color)] px-5 py-3 bg-[var(--bg-dark)]">
             {footer}
           </div>
         )}

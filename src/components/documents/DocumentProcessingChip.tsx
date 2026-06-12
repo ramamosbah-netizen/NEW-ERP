@@ -16,16 +16,16 @@ type Props = {
 const statusConfig: Record<DocumentStatus, { label: string; bg: string; text: string; border: string; Icon: any }> = {
   PROCESSING: {
     label: 'AI Processing',
-    bg: 'rgba(168, 85, 247, 0.12)',
+    bg: 'color-mix(in srgb, var(--accent) 12%, transparent)',
     text: '#d8b4fe',
-    border: 'rgba(168, 85, 247, 0.25)',
+    border: 'color-mix(in srgb, var(--accent) 25%, transparent)',
     Icon: Loader2
   },
   AUTO_FILED: {
     label: 'Auto Filed',
-    bg: 'rgba(0, 229, 160, 0.12)',
-    text: '#00E5A0',
-    border: 'rgba(0, 229, 160, 0.25)',
+    bg: 'color-mix(in srgb, var(--primary) 12%, transparent)',
+    text: '#10b981',
+    border: 'color-mix(in srgb, var(--primary) 25%, transparent)',
     Icon: CheckCircle2
   },
   NEEDS_REVIEW: {
@@ -37,9 +37,9 @@ const statusConfig: Record<DocumentStatus, { label: string; bg: string; text: st
   },
   VERIFIED: {
     label: 'Verified',
-    bg: 'rgba(34, 211, 238, 0.12)',
-    text: '#22d3ee',
-    border: 'rgba(34, 211, 238, 0.25)',
+    bg: 'color-mix(in srgb, var(--primary) 12%, transparent)',
+    text: '#3b82f6',
+    border: 'color-mix(in srgb, var(--primary) 25%, transparent)',
     Icon: ShieldCheck
   },
   REJECTED: {
@@ -71,7 +71,7 @@ export const DocumentProcessingChip: React.FC<Props> = ({ status, confidence, cl
       <Icon size={12} className={isSpinning ? 'animate-spin' : ''} />
       <span>{label}</span>
       {status === 'AUTO_FILED' && confidence != null && (
-        <span style={{ fontSize: '0.65rem', opacity: 0.8, borderLeft: '1px solid rgba(0, 229, 160, 0.3)', paddingLeft: '5px' }}>
+        <span style={{ fontSize: '0.65rem', opacity: 0.8, borderLeft: '1px solid color-mix(in srgb, var(--primary) 30%, transparent)', paddingLeft: '5px' }}>
           {Math.round(confidence * 100)}%
         </span>
       )}

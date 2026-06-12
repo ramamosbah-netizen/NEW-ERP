@@ -50,7 +50,7 @@ export const WorkloadHeatStrip: React.FC = () => {
       return { label: 'HIGH CAPACITY', color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.1)', border: 'border-amber-500/30' };
     }
     if (totalActive > 0) {
-      return { label: 'BALANCED', color: '#00E5A0', bg: 'rgba(0, 229, 160, 0.1)', border: 'border-emerald-500/30' };
+      return { label: 'BALANCED', color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)', border: 'border-emerald-500/30' };
     }
     return { label: 'IDLE', color: '#94a3b8', bg: 'rgba(148, 163, 184, 0.05)', border: 'border-slate-800' };
   };

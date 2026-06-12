@@ -21,9 +21,9 @@ export const PROJECT_STATUS_LABELS: Record<ProjectStatus, string> = {
 export const PROJECT_STATUS_COLORS: Record<ProjectStatus, { bg: string; text: string; border: string }> = {
   SUBMITTED: { bg: 'rgba(192, 132, 252, 0.12)', text: '#c084fc', border: 'rgba(192, 132, 252, 0.25)' },
   MOBILIZATION: { bg: 'rgba(14, 165, 233, 0.12)', text: '#0ea5e9', border: 'rgba(14, 165, 233, 0.25)' },
-  IN_PROGRESS: { bg: 'rgba(0, 229, 160, 0.12)', text: '#00E5A0', border: 'rgba(0, 229, 160, 0.25)' },
-  TESTING: { bg: 'rgba(168, 85, 247, 0.12)', text: '#a855f7', border: 'rgba(168, 85, 247, 0.25)' },
-  HANDOVER: { bg: 'rgba(34, 211, 238, 0.12)', text: '#22d3ee', border: 'rgba(34, 211, 238, 0.25)' },
+  IN_PROGRESS: { bg: 'rgba(59, 130, 246, 0.12)', text: '#3b82f6', border: 'rgba(59, 130, 246, 0.25)' },
+  TESTING: { bg: 'rgba(99, 102, 241, 0.12)', text: '#6366f1', border: 'rgba(99, 102, 241, 0.25)' },
+  HANDOVER: { bg: 'rgba(16, 185, 129, 0.12)', text: '#10b981', border: 'rgba(16, 185, 129, 0.25)' },
   DLP: { bg: 'rgba(245, 158, 11, 0.12)', text: '#f59e0b', border: 'rgba(245, 158, 11, 0.25)' },
   CLOSED: { bg: 'rgba(100, 116, 139, 0.12)', text: '#94a3b8', border: 'rgba(100, 116, 139, 0.25)' },
   ON_HOLD: { bg: 'rgba(249, 115, 22, 0.12)', text: '#f97316', border: 'rgba(249, 115, 22, 0.25)' },
@@ -96,10 +96,10 @@ export const SYSTEM_LABELS: Record<ProjectSystem, string> = {
 
 export const SYSTEM_COLORS: Record<ProjectSystem, string> = {
   CCTV: '#0ea5e9',
-  ACCESS_CONTROL: '#00E5A0',
+  ACCESS_CONTROL: '#6366f1',
   FIRE_ALARM: '#ef4444',
-  BMS: '#a855f7',
-  STRUCTURED_CABLING: '#22d3ee',
+  BMS: '#8b5cf6',
+  STRUCTURED_CABLING: '#0ea5e9',
   PA_AV_BGM: '#f59e0b',
   GATE_BARRIER: '#64748b',
   KNX_SMART_HOME: '#ec4899',

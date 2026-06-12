@@ -336,7 +336,7 @@ export const DocumentDetailDrawer: React.FC<Props> = ({
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: '140px 1fr' }}>
                     <span style={{ color: 'var(--text-muted)' }}>Valuation Amount:</span>
-                    <span style={{ fontWeight: 700, color: doc.amount_aed ? '#00E5A0' : 'var(--text-primary)' }}>
+                    <span style={{ fontWeight: 700, color: doc.amount_aed ? '#10b981' : 'var(--text-primary)' }}>
                       {doc.amount_aed ? `AED ${doc.amount_aed.toLocaleString(undefined, { minimumFractionDigits: 2 })}` : 'N/A'}
                     </span>
                   </div>

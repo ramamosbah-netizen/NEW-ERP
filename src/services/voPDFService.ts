@@ -52,7 +52,7 @@ export const voPDFService = {
     let contactLine = 'info@jeetintech.com | www.jeetintech.com';
     let footerDisclaimer = 'JEET INTECH L.L.C  |  Dubai, UAE  |  TRN: 100489562300003  |  info@jeetintech.com  |  Confidential Variation Sheet';
     let primaryColor: [number, number, number] = [6, 8, 20]; // Deep Obsidian Black
-    let secondaryColor: [number, number, number] = [0, 229, 160]; // Electric Mint
+    let secondaryColor: [number, number, number] = [37, 99, 235]; // Electric Mint
 
     try {
       const profile = await settingsService.getCompanyProfile();
@@ -71,7 +71,7 @@ export const voPDFService = {
       } else if (templates.accent_color === 'red') {
         secondaryColor = [239, 68, 68];
       } else if (templates.accent_color === 'mint') {
-        secondaryColor = [0, 229, 160];
+        secondaryColor = [37, 99, 235];
       }
     } catch (e) {
       console.warn('Could not load company settings for VO report:', e);

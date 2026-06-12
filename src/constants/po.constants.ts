@@ -35,11 +35,11 @@ export const PO_STATUS_LABELS: Record<POStatus, string> = {
 export const PO_STATUS_COLORS: Record<POStatus, { bg: string; text: string; border: string }> = {
   DRAFT: { bg: 'rgba(100, 116, 139, 0.12)', text: '#94a3b8', border: 'rgba(100, 116, 139, 0.25)' },
   PENDING_APPROVAL: { bg: 'rgba(245, 158, 11, 0.12)', text: '#f59e0b', border: 'rgba(245, 158, 11, 0.25)' },
-  APPROVED: { bg: 'rgba(168, 85, 247, 0.12)', text: '#a855f7', border: 'rgba(168, 85, 247, 0.25)' },
+  APPROVED: { bg: 'rgba(99, 102, 241, 0.12)', text: '#6366f1', border: 'rgba(99, 102, 241, 0.25)' },
   SENT: { bg: 'rgba(14, 165, 233, 0.12)', text: '#0ea5e9', border: 'rgba(14, 165, 233, 0.25)' },
   ACKNOWLEDGED: { bg: 'rgba(6, 182, 212, 0.12)', text: '#06b6d4', border: 'rgba(6, 182, 212, 0.25)' },
   PARTIALLY_DELIVERED: { bg: 'rgba(249, 115, 22, 0.12)', text: '#f97316', border: 'rgba(249, 115, 22, 0.25)' },
-  DELIVERED: { bg: 'rgba(0, 229, 160, 0.12)', text: '#00E5A0', border: 'rgba(0, 229, 160, 0.25)' },
+  DELIVERED: { bg: 'rgba(16, 185, 129, 0.12)', text: '#10b981', border: 'rgba(16, 185, 129, 0.25)' },
   CLOSED: { bg: 'rgba(71, 85, 105, 0.2)', text: '#cbd5e1', border: 'rgba(71, 85, 105, 0.35)' },
   CANCELLED: { bg: 'rgba(239, 68, 68, 0.12)', text: '#ef4444', border: 'rgba(239, 68, 68, 0.25)' },
   REVISED: { bg: 'rgba(120, 113, 108, 0.12)', text: '#a8a29e', border: 'rgba(120, 113, 108, 0.25)' },
@@ -80,7 +80,7 @@ export const PO_DELIVERY_STATUS_LABELS: Record<PODeliveryStatus, string> = {
 export const PO_DELIVERY_STATUS_COLORS: Record<PODeliveryStatus, string> = {
   NOT_DELIVERED: '#ef4444',
   PARTIAL: '#f97316',
-  COMPLETE: '#00E5A0',
+  COMPLETE: '#10b981',
 };
 
 // --- PO Item Receipt Status Labels & Colors ---
@@ -94,7 +94,7 @@ export const PO_ITEM_RECEIPT_STATUS_LABELS: Record<POItemReceiptStatus, string> 
 export const PO_ITEM_RECEIPT_STATUS_COLORS: Record<POItemReceiptStatus, string> = {
   PENDING: '#64748b',
   PARTIAL: '#f97316',
-  COMPLETE: '#00E5A0',
+  COMPLETE: '#10b981',
   CLOSED_SHORT: '#94a3b8',
 };
 
@@ -107,7 +107,7 @@ export const GRN_STATUS_LABELS: Record<GRNStatus, string> = {
 
 export const GRN_STATUS_COLORS: Record<GRNStatus, { bg: string; text: string; border: string }> = {
   DRAFT: { bg: 'rgba(245, 158, 11, 0.12)', text: '#f59e0b', border: 'rgba(245, 158, 11, 0.25)' },
-  RECEIVED: { bg: 'rgba(0, 229, 160, 0.12)', text: '#00E5A0', border: 'rgba(0, 229, 160, 0.25)' },
+  RECEIVED: { bg: 'rgba(16, 185, 129, 0.12)', text: '#10b981', border: 'rgba(16, 185, 129, 0.25)' },
   CANCELLED: { bg: 'rgba(239, 68, 68, 0.12)', text: '#ef4444', border: 'rgba(239, 68, 68, 0.25)' },
 };
 
@@ -138,8 +138,8 @@ export const GRN_RETURN_STATUS_LABELS: Record<GRNReturnStatus, string> = {
 export const GRN_RETURN_STATUS_COLORS: Record<GRNReturnStatus, { bg: string; text: string }> = {
   PENDING_COLLECTION: { bg: 'rgba(249, 115, 22, 0.12)', text: '#f97316' },
   COLLECTED: { bg: 'rgba(14, 165, 233, 0.12)', text: '#0ea5e9' },
-  REPLACED: { bg: 'rgba(0, 229, 160, 0.12)', text: '#00E5A0' },
-  CREDITED: { bg: 'rgba(168, 85, 247, 0.12)', text: '#a855f7' },
+  REPLACED: { bg: 'rgba(16, 185, 129, 0.12)', text: '#10b981' },
+  CREDITED: { bg: 'rgba(99, 102, 241, 0.12)', text: '#6366f1' },
 };
 
 // --- Lists Array Options ---

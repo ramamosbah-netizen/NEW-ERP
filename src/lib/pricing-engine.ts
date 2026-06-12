@@ -264,7 +264,7 @@ export const SYSTEM_LABELS: Record<string, string> = {
 };
 
 export const SYSTEM_COLORS: Record<string, string> = {
-  CCTV: '#00E5A0',
+  CCTV: '#3b82f6',
   ACCESS_CONTROL: '#6366f1',
   FIRE_ALARM: '#ef4444',
   STRUCTURED_CABLING: '#06b6d4',

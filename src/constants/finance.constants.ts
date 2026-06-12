@@ -38,10 +38,10 @@ export const INVOICE_STATUS_LABELS: Record<InvoiceStatus, string> = {
 export const INVOICE_STATUS_COLORS: Record<InvoiceStatus, { bg: string; text: string; border: string }> = {
   DRAFT: { bg: 'rgba(100, 116, 139, 0.12)', text: '#94a3b8', border: 'rgba(100, 116, 139, 0.25)' },
   PENDING_APPROVAL: { bg: 'rgba(245, 158, 11, 0.12)', text: '#f59e0b', border: 'rgba(245, 158, 11, 0.25)' },
-  APPROVED: { bg: 'rgba(168, 85, 247, 0.12)', text: '#a855f7', border: 'rgba(168, 85, 247, 0.25)' },
+  APPROVED: { bg: 'color-mix(in srgb, var(--accent) 12%, transparent)', text: 'var(--accent)', border: 'color-mix(in srgb, var(--accent) 25%, transparent)' },
   SENT: { bg: 'rgba(14, 165, 233, 0.12)', text: '#0ea5e9', border: 'rgba(14, 165, 233, 0.25)' },
   PARTIALLY_PAID: { bg: 'rgba(249, 115, 22, 0.12)', text: '#f97316', border: 'rgba(249, 115, 22, 0.25)' },
-  PAID: { bg: 'rgba(0, 229, 160, 0.12)', text: '#00E5A0', border: 'rgba(0, 229, 160, 0.25)' },
+  PAID: { bg: 'color-mix(in srgb, var(--primary) 12%, transparent)', text: 'var(--primary)', border: 'color-mix(in srgb, var(--primary) 25%, transparent)' },
   OVERDUE: { bg: 'rgba(239, 68, 68, 0.12)', text: '#ef4444', border: 'rgba(239, 68, 68, 0.25)' },
   CANCELLED: { bg: 'rgba(71, 85, 105, 0.2)', text: '#cbd5e1', border: 'rgba(71, 85, 105, 0.35)' },
   WRITTEN_OFF: { bg: 'rgba(239, 68, 68, 0.2)', text: '#fda4af', border: 'rgba(239, 68, 68, 0.35)' },
@@ -64,7 +64,7 @@ export const CREDIT_NOTE_STATUS_LABELS: Record<CreditNoteStatus, string> = {
 
 export const CREDIT_NOTE_STATUS_COLORS: Record<CreditNoteStatus, { bg: string; text: string }> = {
   DRAFT: { bg: 'rgba(245, 158, 11, 0.12)', text: '#f59e0b' },
-  APPROVED: { bg: 'rgba(0, 229, 160, 0.12)', text: '#00E5A0' },
+  APPROVED: { bg: 'color-mix(in srgb, var(--primary) 12%, transparent)', text: 'var(--primary)' },
   CANCELLED: { bg: 'rgba(239, 68, 68, 0.12)', text: '#ef4444' },
 };
 
@@ -89,10 +89,10 @@ export const SUPPLIER_INVOICE_STATUS_LABELS: Record<SupplierInvoiceStatus, strin
 export const SUPPLIER_INVOICE_STATUS_COLORS: Record<SupplierInvoiceStatus, { bg: string; text: string; border: string }> = {
   REGISTERED: { bg: 'rgba(100, 116, 139, 0.12)', text: '#94a3b8', border: 'rgba(100, 116, 139, 0.25)' },
   PENDING_APPROVAL: { bg: 'rgba(245, 158, 11, 0.12)', text: '#f59e0b', border: 'rgba(245, 158, 11, 0.25)' },
-  APPROVED: { bg: 'rgba(168, 85, 247, 0.12)', text: '#a855f7', border: 'rgba(168, 85, 247, 0.25)' },
+  APPROVED: { bg: 'color-mix(in srgb, var(--accent) 12%, transparent)', text: 'var(--accent)', border: 'color-mix(in srgb, var(--accent) 25%, transparent)' },
   SCHEDULED: { bg: 'rgba(14, 165, 233, 0.12)', text: '#0ea5e9', border: 'rgba(14, 165, 233, 0.25)' },
   PARTIALLY_PAID: { bg: 'rgba(249, 115, 22, 0.12)', text: '#f97316', border: 'rgba(249, 115, 22, 0.25)' },
-  PAID: { bg: 'rgba(0, 229, 160, 0.12)', text: '#00E5A0', border: 'rgba(0, 229, 160, 0.25)' },
+  PAID: { bg: 'color-mix(in srgb, var(--primary) 12%, transparent)', text: 'var(--primary)', border: 'color-mix(in srgb, var(--primary) 25%, transparent)' },
   DISPUTED: { bg: 'rgba(239, 68, 68, 0.12)', text: '#ef4444', border: 'rgba(239, 68, 68, 0.25)' },
   CANCELLED: { bg: 'rgba(71, 85, 105, 0.2)', text: '#cbd5e1', border: 'rgba(71, 85, 105, 0.35)' },
 };
@@ -106,7 +106,7 @@ export const MATCH_STATUS_LABELS: Record<MatchStatus, string> = {
 };
 
 export const MATCH_STATUS_COLORS: Record<MatchStatus, { bg: string; text: string }> = {
-  MATCHED: { bg: 'rgba(0, 229, 160, 0.12)', text: '#00E5A0' },
+  MATCHED: { bg: 'color-mix(in srgb, var(--primary) 12%, transparent)', text: 'var(--primary)' },
   EXCEPTION: { bg: 'rgba(239, 68, 68, 0.12)', text: '#ef4444' },
   OVERRIDDEN: { bg: 'rgba(245, 158, 11, 0.12)', text: '#f59e0b' },
   NA: { bg: 'rgba(100, 116, 139, 0.12)', text: '#94a3b8' },

@@ -40,7 +40,7 @@ export const reportingService = {
   async getFinancialSummary(): Promise<FinancialSummary> {
     // 1. Receivables: Sum of Client Invoices where status = 'SENT' or 'PARTIALLY_PAID' (net_due)
     // 2. Payables: Sum of Supplier Invoices where status = 'APPROVED' or 'PARTIALLY_PAID'
-    
+
     // Invoices count
     const { data: arData, error: arErr } = await supabase
       .from('client_invoices')
@@ -87,19 +87,23 @@ export const reportingService = {
     let projectBudgetTotal = 0;
     let projectActualTotal = 0;
     if (projData) {
-      for (const p of projData) {
-        projectBudgetTotal += p.contract_value || 0;
-        try {
-          const financials = await projectFinancialsService.computeProjectFinancials(p.id);
-          projectActualTotal += financials.actualCost;
-        } catch (e) {
-          console.error(`Failed to calculate actual cost for project ${p.id}:`, e);
-        }
-      }
+      projectBudgetTotal = projData.reduce((sum, p) => sum + (p.contract_value || 0), 0);
+      const actualCosts = await Promise.all(
+        projData.map(p =>
+          projectFinancialsService
+            .computeProjectFinancials(p.id)
+            .then(f => f.actualCost)
+            .catch(e => {
+              console.error(`Failed to calculate actual cost for project ${p.id}:`, e);
+              return 0;
+            })
+        )
+      );
+      projectActualTotal = actualCosts.reduce((sum, c) => sum + c, 0);
     }
 
-    const marginAverage = projectBudgetTotal > 0 
-      ? Math.round(((projectBudgetTotal - projectActualTotal) / projectBudgetTotal) * 100) 
+    const marginAverage = projectBudgetTotal > 0
+      ? Math.round(((projectBudgetTotal - projectActualTotal) / projectBudgetTotal) * 100)
       : 0;
 
     return {
@@ -187,35 +191,35 @@ export const reportingService = {
 
     if (pErr) throw pErr;
 
-    const result: ProjectMarginKPI[] = [];
+    const result: ProjectMarginKPI[] = await Promise.all(
+      (projects || []).map(async (p) => {
+        let committed_cost = 0;
+        let actual_cost = 0;
+        try {
+          const financials = await projectFinancialsService.computeProjectFinancials(p.id);
+          committed_cost = financials.committedCost;
+          actual_cost = financials.actualCost;
+        } catch (e) {
+          console.error(`Failed to calculate financials for project ${p.id}:`, e);
+        }
+        const budget_cost = p.contract_value || 0;
+        const variance = budget_cost - committed_cost;
+        const margin_percentage = budget_cost > 0
+          ? Math.round(((budget_cost - actual_cost) / budget_cost) * 100)
+          : 0;
 
-    for (const p of (projects || [])) {
-      let committed_cost = 0;
-      let actual_cost = 0;
-      try {
-        const financials = await projectFinancialsService.computeProjectFinancials(p.id);
-        committed_cost = financials.committedCost;
-        actual_cost = financials.actualCost;
-      } catch (e) {
-        console.error(`Failed to calculate financials for project ${p.id}:`, e);
-      }
-      const budget_cost = p.contract_value || 0;
-      const variance = budget_cost - committed_cost;
-      const margin_percentage = budget_cost > 0 
-        ? Math.round(((budget_cost - actual_cost) / budget_cost) * 100)
-        : 0;
-
-      result.push({
-        project_id: p.id,
-        project_name: p.name,
-        project_number: p.project_number,
-        budget_cost,
-        committed_cost,
-        actual_cost,
-        variance,
-        margin_percentage
-      });
-    }
+        return {
+          project_id: p.id,
+          project_name: p.name,
+          project_number: p.project_number,
+          budget_cost,
+          committed_cost,
+          actual_cost,
+          variance,
+          margin_percentage
+        };
+      })
+    );
 
     return result;
   },
@@ -240,7 +244,7 @@ export const reportingService = {
     if (tickets) {
       for (const t of tickets) {
         const isClosed = t.status === 'CLOSED' || t.status === 'RESOLVED';
-        
+
         if (isClosed) {
           if (t.resolution_met) {
             resolved_on_time++;

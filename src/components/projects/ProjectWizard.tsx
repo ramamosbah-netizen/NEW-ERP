@@ -244,7 +244,7 @@ export const ProjectWizard: React.FC<Props> = ({ quotationId }) => {
               display: 'flex', 
               alignItems: 'center', 
               gap: '0.5rem', 
-              color: step === s.step ? 'var(--primary)' : step > s.step ? '#00E5A0' : 'var(--text-muted)',
+              color: step === s.step ? 'var(--primary)' : step > s.step ? '#10b981' : 'var(--text-muted)',
               fontSize: '0.85rem',
               fontWeight: step >= s.step ? 700 : 500
             }}
@@ -255,7 +255,7 @@ export const ProjectWizard: React.FC<Props> = ({ quotationId }) => {
                 height: '24px', 
                 borderRadius: '50%', 
                 border: '1.5px solid', 
-                borderColor: step === s.step ? 'var(--primary)' : step > s.step ? '#00E5A0' : 'var(--border-color)',
+                borderColor: step === s.step ? 'var(--primary)' : step > s.step ? '#10b981' : 'var(--border-color)',
                 display: 'inline-flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -516,7 +516,7 @@ export const ProjectWizard: React.FC<Props> = ({ quotationId }) => {
               </div>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', background: 'rgba(0, 229, 160, 0.03)', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(0, 229, 160, 0.1)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', background: 'color-mix(in srgb, var(--primary) 3%, transparent)', padding: '1rem', borderRadius: '8px', border: '1px solid color-mix(in srgb, var(--primary) 10%, transparent)' }}>
               <input 
                 type="checkbox" 
                 id="sira_ch"
@@ -613,7 +613,7 @@ export const ProjectWizard: React.FC<Props> = ({ quotationId }) => {
             </div>
 
             {/* Live total tracking */}
-            <div style={{ textAlign: 'right', fontSize: '0.85rem', fontWeight: 700, color: milestones.filter(m=>m.payment_linked).reduce((s,m)=>s+m.payment_pct,0) === 100 ? '#00E5A0' : 'var(--warning)' }}>
+            <div style={{ textAlign: 'right', fontSize: '0.85rem', fontWeight: 700, color: milestones.filter(m=>m.payment_linked).reduce((s,m)=>s+m.payment_pct,0) === 100 ? '#10b981' : 'var(--warning)' }}>
               Billing Milestones Total: {milestones.filter(m=>m.payment_linked).reduce((s,m)=>s+m.payment_pct,0)}% / 100%
             </div>
           </div>
@@ -640,7 +640,7 @@ export const ProjectWizard: React.FC<Props> = ({ quotationId }) => {
 
               <div>
                 <h4 style={{ color: 'var(--secondary)', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Commercials</h4>
-                <div style={{ fontSize: '0.9rem', fontWeight: 600, color: '#00E5A0' }}>AED {contractValue.toLocaleString()}</div>
+                <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--primary)' }}>AED {contractValue.toLocaleString()}</div>
                 <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>LPO: {clientLpoNumber || 'N/A'}</div>
                 <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>DLP period: {dlpMonths} months</div>
                 <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>SIRA regulatory check: {siraApplicable ? 'Yes' : 'No'}</div>

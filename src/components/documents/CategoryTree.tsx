@@ -106,7 +106,7 @@ export const CategoryTree: React.FC<Props> = ({
           cursor: 'pointer',
           padding: '0.4rem 0.5rem',
           borderRadius: '4px',
-          background: (!selectedCategory && !selectedSubcategory) ? 'rgba(0, 229, 160, 0.08)' : 'transparent',
+          background: (!selectedCategory && !selectedSubcategory) ? 'color-mix(in srgb, var(--primary) 8%, transparent)' : 'transparent',
           transition: 'var(--transition-fast)'
         }}
       >
@@ -130,7 +130,7 @@ export const CategoryTree: React.FC<Props> = ({
                 cursor: 'pointer',
                 padding: '0.4rem 0.5rem',
                 borderRadius: '4px',
-                background: (isCurrentCat && !selectedSubcategory) ? 'rgba(0, 229, 160, 0.08)' : 'transparent',
+                background: (isCurrentCat && !selectedSubcategory) ? 'color-mix(in srgb, var(--primary) 8%, transparent)' : 'transparent',
                 color: (isCurrentCat && !selectedSubcategory) ? 'var(--primary)' : 'var(--text-primary)',
                 transition: 'var(--transition-fast)'
               }}
@@ -166,7 +166,7 @@ export const CategoryTree: React.FC<Props> = ({
                         cursor: 'pointer',
                         padding: '0.3rem 0.5rem',
                         borderRadius: '4px',
-                        background: isCurrentSub ? 'rgba(0, 229, 160, 0.08)' : 'transparent',
+                        background: isCurrentSub ? 'color-mix(in srgb, var(--primary) 8%, transparent)' : 'transparent',
                         transition: 'var(--transition-fast)'
                       }}
                       onMouseEnter={(e) => {

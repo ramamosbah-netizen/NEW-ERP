@@ -21,7 +21,7 @@ export const invoicePDFService = {
     });
 
     const primaryColor = [15, 23, 42]; // Slate 900
-    let accentColor = [0, 229, 160];  // Electric UAE Mint
+    let accentColor = [37, 99, 235];  // Electric UAE Mint
     const textColor = [51, 65, 85];    // Slate 700
     const lightGrey = [241, 245, 249];  // Slate 100
 
@@ -42,7 +42,7 @@ export const invoicePDFService = {
       if (templates.accent_color === 'slate') accentColor = [15, 23, 42];
       else if (templates.accent_color === 'gold') accentColor = [197, 160, 89];
       else if (templates.accent_color === 'red') accentColor = [239, 68, 68];
-      else if (templates.accent_color === 'mint') accentColor = [0, 229, 160];
+      else if (templates.accent_color === 'mint') accentColor = [37, 99, 235];
     } catch (e) {
       console.warn('Could not load document templates settings, using defaults:', e);
     }
@@ -284,7 +284,7 @@ export const invoicePDFService = {
       if (templates.accent_color === 'slate') accentColor = [15, 23, 42];
       else if (templates.accent_color === 'gold') accentColor = [197, 160, 89];
       else if (templates.accent_color === 'red') accentColor = [239, 68, 68];
-      else if (templates.accent_color === 'mint') accentColor = [0, 229, 160];
+      else if (templates.accent_color === 'mint') accentColor = [37, 99, 235];
     } catch (e) {
       console.warn('Could not load document templates settings, using defaults:', e);
     }

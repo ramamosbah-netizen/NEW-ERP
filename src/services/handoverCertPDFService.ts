@@ -37,7 +37,7 @@ export const handoverCertPDFService = {
       });
 
       const primaryColor = [15, 23, 42];  // Slate 900
-      let accentColor = [0, 229, 160];   // Electric Mint
+      let accentColor = [37, 99, 235];   // Electric Mint
       let goldColor = [197, 160, 89];    // Metallic Gold
       const textColor = [51, 65, 85];      // Slate 700
       const pageWidth = doc.internal.pageSize.width;
@@ -64,7 +64,7 @@ export const handoverCertPDFService = {
           accentColor = [239, 68, 68];
           goldColor = [239, 68, 68];
         } else if (templates.accent_color === 'mint') {
-          accentColor = [0, 229, 160];
+          accentColor = [37, 99, 235];
           goldColor = [197, 160, 89];
         }
       } catch (e) {

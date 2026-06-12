@@ -26,7 +26,7 @@ export const comparisonPDFService = {
 
     // --- Design System Constants ---
     const primaryColor: [number, number, number] = [6, 8, 20]; // Deep Obsidian Black
-    const mintColor: [number, number, number] = [0, 229, 160]; // Electric Mint
+    const mintColor: [number, number, number] = [37, 99, 235]; // Electric Mint
     const slateGray: [number, number, number] = [100, 116, 139]; // Slate Gray
     const lightRowBg: [number, number, number] = [248, 250, 252]; // Soft Gray
 

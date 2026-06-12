@@ -6,7 +6,7 @@
 /* Glass Card with Primary Glow Hover */
 .hr-glass-card {
   background: var(--bg-card);
-  backdrop-filter: var(--glass-backdrop);
+  
   border: 1px solid var(--border-color);
   border-radius: 8px;
   transition: var(--transition-smooth);
@@ -16,7 +16,7 @@
   background: var(--bg-card-hover);
   border-color: rgba(0, 229, 160, 0.25);
   box-shadow: 0 0 15px rgba(0, 229, 160, 0.05);
-  transform: translateY(-2px);
+  
 }
 
 /* Traffic Light Status Dots/Cards */
@@ -70,7 +70,7 @@
 }
 
 .bloomberg-grid th {
-  background: rgba(13, 17, 39, 0.8);
+  background: var(--bg-card);
   color: var(--text-secondary);
   text-transform: uppercase;
   font-family: var(--font-condensed);
@@ -183,7 +183,7 @@
 
 .swimlane-label {
   padding: 10px 14px;
-  background: rgba(13, 17, 39, 0.4);
+  background: var(--bg-card);
   border-right: 1px solid var(--border-color);
   font-family: var(--font-heading);
   font-size: 11px;
@@ -209,7 +209,7 @@
 }
 
 .swimlane-day-cell.weekend {
-  background: rgba(6, 8, 20, 0.6);
+  background: var(--bg-card);
 }
 
 .swimlane-bar {
@@ -230,7 +230,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   cursor: pointer;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
   transition: var(--transition-fast);
 }
 

@@ -25,7 +25,7 @@ export const quotationPDFService = {
     
     // --- Colors & Branding Constants ---
     const primaryColor: [number, number, number] = [6, 8, 20]; // Deep Obsidian Black
-    const secondaryColor: [number, number, number] = [0, 229, 160]; // Electric Mint (#00E5A0)
+    const secondaryColor: [number, number, number] = [37, 99, 235]; // Electric Mint (var(--primary))
     const grayText: [number, number, number] = [100, 116, 139]; // Slate Gray
     const lightBg: [number, number, number] = [248, 250, 252]; // Off-white/slate-50
 
@@ -414,7 +414,7 @@ export const quotationPDFService = {
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
     const primaryColor: [number, number, number] = [6, 8, 20];
-    const secondaryColor: [number, number, number] = [0, 229, 160];
+    const secondaryColor: [number, number, number] = [37, 99, 235];
 
     // Page Border
     doc.setDrawColor(230, 235, 240);

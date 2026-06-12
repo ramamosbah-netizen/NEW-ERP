@@ -231,7 +231,7 @@ export const ProjectContactsCard: React.FC<Props> = ({ contacts, onAdd, onDelete
                     {ROLE_LABELS[contact.role] || contact.role}
                   </span>
                   {contact.is_primary && (
-                    <span style={{ color: '#00E5A0', display: 'flex', alignItems: 'center', gap: '0.1rem', fontSize: '0.68rem', fontWeight: 600 }}>
+                    <span style={{ color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: '0.1rem', fontSize: '0.68rem', fontWeight: 600 }}>
                       <UserCheck size={12} /> Primary
                     </span>
                   )}

@@ -43,19 +43,17 @@ export default function ReportsHub() {
   const loadAllData = async () => {
     setLoading(true);
     try {
-      const fin = await reportingService.getFinancialSummary();
+      const [fin, ar, ap, pk, sla] = await Promise.all([
+        reportingService.getFinancialSummary(),
+        reportingService.getAgingReport('AR'),
+        reportingService.getAgingReport('AP'),
+        reportingService.getProjectMarginKPIs(),
+        reportingService.getTicketSLAStats(),
+      ]);
       setFinancials(fin);
-
-      const ar = await reportingService.getAgingReport('AR');
       setArAging(ar);
-
-      const ap = await reportingService.getAgingReport('AP');
       setApAging(ap);
-
-      const pk = await reportingService.getProjectMarginKPIs();
       setProjectKPIs(pk);
-
-      const sla = await reportingService.getTicketSLAStats();
       setSlaStats(sla);
     } catch (err) {
       console.error('Failed to compile report summaries:', err);

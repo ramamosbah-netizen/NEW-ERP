@@ -218,7 +218,7 @@ export default function AppTopbar({ onMobileMenuToggle }: AppTopbarProps) {
 
       <div className="topbar-right">
         {/* Global Search Shortcut hint */}
-        <div className="hidden md:flex items-center gap-1 bg-white/4 border border-white/6 px-2 py-0.5 rounded text-[10px] text-slate-400 font-mono font-bold">
+        <div className="hidden md:flex items-center gap-1 bg-[var(--bg-dark)] border border-[var(--border-color)] px-2 py-0.5 rounded text-[10px] text-[var(--text-muted)] font-mono font-bold">
           <Command size={10} />
           <span>K</span>
         </div>

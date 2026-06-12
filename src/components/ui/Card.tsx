@@ -24,20 +24,20 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
     },
     ref
   ) => {
-    // Base styles: Obsidian layered card layout
-    const baseClass = 'bg-[#0d1127]/55 border border-white/8 rounded-xl shadow-lg shadow-black/30 transition-all duration-300';
+    // Base styles: dynamic, flat and matte theme-aware
+    const baseClass = 'bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg shadow-sm transition-all duration-150';
     
-    const hoverClass = hoverable ? 'hover:border-white/14 hover:bg-[#141a38]/75 hover:shadow-xl hover:shadow-black/45' : '';
+    const hoverClass = hoverable ? 'hover:border-[var(--text-muted)] hover:bg-[var(--bg-card-hover)]' : '';
     
     // Border accents
     const borderAccentClasses = {
       none: '',
-      primary: 'border-l-4 border-l-[#00E5A0]',
-      secondary: 'border-l-4 border-l-[#22d3ee]',
-      accent: 'border-l-4 border-l-[#a855f7]',
-      success: 'border-l-4 border-l-[#10b981]',
-      danger: 'border-l-4 border-l-[#ef4444]',
-      warning: 'border-l-4 border-l-[#f59e0b]',
+      primary: 'border-l-4 border-l-[var(--primary)]',
+      secondary: 'border-l-4 border-l-[var(--secondary)]',
+      accent: 'border-l-4 border-l-[var(--accent)]',
+      success: 'border-l-4 border-l-[var(--success)]',
+      danger: 'border-l-4 border-l-[var(--error)]',
+      warning: 'border-l-4 border-l-[var(--warning)]',
     };
 
     const hasHeader = title || subtitle || Icon || headerActions;
@@ -49,17 +49,17 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
         {...props}
       >
         {hasHeader && (
-          <div className="flex justify-between items-start border-b border-white/6 px-5 py-4 gap-4">
+          <div className="flex justify-between items-start border-b border-[var(--border-color)] px-5 py-4 gap-4">
             <div className="flex items-start gap-3 min-w-0">
-              {Icon && <Icon className="text-slate-400 mt-0.5 flex-shrink-0" size={18} />}
+              {Icon && <Icon className="text-[var(--text-secondary)] mt-0.5 flex-shrink-0" size={18} />}
               <div className="min-w-0">
                 {title && (
-                  <h3 className="font-heading font-semibold text-white text-base leading-5 truncate">
+                  <h3 className="font-heading font-semibold text-[var(--text-primary)] text-base leading-5 truncate">
                     {title}
                   </h3>
                 )}
                 {subtitle && (
-                  <p className="text-slate-400 text-xs mt-0.5 truncate leading-4">
+                  <p className="text-[var(--text-secondary)] text-xs mt-0.5 truncate leading-4">
                     {subtitle}
                   </p>
                 )}

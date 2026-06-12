@@ -6,13 +6,13 @@
 .whatsapp-container {
   display: flex;
   height: calc(100vh - 120px);
-  background: rgba(10, 14, 34, 0.4);
-  backdrop-filter: var(--glass-backdrop);
-  -webkit-backdrop-filter: var(--glass-backdrop);
+  background: var(--bg-card);
+  
+  
   border: 1px solid var(--border-color);
-  border-radius: 20px;
+  border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
 }
 
 /* Sidebar List styling */
@@ -21,7 +21,7 @@
   border-right: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
-  background: rgba(6, 8, 20, 0.5);
+  background: var(--bg-card);
   flex-shrink: 0;
 }
 
@@ -35,9 +35,9 @@
 
 .whatsapp-search-input {
   width: 100%;
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--bg-dark);
   border: 1px solid var(--border-color);
-  border-radius: 10px;
+  border-radius: 6px;
   padding: 0.6rem 0.8rem;
   color: #fff;
   font-size: 0.85rem;
@@ -61,7 +61,7 @@
 
 .whatsapp-chat-card {
   padding: 1rem;
-  border-radius: 12px;
+  border-radius: 6px;
   border: 1px solid transparent;
   cursor: pointer;
   transition: var(--transition-smooth);
@@ -73,13 +73,13 @@
 
 .whatsapp-chat-card:hover {
   background: rgba(255, 255, 255, 0.03);
-  border-color: rgba(255, 255, 255, 0.05);
+  border-color: var(--border-color);
 }
 
 .whatsapp-chat-card.active {
   background: rgba(0, 229, 160, 0.06);
   border-color: rgba(0, 229, 160, 0.2);
-  box-shadow: inset 0 0 12px rgba(0, 229, 160, 0.03);
+  ;
 }
 
 .whatsapp-chat-card-header {
@@ -147,13 +147,13 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  background: rgba(10, 14, 34, 0.25);
+  background: var(--bg-card);
 }
 
 .whatsapp-pane-header {
   padding: 1.25rem 2rem;
   border-bottom: 1px solid var(--border-color);
-  background: rgba(6, 8, 20, 0.4);
+  background: var(--bg-card);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -212,10 +212,10 @@
 .whatsapp-message-bubble {
   max-width: 65%;
   padding: 0.8rem 1rem;
-  border-radius: 14px;
+  border-radius: 6px;
   font-size: 0.88rem;
   line-height: 1.5;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
   position: relative;
   word-break: break-word;
 }
@@ -256,7 +256,7 @@
   background: rgba(0, 229, 160, 0.06);
   border: 1px solid rgba(0, 229, 160, 0.15);
   padding: 0.35rem 0.9rem;
-  border-radius: 20px;
+  border-radius: 8px;
   font-family: var(--font-heading);
 }
 
@@ -270,7 +270,7 @@
   max-width: 280px;
   max-height: 200px;
   border-radius: 8px;
-  border: 1px solid rgba(255,255,255,0.06);
+  border: 1px solid var(--border-color);
   cursor: pointer;
   object-fit: cover;
 }
@@ -279,7 +279,7 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  background: rgba(0,0,0,0.25);
+  background: var(--bg-dark);
   padding: 0.6rem 0.9rem;
   border-radius: 8px;
   border: 1px solid var(--border-color);
@@ -297,7 +297,7 @@
 /* Chat Input composer */
 .whatsapp-composer {
   padding: 1.25rem 2rem;
-  background: rgba(6, 8, 20, 0.5);
+  background: var(--bg-card);
   border-top: 1px solid var(--border-color);
   display: flex;
   gap: 1rem;
@@ -306,9 +306,9 @@
 
 .whatsapp-composer-input {
   flex: 1;
-  background: rgba(0, 0, 0, 0.35);
+  background: var(--bg-dark);
   border: 1px solid var(--border-color);
-  border-radius: 12px;
+  border-radius: 6px;
   padding: 0.8rem 1rem;
   color: #fff;
   font-size: 0.9rem;
@@ -332,8 +332,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(4px);
+  background: var(--bg-dark);
+  
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -344,10 +344,10 @@
 .whatsapp-modal {
   background: #0d1227;
   border: 1px solid var(--border-color);
-  border-radius: 20px;
+  border-radius: 8px;
   width: 100%;
   max-width: 500px;
-  box-shadow: 0 15px 45px rgba(0,0,0,0.5);
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
   overflow: hidden;
   display: flex;
   flex-direction: column;

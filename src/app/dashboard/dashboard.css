@@ -15,13 +15,13 @@
   justify-content: space-between;
   align-items: center;
   background: var(--bg-card);
-  backdrop-filter: var(--glass-backdrop);
-  -webkit-backdrop-filter: var(--glass-backdrop);
+  
+  
   border: 1px solid var(--border-color);
-  border-radius: 20px;
+  border-radius: 8px;
   padding: 1.2rem 2.5rem;
   margin-bottom: 2.5rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
 }
 
 .db-logo-section {
@@ -115,7 +115,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.6rem 1.2rem;
-  border-radius: 12px;
+  border-radius: 6px;
   background: rgba(239, 68, 68, 0.1);
   border: 1px solid rgba(239, 68, 68, 0.2);
   color: #fca5a5;
@@ -130,7 +130,7 @@
   background: var(--error);
   border-color: var(--error);
   color: #ffffff;
-  box-shadow: 0 4px 12px var(--error-glow);
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
 }
 
 /* Grid Dashboard Area */
@@ -143,12 +143,12 @@
 
 .db-card {
   background: var(--bg-card);
-  backdrop-filter: var(--glass-backdrop);
-  -webkit-backdrop-filter: var(--glass-backdrop);
+  
+  
   border: 1px solid var(--border-color);
-  border-radius: 20px;
+  border-radius: 8px;
   padding: 2rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
   transition: var(--transition-smooth);
   display: flex;
   flex-direction: column;
@@ -156,10 +156,10 @@
 }
 
 .db-card:hover {
-  transform: translateY(-4px);
+  
   border-color: rgba(255, 255, 255, 0.15);
   background: var(--bg-card-hover);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
 }
 
 .db-card-title {
@@ -200,7 +200,7 @@
   justify-content: space-between;
   align-items: center;
   padding-bottom: 0.75rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .detail-item:last-child {
@@ -226,7 +226,7 @@
   gap: 1rem;
   background: rgba(245, 158, 11, 0.1);
   border: 1px solid rgba(245, 158, 11, 0.2);
-  border-radius: 16px;
+  border-radius: 8px;
   padding: 1.2rem 1.8rem;
   margin-bottom: 2.5rem;
   color: #fde68a;
@@ -239,12 +239,12 @@
 }
 
 .db-warning-banner code {
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--bg-dark);
   padding: 0.2rem 0.4rem;
   border-radius: 4px;
   font-family: monospace;
   font-size: 0.85rem;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
 }
 
 @media (max-width: 768px) {

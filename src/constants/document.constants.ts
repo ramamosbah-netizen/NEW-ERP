@@ -15,7 +15,7 @@ export const DOCUMENT_STATUS_LABELS: Record<DocumentStatus, string> = {
 
 export const DOCUMENT_STATUS_COLORS: Record<DocumentStatus, { bg: string; text: string; border: string }> = {
   PROCESSING: { bg: 'rgba(14, 165, 233, 0.12)', text: '#0ea5e9', border: 'rgba(14, 165, 233, 0.25)' },
-  AUTO_FILED: { bg: 'rgba(0, 229, 160, 0.12)', text: '#00E5A0', border: 'rgba(0, 229, 160, 0.25)' },
+  AUTO_FILED: { bg: 'rgba(16, 185, 129, 0.12)', text: '#10b981', border: 'rgba(16, 185, 129, 0.25)' },
   NEEDS_REVIEW: { bg: 'rgba(245, 158, 11, 0.12)', text: '#f59e0b', border: 'rgba(245, 158, 11, 0.25)' },
   VERIFIED: { bg: 'rgba(16, 185, 129, 0.12)', text: '#10b981', border: 'rgba(16, 185, 129, 0.25)' },
   REJECTED: { bg: 'rgba(239, 68, 68, 0.12)', text: '#ef4444', border: 'rgba(239, 68, 68, 0.25)' },
@@ -33,11 +33,11 @@ export const ENTITY_TYPE_LABELS: Record<DocumentEntityType, string> = {
 // --- Category Colors (for visual grouping) ---
 export const CATEGORY_COLORS: Record<string, string> = {
   COMMERCIAL: '#0ea5e9',
-  CONTRACTUAL: '#a855f7',
-  TECHNICAL: '#00E5A0',
+  CONTRACTUAL: '#6366f1',
+  TECHNICAL: '#3b82f6',
   COMPLIANCE: '#ef4444',
   CORRESPONDENCE: '#f59e0b',
-  SITE: '#22d3ee',
+  SITE: '#0ea5e9',
   OTHER: '#64748b',
 };
 
@@ -140,7 +140,7 @@ export const EXPIRY_WINDOWS = [
   { label: 'Expired', days: 0, color: '#ef4444' },
   { label: '7 Days', days: 7, color: '#f97316' },
   { label: '30 Days', days: 30, color: '#f59e0b' },
-  { label: '60 Days', days: 60, color: '#22d3ee' },
+  { label: '60 Days', days: 60, color: '#0ea5e9' },
   { label: '90 Days', days: 90, color: '#94a3b8' },
 ];
 

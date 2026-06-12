@@ -141,7 +141,7 @@ export const CalendarGrid: React.FC<Props> = ({ meetings, tasks, onSelectMeeting
                   {String(day).padStart(2, '0')}
                 </span>
                 {(dayMeetings.length > 0 || dayTasks.length > 0) && (
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_4px_#00E5A0]" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_4px_var(--primary)]" />
                 )}
               </div>
 

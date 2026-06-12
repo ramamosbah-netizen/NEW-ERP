@@ -33,9 +33,9 @@ export const FormField = React.forwardRef<HTMLInputElement | HTMLTextAreaElement
 
     // Common input styling class (supporting compact density via variables)
     const baseInputStyle =
-      'w-full bg-black/30 border border-white/7 rounded-lg text-white font-body placeholder-slate-500 outline-none transition-all duration-150 focus:border-[#00E5A0] focus:ring-2 focus:ring-[#00E5A0]/20 focus:bg-black/45 disabled:opacity-50 disabled:cursor-not-allowed';
+      'w-full bg-[var(--bg-dark)] border border-[var(--border-color)] rounded-lg text-[var(--text-primary)] font-body placeholder-[var(--text-muted)] outline-none transition-all duration-100 focus:border-[var(--border-focus)] focus:ring-2 focus:ring-[var(--primary-glow)] disabled:opacity-50 disabled:cursor-not-allowed';
     
-    const errorStyle = error ? 'border-red-500/50 focus:border-red-500 focus:ring-red-500/20' : '';
+    const errorStyle = error ? 'border-red-500/50 focus:border-red-500 focus:ring-red-500/10' : '';
 
     // Density variables in CSS override: padding and heights will adapt automatically
     const sizePaddingStyle = 'px-3 py-2 text-sm'; // Default Comfortable padding
@@ -85,7 +85,7 @@ export const FormField = React.forwardRef<HTMLInputElement | HTMLTextAreaElement
               className="sr-only peer"
               {...inputProps}
             />
-            <div className="relative w-9 h-5 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#00E5A0] peer-checked:after:bg-[#060814]"></div>
+            <div className="relative w-9 h-5 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary peer-checked:after:bg-[#060814]"></div>
             <span className="ml-2 text-xs font-semibold text-slate-300">
               {isChecked ? 'Enabled' : 'Disabled'}
             </span>
@@ -101,7 +101,7 @@ export const FormField = React.forwardRef<HTMLInputElement | HTMLTextAreaElement
               type="checkbox"
               id={fieldId}
               disabled={disabled}
-              className="w-4 h-4 rounded bg-black/30 border border-white/7 text-[#00E5A0] focus:ring-offset-[#060814] focus:ring-2 focus:ring-[#00E5A0] focus:ring-opacity-25"
+              className="w-4 h-4 rounded bg-black/30 border border-white/7 text-primary focus:ring-offset-[#060814] focus:ring-2 focus:ring-primary focus:ring-opacity-25"
               {...(props as React.InputHTMLAttributes<HTMLInputElement>)}
             />
             {label && (

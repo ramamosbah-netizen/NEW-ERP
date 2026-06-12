@@ -33,7 +33,7 @@ const getFileIcon = (ext: string) => {
   if (['pdf'].includes(e)) return { Icon: FileText, color: '#ef4444' };
   if (['xlsx', 'xls', 'csv'].includes(e)) return { Icon: FileSpreadsheet, color: '#10b981' };
   if (['docx', 'doc', 'txt'].includes(e)) return { Icon: FileText, color: '#3b82f6' };
-  if (['png', 'jpg', 'jpeg', 'gif'].includes(e)) return { Icon: FileImage, color: '#a855f7' };
+  if (['png', 'jpg', 'jpeg', 'gif'].includes(e)) return { Icon: FileImage, color: 'var(--accent)' };
   if (['dwg', 'dxf'].includes(e)) return { Icon: FileCode, color: 'var(--secondary)' };
   return { Icon: File, color: 'var(--text-muted)' };
 };
@@ -154,7 +154,7 @@ export const DocumentTable: React.FC<Props> = ({
                 </td>
 
                 {/* Amount */}
-                <td style={{ textAlign: 'right', fontWeight: 600, color: doc.amount_aed ? '#00E5A0' : 'var(--text-muted)' }}>
+                <td style={{ textAlign: 'right', fontWeight: 600, color: doc.amount_aed ? '#10b981' : 'var(--text-muted)' }}>
                   {doc.amount_aed ? fmtAED(doc.amount_aed) : '—'}
                 </td>
 

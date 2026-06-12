@@ -28,17 +28,16 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref
   ) => {
-    // Base styles
-    const baseClass = 'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#060814] disabled:opacity-50 disabled:cursor-not-allowed select-none cursor-pointer';
+    // Base styles: snappy active scaling and matte outline offset
+    const baseClass = 'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-100 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[var(--bg-dark)] disabled:opacity-50 disabled:cursor-not-allowed select-none cursor-pointer';
 
-    // Variant classes matching the Bloomberg Obsidian theme
     const variantClasses: Record<ButtonVariant, string> = {
-      primary: 'bg-[#00E5A0] text-[#060814] hover:bg-[#00c489] hover:shadow-[0_0_16px_rgba(0,229,160,0.3)] focus:ring-[#00E5A0]',
-      secondary: 'bg-white/4 border border-white/8 text-white hover:bg-white/9 hover:border-white/16 focus:ring-white/20',
-      muted: 'bg-white/2 border border-transparent text-slate-400 hover:bg-white/6 hover:text-white focus:ring-white/10',
-      danger: 'bg-red-500/12 border border-red-500/35 text-red-300 hover:bg-red-500/22 hover:border-red-500/60 hover:shadow-[0_0_14px_rgba(239,68,68,0.15)] focus:ring-red-500',
-      success: 'bg-emerald-500/12 border border-emerald-500/35 text-emerald-300 hover:bg-emerald-500/22 hover:border-emerald-500/60 hover:shadow-[0_0_14px_rgba(16,185,129,0.15)] focus:ring-emerald-500',
-      warning: 'bg-amber-500/12 border border-amber-500/35 text-amber-300 hover:bg-amber-500/22 hover:border-amber-500/60 hover:shadow-[0_0_14px_rgba(245,158,11,0.15)] focus:ring-amber-500',
+      primary: 'bg-primary text-white hover:bg-primary-hover focus:ring-primary',
+      secondary: 'bg-bg-dark border border-border-color text-text-primary hover:bg-bg-card-hover focus:ring-primary',
+      muted: 'bg-transparent text-[var(--text-secondary)] hover:bg-bg-card-hover hover:text-[var(--text-primary)] focus:ring-primary',
+      danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500',
+      success: 'bg-emerald-600 text-white hover:bg-emerald-700 focus:ring-emerald-500',
+      warning: 'bg-amber-600 text-white hover:bg-amber-700 focus:ring-amber-500',
     };
 
     // Size classes (supporting compact density styles)

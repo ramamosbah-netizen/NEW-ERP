@@ -33,7 +33,7 @@ export const MilestoneTimeline: React.FC<Props> = ({ milestones }) => {
           let color = 'var(--text-muted)';
           let Icon = Circle;
           if (isDone) {
-            color = '#00E5A0';
+            color = 'var(--primary)';
             Icon = CheckCircle2;
           } else if (isDelayed) {
             color = 'var(--error)';
@@ -62,7 +62,7 @@ export const MilestoneTimeline: React.FC<Props> = ({ milestones }) => {
                     left: 'calc(50% + 15px)', 
                     right: 'calc(-50% + 15px)', 
                     height: '2px', 
-                    background: isDone ? '#00E5A0' : 'rgba(255, 255, 255, 0.08)',
+                    background: isDone ? 'var(--primary)' : 'rgba(255, 255, 255, 0.08)',
                     zIndex: 1
                   }}
                 />
@@ -80,7 +80,7 @@ export const MilestoneTimeline: React.FC<Props> = ({ milestones }) => {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  boxShadow: isDone ? '0 0 10px rgba(0, 229, 160, 0.2)' : 'none'
+                  boxShadow: isDone ? '0 0 10px color-mix(in srgb, var(--primary) 20%, transparent)' : 'none'
                 }}
               >
                 <Icon size={30} strokeWidth={1.5} />
@@ -101,7 +101,7 @@ export const MilestoneTimeline: React.FC<Props> = ({ milestones }) => {
                     background: 'rgba(34, 211, 238, 0.08)',
                     padding: '2px 6px',
                     borderRadius: '4px',
-                    border: '1px solid rgba(34, 211, 238, 0.15)'
+                    border: '1px solid color-mix(in srgb, var(--primary) 15%, transparent)'
                   }}
                 >
                   Invoice: {m.payment_pct}%

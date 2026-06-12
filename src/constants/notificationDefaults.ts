@@ -12,9 +12,9 @@ export const SEVERITY_CONFIG: Record<NotificationSeverity, {
 }> = {
   INFO: {
     label: 'Info',
-    color: '#00E5A0', // Electric Mint
-    bg: 'rgba(0, 229, 160, 0.08)',
-    border: 'rgba(0, 229, 160, 0.2)'
+    color: '#3b82f6', // Electric Mint
+    bg: 'color-mix(in srgb, var(--primary) 8%, transparent)',
+    border: 'color-mix(in srgb, var(--primary) 20%, transparent)'
   },
   ACTION_REQUIRED: {
     label: 'Action Required',
@@ -36,11 +36,11 @@ export const CHANNELS: Record<NotificationChannel, {
 }> = {
   IN_APP: {
     label: 'In App',
-    badgeBg: 'rgba(34, 211, 238, 0.15)' // Cyan
+    badgeBg: 'color-mix(in srgb, var(--primary) 15%, transparent)' // Cyan
   },
   EMAIL: {
     label: 'Email',
-    badgeBg: 'rgba(168, 85, 247, 0.15)' // Purple
+    badgeBg: 'color-mix(in srgb, var(--accent) 15%, transparent)' // Purple
   },
   WHATSAPP: {
     label: 'WhatsApp',

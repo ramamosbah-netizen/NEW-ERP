@@ -48,15 +48,15 @@ export const ProjectKPICards: React.FC<Props> = ({ projects }) => {
       </div>
 
       {/* 2. Total Contract Portfolio */}
-      <div className="quote-card" style={{ margin: 0, borderLeft: '4px solid #00E5A0', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+      <div className="quote-card" style={{ margin: 0, borderLeft: '4px solid var(--primary)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
           <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             Portfolio Value
           </span>
-          <TrendingUp size={18} style={{ color: '#00E5A0' }} />
+          <TrendingUp size={18} style={{ color: 'var(--primary)' }} />
         </div>
         <div>
-          <div style={{ fontSize: '1.8rem', fontWeight: 800, fontFamily: 'var(--font-heading)', color: '#00E5A0' }}>
+          <div style={{ fontSize: '1.8rem', fontWeight: 800, fontFamily: 'var(--font-heading)', color: 'var(--primary)' }}>
             {fmtAED(totalValue)}
           </div>
           <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>

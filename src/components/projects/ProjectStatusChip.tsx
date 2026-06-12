@@ -32,9 +32,9 @@ const statusConfig: Record<ProjectStatus, { label: string; bg: string; text: str
   },
   MOBILIZATION: {
     label: 'Mobilization',
-    bg: 'rgba(168, 85, 247, 0.12)',
+    bg: 'color-mix(in srgb, var(--accent) 12%, transparent)',
     text: '#d8b4fe',
-    border: 'rgba(168, 85, 247, 0.25)',
+    border: 'color-mix(in srgb, var(--accent) 25%, transparent)',
     Icon: Wrench
   },
   IN_PROGRESS: {
@@ -60,9 +60,9 @@ const statusConfig: Record<ProjectStatus, { label: string; bg: string; text: str
   },
   DLP: {
     label: 'DLP (Warranty)',
-    bg: 'rgba(34, 211, 238, 0.12)',
-    text: '#22d3ee',
-    border: 'rgba(34, 211, 238, 0.25)',
+    bg: 'color-mix(in srgb, var(--primary) 12%, transparent)',
+    text: '#3b82f6',
+    border: 'color-mix(in srgb, var(--primary) 25%, transparent)',
     Icon: ShieldAlert
   },
   CLOSED: {

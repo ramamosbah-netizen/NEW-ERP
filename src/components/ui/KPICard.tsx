@@ -37,21 +37,21 @@ export const KPICard: React.FC<KPICardProps> = ({
     ? new Intl.NumberFormat('en-AE', { minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(value as number)
     : value;
 
-  // Change colors
+  // Dynamic, theme-aware trend styling
   const trendConfig = {
     up: {
-      color: '#10b981',
-      bg: 'rgba(16, 185, 129, 0.12)',
+      color: 'var(--success)',
+      bg: 'var(--success-glow)',
       icon: ArrowUpRight,
     },
     down: {
-      color: '#ef4444',
-      bg: 'rgba(239, 68, 68, 0.12)',
+      color: 'var(--error)',
+      bg: 'var(--error-glow)',
       icon: ArrowDownRight,
     },
     neutral: {
-      color: '#94a3b8',
-      bg: 'rgba(148, 163, 184, 0.12)',
+      color: 'var(--text-secondary)',
+      bg: 'rgba(148, 163, 184, 0.15)',
       icon: TrendingUp,
     },
   };
@@ -64,29 +64,29 @@ export const KPICard: React.FC<KPICardProps> = ({
   return (
     <Card borderAccent={borderAccent} className={`flex flex-col justify-between overflow-hidden relative ${className}`}>
       <div className="flex justify-between items-start gap-4 mb-2">
-        <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider leading-none">
+        <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider leading-none">
           {title}
         </span>
         <div className="flex items-center gap-2">
           {tooltip && (
             <div className="group relative cursor-help">
-              <HelpCircle size={14} className="text-slate-500 hover:text-slate-300" />
-              <div className="absolute right-0 bottom-full mb-1.5 hidden group-hover:block w-48 p-2 bg-[#090e24] border border-white/10 text-[10px] text-slate-300 rounded shadow-xl z-50">
+              <HelpCircle size={14} className="text-[var(--text-muted)] hover:text-[var(--text-primary)]" />
+              <div className="absolute right-0 bottom-full mb-1.5 hidden group-hover:block w-48 p-2 bg-[var(--bg-card)] border border-[var(--border-color)] text-[10px] text-[var(--text-primary)] rounded shadow-xl z-50">
                 {tooltip}
               </div>
             </div>
           )}
-          {Icon && <Icon className="text-slate-500" size={18} />}
+          {Icon && <Icon className="text-[var(--text-muted)]" size={18} />}
         </div>
       </div>
 
       <div className="flex items-baseline gap-1.5 mb-2.5">
         {valuePrefix && (
-          <span className="text-sm font-bold text-slate-500 font-mono">
+          <span className="text-sm font-bold text-[var(--text-muted)] font-mono">
             {valuePrefix}
           </span>
         )}
-        <span className="text-2xl font-extrabold text-white font-mono tracking-tight leading-none">
+        <span className="text-2xl font-extrabold text-[var(--text-primary)] font-mono tracking-tight leading-none">
           {displayValue}
         </span>
       </div>
@@ -103,7 +103,7 @@ export const KPICard: React.FC<KPICardProps> = ({
             </span>
           )}
           {changeText && (
-            <span className="text-[10px] text-slate-500">
+            <span className="text-[10px] text-[var(--text-muted)]">
               {changeText}
             </span>
           )}
@@ -114,18 +114,13 @@ export const KPICard: React.FC<KPICardProps> = ({
           <div className="h-7 w-20 flex-shrink-0">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={sparkData}>
-                <defs>
-                  <linearGradient id={`grad-${title}`} x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor={borderAccent !== 'none' ? currentTrend.color : '#00E5A0'} stopOpacity={0.4} />
-                    <stop offset="95%" stopColor={borderAccent !== 'none' ? currentTrend.color : '#00E5A0'} stopOpacity={0} />
-                  </linearGradient>
-                </defs>
                 <Area
                   type="monotone"
                   dataKey="value"
-                  stroke={borderAccent !== 'none' ? currentTrend.color : '#00E5A0'}
+                  stroke={borderAccent !== 'none' ? currentTrend.color : 'var(--primary)'}
                   strokeWidth={1.5}
-                  fill={`url(#grad-${title})`}
+                  fill={borderAccent !== 'none' ? currentTrend.color : 'var(--primary)'}
+                  fillOpacity={0.08}
                   dot={false}
                 />
               </AreaChart>

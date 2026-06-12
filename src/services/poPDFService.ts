@@ -19,7 +19,7 @@ export const poPDFService = {
 
     // Color Palette
     const primaryColor = [15, 23, 42]; // Slate 900
-    const accentColor = [0, 229, 160];  // Electric Mint
+    const accentColor = [37, 99, 235];  // Electric Mint
     const textColor = [51, 65, 85];    // Slate 700
     const lightGrey = [241, 245, 249];  // Slate 100
 

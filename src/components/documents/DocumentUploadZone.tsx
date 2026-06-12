@@ -139,7 +139,7 @@ export const DocumentUploadZone: React.FC<Props> = ({
           padding: '2.5rem 1.5rem',
           textAlign: 'center',
           cursor: 'pointer',
-          background: dragActive ? 'rgba(0, 229, 160, 0.04)' : 'rgba(0, 0, 0, 0.15)',
+          background: dragActive ? 'color-mix(in srgb, var(--primary) 4%, transparent)' : 'rgba(0, 0, 0, 0.15)',
           transition: 'var(--transition-smooth)'
         }}
       >
@@ -202,7 +202,7 @@ export const DocumentUploadZone: React.FC<Props> = ({
                       <span style={{ fontSize: '0.82rem', fontWeight: 600, color: '#ffffff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '240px' }}>
                         {item.filename}
                       </span>
-                      <span style={{ fontSize: '0.7rem', color: isError ? '#ef4444' : isDone ? '#00E5A0' : 'var(--text-secondary)', fontWeight: 600 }}>
+                      <span style={{ fontSize: '0.7rem', color: isError ? '#ef4444' : isDone ? '#10b981' : 'var(--text-secondary)', fontWeight: 600 }}>
                         {item.status === 'uploading' ? `Uploading ${item.progress}%` : 
                          item.status === 'extracting' ? 'Extracting Text...' :
                          item.status === 'classifying' ? 'AI Analyzing...' :
@@ -269,7 +269,7 @@ export const DocumentUploadZone: React.FC<Props> = ({
                 <button 
                   type="button" 
                   className="quote-btn quote-btn-primary" 
-                  style={{ width: '100%', justifyContent: 'flex-start', background: 'rgba(0, 229, 160, 0.1)', border: '1px solid rgba(0, 229, 160, 0.3)', color: '#00E5A0' }}
+                  style={{ width: '100%', justifyContent: 'flex-start', background: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.3)', color: 'var(--primary)' }}
                   onClick={() => resolveDuplicate('revision')}
                 >
                   <RefreshCw size={14} /> Upload as a new Revision (e.g. Rev 2)

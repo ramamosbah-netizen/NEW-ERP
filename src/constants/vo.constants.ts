@@ -92,13 +92,13 @@ export const VO_STATUS_COLORS: Record<VOStatus, { bg: string; text: string; bord
   },
   SUBMITTED_TO_CLIENT: {
     bg: 'rgba(168, 85, 247, 0.1)',
-    text: '#a855f7',
-    border: 'rgba(168, 85, 247, 0.25)'
+    text: '#6366f1',
+    border: 'color-mix(in srgb, var(--accent) 25%, transparent)'
   },
   CLIENT_APPROVED: {
-    bg: 'rgba(0, 229, 160, 0.1)',
-    text: '#00E5A0',
-    border: 'rgba(0, 229, 160, 0.3)'
+    bg: 'color-mix(in srgb, var(--primary) 10%, transparent)',
+    text: 'var(--primary)',
+    border: 'color-mix(in srgb, var(--primary) 30%, transparent)'
   },
   CLIENT_REJECTED: {
     bg: 'rgba(239, 68, 68, 0.1)',

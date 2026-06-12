@@ -146,11 +146,11 @@ export const CommandPalette: React.FC = () => {
                     setIsOpen(false);
                   }}
                   className={`flex items-center justify-between px-3.5 py-2.5 rounded-lg cursor-pointer transition-colors duration-150 ${
-                    isSelected ? 'bg-[#00E5A0]/10 text-white border-l-2 border-l-[#00E5A0]' : 'hover:bg-white/4 text-slate-300'
+                    isSelected ? 'bg-primary/10 text-white border-l-2 border-l-primary' : 'hover:bg-white/4 text-slate-300'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <Icon size={16} className={isSelected ? 'text-[#00E5A0]' : 'text-slate-500'} />
+                    <Icon size={16} className={isSelected ? 'text-primary' : 'text-slate-500'} />
                     <div>
                       <span className="text-xs font-semibold block leading-none mb-1">
                         {cmd.name}
@@ -161,7 +161,7 @@ export const CommandPalette: React.FC = () => {
                     </div>
                   </div>
                   {isSelected && (
-                    <span className="text-[9px] text-[#00E5A0] font-bold uppercase tracking-wider bg-[#00E5A0]/5 px-1.5 py-0.5 rounded border border-[#00E5A0]/10">
+                    <span className="text-[9px] text-primary font-bold uppercase tracking-wider bg-primary/5 px-1.5 py-0.5 rounded border border-primary/10">
                       Jump
                     </span>
                   )}

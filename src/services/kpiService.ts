@@ -67,15 +67,19 @@ export const kpiService = {
     let portfolioValue = 0;
     let totalActualCost = 0;
 
-    for (const p of activeProjects) {
-      portfolioValue += Number(p.contract_value || 0);
-      try {
-        const financials = await projectFinancialsService.computeProjectFinancials(p.id);
-        totalActualCost += financials.actualCost;
-      } catch (err) {
-        console.error(`Error computing financials for project ${p.id}:`, err);
-      }
-    }
+    portfolioValue = activeProjects.reduce((sum, p) => sum + Number(p.contract_value || 0), 0);
+    const actualCosts = await Promise.all(
+      activeProjects.map(p =>
+        projectFinancialsService
+          .computeProjectFinancials(p.id)
+          .then(f => f.actualCost)
+          .catch(err => {
+            console.error(`Error computing financials for project ${p.id}:`, err);
+            return 0;
+          })
+      )
+    );
+    totalActualCost = actualCosts.reduce((sum, c) => sum + c, 0);
 
     const averageMargin = portfolioValue > 0
       ? Math.round(((portfolioValue - totalActualCost) / portfolioValue) * 100)
@@ -103,8 +107,8 @@ export const kpiService = {
     const activePipelineCount = (pipelineData || []).length;
     const activePipelineValue = (pipelineData || []).reduce((sum, item) => {
       const val = Number(
-        (item.quotations as any)?.subtotal_after_discount || 
-        (item.quotations as any)?.grand_total_with_vat || 
+        (item.quotations as any)?.subtotal_after_discount ||
+        (item.quotations as any)?.grand_total_with_vat ||
         0
       );
       return sum + val;
@@ -147,7 +151,7 @@ export const kpiService = {
     // 7. Monthly Performance: Last 6 months billed vs spent
     const monthlyPerformance: Array<{ month: string; billed: number; spent: number }> = [];
     const today = new Date();
-    
+
     // Initialize last 6 months
     for (let i = 5; i >= 0; i--) {
       const d = new Date(today.getFullYear(), today.getMonth() - i, 1);

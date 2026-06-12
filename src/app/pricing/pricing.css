@@ -68,7 +68,7 @@
   justify-content: space-between;
   padding: 12px 28px;
   background: rgba(10, 10, 15, 0.85);
-  backdrop-filter: blur(12px) saturate(160%);
+  
   border-bottom: 1px solid var(--p-border);
 }
 
@@ -277,7 +277,7 @@
   padding: 5px 10px;
   background: var(--p-mint-dim);
   border: 1px solid rgba(0, 229, 160, 0.2);
-  border-radius: 20px;
+  border-radius: 8px;
   color: var(--p-mint);
   font-size: 0.75rem;
   font-weight: 500;
@@ -519,8 +519,8 @@
 .pricing-drawer-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
+  background: var(--bg-dark);
+  
   z-index: 500;
   animation: pDrawerFadeIn 0.2s ease;
 }
@@ -885,7 +885,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
   animation: pToastIn 0.3s ease;
 }
 
@@ -893,7 +893,7 @@
 .pricing-toast.error { border-left: 3px solid var(--p-red); }
 
 @keyframes pToastIn {
-  from { transform: translateY(20px); opacity: 0; }
+  from {  opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
 
@@ -1038,7 +1038,7 @@
   width: 100%;
   padding: 2px 6px;
   font-size: 0.78rem;
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--bg-dark);
   border: 1px solid var(--p-border);
   box-shadow: none;
   text-align: right;
@@ -1075,7 +1075,7 @@
 
 .factor-row .pricing-inline-input {
   padding: 2px 6px;
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--bg-dark);
   border: 1px solid var(--p-border);
   box-shadow: none;
   font-size: 0.78rem;

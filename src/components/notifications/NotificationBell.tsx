@@ -55,9 +55,9 @@ export const NotificationBell: React.FC = () => {
         };
       default:
         return {
-          bg: 'rgba(34, 211, 238, 0.12)',
-          text: '#22d3ee',
-          border: 'rgba(34, 211, 238, 0.25)',
+          bg: 'color-mix(in srgb, var(--primary) 12%, transparent)',
+          text: '#3b82f6',
+          border: 'color-mix(in srgb, var(--primary) 25%, transparent)',
           Icon: Info
         };
     }
@@ -163,7 +163,7 @@ export const NotificationBell: React.FC = () => {
 
                     {isUnread && (
                       <div className="flex-shrink-0 self-center">
-                        <div className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#00E5A0]" />
+                        <div className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_var(--primary)]" />
                       </div>
                     )}
                   </div>
