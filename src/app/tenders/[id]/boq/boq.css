@@ -1646,3 +1646,34 @@ body.theme-light .boq-estimator-grid td.col-actions-val {
   color: var(--status-info-text);
   border: 1px solid var(--status-info-border);
 }
+
+/* ============================================================
+   SIMPLE VIEW — hides the detailed cost-buildup groups (3-9):
+   labour breakdown, subcontract, equipment, logistics, wastage,
+   risk and site overhead (columns 12-33). What remains is a
+   clean pricing sheet: item, qty, supply, total cost, profit,
+   selling price.
+   ============================================================ */
+.boq-compact .tier-1-header th.group-3,
+.boq-compact .tier-1-header th.group-4,
+.boq-compact .tier-1-header th.group-5,
+.boq-compact .tier-1-header th.group-6,
+.boq-compact .tier-1-header th.group-7,
+.boq-compact .tier-1-header th.group-8,
+.boq-compact .tier-1-header th.group-9 {
+  display: none;
+}
+
+.boq-compact .tier-2-header th:nth-child(n+9):nth-child(-n+30) {
+  display: none;
+}
+
+.boq-compact tbody td:nth-child(n+12):nth-child(-n+33),
+.boq-compact tfoot td:nth-child(n+12):nth-child(-n+33) {
+  display: none;
+}
+
+/* In simple view the table fits without horizontal scroll */
+.boq-compact {
+  width: 100% !important;
+}

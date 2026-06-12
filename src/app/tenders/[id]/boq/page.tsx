@@ -166,6 +166,23 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
   const [catalog, setCatalog] = useState<any[]>([]);
   const [focusedItemId, setFocusedItemId] = useState<string | null>(null);
   const [focusedField, setFocusedField] = useState<'code' | 'name'>('name');
+
+  // Simple view hides the detailed cost-buildup groups (labour, subcontract,
+  // equipment, logistics, wastage, risk, overhead) leaving a clean pricing
+  // sheet; Detailed view shows all 38 columns. Persisted per user.
+  const [compactView, setCompactView] = useState(true);
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('boq-compact-view');
+      if (saved !== null) setCompactView(saved === '1');
+    } catch { /* ignore */ }
+  }, []);
+  const toggleCompactView = () => {
+    setCompactView(prev => {
+      try { localStorage.setItem('boq-compact-view', prev ? '0' : '1'); } catch { /* ignore */ }
+      return !prev;
+    });
+  };
   const [searchQuery, setSearchQuery] = useState('');
 
   // Applies a Master Rate Catalogue selection to a grid row: every costing
@@ -1265,15 +1282,26 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
                 <FileText size={16} className="text-secondary" />
                 Line Items Estimator Sheet
               </h3>
-              <Button 
-                variant="secondary" 
-                size="sm" 
-                onClick={addItem} 
-                disabled={!isEditable}
-                className="flex items-center gap-1 text-[11px] font-bold"
-              >
-                <Plus size={12} /> Add Item Line
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={toggleCompactView}
+                  className="flex items-center gap-1 text-[11px] font-bold"
+                  title={compactView ? 'Show the full 38-column cost buildup' : 'Hide intermediate cost columns for a clean pricing sheet'}
+                >
+                  {compactView ? 'Detailed View' : 'Simple View'}
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={addItem}
+                  disabled={!isEditable}
+                  className="flex items-center gap-1 text-[11px] font-bold"
+                >
+                  <Plus size={12} /> Add Item Line
+                </Button>
+              </div>
             </div>
 
             {/* Bulk actions bar */}
@@ -1317,7 +1345,7 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
 
             {/* Table Grid Wrapper with Horizontal Scrolling */}
             <div className="boq-table-scroll-container" onKeyDown={handleGridKeyDown}>
-              <table className="boq-estimator-grid">
+              <table className={`boq-estimator-grid ${compactView ? 'boq-compact' : ''}`}>
                 <thead>
                   {/* Tier 1 Header: Group Groupings */}
                   <tr className="tier-1-header">
