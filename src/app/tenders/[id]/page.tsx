@@ -569,11 +569,20 @@ export default function TenderDetail({ params }: { params: Promise<{ id: string 
                       </span>
                     </div>
                     
-                    <button 
+                    <button
                       className="text-text-muted hover:text-primary transition-colors p-1"
-                      onClick={(e) => {
+                      title={`Download ${doc.file_name}`}
+                      onClick={async (e) => {
                         e.preventDefault();
-                        alert(`Starting download of specification artifact: ${doc.file_name}`);
+                        try {
+                          const { data, error } = await supabase.storage
+                            .from('tender-documents')
+                            .createSignedUrl(doc.file_path, 300, { download: doc.file_name });
+                          if (error || !data?.signedUrl) throw error || new Error('No URL returned');
+                          window.open(data.signedUrl, '_blank');
+                        } catch {
+                          alert(`'${doc.file_name}' is not available in storage. It may have been registered before file uploads were enabled — re-attach it from the Edit page.`);
+                        }
                       }}
                     >
                       <Download size={13} />

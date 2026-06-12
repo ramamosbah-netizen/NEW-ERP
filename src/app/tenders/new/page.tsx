@@ -73,7 +73,7 @@ export default function CreateTender() {
   const [clientWarranty, setClientWarranty] = useState('');
 
   // 5. Document Upload
-  const [uploadedFiles, setUploadedFiles] = useState<{ name: string; size: number; type: string }[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<{ name: string; size: number; type: string; file: File }[]>([]);
   const [dragActive, setDragActive] = useState(false);
 
   // Extraction Simulation Console states
@@ -224,7 +224,8 @@ export default function CreateTender() {
       const files = Array.from(e.dataTransfer.files).map(f => ({
         name: f.name,
         size: f.size,
-        type: f.name.split('.').pop() || 'unknown'
+        type: f.name.split('.').pop() || 'unknown',
+        file: f
       }));
       setUploadedFiles([...uploadedFiles, ...files]);
     }
@@ -235,7 +236,8 @@ export default function CreateTender() {
       const files = Array.from(e.target.files).map(f => ({
         name: f.name,
         size: f.size,
-        type: f.name.split('.').pop() || 'unknown'
+        type: f.name.split('.').pop() || 'unknown',
+        file: f
       }));
       setUploadedFiles([...uploadedFiles, ...files]);
     }
@@ -401,23 +403,41 @@ export default function CreateTender() {
         throw insertError;
       }
 
-      // Mock upload files linking if they exist
+      // Upload attachments to Supabase Storage and link metadata
       if (uploadedFiles.length > 0 && insertedTender) {
-        const fileInserts = uploadedFiles.map(f => ({
-          tender_id: insertedTender.id,
-          file_name: f.name,
-          file_path: `tender-documents/${insertedTender.id}/${f.name}`,
-          file_size: f.size,
-          file_type: f.type,
-          uploaded_by: user.id
-        }));
+        const failedUploads: string[] = [];
 
-        const { error: fileError } = await supabase
-          .from('tender_documents')
-          .insert(fileInserts);
+        for (const f of uploadedFiles) {
+          const storagePath = `TENDER/${insertedTender.id}/${Date.now()}_${f.name}`;
+          const { error: uploadError } = await supabase.storage
+            .from('tender-documents')
+            .upload(storagePath, f.file, { cacheControl: '3600', upsert: true });
 
-        if (fileError) {
-          console.warn('Error linking documents metadata:', fileError);
+          if (uploadError) {
+            console.error(`Storage upload failed for ${f.name}:`, uploadError);
+            failedUploads.push(f.name);
+            continue;
+          }
+
+          const { error: fileError } = await supabase
+            .from('tender_documents')
+            .insert({
+              tender_id: insertedTender.id,
+              file_name: f.name,
+              file_path: storagePath,
+              file_size: f.size,
+              file_type: f.type,
+              uploaded_by: user.id
+            });
+
+          if (fileError) {
+            console.error(`Metadata insert failed for ${f.name}:`, fileError);
+            failedUploads.push(f.name);
+          }
+        }
+
+        if (failedUploads.length > 0) {
+          alert(`Tender saved, but ${failedUploads.length} file(s) failed to upload: ${failedUploads.join(', ')}. You can re-attach them from the Edit page.`);
         }
       }
 

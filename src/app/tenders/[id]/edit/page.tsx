@@ -39,6 +39,7 @@ type TenderDocument = {
   file_name: string;
   file_size: number;
   file_type: string;
+  file_path?: string;
 };
 
 export default function EditTender({ params }: { params: Promise<{ id: string }> }) {
@@ -88,7 +89,7 @@ export default function EditTender({ params }: { params: Promise<{ id: string }>
 
   // 5. Document Upload
   const [existingFiles, setExistingFiles] = useState<TenderDocument[]>([]);
-  const [newUploadedFiles, setNewUploadedFiles] = useState<{ name: string; size: number; type: string }[]>([]);
+  const [newUploadedFiles, setNewUploadedFiles] = useState<{ name: string; size: number; type: string; file: File }[]>([]);
   const [dragActive, setDragActive] = useState(false);
 
   // Form Validation Errors
@@ -161,7 +162,7 @@ export default function EditTender({ params }: { params: Promise<{ id: string }>
         // Fetch documents
         const { data: docData, error: docError } = await supabase
           .from('tender_documents')
-          .select('id, file_name, file_size, file_type')
+          .select('id, file_name, file_size, file_type, file_path')
           .eq('tender_id', tenderId);
 
         if (docError) {
@@ -241,7 +242,8 @@ export default function EditTender({ params }: { params: Promise<{ id: string }>
       const files = Array.from(e.dataTransfer.files).map(f => ({
         name: f.name,
         size: f.size,
-        type: f.name.split('.').pop() || 'unknown'
+        type: f.name.split('.').pop() || 'unknown',
+        file: f
       }));
       setNewUploadedFiles([...newUploadedFiles, ...files]);
     }
@@ -252,7 +254,8 @@ export default function EditTender({ params }: { params: Promise<{ id: string }>
       const files = Array.from(e.target.files).map(f => ({
         name: f.name,
         size: f.size,
-        type: f.name.split('.').pop() || 'unknown'
+        type: f.name.split('.').pop() || 'unknown',
+        file: f
       }));
       setNewUploadedFiles([...newUploadedFiles, ...files]);
     }
@@ -265,6 +268,12 @@ export default function EditTender({ params }: { params: Promise<{ id: string }>
   const deleteExistingFile = async (docId: string) => {
     if (confirm('Are you sure you want to delete this document from the database?')) {
       try {
+        // Best-effort removal of the stored file (legacy rows may have no real file)
+        const doc = existingFiles.find(d => d.id === docId);
+        if (doc?.file_path) {
+          await supabase.storage.from('tender-documents').remove([doc.file_path]).catch(() => {});
+        }
+
         const { error } = await supabase
           .from('tender_documents')
           .delete()
@@ -361,23 +370,41 @@ export default function EditTender({ params }: { params: Promise<{ id: string }>
         throw updateError;
       }
 
-      // Upload new documents if they exist
+      // Upload new attachments to Supabase Storage and link metadata
       if (newUploadedFiles.length > 0) {
-        const fileInserts = newUploadedFiles.map(f => ({
-          tender_id: tenderId,
-          file_name: f.name,
-          file_path: `tender-documents/${tenderId}/${f.name}`,
-          file_size: f.size,
-          file_type: f.type,
-          uploaded_by: user.id
-        }));
+        const failedUploads: string[] = [];
 
-        const { error: fileError } = await supabase
-          .from('tender_documents')
-          .insert(fileInserts);
+        for (const f of newUploadedFiles) {
+          const storagePath = `TENDER/${tenderId}/${Date.now()}_${f.name}`;
+          const { error: uploadError } = await supabase.storage
+            .from('tender-documents')
+            .upload(storagePath, f.file, { cacheControl: '3600', upsert: true });
 
-        if (fileError) {
-          console.warn('Error saving document attachments:', fileError);
+          if (uploadError) {
+            console.error(`Storage upload failed for ${f.name}:`, uploadError);
+            failedUploads.push(f.name);
+            continue;
+          }
+
+          const { error: fileError } = await supabase
+            .from('tender_documents')
+            .insert({
+              tender_id: tenderId,
+              file_name: f.name,
+              file_path: storagePath,
+              file_size: f.size,
+              file_type: f.type,
+              uploaded_by: user.id
+            });
+
+          if (fileError) {
+            console.error(`Metadata insert failed for ${f.name}:`, fileError);
+            failedUploads.push(f.name);
+          }
+        }
+
+        if (failedUploads.length > 0) {
+          alert(`Changes saved, but ${failedUploads.length} file(s) failed to upload: ${failedUploads.join(', ')}.`);
         }
       }
 
