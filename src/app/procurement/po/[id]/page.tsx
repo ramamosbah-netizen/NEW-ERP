@@ -15,22 +15,23 @@ import { PO_STATUS_LABELS, PO_STATUS_COLORS, PO_TYPE_LABELS, PO_DELIVERY_STATUS_
 import { poPDFService } from '@/services/poPDFService';
 import { grnService } from '@/services/grnService';
 import { useProjectCommitments } from '@/hooks/useProjectCommitments';
-import { 
-  ArrowLeft, 
-  Calendar, 
-  Download, 
-  FileText, 
-  Send, 
-  AlertCircle, 
-  CheckCircle, 
-  XCircle, 
-  RotateCcw, 
+import {
+  ArrowLeft,
+  Calendar,
+  Download,
+  FileText,
+  Send,
+  AlertCircle,
+  CheckCircle,
+  XCircle,
+  RotateCcw,
   ExternalLink,
   ChevronRight,
   User,
   Truck,
   Ban
 } from 'lucide-react';
+import WorkflowPanel from '@/components/workflow/WorkflowPanel';
 import '@/app/procurement/comparisons/comparisons.css';
 
 const fmtAED = (v: number) => {
@@ -669,6 +670,20 @@ export default function PODetailPage({ params }: PageProps) {
               )}
             </div>
           </div>
+
+          {/* Configurable workflow (Admin Center → Workflows). Renders only
+              when an active workflow is configured for the PO module. */}
+          <WorkflowPanel
+            moduleKey="PO"
+            entityId={poId}
+            context={{
+              total: Number(po.total),
+              status: po.status,
+              supplier_name: po.supplier_name,
+              po_type: po.po_type,
+            }}
+            onStatusChange={() => refetch()}
+          />
         </div>
       </div>
 

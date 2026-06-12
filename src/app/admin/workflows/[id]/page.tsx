@@ -19,6 +19,7 @@ import type { Role } from '@/types/rbac.types';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import WorkflowAnalytics from '@/components/workflow/WorkflowAnalytics';
 import { Plus, Trash2, X, Power, ArrowRight, Flag, FlagOff, Save } from 'lucide-react';
 
 const STATUS_COLORS: { value: StatusColor; label: string }[] = [
@@ -309,6 +310,11 @@ export default function WorkflowDesignerPage({ params }: { params: Promise<{ id:
           <p className="text-xs text-[var(--text-muted)] py-8 text-center">No statuses yet — add the first status to begin designing the pipeline.</p>
         ) : renderGraph()}
       </Card>
+
+      {/* Live analytics for this module's process */}
+      {graph.is_active && (
+        <WorkflowAnalytics moduleKey={graph.module_key} statuses={graph.statuses} />
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Statuses table */}

@@ -39,22 +39,38 @@ example Purchase Order approval workflow.
   SLA hours and escalation.
 - The pipeline diagram renders automatically; click nodes/edges to edit.
 
-How modules consume it:
+How modules consume it — drop the panel into any detail page:
+
+```tsx
+import WorkflowPanel from '@/components/workflow/WorkflowPanel';
+
+<WorkflowPanel
+  moduleKey="PO"
+  entityId={po.id}
+  context={{ total: Number(po.total), supplier_name: po.supplier_name }}
+  onStatusChange={() => refetch()}
+/>
+```
+
+The panel renders nothing when no workflow is configured, so it is always safe
+to include. It shows the current status chip, SLA deadline, approval progress,
+action buttons (with comment + confirm), and the full history timeline.
+The PO detail page (`/procurement/po/[id]`) is the reference implementation.
+
+For custom UI, use the hook or service directly:
 
 ```ts
+import useWorkflow from '@/hooks/useWorkflow';
+const wf = useWorkflow('PO', poId, { total: po.total });
+// wf.status, wf.transitions, wf.execute(id, comment), wf.history, wf.slaOverdue
+
 import workflowService from '@/services/workflowService';
-
-// When a record is created:
 await workflowService.startInstance('PO', poId);
-
-// To render action buttons:
-const result = await workflowService.getMyAvailableTransitions('PO', poId, { total: po.total });
-// result.transitions → [{ label: 'Submit for Approval', ... }]
-
-// When the user clicks one:
-await workflowService.executeTransition('PO', poId, transitionId, { comment, context: { total: po.total } });
-// Approval-gated transitions hold the status until enough approvals are recorded.
+await workflowService.executeTransition('PO', poId, transitionId, { comment, context });
 ```
+
+**Process analytics** appear automatically in the designer for active workflows:
+volume by status, in-flight vs completed, SLA-overdue count, average completion time.
 
 ### 4. Business Rules (`/admin/rules`)
 IF/THEN rules evaluated at trigger points (`ON_CREATE`, `ON_SUBMIT`, …):
@@ -91,12 +107,27 @@ sequence tables when none exist — fully backward compatible.
   **conditional visibility** (show field X when field Y matches a condition).
 - Live preview panel; activate one form per module.
 
+Modules render the configured form with one component:
+
+```tsx
+import DynamicForm from '@/components/forms/DynamicForm';
+
+<DynamicForm
+  moduleKey="MAR"
+  initialValues={record}
+  onSubmit={async (values) => save(values)}
+  onNoForm={() => setUseBuiltinForm(true)}   // fall back when nothing configured
+/>
+```
+
+It renders tabs, sections, all 15 field types, applies conditional visibility
+live, validates on submit (jumping to the first tab with an error), and
+returns the values map. Lower-level helpers:
+
 ```ts
 import formBuilderService from '@/services/formBuilderService';
-
 const form = await formBuilderService.getActiveForm('MAR');
 const errors = formBuilderService.validate(form.schema, values);
-const visible = formBuilderService.isFieldVisible(field, values);
 ```
 
 ### 7. Document Templates (`/admin/templates`)
