@@ -380,8 +380,16 @@ export default function CreateQuotationWizard({ params }: { params: Promise<{ bo
       // Navigate to quotation detail page
       router.push(`/quotations/${res.id}`);
     } catch (err: any) {
-      console.error('Error saving quotation:', err);
-      setErrorMsg(err.message || 'Failed to save quotation');
+      // Supabase/Postgrest errors don't serialize via the default console.error
+      // (they log as "{}"); surface message/details/hint/code explicitly.
+      const detail = err?.message || err?.details || err?.hint || err?.code || 'Unknown error';
+      console.error('Error saving quotation:', {
+        message: err?.message,
+        details: err?.details,
+        hint: err?.hint,
+        code: err?.code,
+      });
+      setErrorMsg(`Failed to save quotation: ${detail}`);
     } finally {
       setSaving(false);
     }
