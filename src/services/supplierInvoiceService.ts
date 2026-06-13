@@ -246,6 +246,15 @@ export const supplierInvoiceService = {
       );
     }
 
+    // 5. Auto-update the catalogue material costs from the billed prices.
+    //    Best-effort — never blocks invoice registration.
+    try {
+      const { priceUpdateService } = await import('./priceUpdateService');
+      await priceUpdateService.applyFromSupplierInvoice(invoice.id);
+    } catch (err) {
+      console.warn('Catalogue price auto-update from supplier invoice failed:', err);
+    }
+
     return invoice as SupplierInvoice;
   },
 

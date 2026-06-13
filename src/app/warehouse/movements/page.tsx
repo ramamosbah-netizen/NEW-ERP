@@ -10,10 +10,13 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import warehouseService, { MovementRow } from '@/services/warehouseService';
+import { supabase } from '@/lib/supabase';
 import { PageHeader } from '@/components/ui/PageHeader';
+import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { Truck, Search } from 'lucide-react';
+import { Truck, Search, Plus, X, Save } from 'lucide-react';
+import type { StockTransactionType } from '@/types/stock.types';
 
 const TYPE_META: Record<string, { label: string; tone: 'in' | 'out' | 'neutral' }> = {
   GRN_RECEIPT: { label: 'Receipt', tone: 'in' },
@@ -42,6 +45,15 @@ export default function MovementsPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  // New movement modal
+  const [showAdd, setShowAdd] = useState(false);
+  const [items, setItems] = useState<{ id: string; item_code: string; description: string; unit: string }[]>([]);
+  const [locations, setLocations] = useState<{ id: string; name: string; location_code: string; type: string }[]>([]);
+  const [projects, setProjects] = useState<{ id: string; project_number: string }[]>([]);
+  const [mForm, setMForm] = useState({ type: 'GRN_RECEIPT' as StockTransactionType, stock_item_id: '', location_id: '', quantity: '', unit_cost: '', project_id: '', reason: '' });
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -49,6 +61,46 @@ export default function MovementsPage() {
     finally { setLoading(false); }
   }, []);
   useEffect(() => { load(); }, [load]);
+
+  const openAdd = async () => {
+    try {
+      const [its, locs, projData] = await Promise.all([
+        warehouseService.getStockItemOptions(),
+        warehouseService.getLocations(),
+        supabase.from('projects').select('id, project_number').order('project_number'),
+      ]);
+      setItems(its);
+      setLocations(locs);
+      setProjects((projData.data as any[]) || []);
+      setShowAdd(true);
+    } catch (err: any) { setError(err.message); }
+  };
+
+  const handleRecord = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!mForm.stock_item_id || !mForm.location_id || !mForm.quantity) {
+      setError('Item, location and quantity are required.');
+      return;
+    }
+    setBusy(true);
+    try {
+      await warehouseService.recordManualMovement({
+        type: mForm.type,
+        stock_item_id: mForm.stock_item_id,
+        location_id: mForm.location_id,
+        quantity: Number(mForm.quantity),
+        unit_cost: Number(mForm.unit_cost) || 0,
+        project_id: mForm.project_id || null,
+        reason: mForm.reason || null,
+      });
+      setShowAdd(false);
+      setMForm({ type: 'GRN_RECEIPT', stock_item_id: '', location_id: '', quantity: '', unit_cost: '', project_id: '', reason: '' });
+      await load();
+      setError(null);
+    } catch (err: any) {
+      setError(err.message || 'Failed to record movement');
+    } finally { setBusy(false); }
+  };
 
   const filtered = rows.filter(r => {
     if (typeFilter && r.type !== typeFilter) return false;
@@ -66,7 +118,15 @@ export default function MovementsPage() {
         title="Goods Movements"
         subtitle="Material movement across sites and projects — receipts, issues, returns, transfers, adjustments and write-offs"
         breadcrumbs={[{ label: 'Warehouse', href: '/warehouse' }, { label: 'Movements' }]}
+        actions={<Button variant="primary" size="sm" icon={Plus} onClick={openAdd}>New movement</Button>}
       />
+
+      {error && (
+        <div className="flex items-center justify-between gap-3 bg-[var(--status-danger-bg)] border border-[var(--status-danger-border)] rounded-lg p-3 text-xs text-[var(--status-danger-text)]">
+          <span>{error}</span>
+          <button onClick={() => setError(null)} className="cursor-pointer"><X size={13} /></button>
+        </div>
+      )}
 
       <div className="flex flex-wrap gap-3 items-center">
         <div className="relative max-w-sm flex-1">
@@ -131,6 +191,76 @@ export default function MovementsPage() {
             </table>
           </div>
         </Card>
+      )}
+
+      {/* New movement modal */}
+      {showAdd && (
+        <div className="quote-modal-overlay" onClick={() => setShowAdd(false)}>
+          <div className="quote-modal" onClick={e => e.stopPropagation()}>
+            <div className="quote-modal-header">
+              <h3 className="text-sm font-semibold text-[var(--text-primary)]">Record goods movement</h3>
+              <button onClick={() => setShowAdd(false)} className="text-[var(--text-muted)] hover:text-[var(--text-primary)] cursor-pointer"><X size={16} /></button>
+            </div>
+            <form onSubmit={handleRecord} className="quote-modal-body flex flex-col gap-4">
+              {items.length === 0 && (
+                <div className="text-xs text-[var(--status-warning-text)] bg-[var(--status-warning-bg)] border border-[var(--status-warning-border)] rounded-md p-2.5">
+                  No stock items registered yet. Register items in the Store page first.
+                </div>
+              )}
+              <div className="quote-form-grid">
+                <div className="quote-form-group">
+                  <label>Movement type</label>
+                  <select className="quote-form-input" value={mForm.type} onChange={e => setMForm({ ...mForm, type: e.target.value as StockTransactionType })}>
+                    <option value="GRN_RECEIPT">Receipt (+)</option>
+                    <option value="RETURN_FROM_SITE">Return from site (+)</option>
+                    <option value="ADJUSTMENT_IN">Adjustment in (+)</option>
+                    <option value="ISSUE_TO_PROJECT">Issue to project (−)</option>
+                    <option value="ISSUE_TO_TICKET">Issue to ticket (−)</option>
+                    <option value="ADJUSTMENT_OUT">Adjustment out (−)</option>
+                    <option value="WRITE_OFF">Write-off / damaged (−)</option>
+                  </select>
+                </div>
+                <div className="quote-form-group">
+                  <label>Item</label>
+                  <select className="quote-form-input" value={mForm.stock_item_id} onChange={e => setMForm({ ...mForm, stock_item_id: e.target.value })}>
+                    <option value="">Select item…</option>
+                    {items.map(it => <option key={it.id} value={it.id}>{it.item_code} — {it.description}</option>)}
+                  </select>
+                </div>
+                <div className="quote-form-group">
+                  <label>Location</label>
+                  <select className="quote-form-input" value={mForm.location_id} onChange={e => setMForm({ ...mForm, location_id: e.target.value })}>
+                    <option value="">Select location…</option>
+                    {locations.map(l => <option key={l.id} value={l.id}>{l.location_code} — {l.name}</option>)}
+                  </select>
+                </div>
+                <div className="quote-form-group">
+                  <label>Quantity</label>
+                  <input type="number" step="any" className="quote-form-input" value={mForm.quantity} onChange={e => setMForm({ ...mForm, quantity: e.target.value })} placeholder="Positive amount" />
+                </div>
+                <div className="quote-form-group">
+                  <label>Unit cost (AED)</label>
+                  <input type="number" step="any" className="quote-form-input" value={mForm.unit_cost} onChange={e => setMForm({ ...mForm, unit_cost: e.target.value })} placeholder="0.00" />
+                </div>
+                <div className="quote-form-group">
+                  <label>Project (optional)</label>
+                  <select className="quote-form-input" value={mForm.project_id} onChange={e => setMForm({ ...mForm, project_id: e.target.value })}>
+                    <option value="">—</option>
+                    {projects.map(p => <option key={p.id} value={p.id}>{p.project_number}</option>)}
+                  </select>
+                </div>
+              </div>
+              <div className="quote-form-group">
+                <label>Reason / note (optional)</label>
+                <input className="quote-form-input" value={mForm.reason} onChange={e => setMForm({ ...mForm, reason: e.target.value })} placeholder="e.g. transferred to site, damaged in transit…" />
+              </div>
+              <div className="flex justify-end gap-2">
+                <Button variant="secondary" size="sm" onClick={() => setShowAdd(false)}>Cancel</Button>
+                <Button variant="primary" size="sm" type="submit" icon={Save} isLoading={busy} disabled={items.length === 0 || locations.length === 0}>Record movement</Button>
+              </div>
+            </form>
+          </div>
+        </div>
       )}
     </div>
   );

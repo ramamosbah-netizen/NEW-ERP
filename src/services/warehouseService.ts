@@ -9,6 +9,8 @@
 // ============================================================
 
 import { supabase } from '@/lib/supabase';
+import { stockTransactionService } from '@/services/stockTransactionService';
+import type { StockTransactionType } from '@/types/stock.types';
 
 export interface SupplierRow {
   id: string;
@@ -204,6 +206,101 @@ export const warehouseService = {
         last_movement_at: lastMove,
       };
     });
+  },
+
+  // ---------- Locations ----------
+  async getLocations(): Promise<{ id: string; name: string; location_code: string; type: string }[]> {
+    const { data, error } = await supabase
+      .from('stock_locations')
+      .select('id, name, location_code, type')
+      .eq('is_active', true)
+      .order('name');
+    if (error) throw error;
+    return data || [];
+  },
+
+  async createLocation(input: { name: string; location_code: string; type: string }): Promise<void> {
+    const { error } = await supabase.from('stock_locations').insert({
+      name: input.name.trim(),
+      location_code: input.location_code.trim().toUpperCase(),
+      type: input.type,
+      is_active: true,
+    });
+    if (error) throw error;
+  },
+
+  // ---------- Stock item registration ----------
+  /** Catalogue items not yet registered as stock items. */
+  async getRegisterableItems(): Promise<{ id: string; item_code: string; description: string; unit: string }[]> {
+    const [{ data: pricing }, { data: existing }] = await Promise.all([
+      supabase.from('pricing_items').select('id, item_code, description, unit').eq('is_active', true).order('item_code'),
+      supabase.from('stock_items').select('pricing_item_id'),
+    ]);
+    const taken = new Set((existing || []).map((s: any) => s.pricing_item_id));
+    return (pricing || []).filter((p: any) => !taken.has(p.id));
+  },
+
+  async registerStockItem(input: {
+    pricing_item_id: string;
+    reorder_level?: number | null;
+    reorder_qty?: number | null;
+    preferred_supplier_id?: string | null;
+    is_serialized?: boolean;
+  }): Promise<void> {
+    const { error } = await supabase.from('stock_items').insert({
+      pricing_item_id: input.pricing_item_id,
+      reorder_level: input.reorder_level ?? null,
+      reorder_qty: input.reorder_qty ?? null,
+      preferred_supplier_id: input.preferred_supplier_id ?? null,
+      is_serialized: input.is_serialized ?? false,
+      is_active: true,
+    });
+    if (error) throw error;
+  },
+
+  /** Registered stock items for the movement picker. */
+  async getStockItemOptions(): Promise<{ id: string; item_code: string; description: string; unit: string }[]> {
+    const { data, error } = await supabase
+      .from('stock_items')
+      .select('id, pricing_items(item_code, description, unit)')
+      .eq('is_active', true);
+    if (error) throw error;
+    return (data || []).map((s: any) => ({
+      id: s.id,
+      item_code: s.pricing_items?.item_code || '—',
+      description: s.pricing_items?.description || '—',
+      unit: s.pricing_items?.unit || '',
+    }));
+  },
+
+  /** Records a manual stock movement (sign derived from the movement type). */
+  async recordManualMovement(input: {
+    type: StockTransactionType;
+    stock_item_id: string;
+    location_id: string;
+    quantity: number;      // positive magnitude entered by the user
+    unit_cost: number;
+    project_id?: string | null;
+    reason?: string | null;
+  }): Promise<string> {
+    const INBOUND: StockTransactionType[] = ['GRN_RECEIPT', 'RETURN_FROM_SITE', 'TRANSFER_IN', 'ADJUSTMENT_IN'];
+    const sign = INBOUND.includes(input.type) ? 1 : -1;
+    const qty = sign * Math.abs(input.quantity);
+    const sourceType = input.type.startsWith('TRANSFER') ? 'TRANSFER' : 'MANUAL';
+
+    return stockTransactionService.recordTransaction({
+      type: input.type,
+      stock_item_id: input.stock_item_id,
+      location_id: input.location_id,
+      qty,
+      unit_cost: input.unit_cost,
+      total_value: Math.round(qty * input.unit_cost * 100) / 100,
+      source_type: sourceType,
+      source_id: null,
+      project_id: input.project_id || null,
+      counterparty_location_id: null,
+      reason: input.reason || null,
+    } as any);
   },
 
   // ---------- Goods movements ----------
