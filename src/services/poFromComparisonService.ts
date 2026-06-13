@@ -33,6 +33,52 @@ export interface POProposal {
 
 export const poFromComparisonService = {
   /**
+   * Resolves the most relevant comparison sheet for a project (via its linked
+   * quotation), preferring APPROVED, then any non-superseded sheet. Returns the
+   * comparison id or null.
+   */
+  async findComparisonForProject(projectId: string): Promise<string | null> {
+    // project -> quotation (originating or linked)
+    const { data: project } = await supabase
+      .from('projects')
+      .select('quotation_id')
+      .eq('id', projectId)
+      .maybeSingle();
+
+    const quotationIds: string[] = [];
+    if (project?.quotation_id) quotationIds.push(project.quotation_id);
+
+    // also any quotations associated to this project (best-effort)
+    const { data: linked } = await supabase
+      .from('quotations')
+      .select('id')
+      .eq('linked_project_id', projectId);
+    for (const q of linked || []) if (!quotationIds.includes(q.id)) quotationIds.push(q.id);
+
+    if (quotationIds.length === 0) return null;
+
+    const { data: comps } = await supabase
+      .from('supplier_comparisons')
+      .select('id, status, is_locked, created_at')
+      .in('quotation_id', quotationIds)
+      .order('created_at', { ascending: false });
+
+    if (!comps || comps.length === 0) return null;
+    const approved = comps.find(c => c.status === 'APPROVED');
+    if (approved) return approved.id;
+    const usable = comps.find(c => c.status !== 'SUPERSEDED' && c.status !== 'REJECTED');
+    return (usable || comps[0]).id;
+  },
+
+  /** Convenience: resolve + build proposals for a project in one call. */
+  async getProposalsForProject(projectId: string): Promise<{ comparisonId: string | null; proposals: POProposal[] }> {
+    const comparisonId = await this.findComparisonForProject(projectId);
+    if (!comparisonId) return { comparisonId: null, proposals: [] };
+    const { proposals } = await this.generatePOProposalsFromComparison(comparisonId);
+    return { comparisonId, proposals };
+  },
+
+  /**
    * Loads an approved comparison sheet and builds PO draft proposals grouped by selected supplier.
    */
   async generatePOProposalsFromComparison(comparisonId: string): Promise<{

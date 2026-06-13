@@ -10,8 +10,9 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { poService } from '@/services/poService';
+import { poFromComparisonService, POProposal } from '@/services/poFromComparisonService';
 import { ALL_PO_TYPES, PO_TYPE_LABELS } from '@/constants/po.constants';
-import { Plus, Trash, ArrowLeft, Save, AlertCircle, RefreshCw } from 'lucide-react';
+import { Plus, Trash, ArrowLeft, Save, AlertCircle, RefreshCw, Scale, Download } from 'lucide-react';
 import '@/app/procurement/comparisons/comparisons.css';
 
 const DEFAULT_ITEM = {
@@ -151,6 +152,50 @@ function POFormContent() {
     if (selected) {
       setPaymentTermsDays(selected.payment_terms_days || 30);
       setPaymentTermsText(`${selected.payment_terms_days || 30} Days Net`);
+    }
+  };
+
+  // Auto-import from approved comparison when a project is selected
+  const [comparisonProposals, setComparisonProposals] = useState<POProposal[]>([]);
+  const [comparisonId, setComparisonId] = useState<string | null>(null);
+  const [importSupplierId, setImportSupplierId] = useState<string>('');
+
+  useEffect(() => {
+    if (!projectId) { setComparisonProposals([]); setComparisonId(null); return; }
+    let cancelled = false;
+    poFromComparisonService.getProposalsForProject(projectId)
+      .then(({ comparisonId, proposals }) => {
+        if (cancelled) return;
+        setComparisonId(comparisonId);
+        setComparisonProposals(proposals);
+        setImportSupplierId(proposals[0]?.supplier_id || '');
+      })
+      .catch(() => { if (!cancelled) { setComparisonProposals([]); setComparisonId(null); } });
+    return () => { cancelled = true; };
+  }, [projectId]);
+
+  const handleImportFromComparison = () => {
+    const proposal = comparisonProposals.find(p => p.supplier_id === importSupplierId);
+    if (!proposal) return;
+    // Supplier
+    if (suppliers.some(s => s.id === proposal.supplier_id)) {
+      handleSupplierChange(proposal.supplier_id);
+    }
+    // Items
+    setItems(proposal.items.map(it => ({
+      description: it.description,
+      brand: it.brand || '',
+      unit: it.unit || 'Pcs',
+      quantity: it.quantity,
+      unit_price: it.unit_price,
+      discount_pct: 0,
+      vat_applicable: it.vat_applicable ?? true,
+      system: it.system || 'OTHER',
+      comparison_item_id: it.comparison_item_id,
+    })));
+    if (proposal.payment_terms_days) {
+      setPaymentTermsDays(proposal.payment_terms_days);
+      setPaymentTermsText(`${proposal.payment_terms_days} Days Net`);
     }
   };
 
@@ -466,6 +511,36 @@ function POFormContent() {
                     onChange={(e) => setNoComparisonJustification(e.target.value)}
                   />
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* Import-from-comparison banner (when the selected project has a comparison) */}
+          {comparisonProposals.length > 0 && (
+            <div className="quote-card" style={{ border: '1px solid rgba(0, 229, 160, 0.3)', background: 'rgba(0, 229, 160, 0.04)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', flexWrap: 'wrap' }}>
+                <Scale size={18} style={{ color: 'var(--secondary, #00E5A0)', flexShrink: 0 }} />
+                <div style={{ flex: 1, minWidth: '200px' }}>
+                  <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-primary)' }}>Comparison sheet found for this project</div>
+                  <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
+                    Import the selected supplier&apos;s items, prices and terms directly from the comparison.
+                  </div>
+                </div>
+                <select
+                  className="quote-form-input"
+                  style={{ maxWidth: '260px' }}
+                  value={importSupplierId}
+                  onChange={(e) => setImportSupplierId(e.target.value)}
+                >
+                  {comparisonProposals.map(p => (
+                    <option key={p.supplier_id} value={p.supplier_id}>
+                      {p.supplier_name} — {p.items.length} item(s), {new Intl.NumberFormat('en-AE', { maximumFractionDigits: 0 }).format(p.total)} AED
+                    </option>
+                  ))}
+                </select>
+                <button type="button" className="quote-btn quote-btn-primary" onClick={handleImportFromComparison} disabled={!importSupplierId}>
+                  <Download size={14} style={{ marginRight: '0.3rem' }} /> Import
+                </button>
               </div>
             </div>
           )}
