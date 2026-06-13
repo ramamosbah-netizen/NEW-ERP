@@ -75,6 +75,8 @@ function POFormContent() {
   const [requiredDeliveryDate, setRequiredDeliveryDate] = useState<string>('');
   const [paymentTermsDays, setPaymentTermsDays] = useState<number>(30);
   const [paymentTermsText, setPaymentTermsText] = useState<string>('');
+  const [paymentMethod, setPaymentMethod] = useState<string>('BANK_TRANSFER');
+  const [comparisonThreshold, setComparisonThreshold] = useState<number>(10000);
   const [noComparisonJustification, setNoComparisonJustification] = useState<string>('');
   const [termsConditions, setTermsConditions] = useState<string>('');
   const [notesToSupplier, setNotesToSupplier] = useState<string>('');
@@ -106,6 +108,13 @@ function POFormContent() {
 
         if (supRes.data) setSuppliers(supRes.data);
         if (projRes.data) setProjects(projRes.data);
+
+        // Configurable comparison/direct-purchase threshold (Admin → Settings)
+        try {
+          const { default: settingsService } = await import('@/services/settingsService');
+          const t = await settingsService.getSettingByKey<number>('procurement.direct_purchase_threshold', 10000);
+          setComparisonThreshold(Number(t) || 10000);
+        } catch { /* keep default */ }
 
         // Load existing PO details if editing a draft or completing a revision
         const targetPoId = poIdParam || reviseIdParam;
@@ -310,6 +319,7 @@ function POFormContent() {
         promised_delivery_days: promisedDeliveryDays || null,
         payment_terms_days: paymentTermsDays,
         payment_terms_text: paymentTermsText || `${paymentTermsDays} Days Net`,
+        payment_method: paymentMethod || null,
         subtotal: totals.subtotal,
         discount_amount: totals.discount_amount,
         vat_amount: totals.vat_amount,
@@ -327,8 +337,8 @@ function POFormContent() {
 
       // Validate threshold constraint
       const errors = [];
-      if (totals.total > 10000.00 && poType !== 'OVERHEAD' && (!noComparisonJustification || noComparisonJustification.trim() === '')) {
-        errors.push('Justification Required: Manual LPOs exceeding 10,000 AED must specify why a comparison sheet was not generated.');
+      if (totals.total > comparisonThreshold && poType !== 'OVERHEAD' && (!noComparisonJustification || noComparisonJustification.trim() === '')) {
+        errors.push(`Justification Required: Manual LPOs exceeding ${comparisonThreshold.toLocaleString()} AED must specify why a comparison sheet was not generated.`);
       }
       if (poType !== 'OVERHEAD' && !projectId) {
         errors.push('Please select a project.');
@@ -384,7 +394,7 @@ function POFormContent() {
     }
   };
 
-  const isJustificationRequired = totals.total > 10000.00 && poType !== 'OVERHEAD';
+  const isJustificationRequired = totals.total > comparisonThreshold && poType !== 'OVERHEAD';
 
   return (
     <div className="comp-container">
@@ -509,15 +519,27 @@ function POFormContent() {
 
               <div className="quote-form-group">
                 <label>Payment Terms Days</label>
-                <input 
-                  type="number" 
-                  className="quote-form-input" 
+                <input
+                  type="number"
+                  className="quote-form-input"
                   value={paymentTermsDays}
                   onChange={(e) => {
                     setPaymentTermsDays(Number(e.target.value) || 0);
                     setPaymentTermsText(`${e.target.value} Days Net`);
                   }}
                 />
+              </div>
+
+              <div className="quote-form-group">
+                <label>Mode of Payment</label>
+                <select className="quote-form-input" value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}>
+                  <option value="BANK_TRANSFER">Bank Transfer</option>
+                  <option value="CHEQUE">Cheque</option>
+                  <option value="CASH">Cash</option>
+                  <option value="CREDIT">Credit (on account)</option>
+                  <option value="PETTY_CASH">Petty Cash</option>
+                  <option value="LC">Letter of Credit</option>
+                </select>
               </div>
 
               <div className="quote-form-group" style={{ gridColumn: 'span 2' }}>

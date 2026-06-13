@@ -62,6 +62,8 @@ interface ReceiptItemState {
   description: string;
   brand: string;
   unit: string;
+  system?: string;
+  unit_price?: number;
   ordered_qty: number;
   qty_already_received: number;
   qty_received: number;
@@ -265,6 +267,8 @@ function GRNFormContent() {
         description: it.description,
         brand: it.brand || '',
         unit: it.unit,
+        system: (it as any).system || '',
+        unit_price: Number((it as any).unit_price) || 0,
         ordered_qty: Number(it.quantity) || 0,
         qty_already_received: Number(it.qty_received) || 0,
         qty_received: 0,
@@ -840,8 +844,10 @@ function GRNFormContent() {
                     <tr>
                       <th style={{ width: '40px' }}>Line</th>
                       <th>Material Specification</th>
+                      <th style={{ width: '110px' }}>System / Category</th>
                       <th style={{ width: '110px' }}>Brand</th>
                       <th style={{ width: '60px' }}>Unit</th>
+                      <th style={{ width: '100px', textAlign: 'right' }}>Unit Price</th>
                       <th style={{ width: '80px', textAlign: 'right' }}>Ordered</th>
                       <th style={{ width: '80px', textAlign: 'right' }}>Prev Rec.</th>
                       <th style={{ width: '150px', textAlign: 'center' }}>Received *</th>
@@ -862,8 +868,10 @@ function GRNFormContent() {
                             <td>
                               <div style={{ fontWeight: 500 }}>{it.description}</div>
                             </td>
+                            <td style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{it.system || '-'}</td>
                             <td>{it.brand || '-'}</td>
                             <td>{it.unit}</td>
+                            <td style={{ textAlign: 'right', fontFamily: 'var(--font-mono)', fontSize: '0.78rem' }}>{it.unit_price ? it.unit_price.toFixed(2) : '-'}</td>
                             <td style={{ textAlign: 'right', fontWeight: 600 }}>{it.ordered_qty}</td>
                             <td style={{ textAlign: 'right', color: 'var(--text-muted)' }}>{it.qty_already_received}</td>
                             
@@ -947,7 +955,7 @@ function GRNFormContent() {
                           {/* Rejection Details Row (Desktop) */}
                           {showsRejectionOptions && (
                             <tr style={{ background: 'rgba(239, 68, 68, 0.02)' }}>
-                              <td colSpan={10} style={{ padding: '1rem', borderTop: 'none', borderBottom: '1px solid rgba(239, 68, 68, 0.15)' }}>
+                              <td colSpan={12} style={{ padding: '1rem', borderTop: 'none', borderBottom: '1px solid rgba(239, 68, 68, 0.15)' }}>
                                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem', alignItems: 'flex-start' }}>
                                   
                                   <div style={{ flex: 1, minWidth: '200px' }}>

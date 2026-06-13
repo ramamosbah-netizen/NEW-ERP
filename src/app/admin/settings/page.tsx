@@ -159,6 +159,7 @@ export default function SettingsHubPage() {
 
   // --- Tab 4: Procurement ---
   const [thresholdPO, setThresholdPO] = useState<number>(20000);
+  const [directPurchaseThreshold, setDirectPurchaseThreshold] = useState<number>(10000);
   const [autoRank, setAutoRank] = useState<boolean>(true);
 
   // --- Tab 5: Inventory & Assets ---
@@ -300,6 +301,8 @@ export default function SettingsHubPage() {
       // 4. Procurement settings
       const threshPOVal = await settingsService.getSettingByKey('finance.approval_threshold_po', 20000);
       setThresholdPO(Number(threshPOVal));
+      const directThreshVal = await settingsService.getSettingByKey('procurement.direct_purchase_threshold', 10000);
+      setDirectPurchaseThreshold(Number(directThreshVal));
 
       const autoRankVal = await settingsService.getSettingByKey('procurement.auto_rank', true);
       setAutoRank(Boolean(autoRankVal));
@@ -560,6 +563,7 @@ export default function SettingsHubPage() {
     setSaving(true);
     try {
       await settingsService.updateSetting('finance.approval_threshold_po', thresholdPO, 'FINANCE', 'NUMBER', 'PO GM Threshold Limit');
+      await settingsService.updateSetting('procurement.direct_purchase_threshold', directPurchaseThreshold, 'PROCUREMENT', 'NUMBER', 'Max AED a PR can be purchased directly without an LPO');
       await settingsService.updateSetting('procurement.auto_rank', autoRank, 'FINANCE', 'BOOLEAN', 'Automatic comparison ranking weight toggling');
       showFeedback(true, 'Procurement configuration saved successfully.');
     } catch (err: any) {
@@ -2388,13 +2392,24 @@ export default function SettingsHubPage() {
                             <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">Purchase Order limit (Requires GM Approval)</label>
                             <div className="relative">
                               <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[9px] font-mono font-bold text-text-muted uppercase">{currency}</span>
-                              <input 
-                                type="number" 
+                              <input
+                                type="number"
                                 value={thresholdPO}
                                 onChange={(e) => setThresholdPO(Number(e.target.value))}
                                 className="w-full bg-slate-955 border border-border-color rounded-xl pl-12 pr-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
                               />
                             </div>
+                            <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5 mt-4">Direct Purchase Limit (PR without LPO)</label>
+                            <div className="relative">
+                              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[9px] font-mono font-bold text-text-muted uppercase">{currency}</span>
+                              <input
+                                type="number"
+                                value={directPurchaseThreshold}
+                                onChange={(e) => setDirectPurchaseThreshold(Number(e.target.value))}
+                                className="w-full bg-slate-955 border border-border-color rounded-xl pl-12 pr-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
+                              />
+                            </div>
+                            <p className="text-[10px] text-text-muted mt-1.5 leading-relaxed">PRs at or below this value can be purchased directly without raising an LPO; larger ones must convert to an LPO.</p>
                           </div>
                         </div>
 

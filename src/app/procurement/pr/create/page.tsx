@@ -39,6 +39,7 @@ export default function CreatePRPage() {
   const [justification, setJustification] = useState('');
   const [requiredBy, setRequiredBy] = useState('');
   const [preferredSupplierId, setPreferredSupplierId] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState('BANK_TRANSFER');
   const [items, setItems] = useState<PRItemInput[]>([{ ...EMPTY_ITEM }]);
 
   useEffect(() => {
@@ -67,6 +68,7 @@ export default function CreatePRPage() {
         justification: justification.trim() || undefined,
         required_by_date: requiredBy || null,
         preferred_supplier_id: preferredSupplierId || null,
+        payment_method: paymentMethod || null,
         items: items.filter(i => i.description.trim()),
       });
       if (submit) await prService.submit(id);
@@ -134,6 +136,17 @@ export default function CreatePRPage() {
             <select className="quote-form-input" value={preferredSupplierId} onChange={e => setPreferredSupplierId(e.target.value)}>
               <option value="">—</option>
               {suppliers.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+            </select>
+          </div>
+          <div className="quote-form-group">
+            <label>Mode of payment</label>
+            <select className="quote-form-input" value={paymentMethod} onChange={e => setPaymentMethod(e.target.value)}>
+              <option value="BANK_TRANSFER">Bank Transfer</option>
+              <option value="CHEQUE">Cheque</option>
+              <option value="CASH">Cash</option>
+              <option value="CREDIT">Credit (on account)</option>
+              <option value="PETTY_CASH">Petty Cash</option>
+              <option value="LC">Letter of Credit</option>
             </select>
           </div>
           <div className="quote-form-group col-span-full">

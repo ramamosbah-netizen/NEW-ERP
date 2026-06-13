@@ -1,4 +1,4 @@
-export type SettingCategory = 'COMPANY' | 'FINANCE' | 'WORKFLOW' | 'HR' | 'NOTIFICATIONS' | 'INTEGRATIONS';
+export type SettingCategory = 'COMPANY' | 'FINANCE' | 'WORKFLOW' | 'HR' | 'NOTIFICATIONS' | 'INTEGRATIONS' | 'PROCUREMENT';
 export type SettingDataType = 'STRING' | 'NUMBER' | 'BOOLEAN' | 'JSON' | 'ARRAY';
 
 export interface SystemSetting<T = any> {

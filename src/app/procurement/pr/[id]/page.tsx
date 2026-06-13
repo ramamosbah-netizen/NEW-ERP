@@ -28,6 +28,7 @@ export default function PRDetailPage({ params }: { params: Promise<{ id: string 
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [threshold, setThreshold] = useState(10000);
 
   const load = useCallback(async () => {
     try { setPr(await prService.get(id)); setError(null); }
@@ -35,6 +36,7 @@ export default function PRDetailPage({ params }: { params: Promise<{ id: string 
     finally { setLoading(false); }
   }, [id]);
   useEffect(() => { load(); }, [load]);
+  useEffect(() => { prService.getDirectPurchaseThreshold().then(setThreshold).catch(() => {}); }, []);
 
   const act = async (fn: () => Promise<any>) => {
     setBusy(true);
@@ -66,7 +68,17 @@ export default function PRDetailPage({ params }: { params: Promise<{ id: string 
               </>
             )}
             {pr.status === 'APPROVED' && (
-              <Button size="sm" variant="primary" icon={ArrowRight} onClick={() => router.push(`/procurement/po/create?pr_id=${id}`)}>Convert to LPO</Button>
+              <>
+                {Number(pr.estimated_total) <= threshold && (
+                  <Button size="sm" variant="success" isLoading={busy} onClick={() => {
+                    if (window.confirm(`Record this as a direct purchase (no LPO)? Allowed under ${threshold.toLocaleString()} AED.`)) act(() => prService.markDirectPurchased(id));
+                  }}>Direct Purchase (no LPO)</Button>
+                )}
+                <Button size="sm" variant="primary" icon={ArrowRight} onClick={() => router.push(`/procurement/po/create?pr_id=${id}`)}>Convert to LPO</Button>
+              </>
+            )}
+            {pr.status === 'DIRECT_PURCHASED' && (
+              <span className="q-badge q-badge-approved">Direct purchased</span>
             )}
             {pr.status === 'CONVERTED' && pr.converted_po_id && (
               <Link href={`/procurement/po/${pr.converted_po_id}`} className="no-underline">

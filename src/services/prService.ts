@@ -29,6 +29,7 @@ export interface PRInput {
   justification?: string;
   required_by_date?: string | null;
   preferred_supplier_id?: string | null;
+  payment_method?: string | null;
   notes?: string;
   items: PRItemInput[];
 }
@@ -79,6 +80,7 @@ export const prService = {
         justification: input.justification || null,
         required_by_date: input.required_by_date || null,
         preferred_supplier_id: input.preferred_supplier_id || null,
+        payment_method: input.payment_method || null,
         estimated_total: estimatedTotal,
         notes: input.notes || null,
         requested_by: user.id,
@@ -140,6 +142,44 @@ export const prService = {
       .eq('id', id);
     if (error) throw error;
     await recordAudit({ action: 'REJECT', entity_type: 'PURCHASE_REQUEST', entity_id: id, entity_label: pr.pr_number, summary: `Rejected PR ${pr.pr_number}: ${reason}`, module: 'PROCUREMENT' }).catch(() => {});
+    return true;
+  },
+
+  /** Returns the configurable direct-purchase threshold (AED). */
+  async getDirectPurchaseThreshold(): Promise<number> {
+    try {
+      const { default: settingsService } = await import('@/services/settingsService');
+      const t = await settingsService.getSettingByKey<number>('procurement.direct_purchase_threshold', 10000);
+      return Number(t) || 10000;
+    } catch {
+      return 10000;
+    }
+  },
+
+  /**
+   * Marks an approved PR as directly purchased (no LPO), allowed only when its
+   * estimated total is below the configurable threshold.
+   */
+  async markDirectPurchased(id: string) {
+    const { data: pr } = await supabase
+      .from('purchase_requests')
+      .select('status, pr_number, estimated_total')
+      .eq('id', id)
+      .single();
+    if (!pr || pr.status !== 'APPROVED') throw new Error('Only approved PRs can be directly purchased.');
+
+    const threshold = await this.getDirectPurchaseThreshold();
+    if (Number(pr.estimated_total) > threshold) {
+      throw new Error(`Direct purchase is only allowed under ${threshold.toLocaleString()} AED. Convert to an LPO instead.`);
+    }
+
+    const { error } = await supabase
+      .from('purchase_requests')
+      .update({ status: 'DIRECT_PURCHASED', is_direct_purchase: true, direct_purchased_at: new Date().toISOString(), updated_at: new Date().toISOString() })
+      .eq('id', id);
+    if (error) throw error;
+
+    await recordAudit({ action: 'UPDATE', entity_type: 'PURCHASE_REQUEST', entity_id: id, entity_label: pr.pr_number, summary: `PR ${pr.pr_number} purchased directly (no LPO)`, module: 'PROCUREMENT' }).catch(() => {});
     return true;
   },
 
