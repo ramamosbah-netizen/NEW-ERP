@@ -328,6 +328,15 @@ export const projectService = {
 
     if (createError) throw createError;
 
+    // F2. Link the quotation to this project (a project owns many quotations;
+    //     each quotation belongs to one project). Best-effort — column added
+    //     by migration 20260613240000.
+    await supabase
+      .from('quotations')
+      .update({ linked_project_id: newProject.id })
+      .eq('id', quotationId)
+      .then(({ error }) => { if (error) console.warn('Could not set quotation.linked_project_id:', error.message); });
+
     // G. Create status history log
     await supabase.from('project_status_history').insert({
       project_id: newProject.id,

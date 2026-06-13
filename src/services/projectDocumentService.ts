@@ -56,7 +56,7 @@ export const projectDocumentService = {
 
     // Run every source in parallel; each is independently fault-tolerant.
     const [
-      tender, boq, quotation, comparisons, pos, grns, clientInv, supplierInv, dmsDocs,
+      tender, boq, quotation, comparisons, pos, grns, clientInv, supplierInv, dmsDocs, linkedQuotes,
     ] = await Promise.all([
       project.tender_id
         ? safe<any>(supabase.from('tenders').select('id, title, status, budget, deadline_date').eq('id', project.tender_id).maybeSingle())
@@ -78,6 +78,9 @@ export const projectDocumentService = {
       safe<any[]>(supabase.from('client_invoices').select('id, invoice_number, status, total_incl_vat, invoice_date').eq('project_id', project.id)),
       safe<any[]>(supabase.from('supplier_invoices').select('id, supplier_invoice_number, status, total, invoice_date').eq('project_id', project.id)),
       safe<any[]>(supabase.from('documents').select('id, title, original_filename, entity_type, created_at').in('entity_id', [project.id, project.tender_id, project.quotation_id].filter(Boolean) as string[])),
+      // All quotations associated to this project (a project owns many).
+      // Degrades to [] if linked_project_id column not present yet.
+      safe<any[]>(supabase.from('quotations').select('id, quotation_number, revision_label, status, grand_total_with_vat, quotation_date').eq('linked_project_id', project.id)),
     ]);
 
     // Tender
@@ -103,24 +106,29 @@ export const projectDocumentService = {
       }]);
     }
 
-    // Quotation (+ its client LPO/contract attachment if present)
-    if (quotation) {
-      push('Quotation', [{
-        category: 'Quotation',
-        reference: `${quotation.quotation_number}${quotation.revision_label ? ' ' + quotation.revision_label : ''}`,
-        status: quotation.status,
-        date: quotation.quotation_date,
-        amount: Number(quotation.grand_total_with_vat) || null,
+    // Quotations — the originating one plus any associated to this project
+    // (a project can own many quotations). De-duplicated by id.
+    const quoteMap = new Map<string, any>();
+    if (quotation) quoteMap.set(quotation.id, quotation);
+    for (const q of (linkedQuotes || [])) if (!quoteMap.has(q.id)) quoteMap.set(q.id, q);
+
+    push('Quotation', Array.from(quoteMap.values()).map((q: any) => ({
+      category: 'Quotation' as const,
+      reference: `${q.quotation_number}${q.revision_label ? ' ' + q.revision_label : ''}`,
+      status: q.status,
+      date: q.quotation_date,
+      amount: Number(q.grand_total_with_vat) || null,
+      href: `/quotations/${q.id}`,
+    })));
+
+    // Client LPO/contract attached to the originating quotation
+    if (quotation && (quotation.client_po_number || quotation.client_po_document_path)) {
+      push('Client LPO / Contract', [{
+        category: 'Client LPO / Contract',
+        reference: quotation.client_po_number || quotation.client_po_document_name || 'Client LPO',
+        status: 'RECEIVED',
         href: `/quotations/${quotation.id}`,
       }]);
-      if (quotation.client_po_number || quotation.client_po_document_path) {
-        push('Client LPO / Contract', [{
-          category: 'Client LPO / Contract',
-          reference: quotation.client_po_number || quotation.client_po_document_name || 'Client LPO',
-          status: 'RECEIVED',
-          href: `/quotations/${quotation.id}`,
-        }]);
-      }
     }
 
     // Comparisons

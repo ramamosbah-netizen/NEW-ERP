@@ -59,6 +59,12 @@ export default function QuotationDetailPage({ params }: { params: Promise<{ id: 
   // Accept modal — client LPO/contract attachment
   const [lpoFile, setLpoFile] = useState<File | null>(null);
 
+  // Project association (a project owns many quotations)
+  const [existingProject, setExistingProject] = useState<{ id: string; project_number: string } | null>(null);
+  const [showLinkModal, setShowLinkModal] = useState(false);
+  const [allProjects, setAllProjects] = useState<{ id: string; project_number: string; name: string }[]>([]);
+  const [linkProjectId, setLinkProjectId] = useState('');
+
   // Load current user profile
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -85,6 +91,46 @@ export default function QuotationDetailPage({ params }: { params: Promise<{ id: 
       });
     }
   }, [quotation]);
+
+  // Detect whether this quotation already belongs to a project
+  useEffect(() => {
+    if (!quotation) return;
+    actions.getLinkedProject()
+      .then(setExistingProject)
+      .catch(() => setExistingProject(null));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [quotation?.id]);
+
+  const openLinkModal = async () => {
+    try {
+      const { data } = await supabase
+        .from('projects')
+        .select('id, project_number, name')
+        .eq('is_active', true)
+        .order('project_number', { ascending: false });
+      setAllProjects(data || []);
+      setLinkProjectId('');
+      setShowLinkModal(true);
+    } catch (err: any) {
+      alert('Could not load projects: ' + err.message);
+    }
+  };
+
+  const handleLinkToProject = async () => {
+    if (!linkProjectId || !quotation) return;
+    try {
+      setActionLoading(true);
+      await actions.linkToProject(linkProjectId);
+      const proj = allProjects.find(p => p.id === linkProjectId);
+      setExistingProject(proj ? { id: proj.id, project_number: proj.project_number } : null);
+      setShowLinkModal(false);
+      alert('Quotation linked to the project.');
+    } catch (err: any) {
+      alert('Failed to link: ' + err.message);
+    } finally {
+      setActionLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -394,9 +440,20 @@ export default function QuotationDetailPage({ params }: { params: Promise<{ id: 
                   <Download size={14} /> Client LPO / Contract
                 </button>
               )}
-              <Link href={`/projects/new/${quotation.id}`} className="quote-btn quote-btn-primary" style={{ background: 'var(--secondary)', color: '#060814', fontWeight: 'bold', textDecoration: 'none' }}>
-                Initialize Project Master &rarr;
-              </Link>
+              {existingProject ? (
+                <Link href={`/projects/${existingProject.id}`} className="quote-btn quote-btn-primary" style={{ background: 'var(--secondary)', color: '#060814', fontWeight: 'bold', textDecoration: 'none' }}>
+                  View Project {existingProject.project_number} &rarr;
+                </Link>
+              ) : (
+                <>
+                  <Link href={`/projects/new/${quotation.id}`} className="quote-btn quote-btn-primary" style={{ background: 'var(--secondary)', color: '#060814', fontWeight: 'bold', textDecoration: 'none' }}>
+                    Initialize Project Master &rarr;
+                  </Link>
+                  <button className="quote-btn quote-btn-secondary" onClick={openLinkModal}>
+                    Link to Existing Project
+                  </button>
+                </>
+              )}
               <Link href={`/procurement/comparisons/new/${quotation.id}`} className="quote-btn quote-btn-primary" style={{ background: '#00E5A0', color: '#060814', fontWeight: 'bold', textDecoration: 'none' }}>
                 Create Supplier Comparison &rarr;
               </Link>
@@ -719,6 +776,33 @@ export default function QuotationDetailPage({ params }: { params: Promise<{ id: 
               <p style={{ marginTop: '1rem' }}>Rendering PDF Preview...</p>
             </div>
           )}
+        </div>
+      )}
+
+      {/* LINK TO EXISTING PROJECT MODAL */}
+      {showLinkModal && (
+        <div className="quote-modal-overlay">
+          <div className="quote-modal">
+            <div className="quote-modal-header">
+              <h3 className="quote-card-title">Link Quotation to Existing Project</h3>
+            </div>
+            <div className="quote-modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                Associate this quotation with an existing project. A project can own many quotations; this quotation will belong to the selected project.
+              </p>
+              <div className="quote-form-group">
+                <label>Project</label>
+                <select className="quote-form-input" value={linkProjectId} onChange={(e) => setLinkProjectId(e.target.value)}>
+                  <option value="">Select a project…</option>
+                  {allProjects.map(p => <option key={p.id} value={p.id}>{p.project_number} — {p.name}</option>)}
+                </select>
+              </div>
+              <div style={{ display: 'flex', gap: '0.8rem', justifyContent: 'flex-end', marginTop: '1rem' }}>
+                <button className="quote-btn quote-btn-secondary" onClick={() => setShowLinkModal(false)}>Cancel</button>
+                <button className="quote-btn quote-btn-primary" disabled={!linkProjectId || actionLoading} onClick={handleLinkToProject}>Link Quotation</button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 

@@ -126,6 +126,16 @@ export function useQuotation(id: string) {
     return newId;
   };
 
+  const getLinkedProject = async () => {
+    return quotationService.getLinkedProject(id);
+  };
+
+  const linkToProject = async (projectId: string) => {
+    const res = await quotationService.linkToProject(id, projectId);
+    await fetchDetail();
+    return res;
+  };
+
   return {
     quotation,
     loading,
@@ -140,7 +150,9 @@ export function useQuotation(id: string) {
       sendToClient,
       markAccepted,
       markRejected,
-      createRevision
+      createRevision,
+      getLinkedProject,
+      linkToProject
     }
   };
 }
