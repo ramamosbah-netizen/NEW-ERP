@@ -65,6 +65,23 @@ export default function ComparisonMatrixPage({ params }: { params: Promise<{ id:
   // Manual Add Supplier Column State
   const [showAddSupplierModal, setShowAddSupplierModal] = useState<boolean>(false);
   const [newSupplierName, setNewSupplierName] = useState<string>('');
+  const [registeredSuppliers, setRegisteredSuppliers] = useState<{ id: string; name: string }[]>([]);
+
+  // Load registered suppliers from the supplier module for the picker
+  const openAddSupplierModal = async () => {
+    setNewSupplierName('');
+    setShowAddSupplierModal(true);
+    try {
+      const { data } = await supabase
+        .from('pricing_suppliers')
+        .select('id, name')
+        .eq('is_active', true)
+        .order('name');
+      setRegisteredSuppliers(data || []);
+    } catch {
+      setRegisteredSuppliers([]);
+    }
+  };
 
   // Local state for pricing cell edits to avoid DB keypress lag
   const [localEdits, setLocalEdits] = useState<Record<string, { 
@@ -589,7 +606,7 @@ export default function ComparisonMatrixPage({ params }: { params: Promise<{ id:
               <button 
                 className="quote-btn quote-btn-secondary" 
                 style={{ fontSize: '0.78rem', padding: '0.4rem 0.8rem' }} 
-                onClick={() => setShowAddSupplierModal(true)}
+                onClick={openAddSupplierModal}
               >
                 <Plus size={14} /> Add Supplier Column
               </button>
@@ -1029,18 +1046,28 @@ export default function ComparisonMatrixPage({ params }: { params: Promise<{ id:
             </div>
             <div className="quote-modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div className="quote-form-group">
-                <label>Supplier Corporate Name</label>
-                <input 
-                  type="text" 
-                  className="quote-form-input" 
-                  placeholder="e.g. Siemens MEP Trading" 
-                  value={newSupplierName} 
-                  onChange={(e) => setNewSupplierName(e.target.value)} 
+                <label>Supplier ({registeredSuppliers.length} registered)</label>
+                <input
+                  type="text"
+                  list="registered-suppliers-list"
+                  className="quote-form-input"
+                  placeholder="Pick a registered supplier or type a new name…"
+                  value={newSupplierName}
+                  onChange={(e) => setNewSupplierName(e.target.value)}
+                  autoFocus
                 />
+                <datalist id="registered-suppliers-list">
+                  {registeredSuppliers.map(s => <option key={s.id} value={s.name} />)}
+                </datalist>
+                {newSupplierName.trim() && !registeredSuppliers.some(s => s.name.toLowerCase() === newSupplierName.trim().toLowerCase()) && (
+                  <span style={{ fontSize: '0.72rem', color: 'var(--secondary)', marginTop: '0.35rem', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
+                    <Plus size={11} /> New supplier — will be registered in the supplier module.
+                  </span>
+                )}
               </div>
               <div style={{ display: 'flex', gap: '0.8rem', justifyContent: 'flex-end', marginTop: '1rem' }}>
                 <button className="quote-btn quote-btn-secondary" onClick={() => setShowAddSupplierModal(false)}>Cancel</button>
-                <button className="quote-btn quote-btn-primary" onClick={handleAddSupplierColumn}>Add Column</button>
+                <button className="quote-btn quote-btn-primary" onClick={handleAddSupplierColumn} disabled={!newSupplierName.trim()}>Add Column</button>
               </div>
             </div>
           </div>
