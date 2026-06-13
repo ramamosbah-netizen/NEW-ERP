@@ -334,6 +334,40 @@ export const comparisonService = {
   },
 
   // 4. Add a Supplier Offer to a Comparison Item
+  /**
+   * Resolves a supplier id from a name, registering the supplier in the
+   * supplier module (pricing_suppliers) when it doesn't exist yet. This keeps
+   * the supplier registry in sync with names entered in comparison sheets.
+   * Returns null only if the name is blank or registration fails.
+   */
+  async ensureSupplierByName(name?: string | null): Promise<string | null> {
+    const trimmed = (name || '').trim();
+    if (!trimmed) return null;
+    try {
+      const { data: existing } = await supabase
+        .from('pricing_suppliers')
+        .select('id')
+        .ilike('name', trimmed)
+        .limit(1)
+        .maybeSingle();
+      if (existing?.id) return existing.id;
+
+      const { data: created, error } = await supabase
+        .from('pricing_suppliers')
+        .insert({ name: trimmed, payment_terms_days: 30, systems_covered: [], is_active: true })
+        .select('id')
+        .single();
+      if (error) {
+        console.warn(`Could not auto-register supplier '${trimmed}':`, error.message);
+        return null;
+      }
+      return created.id;
+    } catch (err) {
+      console.warn('ensureSupplierByName failed:', err);
+      return null;
+    }
+  },
+
   async addOffer(itemId: string, offerData: Partial<SupplierOfferInput>) {
     const { data: item } = await supabase
       .from('comparison_items')
@@ -347,11 +381,14 @@ export const comparisonService = {
     const unitPrice = Number(offerData.unit_price) || 0;
     const totalPrice = unitPrice * qty;
 
+    // Auto-register the supplier in the supplier module if it's a new name
+    const resolvedSupplierId = offerData.supplier_id || await this.ensureSupplierByName(offerData.supplier_name);
+
     const { data: newOffer, error } = await supabase
       .from('supplier_offers')
       .insert({
         comparison_item_id: itemId,
-        supplier_id: offerData.supplier_id || null,
+        supplier_id: resolvedSupplierId,
         supplier_name: offerData.supplier_name,
         offer_source: offerData.offer_source || 'MANUAL',
         offer_document_url: offerData.offer_document_url || null,
@@ -398,10 +435,17 @@ export const comparisonService = {
     const unitPrice = Number(offerData.unit_price ?? existingOffer.unit_price);
     const totalPrice = unitPrice * qty;
 
+    // When the supplier name changes (e.g. rename), resolve/register the
+    // supplier in the supplier module and relink supplier_id.
+    let resolvedSupplierId = offerData.supplier_id !== undefined ? offerData.supplier_id : existingOffer.supplier_id;
+    if (offerData.supplier_name !== undefined && offerData.supplier_name !== existingOffer.supplier_name) {
+      resolvedSupplierId = await this.ensureSupplierByName(offerData.supplier_name);
+    }
+
     const { error } = await supabase
       .from('supplier_offers')
       .update({
-        supplier_id: offerData.supplier_id !== undefined ? offerData.supplier_id : existingOffer.supplier_id,
+        supplier_id: resolvedSupplierId,
         supplier_name: offerData.supplier_name !== undefined ? offerData.supplier_name : existingOffer.supplier_name,
         unit_price: unitPrice,
         total_price: totalPrice,
@@ -810,12 +854,20 @@ export const comparisonService = {
 
     // Perform inserts
     if (inserts.length > 0) {
+      // Resolve (find-or-register) a supplier id per distinct name once
+      const distinctNames = Array.from(new Set(inserts.map(i => (i.supplier_name || '').trim()).filter(Boolean)));
+      const nameToId = new Map<string, string | null>();
+      for (const nm of distinctNames) {
+        nameToId.set(nm.toLowerCase(), await this.ensureSupplierByName(nm));
+      }
+
       const insertsWithTotals = inserts.map(ins => {
         const qty = qtyMap[ins.comparison_item_id] || 1;
         const unitPrice = Number(ins.unit_price) || 0;
         const totalPrice = unitPrice * qty;
         return {
           comparison_item_id: ins.comparison_item_id,
+          supplier_id: ins.supplier_id || nameToId.get((ins.supplier_name || '').trim().toLowerCase()) || null,
           supplier_name: ins.supplier_name,
           unit_price: unitPrice,
           total_price: totalPrice,
