@@ -10,22 +10,40 @@ export const stockService = {
    * Retrieves all stock locations, joining project and custodian details.
    */
   async getLocations(): Promise<StockLocation[]> {
+    // Plain select + separate name lookups — PostgREST embeds for
+    // project_id/custodian_id are unreliable here (schema-cache).
     const { data, error } = await supabase
       .from('stock_locations')
-      .select(`
-        *,
-        projects(project_number, name),
-        employees(full_name_en)
-      `)
+      .select('*')
       .order('location_code');
 
     if (error) throw error;
+    const locs = data || [];
+    const { projectMap, custodianMap } = await this._resolveLocationNames(locs);
 
-    return (data || []).map(loc => ({
+    return locs.map(loc => ({
       ...loc,
-      project_name: loc.projects?.name,
-      custodian_name: loc.employees?.full_name_en
+      project_name: loc.project_id ? projectMap.get(loc.project_id) : undefined,
+      custodian_name: loc.custodian_id ? custodianMap.get(loc.custodian_id) : undefined,
     })) as StockLocation[];
+  },
+
+  // Batch-resolve project and custodian display names for a set of locations.
+  async _resolveLocationNames(locs: any[]): Promise<{ projectMap: Map<string, string>; custodianMap: Map<string, string> }> {
+    const projectIds = Array.from(new Set(locs.map(l => l.project_id).filter(Boolean)));
+    const custodianIds = Array.from(new Set(locs.map(l => l.custodian_id).filter(Boolean)));
+    const projectMap = new Map<string, string>();
+    const custodianMap = new Map<string, string>();
+
+    if (projectIds.length > 0) {
+      const { data } = await supabase.from('projects').select('id, name').in('id', projectIds as string[]);
+      for (const p of data || []) projectMap.set(p.id, p.name);
+    }
+    if (custodianIds.length > 0) {
+      const { data } = await supabase.from('employees').select('id, full_name_en').in('id', custodianIds as string[]);
+      for (const e of data || []) custodianMap.set(e.id, e.full_name_en);
+    }
+    return { projectMap, custodianMap };
   },
 
   /**
@@ -34,20 +52,17 @@ export const stockService = {
   async getLocationDetail(id: string): Promise<StockLocation> {
     const { data, error } = await supabase
       .from('stock_locations')
-      .select(`
-        *,
-        projects(project_number, name),
-        employees(full_name_en)
-      `)
+      .select('*')
       .eq('id', id)
       .single();
 
     if (error) throw error;
+    const { projectMap, custodianMap } = await this._resolveLocationNames([data]);
 
     return {
       ...data,
-      project_name: data.projects?.name,
-      custodian_name: data.employees?.full_name_en
+      project_name: data.project_id ? projectMap.get(data.project_id) : undefined,
+      custodian_name: data.custodian_id ? custodianMap.get(data.custodian_id) : undefined,
     } as StockLocation;
   },
 
