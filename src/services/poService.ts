@@ -86,21 +86,29 @@ export const poService = {
 
       if (itemsErr) throw itemsErr;
 
-      // Fetch approvals
+      // Fetch approvals (approver_id references auth.users, not profiles, so
+      // PostgREST can't embed it — resolve approver names separately).
       const { data: approvals, error: appErr } = await supabase
         .from('po_approvals')
-        .select(`
-          *,
-          profiles:approver_id (full_name)
-        `)
+        .select('*')
         .eq('po_id', poId)
         .order('created_at', { ascending: true });
 
       if (appErr) throw appErr;
 
+      const approverIds = Array.from(new Set((approvals || []).map(a => a.approver_id).filter(Boolean)));
+      const approverNames = new Map<string, string>();
+      if (approverIds.length > 0) {
+        const { data: profs } = await supabase
+          .from('profiles')
+          .select('id, full_name')
+          .in('id', approverIds);
+        for (const p of profs || []) approverNames.set(p.id, p.full_name);
+      }
+
       const formattedApprovals = (approvals || []).map(app => ({
         ...app,
-        approver_name: app.profiles?.full_name
+        approver_name: approverNames.get(app.approver_id) || null,
       }));
 
       return {
