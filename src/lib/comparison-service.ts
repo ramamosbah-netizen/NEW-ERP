@@ -271,10 +271,30 @@ export const comparisonService = {
       };
     });
 
+    // Compute the next comparison number client-side and pass it, so creation
+    // works regardless of the DB trigger state (the legacy trigger used a wrong
+    // SUBSTRING offset that produced duplicate numbers). The trigger only fires
+    // when comparison_number is null/empty, so providing it bypasses the bug;
+    // migration 20260613220000 fixes the trigger for race-safe DB generation.
+    const compYear = new Date().getFullYear();
+    const { data: existingNums } = await supabase
+      .from('supplier_comparisons')
+      .select('comparison_number')
+      .eq('revision', 0)
+      .like('comparison_number', `JI-CMP-${compYear}-%`);
+    let maxSeq = 0;
+    for (const r of existingNums || []) {
+      const seq = parseInt((r.comparison_number || '').split('-')[3], 10);
+      if (Number.isFinite(seq) && seq > maxSeq) maxSeq = seq;
+    }
+    const nextComparisonNumber = `JI-CMP-${compYear}-${String(maxSeq + 1).padStart(3, '0')}`;
+
     // Create Comparison Header
     const { data: compSheet, error: compInsertErr } = await supabase
       .from('supplier_comparisons')
       .insert({
+        comparison_number: nextComparisonNumber,
+        revision: 0,
         status: 'DRAFT',
         quotation_id: quotationId,
         boq_id: quote.boq_id,

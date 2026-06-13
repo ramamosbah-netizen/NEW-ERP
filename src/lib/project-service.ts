@@ -273,6 +273,24 @@ export const projectService = {
     const user = (await supabase.auth.getUser()).data.user;
     if (!user) throw new Error('Authentication required');
 
+    // D2. Pull the target/budget cost from the linked BOQ (cost before profit
+    //     = direct + indirect). This becomes the project's budget_cost so
+    //     commitments and margin tracking start from the estimate.
+    let budgetCost = 0;
+    if (quote.boq_id) {
+      const { data: boq } = await supabase
+        .from('boqs')
+        .select('financials')
+        .eq('id', quote.boq_id)
+        .maybeSingle();
+      const fin = (boq?.financials || {}) as any;
+      budgetCost = Number(fin.direct_total || 0) + Number(fin.indirect_total || 0);
+      // Fallback: derive from selling price minus profit if direct/indirect absent
+      if (budgetCost <= 0 && fin.total_selling_price) {
+        budgetCost = Number(fin.total_selling_price || 0) - Number(fin.profit_value || 0);
+      }
+    }
+
     // E. Generate project number
     const projectNumber = await generateProjectNumber();
 
@@ -293,7 +311,7 @@ export const projectService = {
         quotation_id: quotationId,
         contract_value: quote.subtotal_after_discount || 0,
         original_contract_value: quote.subtotal_after_discount || 0,
-        budget_cost: 0, // Estimator will define
+        budget_cost: Math.round(budgetCost * 100) / 100, // Target cost imported from BOQ
         client_lpo_number: quote.client_po_number || '',
         payment_terms: quote.payment_terms || '',
         retention_pct: 5.00,

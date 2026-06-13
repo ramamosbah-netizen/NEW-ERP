@@ -754,6 +754,21 @@ export const quotationService = {
           }
         }
 
+        // C2. Import the target/budget cost from the linked BOQ (direct + indirect)
+        let budgetCost = 0;
+        if (quote.boq_id) {
+          const { data: boq } = await supabase
+            .from('boqs')
+            .select('financials')
+            .eq('id', quote.boq_id)
+            .maybeSingle();
+          const fin = (boq?.financials || {}) as any;
+          budgetCost = Number(fin.direct_total || 0) + Number(fin.indirect_total || 0);
+          if (budgetCost <= 0 && fin.total_selling_price) {
+            budgetCost = Number(fin.total_selling_price || 0) - Number(fin.profit_value || 0);
+          }
+        }
+
         // D. Insert projects row
         const { data: newProject, error: projectCreateError } = await supabase
           .from('projects')
@@ -771,7 +786,7 @@ export const quotationService = {
             quotation_id: id,
             contract_value: 0, // pre-award contract values remain zero/empty
             original_contract_value: 0,
-            budget_cost: 0,
+            budget_cost: Math.round(budgetCost * 100) / 100, // Target cost from BOQ
             status: 'SUBMITTED', // Created in SUBMITTED stage
             sira_applicable: systemsArray.includes('CCTV') || systemsArray.includes('ACCESS_CONTROL'),
             created_by: user.id,
