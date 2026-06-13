@@ -59,6 +59,7 @@ function POFormContent() {
   const searchParams = useSearchParams();
   const poIdParam = searchParams.get('po_id');
   const reviseIdParam = searchParams.get('revise_id');
+  const prIdParam = searchParams.get('pr_id');
 
   // Load Lists
   const [suppliers, setSuppliers] = useState<any[]>([]);
@@ -135,6 +136,33 @@ function POFormContent() {
             })));
           }
         }
+
+        // Pre-fill from an approved Purchase Request (convert PR -> LPO)
+        if (prIdParam && !targetPoId) {
+          const { prService } = await import('@/services/prService');
+          const pr = await prService.get(prIdParam);
+          // Category mapping: non-project PR categories become OVERHEAD POs
+          setPoType(pr.project_id ? 'PROJECT_MATERIAL' : 'OVERHEAD');
+          if (pr.project_id) setProjectId(pr.project_id);
+          if (pr.preferred_supplier_id) {
+            const sup = (supRes.data || []).find((s: any) => s.id === pr.preferred_supplier_id);
+            if (sup) { setSupplierId(sup.id); setPaymentTermsDays(sup.payment_terms_days || 30); setPaymentTermsText(`${sup.payment_terms_days || 30} Days Net`); }
+          }
+          setInternalNotes(`Converted from Purchase Request ${pr.pr_number}`);
+          setNoComparisonJustification(`Sourced via approved Purchase Request ${pr.pr_number}`);
+          if (pr.items?.length) {
+            setItems(pr.items.map((it: any) => ({
+              description: it.description,
+              brand: it.brand || '',
+              unit: it.unit || 'Pcs',
+              quantity: Number(it.quantity) || 1,
+              unit_price: Number(it.estimated_unit_cost) || 0,
+              discount_pct: 0,
+              vat_applicable: true,
+              system: it.system || 'OTHER',
+            })));
+          }
+        }
       } catch (err) {
         console.error('Failed to load form data or LPO draft:', err);
       } finally {
@@ -143,7 +171,7 @@ function POFormContent() {
     }
 
     loadOptionsAndLPO();
-  }, [poIdParam, reviseIdParam]);
+  }, [poIdParam, reviseIdParam, prIdParam]);
 
   // Set default values when supplier is selected
   const handleSupplierChange = (supId: string) => {
@@ -294,6 +322,7 @@ function POFormContent() {
 
       if (!targetPoId) {
         poHeader.origin = 'MANUAL';
+        if (prIdParam) poHeader.pr_id = prIdParam;
       }
 
       // Validate threshold constraint
@@ -334,6 +363,17 @@ function POFormContent() {
       const newPoId = targetPoId
         ? await poService.updatePO(targetPoId, poHeader, formattedItems).then(() => targetPoId)
         : await poService.createPO(poHeader, formattedItems);
+
+      // If this LPO was converted from a Purchase Request, mark the PR converted
+      if (prIdParam && !targetPoId && newPoId) {
+        try {
+          const { prService } = await import('@/services/prService');
+          await prService.markConverted(prIdParam, newPoId as string);
+        } catch (e) {
+          console.warn('Could not mark PR as converted:', e);
+        }
+      }
+
       router.push(`/procurement/po/${newPoId}`);
 
     } catch (err: any) {

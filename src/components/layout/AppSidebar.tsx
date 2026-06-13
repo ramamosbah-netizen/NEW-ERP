@@ -82,6 +82,7 @@ const NAV_SECTIONS = [
     id: 'procurement',
     label: 'Procurement',
     items: [
+      { href: '/procurement/pr', label: 'Purchase Requests', icon: ClipboardList },
       { href: '/procurement/comparisons', label: 'Comparisons', icon: Scale },
       { href: '/procurement/po', label: 'Purchase Orders', icon: ShoppingCart },
       { href: '/procurement/grn', label: 'Goods Receipt', icon: PackageCheck },
