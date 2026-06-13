@@ -25,6 +25,7 @@ import ProjectFinanceTab from '@/app/projects/tabs/ProjectFinanceTab';
 import ProjectVOTab from '@/app/projects/tabs/ProjectVOTab';
 import ProjectFileTab from '@/app/projects/tabs/ProjectFileTab';
 import WorkflowPanel from '@/components/workflow/WorkflowPanel';
+import ProjectDocumentRegister from '@/components/projects/ProjectDocumentRegister';
 
 import { 
   ArrowLeft, 
@@ -37,7 +38,8 @@ import {
   Users, 
   TrendingUp, 
   Activity, 
-  FolderClosed, 
+  FolderClosed,
+  Layers, 
   Plus, 
   Trash2, 
   ArrowUp, 
@@ -291,6 +293,7 @@ export default function ProjectDetailPage({ params }: Props) {
       <div className="quote-tabs">
         <button className={`quote-tab ${activeTab === 'overview' ? 'active' : ''}`} onClick={() => setActiveTab('overview')}>Overview</button>
         <button className={`quote-tab ${activeTab === 'documents' ? 'active' : ''}`} onClick={() => setActiveTab('documents')}>Documents ({documents.length})</button>
+        <button className={`quote-tab ${activeTab === 'register' ? 'active' : ''}`} onClick={() => setActiveTab('register')}>Document Register</button>
         <button className={`quote-tab ${activeTab === 'project-file' ? 'active' : ''}`} onClick={() => setActiveTab('project-file')}>Project File</button>
         <button className={`quote-tab ${activeTab === 'finance' ? 'active' : ''}`} onClick={() => setActiveTab('finance')}>Finance details</button>
         <button className={`quote-tab ${activeTab === 'variations' ? 'active' : ''}`} onClick={() => setActiveTab('variations')}>Variations ({project.vo_count || 0})</button>
@@ -423,6 +426,25 @@ export default function ProjectDetailPage({ params }: Props) {
               }}
             />
           </div>
+        </div>
+      )}
+
+      {/* TAB CONTENT: DOCUMENT REGISTER (full linked lifecycle) */}
+      {activeTab === 'register' && (
+        <div className="quote-card" style={{ margin: 0 }}>
+          <h3 className="quote-card-title" style={{ marginBottom: '0.4rem' }}><Layers size={16} /> Linked Document Register</h3>
+          <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
+            Every document connected to this project — tender, BOQ, quotation, comparisons, LPOs, goods receipts, invoices and filed attachments — traced to the project id, each with its reference and a review link.
+          </p>
+          <ProjectDocumentRegister
+            project={{
+              id: project.id,
+              project_number: project.project_number,
+              tender_id: project.tender_id,
+              boq_id: project.boq_id,
+              quotation_id: project.quotation_id,
+            }}
+          />
         </div>
       )}
 
