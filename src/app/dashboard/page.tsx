@@ -324,7 +324,7 @@ export default function Dashboard() {
           padding={false}
         >
           <div className="h-64 px-4 pb-4 pt-2">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0}>
               <BarChart data={kpiData.monthlyPerformance} margin={{ top: 4, right: 4, left: -24, bottom: 0 }}>
                 <XAxis dataKey="month" stroke="var(--text-muted)" fontSize={11} tickLine={false} axisLine={false} />
                 <YAxis stroke="var(--text-muted)" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
@@ -349,7 +349,7 @@ export default function Dashboard() {
             ) : (
               <>
                 <div className="h-36">
-                  <ResponsiveContainer width="100%" height="100%">
+                  <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                     <PieChart>
                       <Pie data={statusChartData} cx="50%" cy="50%" innerRadius={40} outerRadius={58} paddingAngle={3} dataKey="value">
                         {statusChartData.map((_, i) => (
