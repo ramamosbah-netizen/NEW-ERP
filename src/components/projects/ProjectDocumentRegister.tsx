@@ -20,6 +20,7 @@ const CATEGORY_ICON: Record<string, React.ComponentType<{ size?: number; classNa
   'Quotation': FileText,
   'Comparison': Scale,
   'Purchase Order (LPO)': ShoppingCart,
+  'Supplier Proforma': FileSignature,
   'Goods Receipt': PackageCheck,
   'Client Invoice': ArrowUpRight,
   'Supplier Invoice': ArrowDownLeft,

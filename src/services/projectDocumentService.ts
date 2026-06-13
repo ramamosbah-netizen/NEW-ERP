@@ -11,7 +11,7 @@ import { supabase } from '@/lib/supabase';
 
 export type LinkedDocCategory =
   | 'Tender' | 'BOQ' | 'Quotation' | 'Comparison'
-  | 'Purchase Order (LPO)' | 'Goods Receipt' | 'Client Invoice'
+  | 'Purchase Order (LPO)' | 'Supplier Proforma' | 'Goods Receipt' | 'Client Invoice'
   | 'Supplier Invoice' | 'Client LPO / Contract' | 'Attached File';
 
 export interface LinkedDoc {
@@ -70,7 +70,10 @@ export const projectDocumentService = {
       project.quotation_id
         ? safe<any[]>(supabase.from('supplier_comparisons').select('id, comparison_number, status, created_at').eq('quotation_id', project.quotation_id))
         : Promise.resolve([]),
-      safe<any[]>(supabase.from('purchase_orders').select('id, po_number, status, total, po_type, supplier_name, created_at').eq('project_id', project.id)),
+      // select('*') so the optional proforma_invoice_* columns (migration
+      // 20260613140000) are included when present without breaking the query
+      // when they are not.
+      safe<any[]>(supabase.from('purchase_orders').select('*').eq('project_id', project.id)),
       safe<any[]>(supabase.from('grns').select('id, grn_number, status, received_at, delivery_note_ref').eq('project_id', project.id)),
       safe<any[]>(supabase.from('client_invoices').select('id, invoice_number, status, total_incl_vat, invoice_date').eq('project_id', project.id)),
       safe<any[]>(supabase.from('supplier_invoices').select('id, supplier_invoice_number, status, total, invoice_date').eq('project_id', project.id)),
@@ -138,6 +141,16 @@ export const projectDocumentService = {
       amount: Number(p.total) || null,
       href: `/procurement/po/${p.id}`,
     })));
+
+    // Supplier proforma invoices attached to LPOs
+    push('Supplier Proforma', (pos || [])
+      .filter((p: any) => p.proforma_invoice_path)
+      .map((p: any) => ({
+        category: 'Supplier Proforma' as const,
+        reference: `${p.proforma_invoice_name || 'Proforma'} · ${p.po_number}`,
+        status: 'ATTACHED',
+        href: `/procurement/po/${p.id}`,
+      })));
 
     // Goods Receipts
     push('Goods Receipt', (grns || []).map((g: any) => ({
