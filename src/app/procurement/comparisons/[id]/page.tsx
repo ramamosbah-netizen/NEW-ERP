@@ -418,6 +418,32 @@ export default function ComparisonMatrixPage({ params }: { params: Promise<{ id:
     }
   };
 
+  // Flag / clear a procurement exception on an item (allows submit when an
+  // item can't reach 3 compliant offers, e.g. sole-source).
+  const handleToggleException = async (item: any) => {
+    if (comparison.is_locked) return;
+    try {
+      if (item.is_exception) {
+        if (!window.confirm(`Clear the exception flag on "${item.description}"?`)) return;
+        setActionLoading(true);
+        await actions.setItemException(item.id, false, null);
+      } else {
+        const reason = window.prompt(
+          `Justify the procurement exception for "${item.description}" (e.g. sole-source supplier, urgent requirement, proprietary part):`,
+          item.exception_reason || ''
+        );
+        if (reason === null) return;
+        if (!reason.trim()) { alert('A justification is required to flag an exception.'); return; }
+        setActionLoading(true);
+        await actions.setItemException(item.id, true, reason.trim());
+      }
+    } catch (e: any) {
+      alert('Failed to update exception: ' + e.message);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   // ------------------------------------------------------------
   // GEMINI AI FILE UPLOAD AND PARSING DRAWER
   // ------------------------------------------------------------
@@ -786,6 +812,32 @@ export default function ComparisonMatrixPage({ params }: { params: Promise<{ id:
                       <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
                         Code: {item.item_code}
                       </div>
+                      {/* Procurement exception flag (lets sub-3-offer items pass submit) */}
+                      {!item.is_optional && (
+                        <div style={{ marginTop: '0.15rem' }}>
+                          {item.is_exception ? (
+                            <button
+                              type="button"
+                              onClick={() => !comparison.is_locked && handleToggleException(item)}
+                              disabled={comparison.is_locked || actionLoading}
+                              title={item.exception_reason || 'Exception'}
+                              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', background: 'rgba(245,158,11,0.12)', color: 'var(--warning)', border: '1px solid rgba(245,158,11,0.3)', borderRadius: '4px', padding: '0.1rem 0.4rem', fontSize: '0.66rem', fontWeight: 600, cursor: comparison.is_locked ? 'default' : 'pointer' }}
+                            >
+                              <AlertTriangle size={10} /> Exception {comparison.is_locked ? '' : '✕'}
+                            </button>
+                          ) : !comparison.is_locked && (
+                            <button
+                              type="button"
+                              onClick={() => handleToggleException(item)}
+                              disabled={actionLoading}
+                              title="Flag this item as a procurement exception (e.g. sole-source) so it can be submitted with fewer than 3 offers"
+                              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', background: 'none', color: 'var(--text-muted)', border: '1px dashed var(--border-color)', borderRadius: '4px', padding: '0.1rem 0.4rem', fontSize: '0.66rem', cursor: 'pointer' }}
+                            >
+                              <AlertTriangle size={10} /> Flag exception
+                            </button>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </td>
 

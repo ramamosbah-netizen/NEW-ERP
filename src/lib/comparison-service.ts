@@ -578,6 +578,29 @@ export const comparisonService = {
     return true;
   },
 
+  // 6d. Flag (or clear) a comparison item as a procurement exception with a
+  // justification — lets the sheet be submitted when an item can't reach the
+  // 3-compliant-offers rule (e.g. sole-source / urgent).
+  async setItemException(itemId: string, isException: boolean, reason: string | null) {
+    const { data: item } = await supabase
+      .from('comparison_items')
+      .select('comparison_id')
+      .eq('id', itemId)
+      .single();
+
+    const { error } = await supabase
+      .from('comparison_items')
+      .update({
+        is_exception: isException,
+        exception_reason: isException ? (reason || null) : null,
+      })
+      .eq('id', itemId);
+    if (error) throw error;
+
+    if (item?.comparison_id) await this.recalculateSheet(item.comparison_id);
+    return true;
+  },
+
   // 7. Select Supplier Offer for a Comparison Item
   async selectSupplier(itemId: string, offerId: string | null, overrideReason: string = '') {
     const { data: item } = await supabase

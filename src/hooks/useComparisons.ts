@@ -94,6 +94,12 @@ export function useComparison(id: string) {
     return res;
   };
 
+  const setItemException = async (itemId: string, isException: boolean, reason: string | null) => {
+    const res = await comparisonService.setItemException(itemId, isException, reason);
+    await fetchDetail();
+    return res;
+  };
+
   const renameSupplierColumn = async (oldName: string, newName: string) => {
     const res = await comparisonService.renameSupplierColumn(id, oldName, newName);
     await fetchDetail();
@@ -170,6 +176,7 @@ export function useComparison(id: string) {
       selectSupplier,
       removeSupplierColumn,
       renameSupplierColumn,
+      setItemException,
       saveOffers,
       bulkSelectRecommended,
       recalculateAll,
