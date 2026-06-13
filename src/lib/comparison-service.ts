@@ -534,6 +534,50 @@ export const comparisonService = {
     return true;
   },
 
+  // 6b. Remove an entire supplier column (all its offers across every item of
+  // the comparison) in one operation. Handles duplicate offers; the
+  // selected_supplier_offer_id FK nulls out automatically (ON DELETE SET NULL).
+  async removeSupplierColumn(comparisonId: string, supplierName: string) {
+    const { data: items } = await supabase
+      .from('comparison_items')
+      .select('id')
+      .eq('comparison_id', comparisonId);
+    const itemIds = (items || []).map(i => i.id);
+    if (itemIds.length === 0) return true;
+
+    const { error } = await supabase
+      .from('supplier_offers')
+      .delete()
+      .in('comparison_item_id', itemIds)
+      .eq('supplier_name', supplierName);
+    if (error) throw error;
+
+    await this.recalculateAll(comparisonId);
+    return true;
+  },
+
+  // 6c. Rename a supplier column across every item, relinking supplier_id
+  // (registering the supplier if the new name is new).
+  async renameSupplierColumn(comparisonId: string, oldName: string, newName: string) {
+    const supplierId = await this.ensureSupplierByName(newName);
+    const { data: items } = await supabase
+      .from('comparison_items')
+      .select('id')
+      .eq('comparison_id', comparisonId);
+    const itemIds = (items || []).map(i => i.id);
+    if (itemIds.length === 0) return true;
+
+    const { error } = await supabase
+      .from('supplier_offers')
+      .update({ supplier_name: newName, supplier_id: supplierId })
+      .in('comparison_item_id', itemIds)
+      .eq('supplier_name', oldName);
+    if (error) throw error;
+
+    await this.recalculateAll(comparisonId);
+    return true;
+  },
+
   // 7. Select Supplier Offer for a Comparison Item
   async selectSupplier(itemId: string, offerId: string | null, overrideReason: string = '') {
     const { data: item } = await supabase

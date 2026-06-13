@@ -395,11 +395,7 @@ export default function ComparisonMatrixPage({ params }: { params: Promise<{ id:
     }
     try {
       setActionLoading(true);
-      for (const item of comparison.items) {
-        const offer = (item.offers || []).find((o: any) => o.supplier_name === oldName);
-        if (offer) await actions.updateOffer(offer.id, { supplier_name: newName });
-      }
-      await refetch();
+      await actions.renameSupplierColumn(oldName, newName);
     } catch (e: any) {
       alert('Failed to rename supplier: ' + e.message);
     } finally {
@@ -407,18 +403,14 @@ export default function ComparisonMatrixPage({ params }: { params: Promise<{ id:
     }
   };
 
-  // Remove a supplier column entirely (deletes its offer on every item).
+  // Remove a supplier column entirely (deletes all its offers in one operation).
   // Only allowed while the comparison is unlocked.
   const handleRemoveSupplier = async (supName: string) => {
     if (comparison.is_locked) return;
     if (!window.confirm(`Remove supplier "${supName}" from the comparison? All its offers across every line item will be deleted.`)) return;
     try {
       setActionLoading(true);
-      for (const item of comparison.items) {
-        const offer = (item.offers || []).find((o: any) => o.supplier_name === supName);
-        if (offer) await actions.deleteOffer(offer.id);
-      }
-      await refetch();
+      await actions.removeSupplierColumn(supName);
     } catch (e: any) {
       alert('Failed to remove supplier: ' + e.message);
     } finally {
