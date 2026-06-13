@@ -12,7 +12,8 @@ import { PageHeader } from '@/components/ui/PageHeader';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { StatusChip } from '@/components/ui/StatusChip';
-import { Send, CheckCircle, XCircle, ArrowRight, X } from 'lucide-react';
+import { Send, CheckCircle, XCircle, ArrowRight, X, Download, Eye } from 'lucide-react';
+import { prPDFService } from '@/lib/pr-pdf';
 
 const fmtAED = (v: number) => new Intl.NumberFormat('en-AE', { minimumFractionDigits: 2 }).format(v) + ' AED';
 const fmtDate = (d?: string | null) => d ? new Date(d).toLocaleDateString('en-AE', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
@@ -58,6 +59,8 @@ export default function PRDetailPage({ params }: { params: Promise<{ id: string 
         breadcrumbs={[{ label: 'Procurement', href: '/procurement/po' }, { label: 'Purchase Requests', href: '/procurement/pr' }, { label: pr.pr_number }]}
         actions={
           <div className="flex gap-2">
+            <Button size="sm" variant="secondary" icon={Eye} onClick={() => prPDFService.open(pr)}>View</Button>
+            <Button size="sm" variant="secondary" icon={Download} onClick={() => prPDFService.download(pr)}>Export PDF</Button>
             {pr.status === 'DRAFT' && <Button size="sm" variant="primary" icon={Send} isLoading={busy} onClick={() => act(() => prService.submit(id))}>Submit</Button>}
             {pr.status === 'SUBMITTED' && (
               <>
