@@ -36,6 +36,7 @@ export default function POFromComparisonPage({ params }: PageProps) {
     promised_delivery_days: number;
     required_delivery_date: string;
     notes_to_supplier: string;
+    proforma: File | null;
   }>>({});
   const [error, setError] = useState<string | null>(null);
 
@@ -63,7 +64,8 @@ export default function POFromComparisonPage({ params }: PageProps) {
             delivery_address: comp.project_address || '',
             promised_delivery_days: 7,
             required_delivery_date: '',
-            notes_to_supplier: ''
+            notes_to_supplier: '',
+            proforma: null
           };
         });
 
@@ -166,7 +168,32 @@ export default function POFromComparisonPage({ params }: PageProps) {
           system: it.system
         }));
 
-        await poService.createPO(poHeader, formattedItems);
+        const newPoId = await poService.createPO(poHeader, formattedItems);
+
+        // Attach the supplier's proforma invoice to the new LPO (optional)
+        if (newPoId && state?.proforma) {
+          try {
+            const file = state.proforma;
+            const path = `PO/${newPoId}/PROFORMA_${Date.now()}_${file.name}`;
+            const { error: upErr } = await supabase.storage
+              .from('tender-documents')
+              .upload(path, file, { cacheControl: '3600', upsert: true });
+            if (upErr) throw upErr;
+            const { error: dbErr } = await supabase
+              .from('purchase_orders')
+              .update({
+                proforma_invoice_path: path,
+                proforma_invoice_name: file.name,
+                proforma_invoice_uploaded_at: new Date().toISOString(),
+              })
+              .eq('id', newPoId);
+            if (dbErr) {
+              console.warn('Proforma uploaded but reference not saved (apply migration 20260613140000):', dbErr.message);
+            }
+          } catch (pfErr: any) {
+            console.warn(`Proforma upload failed for ${prop.supplier_name}:`, pfErr.message);
+          }
+        }
       }
 
       router.push('/procurement/po');
@@ -328,13 +355,32 @@ export default function POFromComparisonPage({ params }: PageProps) {
 
                       <div>
                         <label className="quote-input-label">Notes to Supplier</label>
-                        <textarea 
-                          className="quote-filter-input" 
+                        <textarea
+                          className="quote-filter-input"
                           style={{ width: '100%', minHeight: '60px', padding: '0.5rem', resize: 'vertical' }}
                           placeholder="Special shipping directions..."
                           value={state.notes_to_supplier}
                           onChange={(e) => handleFormChange(prop.supplier_id, 'notes_to_supplier', e.target.value)}
                         />
+                      </div>
+
+                      <div>
+                        <label className="quote-input-label">Supplier Proforma Invoice <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>(optional)</span></label>
+                        <input
+                          type="file"
+                          className="quote-filter-input"
+                          style={{ width: '100%' }}
+                          accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                          onChange={(e) => handleFormChange(prop.supplier_id, 'proforma', e.target.files?.[0] || null)}
+                        />
+                        {state.proforma && (
+                          <span style={{ fontSize: '0.7rem', color: 'var(--success)', display: 'block', marginTop: '0.3rem' }}>
+                            Attached: {state.proforma.name} ({(state.proforma.size / 1024).toFixed(0)} KB)
+                          </span>
+                        )}
+                        <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', display: 'block', marginTop: '0.2rem' }}>
+                          Will be attached to this supplier&apos;s LPO on generation.
+                        </span>
                       </div>
                     </div>
 
