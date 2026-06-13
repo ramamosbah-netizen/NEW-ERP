@@ -85,7 +85,16 @@ const NAV_SECTIONS = [
       { href: '/procurement/comparisons', label: 'Comparisons', icon: Scale },
       { href: '/procurement/po', label: 'Purchase Orders', icon: ShoppingCart },
       { href: '/procurement/grn', label: 'Goods Receipt', icon: PackageCheck },
-      { href: '/pricing', label: 'Pricing Catalog', icon: Package },
+    ],
+  },
+  {
+    id: 'warehouse',
+    label: 'Warehouse & Inventory',
+    items: [
+      { href: '/warehouse/suppliers', label: 'Suppliers & Subcon', icon: Users },
+      { href: '/warehouse/store', label: 'Store', icon: Package },
+      { href: '/warehouse/movements', label: 'Goods Movements', icon: Truck },
+      { href: '/pricing', label: 'Pricing Catalog', icon: Calculator },
     ],
   },
   {
