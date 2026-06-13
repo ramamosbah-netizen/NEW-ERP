@@ -138,18 +138,32 @@ export const poService = {
 
       // 1. Insert PO Header
       // Trigger will generate autonumber JI-PO-YYYY-NNN race-safely
-      const { data: po, error: poErr } = await supabase
+      const headerBase = {
+        ...poData,
+        po_number: '', // database trigger handles this if empty
+        revision_number: 0,
+        is_latest: true,
+        status: 'DRAFT',
+        created_by: user.id,
+      };
+
+      let { data: po, error: poErr } = await supabase
         .from('purchase_orders')
-        .insert({
-          ...poData,
-          po_number: '', // database trigger handles this if empty
-          revision_number: 0,
-          is_latest: true,
-          status: 'DRAFT',
-          created_by: user.id
-        })
+        .insert(headerBase)
         .select()
         .single();
+
+      // Degrade gracefully if the optional payment_method / pr_id columns
+      // aren't present yet (migration 20260613280000 / 20260613260000 not applied)
+      if (poErr && poErr.code === 'PGRST204') {
+        const { payment_method, pr_id, ...fallback } = headerBase as any;
+        void payment_method; void pr_id;
+        ({ data: po, error: poErr } = await supabase
+          .from('purchase_orders')
+          .insert(fallback)
+          .select()
+          .single());
+      }
 
       if (poErr || !po) throw poErr || new Error('Failed to create PO header');
 

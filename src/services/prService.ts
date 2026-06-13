@@ -69,26 +69,39 @@ export const prService = {
     const estimatedTotal = round2((input.items || []).reduce(
       (s, it) => s + (Number(it.quantity) || 0) * (Number(it.estimated_unit_cost) || 0), 0));
 
-    const { data: pr, error } = await supabase
+    const headerBase = {
+      pr_number: prNumber,
+      status: 'DRAFT',
+      category: input.category,
+      project_id: input.project_id || null,
+      title: input.title,
+      justification: input.justification || null,
+      required_by_date: input.required_by_date || null,
+      preferred_supplier_id: input.preferred_supplier_id || null,
+      payment_method: input.payment_method || null,
+      estimated_total: estimatedTotal,
+      notes: input.notes || null,
+      requested_by: user.id,
+      requested_by_name: profile?.full_name || user.email || 'Requester',
+    };
+
+    let { data: pr, error } = await supabase
       .from('purchase_requests')
-      .insert({
-        pr_number: prNumber,
-        status: 'DRAFT',
-        category: input.category,
-        project_id: input.category === 'PROJECT_MATERIAL' ? (input.project_id || null) : (input.project_id || null),
-        title: input.title,
-        justification: input.justification || null,
-        required_by_date: input.required_by_date || null,
-        preferred_supplier_id: input.preferred_supplier_id || null,
-        payment_method: input.payment_method || null,
-        estimated_total: estimatedTotal,
-        notes: input.notes || null,
-        requested_by: user.id,
-        requested_by_name: profile?.full_name || user.email || 'Requester',
-      })
+      .insert(headerBase)
       .select('id')
       .single();
-    if (error) throw error;
+
+    // Degrade gracefully if payment_method column not present yet (migration 20260613280000)
+    if (error && error.code === 'PGRST204') {
+      const { payment_method, ...fallback } = headerBase as any;
+      void payment_method;
+      ({ data: pr, error } = await supabase
+        .from('purchase_requests')
+        .insert(fallback)
+        .select('id')
+        .single());
+    }
+    if (error || !pr) throw error || new Error('Failed to create purchase request');
 
     if (input.items?.length) {
       const rows = input.items.map((it, idx) => ({
