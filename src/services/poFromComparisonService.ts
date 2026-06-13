@@ -77,12 +77,62 @@ export const poFromComparisonService = {
         .in('id', selectedOfferIds);
 
       if (offersErr) throw offersErr;
-      const offersMap = new Map<string, any>((offers || []).map(o => [o.id, o]));
+      const offersList = offers || [];
+
+      // 3b. Some selected offers were entered as free-text (supplier_name set
+      // but supplier_id null). A PO requires a real pricing_suppliers id, so
+      // backfill those offers by finding or creating the supplier by name.
+      const unlinked = offersList.filter(o => !o.supplier_id && (o.supplier_name || '').trim());
+      if (unlinked.length > 0) {
+        const distinctNames = Array.from(new Set(unlinked.map(o => o.supplier_name.trim())));
+        for (const name of distinctNames) {
+          // Find existing supplier by name (case-insensitive), else create one
+          const { data: existing } = await supabase
+            .from('pricing_suppliers')
+            .select('id')
+            .ilike('name', name)
+            .limit(1)
+            .maybeSingle();
+
+          let resolvedId = existing?.id as string | undefined;
+          if (!resolvedId) {
+            const sample = unlinked.find(o => o.supplier_name.trim() === name);
+            const { data: created, error: createErr } = await supabase
+              .from('pricing_suppliers')
+              .insert({
+                name,
+                contact_person: sample?.contact_person || null,
+                phone: sample?.phone || null,
+                email: sample?.email || null,
+                systems_covered: [],
+                payment_terms_days: sample?.payment_terms_days ?? 30,
+                is_active: true,
+              })
+              .select('id')
+              .single();
+            if (createErr) {
+              console.warn(`Could not auto-create supplier '${name}':`, createErr.message);
+              continue;
+            }
+            resolvedId = created.id;
+          }
+
+          // Stamp the resolved id back onto the in-memory offers and persist it
+          for (const o of unlinked) {
+            if (o.supplier_name.trim() === name) {
+              o.supplier_id = resolvedId;
+              await supabase.from('supplier_offers').update({ supplier_id: resolvedId }).eq('id', o.id);
+            }
+          }
+        }
+      }
+
+      const offersMap = new Map<string, any>(offersList.map(o => [o.id, o]));
 
       // 4. Extract unique supplier IDs and fetch supplier contact details from pricing_suppliers
       const supplierIds = Array.from(
         new Set(
-          (offers || [])
+          offersList
             .map(o => o.supplier_id)
             .filter(id => !!id)
         )
