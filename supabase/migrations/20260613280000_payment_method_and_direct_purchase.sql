@@ -20,6 +20,12 @@ ALTER TABLE public.purchase_requests
   ADD CONSTRAINT purchase_requests_status_check
   CHECK (status IN ('DRAFT', 'SUBMITTED', 'APPROVED', 'REJECTED', 'CONVERTED', 'CANCELLED', 'DIRECT_PURCHASED'));
 
+-- The settings.category CHECK constraint did not include 'PROCUREMENT'; extend
+-- it so procurement settings (e.g. the direct-purchase threshold) can be saved.
+ALTER TABLE public.settings DROP CONSTRAINT IF EXISTS settings_category_check;
+ALTER TABLE public.settings ADD CONSTRAINT settings_category_check
+  CHECK (category IN ('COMPANY', 'FINANCE', 'WORKFLOW', 'HR', 'NOTIFICATIONS', 'INTEGRATIONS', 'PROCUREMENT'));
+
 -- Seed the configurable direct-purchase threshold (AED)
 INSERT INTO public.settings (key, value, category, data_type, description)
 VALUES ('procurement.direct_purchase_threshold', '10000', 'PROCUREMENT', 'NUMBER',
