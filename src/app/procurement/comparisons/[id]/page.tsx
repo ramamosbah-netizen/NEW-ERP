@@ -28,7 +28,8 @@ import {
   FileSpreadsheet,
   FileText,
   Clock,
-  Check
+  Check,
+  Pencil
 } from 'lucide-react';
 import { useComparison } from '@/hooks/useComparisons';
 import { offerExtractionService, fuzzyMatchExtractedLine } from '@/lib/offer-extraction-service';
@@ -362,6 +363,52 @@ export default function ComparisonMatrixPage({ params }: { params: Promise<{ id:
     }
   };
 
+  // Rename a supplier column (updates the name on every item's offer).
+  // Only allowed while the comparison is unlocked.
+  const handleRenameSupplier = async (oldName: string) => {
+    if (comparison.is_locked) return;
+    const input = window.prompt(`Rename supplier "${oldName}" to:`, oldName);
+    if (input === null) return;
+    const newName = input.trim();
+    if (!newName || newName === oldName) return;
+
+    if (allSupplierNames.some(s => s.toLowerCase() === newName.toLowerCase())) {
+      alert(`Supplier '${newName}' already exists in the grid.`);
+      return;
+    }
+    try {
+      setActionLoading(true);
+      for (const item of comparison.items) {
+        const offer = (item.offers || []).find((o: any) => o.supplier_name === oldName);
+        if (offer) await actions.updateOffer(offer.id, { supplier_name: newName });
+      }
+      await refetch();
+    } catch (e: any) {
+      alert('Failed to rename supplier: ' + e.message);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  // Remove a supplier column entirely (deletes its offer on every item).
+  // Only allowed while the comparison is unlocked.
+  const handleRemoveSupplier = async (supName: string) => {
+    if (comparison.is_locked) return;
+    if (!window.confirm(`Remove supplier "${supName}" from the comparison? All its offers across every line item will be deleted.`)) return;
+    try {
+      setActionLoading(true);
+      for (const item of comparison.items) {
+        const offer = (item.offers || []).find((o: any) => o.supplier_name === supName);
+        if (offer) await actions.deleteOffer(offer.id);
+      }
+      await refetch();
+    } catch (e: any) {
+      alert('Failed to remove supplier: ' + e.message);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   // ------------------------------------------------------------
   // GEMINI AI FILE UPLOAD AND PARSING DRAWER
   // ------------------------------------------------------------
@@ -658,6 +705,28 @@ export default function ComparisonMatrixPage({ params }: { params: Promise<{ id:
                 <th key={supName} colSpan={6} className="supplier-group-header">
                   <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.4rem' }}>
                     <span>{supName}</span>
+                    {!comparison.is_locked && (
+                      <span style={{ display: 'inline-flex', gap: '0.2rem' }}>
+                        <button
+                          type="button"
+                          title={`Rename ${supName}`}
+                          onClick={() => handleRenameSupplier(supName)}
+                          disabled={actionLoading}
+                          style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', padding: '2px', display: 'inline-flex' }}
+                        >
+                          <Pencil size={12} />
+                        </button>
+                        <button
+                          type="button"
+                          title={`Remove ${supName}`}
+                          onClick={() => handleRemoveSupplier(supName)}
+                          disabled={actionLoading}
+                          style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--error)', padding: '2px', display: 'inline-flex' }}
+                        >
+                          <Trash2 size={12} />
+                        </button>
+                      </span>
+                    )}
                   </div>
                 </th>
               ))}
