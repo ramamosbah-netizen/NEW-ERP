@@ -26,6 +26,7 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { PageHeader } from '@/components/ui/PageHeader';
+import { tenderPDFService } from '@/lib/tender-pdf';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { StatusChip } from '@/components/ui/StatusChip';
@@ -300,12 +301,31 @@ export default function TenderDetail({ params }: { params: Promise<{ id: string 
     { label: tender.title.length > 25 ? `${tender.title.substring(0, 25)}...` : tender.title }
   ];
 
+  const handleExportPDF = () => {
+    tenderPDFService.download(tender, {
+      boqStatus: boq?.status,
+      boqTotal: boq?.total,
+      projectNumber: linkedProject?.number || (linkedProject ? `PRJ-${linkedProject.id.slice(0, 8).toUpperCase()}` : null),
+      documents,
+    });
+  };
+
   const headerActions = (
-    <Link href={`/tenders/${tender.id}/edit`} className="no-underline">
-      <Button variant="primary" size="sm" className="flex items-center gap-1.5 font-bold uppercase tracking-wider">
-        <Edit size={14} /> Edit Tender
+    <div className="flex items-center gap-2">
+      <Button
+        variant="secondary"
+        size="sm"
+        onClick={handleExportPDF}
+        className="flex items-center gap-1.5 font-bold uppercase tracking-wider"
+      >
+        <Download size={14} /> Export PDF
       </Button>
-    </Link>
+      <Link href={`/tenders/${tender.id}/edit`} className="no-underline">
+        <Button variant="primary" size="sm" className="flex items-center gap-1.5 font-bold uppercase tracking-wider">
+          <Edit size={14} /> Edit Tender
+        </Button>
+      </Link>
+    </div>
   );
 
   return (
