@@ -8,12 +8,19 @@
 // ============================================================
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import warehouseService, { SupplierRow } from '@/services/warehouseService';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Users, Plus, Search, Star, Power, X, Save, Award } from 'lucide-react';
+
+const TYPE_BADGE: Record<string, { label: string; cls: string }> = {
+  SUPPLIER: { label: 'Supplier', cls: 'q-badge-draft' },
+  SUBCONTRACTOR: { label: 'Subcon', cls: 'q-badge-revised' },
+  BOTH: { label: 'Supplier + Subcon', cls: 'q-badge-pending_commercial' },
+};
 
 const scoreColor = (s: number) =>
   s >= 75 ? 'success' : s >= 50 ? 'warning' : 'danger';
@@ -32,7 +39,8 @@ export default function SuppliersPage() {
   const [search, setSearch] = useState('');
   const [busy, setBusy] = useState<string | null>(null);
   const [showAdd, setShowAdd] = useState(false);
-  const [form, setForm] = useState({ name: '', contact_person: '', phone: '', email: '', payment_terms_days: 30, preferred: false });
+  const [form, setForm] = useState({ name: '', contact_person: '', phone: '', email: '', payment_terms_days: 30, preferred: false, supplier_type: 'SUPPLIER' as 'SUPPLIER' | 'SUBCONTRACTOR' | 'BOTH', trade: '', day_rate: '' });
+  const router = useRouter();
 
   const load = useCallback(async () => {
     try {
@@ -53,9 +61,13 @@ export default function SuppliersPage() {
     if (!form.name.trim()) return;
     setBusy('add');
     try {
-      await warehouseService.createSupplier(form);
+      await warehouseService.createSupplier({
+        ...form,
+        trade: form.trade || undefined,
+        day_rate: form.day_rate ? Number(form.day_rate) : null,
+      });
       setShowAdd(false);
-      setForm({ name: '', contact_person: '', phone: '', email: '', payment_terms_days: 30, preferred: false });
+      setForm({ name: '', contact_person: '', phone: '', email: '', payment_terms_days: 30, preferred: false, supplier_type: 'SUPPLIER', trade: '', day_rate: '' });
       await load();
     } catch (err: any) {
       setError(err.message?.includes('audit_log') || err.message?.includes('table_name')
@@ -146,11 +158,14 @@ export default function SuppliersPage() {
                       <td>
                         <div className="flex items-center gap-1.5">
                           {s.preferred && <Star size={12} className="text-[var(--warning)]" fill="currentColor" />}
-                          <span className="font-medium text-[var(--text-primary)] text-xs">{s.name}</span>
+                          <button onClick={() => router.push(`/warehouse/suppliers/${s.id}`)} className="font-medium text-[var(--primary)] text-xs hover:underline cursor-pointer text-left">{s.name}</button>
+                          <span className={`q-badge ${(TYPE_BADGE[s.supplier_type] || TYPE_BADGE.SUPPLIER).cls} !text-[0.625rem]`}>
+                            {(TYPE_BADGE[s.supplier_type] || TYPE_BADGE.SUPPLIER).label}
+                          </span>
                         </div>
-                        {s.systems_covered && s.systems_covered.length > 0 && (
-                          <span className="text-[0.6875rem] text-[var(--text-muted)]">{s.systems_covered.join(', ')}</span>
-                        )}
+                        <span className="text-[0.6875rem] text-[var(--text-muted)]">
+                          {s.trade ? `${s.trade}${s.day_rate != null ? ` · ${s.day_rate} AED/day` : ''}` : (s.systems_covered && s.systems_covered.length > 0 ? s.systems_covered.join(', ') : '')}
+                        </span>
                       </td>
                       <td>
                         <div className="flex flex-col">
@@ -195,6 +210,26 @@ export default function SuppliersPage() {
                   <label>Name *</label>
                   <input className="quote-form-input" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="Supplier / subcontractor name" />
                 </div>
+                <div className="quote-form-group">
+                  <label>Type</label>
+                  <select className="quote-form-input" value={form.supplier_type} onChange={e => setForm({ ...form, supplier_type: e.target.value as any })}>
+                    <option value="SUPPLIER">Material supplier</option>
+                    <option value="SUBCONTRACTOR">Subcontractor</option>
+                    <option value="BOTH">Both</option>
+                  </select>
+                </div>
+                {(form.supplier_type === 'SUBCONTRACTOR' || form.supplier_type === 'BOTH') && (
+                  <>
+                    <div className="quote-form-group">
+                      <label>Trade</label>
+                      <input className="quote-form-input" value={form.trade} onChange={e => setForm({ ...form, trade: e.target.value })} placeholder="e.g. Electrical, MEP, Civil" />
+                    </div>
+                    <div className="quote-form-group">
+                      <label>Manpower day rate (AED)</label>
+                      <input type="number" className="quote-form-input" value={form.day_rate} onChange={e => setForm({ ...form, day_rate: e.target.value })} placeholder="e.g. 350" />
+                    </div>
+                  </>
+                )}
                 <div className="quote-form-group">
                   <label>Contact person</label>
                   <input className="quote-form-input" value={form.contact_person} onChange={e => setForm({ ...form, contact_person: e.target.value })} />

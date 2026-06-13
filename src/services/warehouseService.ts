@@ -22,12 +22,32 @@ export interface SupplierRow {
   payment_terms_days: number | null;
   preferred: boolean;
   is_active: boolean;
+  supplier_type: 'SUPPLIER' | 'SUBCONTRACTOR' | 'BOTH';
+  trade: string | null;
+  day_rate: number | null;
   // Historic performance (computed from purchase orders)
   po_count: number;
   total_value: number;
   last_order_at: string | null;
   on_time_pct: number | null;
   score: number; // 0-100 composite
+}
+
+export interface SupplierPOHistory {
+  id: string;
+  po_number: string;
+  status: string;
+  total: number;
+  created_at: string;
+  required_delivery_date: string | null;
+  acknowledged_at: string | null;
+  on_time: boolean | null;
+  project_number: string | null;
+}
+
+export interface SupplierDetail extends SupplierRow {
+  manpower_notes: string | null;
+  history: SupplierPOHistory[];
 }
 
 export interface StockRow {
@@ -115,6 +135,9 @@ export const warehouseService = {
         payment_terms_days: s.payment_terms_days,
         preferred: !!s.preferred,
         is_active: !!s.is_active,
+        supplier_type: (s.supplier_type as SupplierRow['supplier_type']) || 'SUPPLIER',
+        trade: s.trade ?? null,
+        day_rate: s.day_rate != null ? Number(s.day_rate) : null,
         po_count: list.length,
         total_value: Number(total.toFixed(2)),
         last_order_at: lastOrder,
@@ -122,6 +145,48 @@ export const warehouseService = {
         score: Math.max(0, Math.min(100, score)),
       };
     });
+  },
+
+  /** Full supplier profile with PO-by-PO history (for the scorecard). */
+  async getSupplierDetail(id: string): Promise<SupplierDetail | null> {
+    const all = await this.getSuppliers();
+    const base = all.find(s => s.id === id);
+    if (!base) return null;
+
+    const { data: sup } = await supabase
+      .from('pricing_suppliers').select('manpower_notes').eq('id', id).maybeSingle();
+
+    const pos = await safe<any[]>(
+      supabase.from('purchase_orders')
+        .select('id, po_number, status, total, created_at, required_delivery_date, acknowledged_at, project_id')
+        .eq('supplier_id', id)
+        .order('created_at', { ascending: false }),
+      []
+    );
+
+    const projectIds = Array.from(new Set(pos.map(p => p.project_id).filter(Boolean))) as string[];
+    let projMap = new Map<string, string>();
+    if (projectIds.length > 0) {
+      const projects = await safe<any[]>(
+        supabase.from('projects').select('id, project_number').in('id', projectIds), []);
+      projMap = new Map(projects.map((p: any) => [p.id, p.project_number]));
+    }
+
+    const history: SupplierPOHistory[] = pos.map((p: any) => ({
+      id: p.id,
+      po_number: p.po_number,
+      status: p.status,
+      total: Number(p.total) || 0,
+      created_at: p.created_at,
+      required_delivery_date: p.required_delivery_date,
+      acknowledged_at: p.acknowledged_at,
+      on_time: (p.required_delivery_date && p.acknowledged_at)
+        ? new Date(p.acknowledged_at) <= new Date(p.required_delivery_date)
+        : null,
+      project_number: p.project_id ? (projMap.get(p.project_id) || null) : null,
+    }));
+
+    return { ...base, manpower_notes: (sup as any)?.manpower_notes ?? null, history };
   },
 
   async createSupplier(input: {
@@ -132,8 +197,11 @@ export const warehouseService = {
     payment_terms_days?: number;
     systems_covered?: string[];
     preferred?: boolean;
+    supplier_type?: 'SUPPLIER' | 'SUBCONTRACTOR' | 'BOTH';
+    trade?: string;
+    day_rate?: number | null;
   }): Promise<void> {
-    const { error } = await supabase.from('pricing_suppliers').insert({
+    const base = {
       name: input.name.trim(),
       contact_person: input.contact_person || null,
       phone: input.phone || null,
@@ -142,7 +210,19 @@ export const warehouseService = {
       systems_covered: input.systems_covered || [],
       preferred: input.preferred ?? false,
       is_active: true,
-    });
+    };
+    const withType = {
+      ...base,
+      supplier_type: input.supplier_type || 'SUPPLIER',
+      trade: input.trade || null,
+      day_rate: input.day_rate ?? null,
+    };
+
+    let { error } = await supabase.from('pricing_suppliers').insert(withType);
+    // Degrade gracefully if the subcontractor columns aren't present yet
+    if (error && /supplier_type|trade|day_rate|column/i.test(error.message)) {
+      ({ error } = await supabase.from('pricing_suppliers').insert(base));
+    }
     if (error) throw error;
   },
 
