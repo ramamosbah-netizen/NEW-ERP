@@ -40,7 +40,7 @@ export function useThreeWayMatch(poId?: string) {
       // 1. Fetch PO details
       const { data: po, error: poErr } = await supabase
         .from('purchase_orders')
-        .select('*, pricing_suppliers(name, trn_number)')
+        .select('*, pricing_suppliers(name)')
         .eq('id', poId)
         .single();
 

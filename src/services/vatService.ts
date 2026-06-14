@@ -139,10 +139,19 @@ export const vatService = {
     // 2. Fetch Supplier Invoices (Inputs)
     const { data: supplierInvoices } = await supabase
       .from('supplier_invoices')
-      .select('*, pricing_suppliers(trn_number)')
+      .select('*')
       .gte('invoice_date', start)
       .lte('invoice_date', end)
       .in('status', ['APPROVED', 'SCHEDULED', 'PARTIALLY_PAID', 'PAID']);
+
+    // Supplier TRN lives on the LPO (purchase_orders.supplier_trn), not the
+    // supplier registry — resolve it per PO to decide standard vs reverse-charge.
+    const poIds = Array.from(new Set((supplierInvoices || []).map((i: any) => i.po_id).filter(Boolean)));
+    const poTrn = new Map<string, string>();
+    if (poIds.length) {
+      const { data: pos } = await supabase.from('purchase_orders').select('id, supplier_trn').in('id', poIds);
+      for (const p of pos || []) poTrn.set((p as any).id, (p as any).supplier_trn || '');
+    }
 
     let box9Taxable = 0;
     let box9Vat = 0;
@@ -152,7 +161,7 @@ export const vatService = {
     for (const inv of supplierInvoices || []) {
       const taxable = Number(inv.taxable_amount || 0);
       const vat = Number(inv.vat_amount || 0);
-      const supplierTrn = inv.pricing_suppliers?.trn_number || '';
+      const supplierTrn = inv.po_id ? (poTrn.get(inv.po_id) || '') : '';
 
       // If supplier has no UAE TRN, treat it as import/RCM
       const isRcm = !supplierTrn || supplierTrn.trim() === '';

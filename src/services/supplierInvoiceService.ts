@@ -53,7 +53,7 @@ export const supplierInvoiceService = {
   async fetchSupplierInvoiceById(id: string): Promise<(SupplierInvoice & { items: SupplierInvoiceItem[] }) | null> {
     const { data: invoice, error: invError } = await supabase
       .from('supplier_invoices')
-      .select('*, pricing_suppliers(name, trn_number)') // trn_number if exists
+      .select('*, pricing_suppliers(name)')
       .eq('id', id)
       .single();
 
