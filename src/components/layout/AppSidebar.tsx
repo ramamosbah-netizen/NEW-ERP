@@ -49,6 +49,7 @@ import {
   PackageCheck,
   DollarSign,
   Scale,
+  Mail,
   Handshake
 } from 'lucide-react';
 
@@ -83,6 +84,7 @@ const NAV_SECTIONS = [
     label: 'Procurement',
     items: [
       { href: '/procurement/pr', label: 'Purchase Requests', icon: ClipboardList },
+      { href: '/procurement/rfq', label: 'Quotation Requests', icon: Mail },
       { href: '/procurement/comparisons', label: 'Comparisons', icon: Scale },
       { href: '/procurement/po', label: 'Purchase Orders', icon: ShoppingCart },
       { href: '/procurement/grn', label: 'Goods Receipt', icon: PackageCheck },

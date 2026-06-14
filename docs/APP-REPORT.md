@@ -69,6 +69,13 @@ Auth is per-page (`supabase.auth.getUser()`), with RBAC via `roles` /
   accept with **client LPO/contract upload**, link to existing project.
 
 ### Procurement & Supply
+- **Requests for Quotation (RFQ)** — from any BOQ, draft a sourcing request:
+  items prefilled from the BOQ and **fully editable**, multi-select
+  suppliers/subcontractors, cover message + quote-by date. **Records to an RFQ
+  log**, **exports a PDF** (suppliers asked + item table with blank price
+  columns), and **opens a pre-filled email** (BCC) ready to send. Next step: an
+  AI agent reads supplier email replies against each RFQ and suggests prices,
+  feeding the comparison.
 - **Purchase Requests (PR)** — raise with/without a project (tools, IT,
   furniture, consumables, samples = overhead), category, **mode of payment**,
   item grid with estimated costs, lifecycle (Draft→Submit→Approve/Reject),
@@ -250,6 +257,7 @@ All idempotent. Apply any not yet run, then `NOTIFY pgrst, 'reload schema';`.
 | `20260613300000_pr_item_line_status` | Per-line PR status (receive/cancel) |
 | `20260614100000_grn_auto_store_receipt` | GRN auto-routes goods to store on receipt; skips non-catalogue lines safely |
 | `20260614120000_grn_store_robust` | **Supersedes above** — auto-creates a default store if none, and a catalogue item for non-catalogue lines, so every received line becomes stock |
+| `20260614140000_rfq` | RFQ (Request for Quotation) tables, numbering, RLS — sourcing requests from a BOQ |
 
 Verify: `node scripts/verify-platform.mjs`.
 
