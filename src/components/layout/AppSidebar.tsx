@@ -145,6 +145,7 @@ const NAV_SECTIONS = [
       { href: '/finance/retentions', label: 'Retentions', icon: Shield },
       { href: '/finance/petty-cash', label: 'Petty Cash', icon: Wallet },
       { href: '/finance/bank-reconciliation', label: 'Bank Reconciliation', icon: Landmark },
+      { href: '/finance/treasury', label: 'Treasury', icon: Landmark },
       { href: '/finance/reports', label: 'Financial Reports', icon: BarChart3 },
       { href: '/finance/grn-expense', label: 'GRN-to-Expense', icon: PackageCheck },
       { href: '/finance/vat', label: 'VAT Compliance', icon: Percent },

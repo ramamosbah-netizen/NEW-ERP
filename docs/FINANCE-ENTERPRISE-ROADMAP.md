@@ -18,7 +18,7 @@ records what **already exists** (so we don't duplicate or break it), what's
 | 3 | **Project Profitability** | 🟡 `projectFinancialsService` existed | ✅ **DONE** — `/finance/project-profitability` list + `[id]` charts (reuses service) |
 | 4 | **Bank Reconciliation** | 🟡 `statementImportService` existed | ✅ **DONE** — `bank_reconciliations` + lines, CSV/Excel import, auto-match (client/supplier payments), manual match/charge/adjustment |
 | 5 | **Retention Management** | 🟡 `project_retention_ledger` existed | ✅ **DONE** — `/finance/retentions` view over the ledger (held/released/net, release schedule, overdue) |
-| 6 | Treasury | ❌ new | New `treasury_facilities` (loans/guarantees/LC), maturity tracking |
+| 6 | **Treasury** | ❌ new | ✅ **DONE** — `treasury_facilities` (loans/overdrafts/guarantees/LCs), limit-vs-utilization, maturity/expiry tracking, `/finance/treasury` |
 | 7 | **Project Cash Flow** | 🟡 company `cashFlowService` existed | ✅ **DONE** — `/finance/project-cashflow` (per-project monthly in/out + cumulative) |
 | 8 | **Petty Cash** | 🟡 PETTY_CASH account type existed | ✅ **DONE** — `petty_cash_funds` + `petty_cash_transactions` (expense claims, approvals, replenish/return), `/finance/petty-cash` |
 | 9 | Fixed Assets | 🟢 `fixedAssetService` + `depreciationService` + disposal exist | Surface under `/finance/assets` (reuse services); avoid rebuild |
