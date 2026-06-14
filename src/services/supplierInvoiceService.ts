@@ -136,6 +136,74 @@ export const supplierInvoiceService = {
   },
 
   /**
+   * Records a direct expense (non-LPO purchase, car petrol, petty cash, office
+   * expense) as an AP bill. Always carries an invoice/receipt reference and a
+   * cost bucket (PROJECT via LPO, PETTY_CASH project-linked, or OFFICE). If
+   * paid, it debits the chosen payment account (no separate supplier_payment,
+   * so payee-less expenses work — the bill itself holds amount_paid + account).
+   */
+  async recordExpense(input: {
+    cost_bucket: 'PROJECT' | 'PETTY_CASH' | 'OFFICE';
+    project_id?: string | null;
+    po_id?: string | null;
+    supplier_id?: string | null;
+    payee_name?: string | null;
+    expense_category: string;
+    supplier_invoice_number: string;   // the invoice / receipt reference (required)
+    invoice_date: string;
+    taxable_amount: number;
+    vat_amount: number;
+    total: number;
+    payment_account_id?: string | null;
+    source_document_id?: string | null;
+    mark_paid?: boolean;
+    notes?: string | null;
+  }): Promise<SupplierInvoice> {
+    const user = (await supabase.auth.getUser()).data.user;
+    if (!user) throw new Error('Authentication required');
+
+    if (!input.supplier_invoice_number?.trim()) throw new Error('An invoice / receipt reference is required for every expense.');
+    if (!(Number(input.total) > 0)) throw new Error('Enter an amount greater than zero.');
+    if ((input.cost_bucket === 'PROJECT' || input.cost_bucket === 'PETTY_CASH') && !input.project_id) {
+      throw new Error('Select the project this expense belongs to.');
+    }
+    if (input.mark_paid && !input.payment_account_id) {
+      throw new Error('Choose the card / account it was paid from.');
+    }
+
+    const today = new Date();
+    const due = new Date(input.invoice_date); due.setDate(due.getDate() + 30);
+
+    const payload: Record<string, any> = {
+      supplier_id: input.supplier_id || null,
+      supplier_invoice_number: input.supplier_invoice_number.trim(),
+      po_id: input.po_id || null,
+      project_id: (input.cost_bucket === 'OFFICE') ? null : (input.project_id || null),
+      invoice_type: input.po_id ? 'PO_MATCHED' : 'DIRECT_EXPENSE',
+      invoice_date: input.invoice_date,
+      received_date: today.toISOString().slice(0, 10),
+      due_date: due.toISOString().slice(0, 10),
+      taxable_amount: Number(input.taxable_amount) || 0,
+      vat_amount: Number(input.vat_amount) || 0,
+      total: Number(input.total),
+      match_status: 'NA',
+      status: input.mark_paid ? 'PAID' : 'REGISTERED',
+      amount_paid: input.mark_paid ? Number(input.total) : 0,
+      cost_bucket: input.cost_bucket,
+      payment_account_id: input.payment_account_id || null,
+      payee_name: input.payee_name?.trim() || null,
+      expense_category: input.expense_category || 'OTHER',
+      source_document_id: input.source_document_id || null,
+      notes: input.notes?.trim() || null,
+      created_by: user.id,
+    };
+
+    const { data, error } = await supabase.from('supplier_invoices').insert(payload).select('*').single();
+    if (error) throw new Error(error.message);
+    return data as unknown as SupplierInvoice;
+  },
+
+  /**
    * Registers a new supplier invoice and triggers the 3-way matching engine.
    */
   async registerSupplierInvoice(

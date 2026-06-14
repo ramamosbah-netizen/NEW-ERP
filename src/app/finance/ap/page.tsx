@@ -16,7 +16,7 @@ import {
   MATCH_STATUS_COLORS,
   SUPPLIER_INVOICE_TYPE_LABELS
 } from '@/constants/finance.constants';
-import { Search, Plus, ArrowRight, ShieldAlert } from 'lucide-react';
+import { Search, Plus, ArrowRight, ShieldAlert, Receipt } from 'lucide-react';
 
 export default function SupplierInvoicesListPage() {
   const [filters, setFilters] = useState<SupplierInvoiceFilters>({
@@ -52,12 +52,20 @@ export default function SupplierInvoicesListPage() {
               Supplier Bills & Invoices (AP)
             </h1>
           </div>
-          <Link 
-            href="/finance/ap/register" 
-            className="flex items-center gap-1.5 px-4 py-2 bg-emerald-400 text-slate-950 text-xs font-bold rounded hover:bg-emerald-300 transition-all uppercase tracking-wider"
-          >
-            <Plus size={14} /> Register Supplier Invoice
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/finance/ap/expenses"
+              className="flex items-center gap-1.5 px-4 py-2 border border-emerald-400/40 text-emerald-300 text-xs font-bold rounded hover:bg-emerald-400/10 transition-all uppercase tracking-wider"
+            >
+              <Receipt size={14} /> Expenses & Accounts
+            </Link>
+            <Link
+              href="/finance/ap/register"
+              className="flex items-center gap-1.5 px-4 py-2 bg-emerald-400 text-slate-950 text-xs font-bold rounded hover:bg-emerald-300 transition-all uppercase tracking-wider"
+            >
+              <Plus size={14} /> Register Supplier Invoice
+            </Link>
+          </div>
         </div>
 
         {/* Filters Panel */}

@@ -139,6 +139,11 @@ Auth is per-page (`supabase.auth.getUser()`), with RBAC via `roles` /
 - **AP automation** — sending an LPO **auto-creates an expected supplier bill**
   (AWAITING-{LPO no}, due per LPO payment terms) so every purchase surfaces in
   AP; the accountant completes it (real invoice no, amounts, PDF) and submits.
+- **Expenses & Payment Accounts** (`/finance/ap/expenses`) — capture every
+  payment (LPO / non-LPO purchase, car petrol, petty cash, office expense) as an
+  invoiced AP bill, **paid from a tracked card / bank / cash account** (running
+  balance), **bucketed** to Project (LPO), Petty cash (project-linked) or Office.
+  Every expense requires an invoice/receipt reference.
 - **Bill completed phases (AR)** — `/finance/ar/from-phases`: pick a project,
   claim its **completed (DONE) milestones** at an amount each, and generate a
   **PROGRESS** client invoice with **advance recovery + retention auto-applied**
@@ -279,6 +284,7 @@ All idempotent. Apply any not yet run, then `NOTIFY pgrst, 'reload schema';`.
 | `20260614140000_rfq` | RFQ (Request for Quotation) tables, numbering, RLS — sourcing requests from a BOQ |
 | `20260614160000_stock_rls_and_movements` | **Fixes 403s** — relaxes stock_* write RLS to collaborative (authenticated); adds RETURN_TO_SUPPLIER movement type |
 | `20260614180000_stock_movement_receipt` | Adds received_by_name to stock_transactions (storekeeper↔receiver handover receipt) |
+| `20260614200000_ap_accounts_expenses` | payment_accounts (cards/bank/cash + balance); supplier_invoices gains cost_bucket, payment_account_id, payee_name, nullable supplier_id, wider expense_category; supplier_payments gains payment_account_id |
 
 Verify: `node scripts/verify-platform.mjs`.
 
