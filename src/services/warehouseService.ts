@@ -309,6 +309,37 @@ export const warehouseService = {
     if (error) throw error;
   },
 
+  /** Per-location balances for one stock item — drives the movement source picker. */
+  async getItemBalances(stockItemId: string): Promise<
+    { location_id: string; location_name: string; qty_on_hand: number; qty_available: number; avg_unit_cost: number }[]
+  > {
+    const { data: bals } = await supabase
+      .from('stock_balances')
+      .select('location_id, qty_on_hand, qty_available, avg_unit_cost')
+      .eq('stock_item_id', stockItemId);
+    const locIds = Array.from(new Set((bals || []).map((b: any) => b.location_id)));
+    const { data: locs } = locIds.length
+      ? await supabase.from('stock_locations').select('id, name').in('id', locIds)
+      : { data: [] as any[] };
+    const nameById = new Map((locs || []).map((l: any) => [l.id, l.name]));
+    return (bals || []).map((b: any) => ({
+      location_id: b.location_id,
+      location_name: nameById.get(b.location_id) || 'Store',
+      qty_on_hand: Number(b.qty_on_hand) || 0,
+      qty_available: Number(b.qty_available) || 0,
+      avg_unit_cost: Number(b.avg_unit_cost) || 0,
+    }));
+  },
+
+  /** Active projects for linking a movement (cost charge). */
+  async getProjects(): Promise<{ id: string; project_number: string }[]> {
+    const { data } = await supabase
+      .from('projects')
+      .select('id, project_number')
+      .order('project_number', { ascending: false });
+    return data || [];
+  },
+
   // ---------- Stock item registration ----------
   /** Catalogue items not yet registered as stock items. */
   async getRegisterableItems(): Promise<{ id: string; item_code: string; description: string; unit: string }[]> {

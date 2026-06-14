@@ -9,6 +9,7 @@ export type StockTransactionType =
   | 'ISSUE_TO_PROJECT'
   | 'ISSUE_TO_TICKET'
   | 'RETURN_FROM_SITE'
+  | 'RETURN_TO_SUPPLIER'
   | 'TRANSFER_OUT'
   | 'TRANSFER_IN'
   | 'ADJUSTMENT_IN'
