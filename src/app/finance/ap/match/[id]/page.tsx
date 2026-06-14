@@ -12,6 +12,10 @@ import { useSupplierInvoice } from '@/hooks/useSupplierInvoices';
 import { supplierInvoiceService } from '@/services/supplierInvoiceService';
 import { runUploadPipeline } from '@/lib/document-upload-service';
 import { supabase } from '@/lib/supabase';
+import { poPDFService } from '@/services/poPDFService';
+import { prService } from '@/services/prService';
+import { prPDFService } from '@/lib/pr-pdf';
+import { exportPayrollSheetExcel } from '@/lib/payroll-export';
 import WorkflowPanel from '@/components/workflow/WorkflowPanel';
 import {
   SUPPLIER_INVOICE_STATUS_LABELS,
@@ -20,7 +24,7 @@ import {
   MATCH_STATUS_COLORS,
   SUPPLIER_INVOICE_TYPE_LABELS
 } from '@/constants/finance.constants';
-import { ArrowLeft, CheckCircle, XCircle, AlertTriangle, ShieldCheck, ShieldAlert, FileText, ExternalLink, Package, ClipboardList, Users, Paperclip } from 'lucide-react';
+import { ArrowLeft, CheckCircle, XCircle, AlertTriangle, ShieldCheck, ShieldAlert, FileText, Package, ClipboardList, Users, Paperclip } from 'lucide-react';
 
 export function MatchReviewPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -71,6 +75,34 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
       if (error || !data?.signedUrl) throw error || new Error('No URL');
       window.open(data.signedUrl, '_blank');
     } catch { setValErr('Could not open the attached document.'); }
+  };
+
+  // Source documents open as the final PDF/Excel output (no system-page access needed)
+  const openLpoPdf = async () => {
+    if (!src.po) return;
+    try {
+      const [{ data: po }, { data: items }] = await Promise.all([
+        supabase.from('purchase_orders').select('*').eq('id', src.po.id).single(),
+        supabase.from('po_items').select('*').eq('po_id', src.po.id).order('line_no'),
+      ]);
+      const pdf = await poPDFService.generatePOPDF(po as any, (items || []) as any);
+      pdf.output('dataurlnewwindow');
+    } catch { setValErr('Could not generate the LPO PDF.'); }
+  };
+
+  const openPrPdf = async () => {
+    if (!src.pr) return;
+    try {
+      const pr = await prService.get(src.pr.id);
+      prPDFService.open(pr as any);
+    } catch { setValErr('Could not generate the PR PDF.'); }
+  };
+
+  const openPayrollSheet = async () => {
+    const m = /^PAY-(\d{4})-(\d{2})/.exec(invoice?.supplier_invoice_number || '');
+    if (!m) return;
+    try { await exportPayrollSheetExcel(`${m[1]}-${m[2]}`); }
+    catch (e: any) { setValErr(e.message || 'Could not export the payroll sheet.'); }
   };
 
   // DRAFT → validate (record the real supplier invoice)
@@ -338,22 +370,22 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
           </div>
           <div className="flex flex-wrap gap-2">
             {src.po && (
-              <Link href={`/procurement/po/${src.po.id}`} target="_blank"
-                className="inline-flex items-center gap-1.5 px-3 py-2 rounded border border-slate-800 bg-[#0a0f26] text-xs text-slate-200 hover:border-emerald-500/50 hover:text-emerald-300 transition-all">
-                <Package size={13} /> LPO {src.po.po_number} <ExternalLink size={11} className="opacity-60" />
-              </Link>
+              <button onClick={openLpoPdf}
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded border border-slate-800 bg-[#0a0f26] text-xs text-slate-200 hover:border-emerald-500/50 hover:text-emerald-300 transition-all cursor-pointer">
+                <Package size={13} /> LPO {src.po.po_number} <span className="opacity-50 text-[10px]">PDF</span>
+              </button>
             )}
             {src.pr && (
-              <Link href={`/procurement/pr/${src.pr.id}`} target="_blank"
-                className="inline-flex items-center gap-1.5 px-3 py-2 rounded border border-slate-800 bg-[#0a0f26] text-xs text-slate-200 hover:border-emerald-500/50 hover:text-emerald-300 transition-all">
-                <ClipboardList size={13} /> Purchase Request {src.pr.pr_number} <ExternalLink size={11} className="opacity-60" />
-              </Link>
+              <button onClick={openPrPdf}
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded border border-slate-800 bg-[#0a0f26] text-xs text-slate-200 hover:border-emerald-500/50 hover:text-emerald-300 transition-all cursor-pointer">
+                <ClipboardList size={13} /> Purchase Request {src.pr.pr_number} <span className="opacity-50 text-[10px]">PDF</span>
+              </button>
             )}
             {isPayroll && (
-              <Link href="/payroll" target="_blank"
-                className="inline-flex items-center gap-1.5 px-3 py-2 rounded border border-slate-800 bg-[#0a0f26] text-xs text-slate-200 hover:border-emerald-500/50 hover:text-emerald-300 transition-all">
-                <Users size={13} /> Payroll sheet <ExternalLink size={11} className="opacity-60" />
-              </Link>
+              <button onClick={openPayrollSheet}
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded border border-slate-800 bg-[#0a0f26] text-xs text-slate-200 hover:border-emerald-500/50 hover:text-emerald-300 transition-all cursor-pointer">
+                <Users size={13} /> Payroll sheet <span className="opacity-50 text-[10px]">XLSX</span>
+              </button>
             )}
             {(invoice as any).proforma_path && (
               <button onClick={viewProforma}
