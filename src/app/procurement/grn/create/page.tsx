@@ -433,8 +433,10 @@ function GRNFormContent() {
       if (!poId) errors.push('Please select a Purchase Order.');
       if (!deliveryNoteRef || deliveryNoteRef.trim() === '') errors.push('Please enter the Delivery Note Ref Number.');
       if (!deliveryNoteFile && !deliveryNoteRef) errors.push('Please attach a Delivery Note file.');
-      if (isStockItem && !stockLocationId) {
-        errors.push('Please select a Destination Warehouse for stock routing.');
+      // Receiving into STORE auto-routes goods to stock. Require a warehouse to exist.
+      const routeToStore = location === 'STORE' || isStockItem;
+      if (routeToStore && stockLocations.length === 0) {
+        errors.push('No store/warehouse location exists. Create one in Warehouse → Store before receiving to store.');
       }
 
       let overDeliveryExceeded = false;
@@ -524,6 +526,10 @@ function GRNFormContent() {
       }
 
       // C. Save GRN transaction
+      // Goods received into STORE automatically influx stock (the RPC resolves a
+      // store location when one isn't explicitly chosen). SITE receipts are
+      // consumed on site and not added to store stock.
+      const routeToStoreFinal = location === 'STORE' || isStockItem;
       const grnHeader = {
         po_id: poId,
         delivery_note_ref: deliveryNoteRef,
@@ -532,8 +538,8 @@ function GRNFormContent() {
         driver_name: driverName || null,
         location,
         notes: notes || null,
-        is_stock_item: isStockItem,
-        stock_location_id: isStockItem ? stockLocationId : null
+        is_stock_item: routeToStoreFinal,
+        stock_location_id: routeToStoreFinal ? (stockLocationId || stockLocations[0]?.id || null) : null
       };
 
       await grnService.recordGRN(grnHeader as any, itemsToLog, confirmOverDelivery);
@@ -716,25 +722,28 @@ function GRNFormContent() {
                   Route to Store Inventory (Stock Item)
                 </label>
                 <p className="text-xs text-slate-400 ml-7 mt-1">
-                  Check this if materials should be registered in inventory instead of expensed directly to the project.
+                  Goods received to <strong>Store</strong> are registered in inventory automatically. Tick this to force inventory routing even when offloading on site.
                 </p>
 
-                {isStockItem && (
+                {(location === 'STORE' || isStockItem) && (
                   <div className="ml-7 mt-3 quote-form-group">
-                    <label>Destination Warehouse / Stock Location *</label>
+                    <label>Destination Warehouse / Stock Location</label>
                     <select
                       className="quote-form-input"
                       style={{ height: '44px' }}
                       value={stockLocationId || ''}
                       onChange={(e) => setStockLocationId(e.target.value)}
                     >
-                      <option value="">-- Choose Stock Destination --</option>
+                      <option value="">-- Default: main store --</option>
                       {stockLocations.map(loc => (
                         <option key={loc.id} value={loc.id}>
                           {loc.location_code} — {loc.name} ({loc.type})
                         </option>
                       ))}
                     </select>
+                    <p className="text-xs text-slate-400 mt-1">
+                      Leave as default and the receipt posts to the primary store automatically.
+                    </p>
                   </div>
                 )}
               </div>

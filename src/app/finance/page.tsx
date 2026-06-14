@@ -321,6 +321,11 @@ export default function FinanceDashboard() {
                   Disbursements
                 </Button>
               </Link>
+              <Link href="/finance/grn-expense" className="no-underline">
+                <Button size="sm" variant="secondary" className="text-xs font-mono text-slate-300 border-white/10 hover:bg-white/5">
+                  GRN-to-Expense
+                </Button>
+              </Link>
             </div>
           </Card>
 

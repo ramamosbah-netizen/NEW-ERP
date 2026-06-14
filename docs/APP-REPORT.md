@@ -86,10 +86,12 @@ Auth is per-page (`supabase.auth.getUser()`), with RBAC via `roles` /
   tracking with budget-overrun warnings.
 - **Goods Receipt (GRN) & Returns** — receive against an LPO with per-item
   qty/rejection + photos, **delivery note** capture, **GRN receipt PDF
-  download**, auto stock influx to store (via RPC). **GRN Receivables** view:
-  consolidated items-to-receive across all open LPOs/PRs with project, delivery
-  status and payment status; per-line **receive** and **cancel** (cascades to
-  the LPO/PR).
+  download**. Receiving to **STORE auto-moves goods into inventory** — the RPC
+  resolves the destination store and posts stock per catalogue line, no manual
+  toggle. **GRN Receivables** view: consolidated items-to-receive across all
+  open LPOs/PRs with project, delivery status and payment status; per-line
+  **receive** and **cancel** (cascades to the LPO/PR). **GRN-to-Expense** report
+  ties received value to supplier invoicing and payment.
 
 ### Warehouse & Inventory
 - **Suppliers & Subcontractors** registry — register/manage, **subcontractor
@@ -190,7 +192,12 @@ project: each document links to exactly one owning project.
   contacts, proforma attach).
 - **PR → LPO / direct purchase** — approved PRs convert to LPOs (pre-filled +
   linked) or are purchased directly under the configurable threshold.
-- **GRN → stock** — receipts post `GRN_RECEIPT` transactions to the store.
+- **GRN → stock (automatic)** — receipting to STORE auto-routes goods into
+  inventory: the RPC resolves the destination store itself (first active
+  MAIN/SUB store) and posts a `GRN_RECEIPT` transaction per catalogue line, no
+  manual stock-item toggle required. Non-catalogue lines are skipped, not failed.
+- **GRN → expense** — received value (qty × PO price) is reconciled against
+  supplier invoices and payments in the **GRN-to-Expense** finance report.
 - **Quotation → project** — budget/target cost imported from BOQ; lineage tracked.
 - **Event bus** — `system_events` + `event_types` drive notifications.
 
@@ -199,8 +206,14 @@ project: each document links to exactly one owning project.
 ## 7. Reports & exports
 
 PDF: Tender, Quotation, Purchase Request, Goods Receipt Note, Comparison, BOQ.
-Excel/CSV: Comparison, BOQ, Goods Movements log (by week/month/year).
+Excel/CSV: Comparison, BOQ, Goods Movements log (by week/month/year),
+**GRN-to-Expense** (received vs invoiced vs paid by project/period).
 Document templates engine renders any configured PDF with live variables.
+
+**GRN-to-Expense report** (`/finance/grn-expense`) — per-project received value
+(receipted qty × PO price) reconciled against supplier invoices and payments,
+filterable by month/quarter/year/all, surfacing **uninvoiced** (received but not
+yet billed) and **outstanding** (invoiced not yet paid) balances, with CSV export.
 
 ---
 
@@ -235,6 +248,7 @@ All idempotent. Apply any not yet run, then `NOTIFY pgrst, 'reload schema';`.
 | `20260613260000_purchase_requests` | PR + PR items tables, `po.pr_id` |
 | `20260613280000_payment_method_and_direct_purchase` | payment_method on LPO/PR, direct-purchase, PROCUREMENT settings category |
 | `20260613300000_pr_item_line_status` | Per-line PR status (receive/cancel) |
+| `20260614100000_grn_auto_store_receipt` | GRN auto-routes goods to store on receipt; skips non-catalogue lines safely |
 
 Verify: `node scripts/verify-platform.mjs`.
 
@@ -244,8 +258,6 @@ Verify: `node scripts/verify-platform.mjs`.
 
 - **Role-based action/display gating** across procurement (RBAC exists; wiring
   per-action is partial).
-- **Overhead receipts → finance expense** report (received vs invoiced vs paid
-  by period). Stock side is done.
 - **Per-line PR receive** (cancel done; "received" status transition pending UI).
 - **Line-level payment status** (invoices are PO-level today).
 - **AI automation** (Gemini key + `process-document` edge function not
