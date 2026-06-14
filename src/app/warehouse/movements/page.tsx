@@ -45,6 +45,7 @@ export default function MovementsPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
+  const [period, setPeriod] = useState<'ALL' | 'WEEK' | 'MONTH' | 'YEAR'>('ALL');
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -102,8 +103,17 @@ export default function MovementsPage() {
     } finally { setBusy(false); }
   };
 
+  const periodStart = (() => {
+    const now = new Date();
+    if (period === 'WEEK') { const d = new Date(now); d.setDate(d.getDate() - 7); return d; }
+    if (period === 'MONTH') { const d = new Date(now); d.setMonth(d.getMonth() - 1); return d; }
+    if (period === 'YEAR') { const d = new Date(now); d.setFullYear(d.getFullYear() - 1); return d; }
+    return null;
+  })();
+
   const filtered = rows.filter(r => {
     if (typeFilter && r.type !== typeFilter) return false;
+    if (periodStart && new Date(r.created_at) < periodStart) return false;
     if (!search) return true;
     const q = search.toLowerCase();
     return r.item_code.toLowerCase().includes(q) || r.description.toLowerCase().includes(q) ||
@@ -111,6 +121,24 @@ export default function MovementsPage() {
   });
 
   const types = [...new Set(rows.map(r => r.type))];
+
+  // CSV export of the current (filtered) goods log
+  const exportCSV = () => {
+    const headers = ['Date', 'Transaction', 'Type', 'Item Code', 'Description', 'Qty', 'Unit Cost', 'Total Value', 'Location', 'Project', 'Reason'];
+    const esc = (v: any) => `"${String(v ?? '').replace(/"/g, '""')}"`;
+    const lines = filtered.map(r => [
+      new Date(r.created_at).toISOString(), r.transaction_number, r.type, r.item_code, r.description,
+      r.qty, r.unit_cost, r.total_value, r.location_name, r.project_number || '', r.reason || '',
+    ].map(esc).join(','));
+    const csv = [headers.map(esc).join(','), ...lines].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `goods_movements_${period.toLowerCase()}_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="flex flex-col gap-5">
@@ -137,7 +165,14 @@ export default function MovementsPage() {
           <option value="">All movement types</option>
           {types.map(t => <option key={t} value={t}>{TYPE_META[t]?.label || t}</option>)}
         </select>
+        <select className="quote-form-input max-w-[150px]" value={period} onChange={e => setPeriod(e.target.value as any)}>
+          <option value="ALL">All time</option>
+          <option value="WEEK">This week</option>
+          <option value="MONTH">This month</option>
+          <option value="YEAR">This year</option>
+        </select>
         <span className="text-xs text-[var(--text-muted)]">{filtered.length} movement{filtered.length === 1 ? '' : 's'}</span>
+        <Button size="sm" variant="secondary" onClick={exportCSV} disabled={filtered.length === 0} className="ml-auto">Export log (CSV)</Button>
       </div>
 
       {loading ? (
