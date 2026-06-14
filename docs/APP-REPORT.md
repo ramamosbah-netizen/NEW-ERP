@@ -159,6 +159,9 @@ Auth is per-page (`supabase.auth.getUser()`), with RBAC via `roles` /
   claim its **completed (DONE) milestones** at an amount each, and generate a
   **PROGRESS** client invoice with **advance recovery + retention auto-applied**
   from the contract terms; the draft then enters the approval workflow.
+- **Quick-validate (AP register)** — DRAFT bills have a one-click **Validate**
+  action right in the list: enter the supplier invoice no/date/amount, attach the
+  invoice, and register it without opening the bill.
 - **Bill source & justification (final documents)** — each AP bill page shows
   its origin as downloadable output, not system pages, so the accounts team
   needs no procurement/HR module access: **LPO → PDF**, **Purchase Request →

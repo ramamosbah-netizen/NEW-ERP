@@ -10,14 +10,17 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { useSupplierInvoices, SupplierInvoiceFilters } from '@/hooks/useSupplierInvoices';
-import { 
-  SUPPLIER_INVOICE_STATUS_LABELS, 
+import { supplierInvoiceService } from '@/services/supplierInvoiceService';
+import { runUploadPipeline } from '@/lib/document-upload-service';
+import type { SupplierInvoice } from '@/types/finance.types';
+import {
+  SUPPLIER_INVOICE_STATUS_LABELS,
   SUPPLIER_INVOICE_STATUS_COLORS,
   MATCH_STATUS_LABELS,
   MATCH_STATUS_COLORS,
   SUPPLIER_INVOICE_TYPE_LABELS
 } from '@/constants/finance.constants';
-import { Search, Plus, ArrowRight, ShieldAlert, Receipt } from 'lucide-react';
+import { Search, Plus, ArrowRight, ShieldAlert, Receipt, CheckCircle, X, Paperclip } from 'lucide-react';
 
 export default function SupplierInvoicesListPage() {
   const [filters, setFilters] = useState<SupplierInvoiceFilters>({
@@ -25,7 +28,51 @@ export default function SupplierInvoicesListPage() {
   });
   const [search, setSearch] = useState('');
 
-  const { invoices, loading } = useSupplierInvoices(filters);
+  const { invoices, loading, refetch } = useSupplierInvoices(filters);
+
+  // Quick-validate a DRAFT bill directly from the register
+  const [vBill, setVBill] = useState<SupplierInvoice | null>(null);
+  const [vForm, setVForm] = useState({ number: '', date: '', amount: '', vat: true });
+  const [vDoc, setVDoc] = useState<{ id: string; name: string } | null>(null);
+  const [vBusy, setVBusy] = useState(false);
+  const [vErr, setVErr] = useState<string | null>(null);
+
+  const openValidate = (inv: SupplierInvoice) => {
+    setVBill(inv);
+    setVForm({ number: inv.supplier_invoice_number?.startsWith('AWAITING-') || inv.supplier_invoice_number?.startsWith('PAY-') ? '' : inv.supplier_invoice_number, date: '', amount: String(inv.taxable_amount || ''), vat: (Number(inv.vat_amount) || 0) > 0 });
+    setVDoc(null); setVErr(null);
+  };
+
+  const uploadVDoc = async (file: File | undefined) => {
+    if (!file) return;
+    setVBusy(true); setVErr(null);
+    try {
+      const doc = await runUploadPipeline(file, 'SUPPLIER', undefined, ['supplier-invoice']);
+      setVDoc({ id: doc.id, name: file.name });
+    } catch (e: any) {
+      const m = /^DUPLICATE_FOUND:([^:]+):(.*)$/.exec(e?.message || '');
+      if (m) setVDoc({ id: m[1], name: m[2] || file.name });
+      else setVErr(e.message || 'Upload failed');
+    } finally { setVBusy(false); }
+  };
+
+  const doValidate = async () => {
+    if (!vBill) return;
+    const amt = Number(vForm.amount) || 0;
+    if (!vForm.number.trim()) { setVErr('Enter the supplier invoice number.'); return; }
+    if (!(amt > 0)) { setVErr('Enter the invoice amount.'); return; }
+    setVBusy(true); setVErr(null);
+    try {
+      const vatAmt = vForm.vat ? Math.round(amt * 0.05 * 100) / 100 : 0;
+      await supplierInvoiceService.validateExpected(vBill.id, {
+        supplier_invoice_number: vForm.number, invoice_date: vForm.date || undefined,
+        taxable_amount: amt, vat_amount: vatAmt, total: Math.round((amt + vatAmt) * 100) / 100,
+        source_document_id: vDoc?.id || null,
+      });
+      setVBill(null);
+      refetch();
+    } catch (e: any) { setVErr(e.message || 'Validation failed'); } finally { setVBusy(false); }
+  };
 
   // Per-LPO received-items summary (delivered/received lines) for PO-matched bills
   const [received, setReceived] = useState<Record<string, { complete: number; partial: number; total: number }>>({});
@@ -202,9 +249,17 @@ export default function SupplierInvoicesListPage() {
                           </span>
                         </td>
                         <td className="py-4 px-4 text-right">
-                          <Link href={`/finance/ap/match/${inv.id}`} className="text-emerald-400 hover:text-emerald-300">
-                            <ArrowRight size={14} />
-                          </Link>
+                          <div className="flex items-center justify-end gap-2" onClick={e => e.stopPropagation()}>
+                            {inv.status === 'DRAFT' && (
+                              <button onClick={() => openValidate(inv)} title="Validate supplier invoice"
+                                className="inline-flex items-center gap-1 px-2 py-1 rounded border border-emerald-500/30 text-emerald-300 text-[10px] font-bold uppercase tracking-wider hover:bg-emerald-400/10 cursor-pointer">
+                                <CheckCircle size={12} /> Validate
+                              </button>
+                            )}
+                            <Link href={`/finance/ap/match/${inv.id}`} className="text-emerald-400 hover:text-emerald-300">
+                              <ArrowRight size={14} />
+                            </Link>
+                          </div>
                         </td>
                       </tr>
                     );
@@ -215,6 +270,50 @@ export default function SupplierInvoicesListPage() {
           </div>
         </div>
       </main>
+
+      {/* Quick-validate a DRAFT bill */}
+      {vBill && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={() => setVBill(null)}>
+          <div className="w-full max-w-lg bg-[#0a0f26] border border-slate-800 rounded-lg p-5" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-1">
+              <h3 className="text-sm font-bold text-slate-100 uppercase tracking-wider">Validate supplier invoice</h3>
+              <button onClick={() => setVBill(null)} className="text-slate-500 hover:text-slate-200 cursor-pointer"><X size={16} /></button>
+            </div>
+            <p className="text-xs text-slate-500 mb-4">{vBill.supplier_name || 'Payable'} · {vBill.internal_ref}</p>
+            {vErr && <div className="text-xs text-red-400 mb-3">{vErr}</div>}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="col-span-2 sm:col-span-1">
+                <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Invoice no *</label>
+                <input value={vForm.number} onChange={e => setVForm({ ...vForm, number: e.target.value })}
+                  className="w-full bg-[#060814] border border-slate-800 rounded py-2 px-3 text-xs text-slate-200" />
+              </div>
+              <div className="col-span-2 sm:col-span-1">
+                <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Invoice date</label>
+                <input type="date" value={vForm.date} onChange={e => setVForm({ ...vForm, date: e.target.value })}
+                  className="w-full bg-[#060814] border border-slate-800 rounded py-2 px-3 text-xs text-slate-200" />
+              </div>
+              <div className="col-span-2 sm:col-span-1">
+                <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Amount (excl VAT) *</label>
+                <input type="number" step="any" value={vForm.amount} onChange={e => setVForm({ ...vForm, amount: e.target.value })}
+                  className="w-full bg-[#060814] border border-slate-800 rounded py-2 px-3 text-xs text-slate-200 text-right" />
+              </div>
+              <label className="col-span-2 sm:col-span-1 flex items-center gap-2 text-xs text-slate-400 mt-5 cursor-pointer">
+                <input type="checkbox" checked={vForm.vat} onChange={e => setVForm({ ...vForm, vat: e.target.checked })} /> +5% VAT
+              </label>
+            </div>
+            <div className="flex items-center gap-3 mt-4">
+              <label className="flex items-center gap-2 px-3 py-2 rounded border border-dashed border-slate-700 text-xs text-slate-400 cursor-pointer hover:border-emerald-500/50">
+                <Paperclip size={13} /> {vDoc ? `✓ ${vDoc.name}` : (vBusy ? 'Uploading…' : 'Attach invoice (image/PDF)')}
+                <input type="file" accept="image/*,application/pdf" className="hidden" disabled={vBusy} onChange={e => uploadVDoc(e.target.files?.[0])} />
+              </label>
+              <button onClick={doValidate} disabled={vBusy}
+                className="ml-auto flex items-center gap-1.5 px-4 py-2 bg-emerald-400 text-slate-950 text-xs font-bold rounded hover:bg-emerald-300 disabled:opacity-50 uppercase tracking-wider">
+                <CheckCircle size={14} /> Validate & register
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
