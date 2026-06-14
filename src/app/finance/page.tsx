@@ -18,19 +18,23 @@ import {
   Calendar, 
   ArrowRightLeft,
   DollarSign,
-  RefreshCw
+  RefreshCw,
+  AlertTriangle,
+  AlertOctagon
 } from 'lucide-react';
 import { kpiService, FinanceKPIs } from '@/services/kpiService';
 import { useCashFlow } from '@/hooks/useCashFlow';
+import executiveFinanceService, { ExecDashboard } from '@/services/executiveFinanceService';
 import { KPICard } from '@/components/ui/KPICard';
 import { Card } from '@/components/ui/Card';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Button } from '@/components/ui/Button';
-import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
+import { ResponsiveContainer, AreaChart, Area, BarChart, Bar, Cell, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 
 export default function FinanceDashboard() {
   const [loading, setLoading] = useState(true);
   const [kpis, setKpis] = useState<FinanceKPIs | null>(null);
+  const [exec, setExec] = useState<ExecDashboard | null>(null);
   const [refreshing, setRefreshing] = useState(false);
 
   // Fetch live stats from kpiService
@@ -39,6 +43,7 @@ export default function FinanceDashboard() {
       setRefreshing(true);
       const data = await kpiService.getFinanceKPIs();
       setKpis(data);
+      executiveFinanceService.getDashboard().then(setExec).catch(() => {});
     } catch (err) {
       console.error('Error fetching finance KPIs:', err);
     } finally {
@@ -192,6 +197,91 @@ export default function FinanceDashboard() {
           </Link>
 
         </div>
+
+        {/* Executive risk alerts */}
+        {exec && exec.alerts.length > 0 && (
+          <div className="grid md:grid-cols-2 gap-2">
+            {exec.alerts.map((a, i) => (
+              <div key={i} className="flex items-start gap-2 rounded p-2.5 text-xs border"
+                style={{
+                  background: a.level === 'danger' ? 'rgba(239,68,68,0.08)' : 'rgba(245,158,11,0.08)',
+                  borderColor: a.level === 'danger' ? 'rgba(239,68,68,0.25)' : 'rgba(245,158,11,0.25)',
+                  color: a.level === 'danger' ? '#f87171' : '#fbbf24',
+                }}>
+                {a.level === 'danger' ? <AlertOctagon size={14} className="mt-0.5 shrink-0" /> : <AlertTriangle size={14} className="mt-0.5 shrink-0" />}
+                <div><div className="font-semibold">{a.title}</div><div className="opacity-90">{a.detail}</div></div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Executive KPI row */}
+        {exec && (
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              { label: 'Working capital', value: exec.kpis.workingCapital, warn: exec.kpis.workingCapital < 0 },
+              { label: 'Net profit (YTD)', value: exec.kpis.netProfit, warn: exec.kpis.netProfit < 0 },
+              { label: 'Total commitments', value: exec.kpis.totalCommitments },
+              { label: 'Projects at risk', value: exec.kpis.projectsAtRisk, count: true, warn: exec.kpis.projectsAtRisk > 0 },
+            ].map(k => (
+              <div key={k.label} className="bg-slate-950/40 border border-white/5 rounded-lg p-3.5">
+                <div className="text-[10px] text-slate-500 font-mono uppercase tracking-wider">{k.label}</div>
+                <div className="text-lg font-bold tabular-nums mt-1" style={{ color: k.warn ? '#f87171' : '#e2e8f0' }}>
+                  {k.count ? k.value : formatAED(k.value)}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Executive charts: revenue trend · AR vs AP aging · project margin */}
+        {exec && (
+          <div className="grid lg:grid-cols-3 gap-6">
+            <Card className="flex flex-col gap-3 min-w-0">
+              <h3 className="font-heading font-bold text-sm text-slate-200 uppercase tracking-wider">Revenue Trend</h3>
+              <div className="h-[220px] w-full">
+                <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+                  <BarChart data={exec.revenueTrend} margin={{ top: 8, right: 8, left: -10, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.03)" />
+                    <XAxis dataKey="month" stroke="#475569" fontSize={10} />
+                    <YAxis stroke="#475569" fontSize={10} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
+                    <Tooltip contentStyle={{ backgroundColor: '#090e24', borderColor: 'rgba(255,255,255,0.1)', fontSize: 11 }} />
+                    <Bar dataKey="revenue" fill="#22c55e" radius={[3, 3, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </Card>
+            <Card className="flex flex-col gap-3 min-w-0">
+              <h3 className="font-heading font-bold text-sm text-slate-200 uppercase tracking-wider">Receivables vs Payables Aging</h3>
+              <div className="h-[220px] w-full">
+                <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+                  <BarChart data={exec.arAging.map((a, i) => ({ bucket: a.bucket, AR: a.amount, AP: exec.apAging[i]?.amount || 0 }))} margin={{ top: 8, right: 8, left: -10, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.03)" />
+                    <XAxis dataKey="bucket" stroke="#475569" fontSize={9} />
+                    <YAxis stroke="#475569" fontSize={10} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
+                    <Tooltip contentStyle={{ backgroundColor: '#090e24', borderColor: 'rgba(255,255,255,0.1)', fontSize: 11 }} />
+                    <Bar dataKey="AR" fill="#2563eb" radius={[3, 3, 0, 0]} />
+                    <Bar dataKey="AP" fill="#f59e0b" radius={[3, 3, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </Card>
+            <Card className="flex flex-col gap-3 min-w-0">
+              <h3 className="font-heading font-bold text-sm text-slate-200 uppercase tracking-wider">Project Margin (lowest first)</h3>
+              <div className="h-[220px] w-full">
+                <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+                  <BarChart data={exec.topProjects} layout="vertical" margin={{ top: 4, right: 8, left: 8, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.03)" />
+                    <XAxis type="number" stroke="#475569" fontSize={9} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
+                    <YAxis type="category" dataKey="project_number" stroke="#475569" fontSize={9} width={70} />
+                    <Tooltip contentStyle={{ backgroundColor: '#090e24', borderColor: 'rgba(255,255,255,0.1)', fontSize: 11 }} />
+                    <Bar dataKey="margin" radius={[0, 3, 3, 0]}>{exec.topProjects.map((p, i) => <Cell key={i} fill={p.margin < 0 ? '#ef4444' : '#22c55e'} />)}</Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </Card>
+          </div>
+        )}
 
         {/* Rolling cash flow forecast chart */}
         <Card className="flex flex-col gap-4 min-w-0">

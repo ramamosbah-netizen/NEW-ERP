@@ -14,8 +14,7 @@ Currency **AED**, locale **en-AE**, VAT **5%**. UI kit: in-house components
 ### Core
 | Area | Route | Purpose |
 |---|---|---|
-| Finance Hub | `/finance` | KPI dashboard + quick links |
-| Executive Dashboard | `/finance/executive` | Company-wide cash/AR/AP/profit/risk |
+| Finance Hub / Executive | `/finance` | "Financial Operations Command" — KPI scorecard, **executive intelligence** (risk alerts, working capital, net profit, commitments, projects-at-risk, revenue/aging/margin charts), 13-week cash forecast, module quick-links. (The former `/finance/executive` is merged here and redirects to `/finance`.) |
 | Receivables (AR) | `/finance/ar`, `/create`, `/from-phases`, `/[id]`, `/aging`, `/payment`, `/statement` | Client invoicing, phase billing, receipts, aging, statements |
 | Payables (AP) | `/finance/ap`, `/register`, `/match/[id]`, `/expenses`, `/aging`, `/schedule` | Supplier bills, expenses, 3-way match, scheduling |
 | Cash Flow | `/finance/cashflow` | 13-week company forecast |
