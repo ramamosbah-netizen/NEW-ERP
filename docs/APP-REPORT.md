@@ -134,7 +134,15 @@ Auth is per-page (`supabase.auth.getUser()`), with RBAC via `roles` /
 
 ### Finance
 - **AR** (client invoices, payments, aging, statements), **AP** (register,
-  schedule, 3-way match, aging), **Cash Flow** forecast, **VAT Compliance**.
+  schedule, 3-way match, aging), **Cash Flow** forecast, **VAT Compliance**,
+  **GRN-to-Expense** report.
+- **AP automation** — sending an LPO **auto-creates an expected supplier bill**
+  (AWAITING-{LPO no}, due per LPO payment terms) so every purchase surfaces in
+  AP; the accountant completes it (real invoice no, amounts, PDF) and submits.
+- **Configurable approval workflows** — both client invoices (`INV`) and
+  supplier bills (`SINV`) carry a `WorkflowPanel` driven by the Admin Center →
+  Workflows designer, so the **accountant → Financial Director → GM** approval
+  chain is configured in settings, not hard-coded.
 
 ### HR / Payroll / Fleet / Assets
 - **HR** (employees, compliance, approvals, calendar), **Payroll** (SIF, EOSB,

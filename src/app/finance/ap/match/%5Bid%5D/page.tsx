@@ -9,8 +9,9 @@
 import React, { useState, use } from 'react';
 import Link from 'next/link';
 import { useSupplierInvoice } from '@/hooks/useSupplierInvoices';
-import { 
-  SUPPLIER_INVOICE_STATUS_LABELS, 
+import WorkflowPanel from '@/components/workflow/WorkflowPanel';
+import {
+  SUPPLIER_INVOICE_STATUS_LABELS,
   SUPPLIER_INVOICE_STATUS_COLORS,
   MATCH_STATUS_LABELS,
   MATCH_STATUS_COLORS,
@@ -234,6 +235,15 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
             )}
           </div>
         )}
+
+        {/* Configurable approval workflow (Admin Center → Workflows, module "SINV").
+            Renders only once a supplier-bill workflow is configured. */}
+        <WorkflowPanel
+          moduleKey="SINV"
+          entityId={id}
+          context={{ status: invoice.status, total: Number(invoice.total) || 0, match_status: invoice.match_status }}
+          className="mb-6"
+        />
 
         {/* Bill Metadata & Items Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

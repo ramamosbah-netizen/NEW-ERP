@@ -77,6 +77,65 @@ export const supplierInvoiceService = {
   },
 
   /**
+   * Auto-creates an "expected" Accounts Payable bill the moment an LPO is
+   * emitted to a supplier, so every purchase surfaces in AP without waiting
+   * for the supplier's tax invoice. The accountant later completes it (real
+   * invoice number, amounts, PDF) and submits it through the approval workflow.
+   *
+   * Idempotent: skips if a bill already exists for this PO. Best-effort —
+   * callers should not let a failure block sending the LPO.
+   */
+  async createExpectedFromPO(poId: string): Promise<string | null> {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return null;
+
+    // Skip if a bill already exists for this PO
+    const { data: existing } = await supabase
+      .from('supplier_invoices')
+      .select('id')
+      .eq('po_id', poId)
+      .limit(1);
+    if (existing && existing.length > 0) return existing[0].id;
+
+    const { data: po } = await supabase
+      .from('purchase_orders')
+      .select('po_number, supplier_id, project_id, subtotal, discount_amount, vat_amount, total, payment_terms_days')
+      .eq('id', poId)
+      .single();
+    if (!po) return null;
+
+    const today = new Date();
+    const due = new Date(today);
+    due.setDate(due.getDate() + (Number(po.payment_terms_days) || 30));
+    const taxable = Math.round(((Number(po.subtotal) || 0) - (Number(po.discount_amount) || 0)) * 100) / 100;
+
+    const { data, error } = await supabase
+      .from('supplier_invoices')
+      .insert({
+        supplier_id: po.supplier_id,
+        supplier_invoice_number: `AWAITING-${po.po_number}`, // placeholder until the real invoice arrives
+        po_id: poId,
+        project_id: po.project_id || null,
+        invoice_type: 'PO_MATCHED',
+        invoice_date: today.toISOString().slice(0, 10),
+        received_date: today.toISOString().slice(0, 10),
+        due_date: due.toISOString().slice(0, 10),
+        taxable_amount: taxable,
+        vat_amount: Number(po.vat_amount) || 0,
+        total: Number(po.total) || 0,
+        match_status: 'NA',
+        status: 'REGISTERED',
+        notes: `Auto-created when LPO ${po.po_number} was sent to the supplier. Awaiting the supplier tax invoice — update the invoice number, amounts and attachment, then submit for approval.`,
+        created_by: user.id,
+      })
+      .select('id')
+      .single();
+
+    if (error) throw error;
+    return data?.id ?? null;
+  },
+
+  /**
    * Registers a new supplier invoice and triggers the 3-way matching engine.
    */
   async registerSupplierInvoice(
