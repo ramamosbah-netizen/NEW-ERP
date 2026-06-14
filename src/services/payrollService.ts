@@ -443,12 +443,28 @@ export const payrollService = {
 
         // 2. Allocate each employee's net pay by their project-hours share
         const { data: lines } = await supabase.from('payroll_lines').select('employee_id, net_pay').eq('run_id', runId);
+
+        // Fallback: employee's assigned/home project when they have no timesheet hours
+        const lineEmpIds = Array.from(new Set((lines || []).map((l: any) => l.employee_id)));
+        const assignedByEmp = new Map<string, string>();
+        if (lineEmpIds.length) {
+          try {
+            const { data: emps } = await supabase.from('employees').select('id, assigned_project_id').in('id', lineEmpIds);
+            for (const e of emps || []) if ((e as any).assigned_project_id) assignedByEmp.set((e as any).id, (e as any).assigned_project_id);
+          } catch { /* column may not exist yet — fall through to Office */ }
+        }
+
         const byProject = new Map<string, number>();
         let officeAmount = 0;
         for (const ln of lines || []) {
           const net = Number((ln as any).net_pay) || 0; if (net <= 0) continue;
           const rec = hoursByEmp.get((ln as any).employee_id);
-          if (!rec || rec.total <= 0) { officeAmount += net; continue; }
+          if (!rec || rec.total <= 0) {
+            const assigned = assignedByEmp.get((ln as any).employee_id);
+            if (assigned) byProject.set(assigned, (byProject.get(assigned) || 0) + net);
+            else officeAmount += net;
+            continue;
+          }
           const projEntries = [...rec.byProject.entries()];
           let allocated = 0;
           projEntries.forEach(([pid, h], i) => {

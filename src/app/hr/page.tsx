@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { useEmployees } from '@/hooks/useEmployees';
 import { employeeService } from '@/services/employeeService';
+import { supabase } from '@/lib/supabase';
 import type { Employee } from '@/types/hr.types';
 import './hr.css';
 
@@ -32,6 +33,12 @@ export default function EmployeesListPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [projects, setProjects] = useState<{ id: string; label: string }[]>([]);
+
+  useEffect(() => {
+    supabase.from('projects').select('id, project_number, name').order('project_number', { ascending: false })
+      .then(({ data }) => setProjects((data || []).map((p: any) => ({ id: p.id, label: `${p.project_number} — ${p.name}` }))));
+  }, []);
 
   const { employees, loading, error, refetch } = useEmployees(filters);
 
@@ -47,6 +54,7 @@ export default function EmployeesListPage() {
     photo_path: '',
     designation: '',
     department: 'PROJECTS' as any,
+    assigned_project_id: '',
     employment_type: 'FULL_TIME' as any,
     join_date: '',
     probation_end_date: '',
@@ -85,8 +93,9 @@ export default function EmployeesListPage() {
     try {
       setSaving(true);
       // Clean up empty strings to null for optional dates
-      const payload = {
-        ...form,
+      const { assigned_project_id, ...rest } = form;
+      const payload: any = {
+        ...rest,
         probation_end_date: form.probation_end_date || null,
         iloe_insurance_expiry: form.iloe_insurance_expiry || null,
         driving_license_expiry: form.driving_license_expiry || null,
@@ -94,6 +103,8 @@ export default function EmployeesListPage() {
         exit_type: null,
         user_id: null
       };
+      // Only send when set (column is added by migration 20260614240000)
+      if (assigned_project_id) payload.assigned_project_id = assigned_project_id;
 
       await employeeService.createEmployee(payload);
       setShowAddModal(false);
@@ -110,6 +121,7 @@ export default function EmployeesListPage() {
         photo_path: '',
         designation: '',
         department: 'PROJECTS',
+        assigned_project_id: '',
         employment_type: 'FULL_TIME',
         join_date: '',
         probation_end_date: '',
@@ -402,6 +414,13 @@ export default function EmployeesListPage() {
                         <option value="FINANCE">Finance</option>
                         <option value="ADMIN">Admin</option>
                         <option value="MANAGEMENT">Management</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Assigned project (payroll fallback)</label>
+                      <select name="assigned_project_id" className="quote-filter-input w-full" value={form.assigned_project_id} onChange={handleInputChange}>
+                        <option value="">None (Office)</option>
+                        {projects.map(p => <option key={p.id} value={p.id}>{p.label}</option>)}
                       </select>
                     </div>
                     <div>
