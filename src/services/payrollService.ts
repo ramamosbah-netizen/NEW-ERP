@@ -414,13 +414,16 @@ export const payrollService = {
       console.error('Failed to lock timesheets during payroll approval:', lockErr.message);
     }
 
-    // Create DIRECT_EXPENSE record in supplier_invoices (matching Phase 4 financials)
-    // Category: SALARIES_PLACEHOLDER (which maps to payroll total)
-    const { error: expErr } = await supabase
-      .from('supplier_invoices')
-      .insert({
-        supplier_id: '88888888-8888-8888-8888-888888888888', // System/Virtual Payroll Supplier ID placeholder
-        supplier_invoice_number: `PAY-${y}-${m}`,
+    // Surface this payroll run in AP as a DRAFT "workforce" payable (action to
+    // spend money). No supplier — it is staff salaries — so supplier_id is null.
+    // Idempotent: skip if a payable for this period already exists.
+    const payRef = `PAY-${y}-${m}`;
+    const { data: existingPay } = await supabase
+      .from('supplier_invoices').select('id').eq('supplier_invoice_number', payRef).limit(1);
+    if (!existingPay || existingPay.length === 0) {
+      const expense: Record<string, any> = {
+        supplier_id: null,
+        supplier_invoice_number: payRef,
         invoice_type: 'DIRECT_EXPENSE',
         invoice_date: endDateStr,
         received_date: endDateStr,
@@ -428,14 +431,24 @@ export const payrollService = {
         taxable_amount: run.net_total,
         vat_amount: 0.00,
         total: run.net_total,
-        status: 'APPROVED',
-        expense_category: 'SALARIES_PLACEHOLDER',
-        notes: `Payroll disbursement for month ${y}-${m}`,
-        created_by: user.id
-      });
-
-    if (expErr) {
-      console.error('Failed to log Direct Expense for payroll:', expErr);
+        match_status: 'NA',
+        status: 'DRAFT',
+        cost_bucket: 'OFFICE',
+        payee_name: 'Staff Payroll',
+        expense_category: 'WORKFORCE',
+        notes: `Workforce payroll for ${y}-${m} (net AED ${run.net_total}). Validate / mark paid in AP to settle.`,
+        created_by: user.id,
+      };
+      let { error: expErr } = await supabase.from('supplier_invoices').insert(expense);
+      if (expErr && /(status|cost_bucket|payee_name|supplier_id)/i.test(expErr.message || '')) {
+        // Tolerate environments where the AP-expense migrations aren't applied
+        const { cost_bucket, payee_name, ...legacy } = expense;
+        legacy.status = 'APPROVED';
+        legacy.expense_category = 'SALARIES_PLACEHOLDER';
+        legacy.supplier_id = '88888888-8888-8888-8888-888888888888';
+        ({ error: expErr } = await supabase.from('supplier_invoices').insert(legacy));
+      }
+      if (expErr) console.error('Failed to log payroll payable:', expErr.message);
     }
 
     // Emit event: payroll.approved

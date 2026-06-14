@@ -143,6 +143,8 @@ Auth is per-page (`supabase.auth.getUser()`), with RBAC via `roles` /
   which registers the bill. The AP register lists **all states** — Draft,
   Registered, Pending, Approved, Scheduled, Partially/Fully paid, Disputed,
   Revised, Cancelled.
+- **Payroll → AP** — approving a payroll run drops a **DRAFT "workforce"
+  payable** (net total, no supplier) into AP for validation/payment.
 - **Expenses & Payment Accounts** (`/finance/ap/expenses`) — capture every
   payment (LPO / non-LPO purchase, car petrol, petty cash, office expense) as an
   invoiced AP bill, **paid from a tracked card / bank / cash account** (running
