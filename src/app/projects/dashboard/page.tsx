@@ -33,8 +33,8 @@ export default function ProjectExecutiveDashboard() {
   const t = data?.totals;
   const marginColor = (pct: number) => pct >= 15 ? 'var(--status-success-text)' : pct >= 5 ? 'var(--status-warning-text)' : 'var(--status-danger-text)';
 
-  const exportCols = ['Project', 'Name', 'Status', 'Contract', 'Billed', 'Collected', 'Committed', 'Proj. margin', 'Margin %', 'Progress %', 'Open risks'];
-  const exportRows = (data?.rows || []).map(r => [r.project_number, r.name, r.status, r.contractValue, r.revenueBilled, r.revenueCollected, r.committedCost, r.projectedMargin, `${r.marginPct}%`, `${r.progress}%`, r.openRisks]);
+  const exportCols = ['Project', 'Name', 'Status', 'Contract', 'Billed', 'Collected', 'Committed', 'Proj. margin', 'Margin %', 'Progress %', 'T&C done', 'Open risks'];
+  const exportRows = (data?.rows || []).map(r => [r.project_number, r.name, r.status, r.contractValue, r.revenueBilled, r.revenueCollected, r.committedCost, r.projectedMargin, `${r.marginPct}%`, `${r.progress}%`, `${r.tcDone}/${r.tcTotal}`, r.openRisks]);
 
   const marginChart = (data?.rows || []).slice(0, 10).map(r => ({ name: r.project_number, margin: r.projectedMargin, contract: r.contractValue }));
 
@@ -69,7 +69,7 @@ export default function ProjectExecutiveDashboard() {
             <Card className="p-4"><div className="text-xs text-[var(--text-secondary)]">Committed cost</div><div className="text-lg font-semibold mt-1">{aed(t!.committedCost)}</div></Card>
             <Card className="p-4"><div className="text-xs text-[var(--text-secondary)]">Open risks</div><div className="text-2xl font-bold mt-1">{t!.openRisks}</div></Card>
             <Card className="p-4"><div className="text-xs text-[var(--text-secondary)]">High-risk projects</div><div className="text-2xl font-bold mt-1" style={{ color: t!.highRiskProjects ? 'var(--status-danger-text)' : 'var(--text-primary)' }}>{t!.highRiskProjects}</div></Card>
-            <Card className="p-4"><div className="text-xs text-[var(--text-secondary)]">Uncollected (billed−coll.)</div><div className="text-lg font-semibold mt-1">{aed(t!.revenueBilled - t!.revenueCollected)}</div></Card>
+            <Card className="p-4"><div className="text-xs text-[var(--text-secondary)]">T&amp;C packages done</div><div className="text-2xl font-bold mt-1">{t!.tcCompleted}<span className="text-sm font-normal text-[var(--text-tertiary)]"> / {t!.tcPackages}</span></div></Card>
           </div>
 
           {/* Charts */}
@@ -112,7 +112,7 @@ export default function ProjectExecutiveDashboard() {
                 <th className="p-3">Project</th><th className="p-3">Status</th>
                 <th className="p-3 text-right">Contract</th><th className="p-3 text-right">Billed</th>
                 <th className="p-3 text-right">Committed</th><th className="p-3 text-right">Proj. margin</th>
-                <th className="p-3 text-center">Progress</th><th className="p-3 text-center">Risks</th>
+                <th className="p-3 text-center">Progress</th><th className="p-3 text-center">T&amp;C</th><th className="p-3 text-center">Risks</th>
               </tr></thead>
               <tbody>
                 {data.rows.map(r => (
@@ -129,6 +129,7 @@ export default function ProjectExecutiveDashboard() {
                         <span className="text-[10px] tabular-nums w-7 text-right">{r.progress}%</span>
                       </div>
                     </td>
+                    <td className="p-3 text-center text-xs tabular-nums">{r.tcTotal > 0 ? <span title={`${r.tcReadiness}% avg completion`}>{r.tcDone}/{r.tcTotal}</span> : <span className="text-[var(--text-tertiary)]">—</span>}</td>
                     <td className="p-3 text-center">
                       {r.openRisks > 0 ? <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full" style={{ background: r.maxRiskScore >= 12 ? 'var(--status-danger-bg)' : 'var(--status-warning-bg)', color: r.maxRiskScore >= 12 ? 'var(--status-danger-text)' : 'var(--status-warning-text)' }}>{r.maxRiskScore >= 12 && <AlertTriangle size={10} />}{r.openRisks}</span> : <span className="text-[var(--text-tertiary)]">—</span>}
                     </td>

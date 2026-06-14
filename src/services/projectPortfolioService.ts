@@ -21,6 +21,9 @@ export interface PortfolioRow {
   progress: number;            // budget-weighted WBS leaf progress %
   openRisks: number;
   maxRiskScore: number;
+  tcTotal: number;             // testing & commissioning packages
+  tcDone: number;              // completed / client-approved packages
+  tcReadiness: number;         // avg completion %
 }
 
 export interface PortfolioSummary {
@@ -35,6 +38,8 @@ export interface PortfolioSummary {
     marginPct: number;
     openRisks: number;
     highRiskProjects: number;
+    tcPackages: number;
+    tcCompleted: number;
   };
   byStatus: { status: string; count: number; contractValue: number }[];
 }
@@ -47,12 +52,13 @@ const INACTIVE_STATUS = ['CANCELLED', 'LOST', 'ARCHIVED'];
 
 export const projectPortfolioService = {
   async getPortfolio(): Promise<PortfolioSummary> {
-    const [projectsRes, invRes, poRes, riskRes, wbsRes] = await Promise.all([
+    const [projectsRes, invRes, poRes, riskRes, wbsRes, tcRes] = await Promise.all([
       supabase.from('projects').select('id, project_number, name, status, contract_value, budget_cost').order('project_number', { ascending: false }),
       supabase.from('client_invoices').select('project_id, taxable_amount, amount_paid, status').in('status', BILLED_INV),
       supabase.from('purchase_orders').select('project_id, subtotal, status').in('status', COMMITTED_PO),
       supabase.from('project_risks').select('project_id, likelihood, impact, status').neq('status', 'CLOSED'),
       supabase.from('project_wbs').select('id, project_id, parent_id, budget_cost, progress_pct'),
+      supabase.from('tc_packages').select('project_id, status, completion_pct, is_active'),
     ]);
 
     const projects = projectsRes.data || [];
@@ -87,6 +93,17 @@ export const projectPortfolioService = {
       if (!wbsByProject.has(n.project_id)) wbsByProject.set(n.project_id, []);
       wbsByProject.get(n.project_id)!.push(n);
     });
+    // ---- T&C readiness per project ----
+    const TC_DONE = ['COMPLETED', 'CLIENT_APPROVED'];
+    const tcByProject = new Map<string, { total: number; done: number; pctSum: number }>();
+    (tcRes.data || []).forEach((p: any) => {
+      if (!p.project_id || p.is_active === false) return;
+      if (!tcByProject.has(p.project_id)) tcByProject.set(p.project_id, { total: 0, done: 0, pctSum: 0 });
+      const e = tcByProject.get(p.project_id)!;
+      e.total++; e.pctSum += Number(p.completion_pct || 0);
+      if (TC_DONE.includes(String(p.status || '').toUpperCase())) e.done++;
+    });
+
     const progressOf = (projectId: string): number => {
       const nodes = wbsByProject.get(projectId);
       if (!nodes || !nodes.length) return 0;
@@ -103,6 +120,7 @@ export const projectPortfolioService = {
         const contractValue = Number(p.contract_value || 0);
         const committedCost = committed.get(p.id) || 0;
         const projectedMargin = contractValue - committedCost;
+        const tc = tcByProject.get(p.id);
         return {
           id: p.id, project_number: p.project_number, name: p.name, status: p.status || 'ACTIVE',
           contractValue: r2(contractValue),
@@ -114,6 +132,9 @@ export const projectPortfolioService = {
           progress: progressOf(p.id),
           openRisks: riskCount.get(p.id) || 0,
           maxRiskScore: riskMax.get(p.id) || 0,
+          tcTotal: tc?.total || 0,
+          tcDone: tc?.done || 0,
+          tcReadiness: tc && tc.total > 0 ? r2(tc.pctSum / tc.total) : 0,
         };
       });
 
@@ -139,6 +160,8 @@ export const projectPortfolioService = {
         marginPct: contractValue > 0 ? r2(projectedMargin / contractValue * 100) : 0,
         openRisks: rows.reduce((s, r) => s + r.openRisks, 0),
         highRiskProjects: rows.filter(r => r.maxRiskScore >= 12).length,
+        tcPackages: rows.reduce((s, r) => s + r.tcTotal, 0),
+        tcCompleted: rows.reduce((s, r) => s + r.tcDone, 0),
       },
       byStatus: [...byStatusMap.entries()].map(([status, v]) => ({ status, count: v.count, contractValue: r2(v.contractValue) })).sort((a, b) => b.contractValue - a.contractValue),
     };
