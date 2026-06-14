@@ -85,6 +85,7 @@ const NAV_SECTIONS = [
       { href: '/projects/schedule', label: 'Schedule (Gantt)', icon: GanttChartSquare },
       { href: '/projects/evm', label: 'Progress & EVM', icon: TrendingUp },
       { href: '/projects/resources', label: 'Resource Planning', icon: Users },
+      { href: '/projects/risks', label: 'Risk Register', icon: AlertTriangle },
       { href: '/vo', label: 'Variation Orders', icon: GitCompare },
       { href: '/snags', label: 'Snag List', icon: Camera },
       { href: '/tc', label: 'Testing & Comm.', icon: ClipboardCheck },
