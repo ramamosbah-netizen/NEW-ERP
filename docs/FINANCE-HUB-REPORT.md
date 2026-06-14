@@ -134,8 +134,14 @@ emit `system_events`. Logs surface in **Admin → Audit Log**.
 Roles (incl. **accountant**, **Financial Director**, **GM**) + module/action
 permissions are configured in **Admin → Settings → Users, Roles & Permissions**.
 Justification documents (LPO/PR PDF, payroll XLSX) are exposed as **output files**
-so the accounts team needs no procurement/HR module access. Enforcement is
-app-layer; per-route guards are a noted next step.
+so the accounts team needs no procurement/HR module access.
+
+**Per-route RBAC** is now enforced via `AppShell` + `src/lib/permissions/routeAccess.ts`:
+roles listed in `RESTRICTED_ROLE_ALLOWLIST` (e.g. **accountant** → finance,
+documents, assets, reports, dashboard) are fenced to those route prefixes (and
+their sidebar is filtered to match); every other role (admin/manager/engineer)
+is unrestricted, so legacy users are never locked out. Deeper module/action
+scopes are configured in Admin → Users, Roles & Permissions.
 
 ---
 
@@ -162,5 +168,5 @@ app-layer; per-route guards are a noted next step.
   from the journal by account-code range, current-year earnings as equity).
 - **Retention payable** to subcontractors (ledger is client-side only).
 - **Formal supplier-payment ↔ account** linking in the disbursement UI.
-- **Per-route RBAC** enforcement for the accountant role.
+- ✅ **Per-route RBAC** for the accountant role — done (route fence + sidebar filter).
 - **LLM-backed** AI agent narrative (interface already in place).

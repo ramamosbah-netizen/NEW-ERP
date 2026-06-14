@@ -7,6 +7,8 @@
 
 import React, { useState, useEffect } from 'react';
 import settingsService from '@/services/settingsService';
+import { usePermissions } from '@/lib/permissions/usePermissions';
+import { isRouteAllowed } from '@/lib/permissions/routeAccess';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -191,6 +193,7 @@ interface AppSidebarProps {
 
 export default function AppSidebar({ mobileOpen = false, onMobileClose }: AppSidebarProps) {
   const pathname = usePathname();
+  const { role } = usePermissions();
   const [collapsed, setCollapsed] = useState(false);
   const [openSections, setOpenSections] = useState<Record<string, boolean>>(() => {
     // All sections open by default
@@ -255,7 +258,8 @@ export default function AppSidebar({ mobileOpen = false, onMobileClose }: AppSid
 
   // Filter navigation sections based on enabled modules
   const visibleSections = NAV_SECTIONS.map(section => {
-    const visibleItems = section.items.filter(item => enabledModules[item.href] !== false);
+    const visibleItems = section.items.filter(item =>
+      enabledModules[item.href] !== false && isRouteAllowed(role, item.href));
     return { ...section, items: visibleItems };
   }).filter(section => section.items.length > 0);
 
