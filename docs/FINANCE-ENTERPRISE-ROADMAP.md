@@ -20,7 +20,7 @@ records what **already exists** (so we don't duplicate or break it), what's
 | 5 | **Retention Management** | 🟡 `project_retention_ledger` existed | ✅ **DONE** — `/finance/retentions` view over the ledger (held/released/net, release schedule, overdue) |
 | 6 | Treasury | ❌ new | New `treasury_facilities` (loans/guarantees/LC), maturity tracking |
 | 7 | **Project Cash Flow** | 🟡 company `cashFlowService` existed | ✅ **DONE** — `/finance/project-cashflow` (per-project monthly in/out + cumulative) |
-| 8 | Petty Cash | 🟡 `payment_accounts` has PETTY_CASH type + expense capture | New `petty_cash_funds` + `petty_cash_transactions`, requests/replenish |
+| 8 | **Petty Cash** | 🟡 PETTY_CASH account type existed | ✅ **DONE** — `petty_cash_funds` + `petty_cash_transactions` (expense claims, approvals, replenish/return), `/finance/petty-cash` |
 | 9 | Fixed Assets | 🟢 `fixedAssetService` + `depreciationService` + disposal exist | Surface under `/finance/assets` (reuse services); avoid rebuild |
 | 10 | **Financial Reports** | 🟡 `accountingExportService` existed | ✅ **DONE** — `/finance/reports`: P&L, Trial Balance, GL, cost/revenue by project, aging links, CSV export (Balance Sheet pending a COA map) |
 | 11 | **Executive Dashboard** | ❌ new | ✅ **DONE** — `/finance/executive`: cash/AR/AP/commitments/profit KPIs, cash & revenue trends, aging, project margin, risk alerts |
