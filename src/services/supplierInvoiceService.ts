@@ -469,6 +469,7 @@ export const supplierInvoiceService = {
       method: string;
       reference?: string;
       bank_account?: string;
+      payment_account_id?: string | null;
       notes?: string;
     },
     allocations: Array<{ invoiceId: string; amount: number }>
@@ -476,21 +477,23 @@ export const supplierInvoiceService = {
     const user = (await supabase.auth.getUser()).data.user;
     if (!user) throw new Error('Authentication required');
 
-    // 1. Insert Supplier Payment
-    const { data: payment, error: payError } = await supabase
-      .from('supplier_payments')
-      .insert({
-        supplier_id: paymentData.supplier_id,
-        amount: Number(paymentData.amount),
-        payment_date: paymentData.payment_date,
-        method: paymentData.method,
-        reference: paymentData.reference || null,
-        bank_account: paymentData.bank_account || null,
-        notes: paymentData.notes || null,
-        created_by: user.id
-      })
-      .select()
-      .single();
+    // 1. Insert Supplier Payment (links to a payment account so balances stay accurate)
+    const payInsert: Record<string, any> = {
+      supplier_id: paymentData.supplier_id,
+      amount: Number(paymentData.amount),
+      payment_date: paymentData.payment_date,
+      method: paymentData.method,
+      reference: paymentData.reference || null,
+      bank_account: paymentData.bank_account || null,
+      payment_account_id: paymentData.payment_account_id || null,
+      notes: paymentData.notes || null,
+      created_by: user.id
+    };
+    let { data: payment, error: payError } = await supabase.from('supplier_payments').insert(payInsert).select().single();
+    if (payError && /payment_account_id/i.test(payError.message || '')) {
+      const { payment_account_id, ...legacy } = payInsert;
+      ({ data: payment, error: payError } = await supabase.from('supplier_payments').insert(legacy).select().single());
+    }
 
     if (payError) throw payError;
 

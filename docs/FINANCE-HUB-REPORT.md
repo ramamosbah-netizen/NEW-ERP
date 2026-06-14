@@ -167,6 +167,7 @@ scopes are configured in Admin → Users, Roles & Permissions.
 - ✅ **Balance Sheet** — done (`/finance/reports` → Balance Sheet tab; derived
   from the journal by account-code range, current-year earnings as equity).
 - **Retention payable** to subcontractors (ledger is client-side only).
-- **Formal supplier-payment ↔ account** linking in the disbursement UI.
+- ✅ **Formal supplier-payment ↔ account** linking — done (AP disbursement scheduler
+  records which payment account funded the payment, so balances stay accurate).
 - ✅ **Per-route RBAC** for the accountant role — done (route fence + sidebar filter).
 - **LLM-backed** AI agent narrative (interface already in place).
