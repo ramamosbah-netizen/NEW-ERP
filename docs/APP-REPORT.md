@@ -159,6 +159,10 @@ Auth is per-page (`supabase.auth.getUser()`), with RBAC via `roles` /
   claim its **completed (DONE) milestones** at an amount each, and generate a
   **PROGRESS** client invoice with **advance recovery + retention auto-applied**
   from the contract terms; the draft then enters the approval workflow.
+- **Bill source & justification** — each AP bill page shows linked chips to its
+  origin: the **LPO**, the **Purchase Request** behind it, the **Payroll sheet**
+  (for workforce bills), and the **proforma / attached invoice** (signed-URL
+  view) — so every payable is traceable to why it exists.
 - **Configurable approval workflows** — both client invoices (`INV`) and
   supplier bills (`SINV`) carry a `WorkflowPanel` driven by the Admin Center →
   Workflows designer, so the **accountant → Financial Director → GM** approval

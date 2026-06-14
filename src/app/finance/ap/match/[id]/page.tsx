@@ -6,7 +6,7 @@
 
 'use client';
 
-import React, { useState, use } from 'react';
+import React, { useState, use, useEffect } from 'react';
 import Link from 'next/link';
 import { useSupplierInvoice } from '@/hooks/useSupplierInvoices';
 import { supplierInvoiceService } from '@/services/supplierInvoiceService';
@@ -20,7 +20,7 @@ import {
   MATCH_STATUS_COLORS,
   SUPPLIER_INVOICE_TYPE_LABELS
 } from '@/constants/finance.constants';
-import { ArrowLeft, CheckCircle, XCircle, AlertTriangle, ShieldCheck, ShieldAlert, FileText } from 'lucide-react';
+import { ArrowLeft, CheckCircle, XCircle, AlertTriangle, ShieldCheck, ShieldAlert, FileText, ExternalLink, Package, ClipboardList, Users, Paperclip } from 'lucide-react';
 
 export function MatchReviewPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -28,6 +28,50 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
 
   const [overrideReason, setOverrideReason] = useState('');
   const [showOverrideModal, setShowOverrideModal] = useState(false);
+
+  // Source / justification links (LPO → PR, payroll, attached document)
+  const [src, setSrc] = useState<{
+    po?: { id: string; po_number: string };
+    pr?: { id: string; pr_number: string };
+    sourceDoc?: { path: string; name: string };
+  }>({});
+
+  useEffect(() => {
+    if (!invoice) return;
+    (async () => {
+      const next: typeof src = {};
+      if ((invoice as any).po_id) {
+        const { data: po } = await supabase.from('purchase_orders')
+          .select('id, po_number, pr_id').eq('id', (invoice as any).po_id).maybeSingle();
+        if (po) {
+          next.po = { id: po.id, po_number: po.po_number };
+          if (po.pr_id) {
+            const { data: pr } = await supabase.from('purchase_requests')
+              .select('id, pr_number').eq('id', po.pr_id).maybeSingle();
+            if (pr) next.pr = { id: pr.id, pr_number: pr.pr_number };
+          }
+        }
+      }
+      if ((invoice as any).source_document_id) {
+        const { data: doc } = await supabase.from('documents')
+          .select('storage_path, original_filename, title').eq('id', (invoice as any).source_document_id).maybeSingle();
+        if (doc) next.sourceDoc = { path: doc.storage_path, name: doc.original_filename || doc.title || 'Attached invoice' };
+      }
+      setSrc(next);
+    })();
+  }, [invoice]);
+
+  const isPayroll = (invoice?.supplier_invoice_number || '').startsWith('PAY-');
+
+  const viewSourceDoc = async () => {
+    if (!src.sourceDoc) return;
+    try {
+      const { data, error } = await supabase.storage
+        .from('documents').createSignedUrl(src.sourceDoc.path, 300, { download: src.sourceDoc.name });
+      if (error || !data?.signedUrl) throw error || new Error('No URL');
+      window.open(data.signedUrl, '_blank');
+    } catch { setValErr('Could not open the attached document.'); }
+  };
 
   // DRAFT → validate (record the real supplier invoice)
   const [val, setVal] = useState({ number: '', date: '', amount: '', vat_applicable: true });
@@ -286,6 +330,51 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
             )}
           </div>
         )}
+
+        {/* Source & justification — why this bill exists */}
+        <div className="mb-6 bg-slate-950/60 border border-slate-900 rounded p-5">
+          <div className="flex items-center gap-2 text-[11px] font-mono text-slate-400 uppercase tracking-widest mb-3">
+            <FileText size={13} /> Source &amp; Justification
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {src.po && (
+              <Link href={`/procurement/po/${src.po.id}`} target="_blank"
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded border border-slate-800 bg-[#0a0f26] text-xs text-slate-200 hover:border-emerald-500/50 hover:text-emerald-300 transition-all">
+                <Package size={13} /> LPO {src.po.po_number} <ExternalLink size={11} className="opacity-60" />
+              </Link>
+            )}
+            {src.pr && (
+              <Link href={`/procurement/pr/${src.pr.id}`} target="_blank"
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded border border-slate-800 bg-[#0a0f26] text-xs text-slate-200 hover:border-emerald-500/50 hover:text-emerald-300 transition-all">
+                <ClipboardList size={13} /> Purchase Request {src.pr.pr_number} <ExternalLink size={11} className="opacity-60" />
+              </Link>
+            )}
+            {isPayroll && (
+              <Link href="/payroll" target="_blank"
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded border border-slate-800 bg-[#0a0f26] text-xs text-slate-200 hover:border-emerald-500/50 hover:text-emerald-300 transition-all">
+                <Users size={13} /> Payroll sheet <ExternalLink size={11} className="opacity-60" />
+              </Link>
+            )}
+            {(invoice as any).proforma_path && (
+              <button onClick={viewProforma}
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded border border-slate-800 bg-[#0a0f26] text-xs text-slate-200 hover:border-emerald-500/50 hover:text-emerald-300 transition-all cursor-pointer">
+                <FileText size={13} /> Proforma{(invoice as any).proforma_name ? ` — ${(invoice as any).proforma_name}` : ''}
+              </button>
+            )}
+            {src.sourceDoc && (
+              <button onClick={viewSourceDoc}
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded border border-slate-800 bg-[#0a0f26] text-xs text-slate-200 hover:border-emerald-500/50 hover:text-emerald-300 transition-all cursor-pointer">
+                <Paperclip size={13} /> Invoice / receipt — {src.sourceDoc.name}
+              </button>
+            )}
+            {!src.po && !isPayroll && !src.sourceDoc && !(invoice as any).proforma_path && (
+              <span className="text-xs text-slate-500">
+                {(invoice as any).cost_bucket ? `Direct expense · ${(invoice as any).cost_bucket}` : 'No linked source document.'}
+                {(invoice as any).expense_category ? ` · ${(invoice as any).expense_category}` : ''}
+              </span>
+            )}
+          </div>
+        </div>
 
         {/* DRAFT payable → validate the supplier's actual invoice */}
         {invoice.status === 'DRAFT' && (
