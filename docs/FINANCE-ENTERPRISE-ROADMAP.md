@@ -16,7 +16,7 @@ records what **already exists** (so we don't duplicate or break it), what's
 | 1 | **Budget & Cost Control** | ❌ new | ✅ **DONE** |
 | 2 | **Commitments** | 🟡 `commitmentService` (by-system) existed | ✅ **DONE** — `cost_commitments` table + `commitmentLedgerService` (unifies LPO/payroll/manual) + `/finance/commitments` |
 | 3 | **Project Profitability** | 🟡 `projectFinancialsService` existed | ✅ **DONE** — `/finance/project-profitability` list + `[id]` charts (reuses service) |
-| 4 | Bank Reconciliation | 🟡 `statementImportService` parses statements | New `bank_reconciliations` + lines, CSV/Excel import, auto/manual match |
+| 4 | **Bank Reconciliation** | 🟡 `statementImportService` existed | ✅ **DONE** — `bank_reconciliations` + lines, CSV/Excel import, auto-match (client/supplier payments), manual match/charge/adjustment |
 | 5 | **Retention Management** | 🟡 `project_retention_ledger` existed | ✅ **DONE** — `/finance/retentions` view over the ledger (held/released/net, release schedule, overdue) |
 | 6 | Treasury | ❌ new | New `treasury_facilities` (loans/guarantees/LC), maturity tracking |
 | 7 | **Project Cash Flow** | 🟡 company `cashFlowService` existed | ✅ **DONE** — `/finance/project-cashflow` (per-project monthly in/out + cumulative) |
