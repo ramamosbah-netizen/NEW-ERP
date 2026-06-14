@@ -54,9 +54,16 @@ export const cashFlowService = {
     // 3. Fetch pending Project Milestones linked to payments (Inflows)
     const { data: milestones } = await supabase
       .from('project_milestones')
-      .select('planned_date, payment_pct, projects(contract_value)')
+      .select('planned_date, payment_pct, project_id')
       .eq('status', 'PENDING')
       .eq('payment_linked', true);
+    // Resolve contract values without a PostgREST embed (embeds unreliable here)
+    const msContract = new Map<string, number>();
+    const msProjIds = Array.from(new Set((milestones || []).map((m: any) => m.project_id).filter(Boolean))) as string[];
+    if (msProjIds.length) {
+      const { data: mp } = await supabase.from('projects').select('id, contract_value').in('id', msProjIds);
+      for (const p of mp || []) msContract.set(p.id, Number(p.contract_value) || 0);
+    }
 
     // 4. Fetch outstanding Supplier Invoices (Outflows)
     const { data: apInvoices } = await supabase
@@ -97,7 +104,7 @@ export const cashFlowService = {
         if (!ms.planned_date) continue;
         const planDate = new Date(ms.planned_date).getTime();
         if (planDate >= startMs && planDate <= endMs) {
-          const contractVal = Number((ms.projects as any)?.contract_value || 0);
+          const contractVal = (ms.project_id && msContract.get(ms.project_id)) || 0;
           const pct = Number(ms.payment_pct || 0);
           weekMilestoneInflow += (contractVal * pct) / 100;
         }

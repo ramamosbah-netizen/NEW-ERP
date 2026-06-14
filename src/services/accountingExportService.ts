@@ -15,18 +15,39 @@ export const accountingExportService = {
   async generateJournalLines(startDate: string, endDate: string): Promise<JournalLine[]> {
     const lines: JournalLine[] = [];
 
+    // Helper: resolve project_number for a set of project ids (no PostgREST embed)
+    const projectMap = async (ids: (string | null | undefined)[]): Promise<Map<string, string>> => {
+      const uniq = Array.from(new Set(ids.filter(Boolean))) as string[];
+      const m = new Map<string, string>();
+      if (uniq.length) {
+        const { data } = await supabase.from('projects').select('id, project_number').in('id', uniq);
+        for (const p of data || []) m.set(p.id, p.project_number);
+      }
+      return m;
+    };
+    const nameMap = async (table: string, ids: (string | null | undefined)[]): Promise<Map<string, string>> => {
+      const uniq = Array.from(new Set(ids.filter(Boolean))) as string[];
+      const m = new Map<string, string>();
+      if (uniq.length) {
+        const { data } = await supabase.from(table).select('id, name').in('id', uniq);
+        for (const r of data || []) m.set(r.id, r.name);
+      }
+      return m;
+    };
+
     // 1. Fetch Client Invoices (AR)
     const { data: clientInvoices } = await supabase
       .from('client_invoices')
-      .select('*, projects(project_number)')
+      .select('*')
       .gte('invoice_date', startDate)
       .lte('invoice_date', endDate)
       .in('status', ['APPROVED', 'SENT', 'PARTIALLY_PAID', 'PAID']);
+    const ciProj = await projectMap((clientInvoices || []).map(i => i.project_id));
 
     for (const inv of clientInvoices || []) {
       const date = inv.invoice_date;
       const ref = inv.invoice_number;
-      const projRef = inv.projects?.project_number || 'STANDALONE';
+      const projRef = (inv.project_id && ciProj.get(inv.project_id)) || 'STANDALONE';
       const client = inv.client_name;
 
       // Line A: Debit Accounts Receivable (Gross Total including VAT)
@@ -128,14 +149,15 @@ export const accountingExportService = {
     // 2. Fetch Client Payments (Receipts)
     const { data: clientPayments } = await supabase
       .from('client_payments')
-      .select('*, clients(name)')
+      .select('*')
       .gte('payment_date', startDate)
       .lte('payment_date', endDate);
+    const cpClients = await nameMap('clients', (clientPayments || []).map(p => p.client_id));
 
     for (const p of clientPayments || []) {
       const date = p.payment_date;
       const ref = p.payment_number;
-      const partner = p.clients?.name || 'Unknown Client';
+      const partner = (p.client_id && cpClients.get(p.client_id)) || 'Unknown Client';
       const bankAcct = p.bank_account || '10100';
 
       // Debit Bank / Cash
@@ -168,16 +190,18 @@ export const accountingExportService = {
     // 3. Fetch Supplier Invoices (AP)
     const { data: supplierInvoices } = await supabase
       .from('supplier_invoices')
-      .select('*, pricing_suppliers(name), projects(project_number)')
+      .select('*')
       .gte('invoice_date', startDate)
       .lte('invoice_date', endDate)
       .in('status', ['APPROVED', 'SCHEDULED', 'PARTIALLY_PAID', 'PAID']);
+    const siSup = await nameMap('pricing_suppliers', (supplierInvoices || []).map(s => s.supplier_id));
+    const siProj = await projectMap((supplierInvoices || []).map(s => s.project_id));
 
     for (const sinv of supplierInvoices || []) {
       const date = sinv.invoice_date;
       const ref = sinv.supplier_invoice_number;
-      const partner = sinv.pricing_suppliers?.name || 'Supplier';
-      const projRef = sinv.projects?.project_number || 'OVERHEAD';
+      const partner = (sinv.supplier_id && siSup.get(sinv.supplier_id)) || sinv.payee_name || 'Supplier';
+      const projRef = (sinv.project_id && siProj.get(sinv.project_id)) || 'OVERHEAD';
 
       // Line A: Debit Cost of Goods Sold or Administrative Expense (Taxable amount)
       lines.push({
@@ -224,14 +248,15 @@ export const accountingExportService = {
     // 4. Fetch Supplier Payments (Disbursements)
     const { data: supplierPayments } = await supabase
       .from('supplier_payments')
-      .select('*, pricing_suppliers(name)')
+      .select('*')
       .gte('payment_date', startDate)
       .lte('payment_date', endDate);
+    const spSup = await nameMap('pricing_suppliers', (supplierPayments || []).map(s => s.supplier_id));
 
     for (const sp of supplierPayments || []) {
       const date = sp.payment_date;
       const ref = sp.payment_number;
-      const partner = sp.pricing_suppliers?.name || 'Supplier';
+      const partner = (sp.supplier_id && spSup.get(sp.supplier_id)) || 'Supplier';
       const bankAcct = sp.bank_account || '10100';
 
       // Debit Accounts Payable

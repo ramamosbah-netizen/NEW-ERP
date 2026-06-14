@@ -86,10 +86,18 @@ export const vatService = {
     // 1. Fetch Client Invoices approved/sent in range (Outputs)
     const { data: clientInvoices } = await supabase
       .from('client_invoices')
-      .select('*, projects(emirate), clients(city)')
+      .select('*')
       .gte('invoice_date', start)
       .lte('invoice_date', end)
       .in('status', ['APPROVED', 'SENT', 'PARTIALLY_PAID', 'PAID']);
+
+    // Resolve emirate (project) / city (client) without PostgREST embeds
+    const ciProjIds = Array.from(new Set((clientInvoices || []).map((i: any) => i.project_id).filter(Boolean))) as string[];
+    const ciClientIds = Array.from(new Set((clientInvoices || []).map((i: any) => i.client_id).filter(Boolean))) as string[];
+    const projEmirate = new Map<string, string>();
+    const clientCity = new Map<string, string>();
+    if (ciProjIds.length) { try { const { data } = await supabase.from('projects').select('id, emirate').in('id', ciProjIds); for (const p of data || []) if ((p as any).emirate) projEmirate.set(p.id, (p as any).emirate); } catch { /* no emirate col */ } }
+    if (ciClientIds.length) { try { const { data } = await supabase.from('clients').select('id, city').in('id', ciClientIds); for (const c of data || []) if ((c as any).city) clientCity.set(c.id, (c as any).city); } catch { /* no city col */ } }
 
     // Initialize Emirate buckets
     const emirateOutputs: Record<string, { taxable_amount: number; vat_amount: number }> = {
@@ -108,10 +116,12 @@ export const vatService = {
     for (const inv of clientInvoices || []) {
       // Determine Emirate
       let emirate = 'DUBAI'; // Default to Dubai
-      if (inv.projects?.emirate) {
-        emirate = inv.projects.emirate;
-      } else if ((inv.clients as any)?.city) {
-        const cityUpper = (inv.clients as any).city.toUpperCase().replace(/\s+/g, '_');
+      const projE = inv.project_id ? projEmirate.get(inv.project_id) : null;
+      const cityV = inv.client_id ? clientCity.get(inv.client_id) : null;
+      if (projE) {
+        emirate = projE;
+      } else if (cityV) {
+        const cityUpper = cityV.toUpperCase().replace(/\s+/g, '_');
         const validEmirates = ['DUBAI', 'ABU_DHABI', 'SHARJAH', 'AJMAN', 'UMM_AL_QUWAIN', 'RAS_AL_KHAIMAH', 'FUJAIRAH'];
         if (validEmirates.includes(cityUpper)) {
           emirate = cityUpper;
