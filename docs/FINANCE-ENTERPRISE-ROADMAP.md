@@ -22,7 +22,7 @@ records what **already exists** (so we don't duplicate or break it), what's
 | 7 | **Project Cash Flow** | 🟡 company `cashFlowService` existed | ✅ **DONE** — `/finance/project-cashflow` (per-project monthly in/out + cumulative) |
 | 8 | Petty Cash | 🟡 `payment_accounts` has PETTY_CASH type + expense capture | New `petty_cash_funds` + `petty_cash_transactions`, requests/replenish |
 | 9 | Fixed Assets | 🟢 `fixedAssetService` + `depreciationService` + disposal exist | Surface under `/finance/assets` (reuse services); avoid rebuild |
-| 10 | Financial Reports | 🟡 `accountingExportService` (journal CSV/Excel) exists | New `/finance/reports`: P&L, Balance Sheet, Trial Balance, GL, aging, by-project |
+| 10 | **Financial Reports** | 🟡 `accountingExportService` existed | ✅ **DONE** — `/finance/reports`: P&L, Trial Balance, GL, cost/revenue by project, aging links, CSV export (Balance Sheet pending a COA map) |
 | 11 | Executive Dashboard | ❌ new (aggregation) | New `/finance/executive` aggregating cash/AR/AP/budget/profitability + alerts |
 | 12 | AI Finance Agent | ❌ new | New `/finance/ai`: rule-based risk scoring first; LLM later |
 
@@ -36,8 +36,8 @@ them rather than recreate, per "do not break existing modules".
 3. ✅ **Project Profitability** pages (list + detail charts).
 4. ✅ **Project Cash Flow** — per-project monthly in/out + cumulative.
 5. ✅ **Retention Management** — view over the existing ledger.
-6. **Financial Reports** — P&L/BS/TB/GL/aging (reads existing finance tables). ← next
-7. **Executive Dashboard** — aggregates 1–6 + cash + alerts.
+6. ✅ **Financial Reports** — P&L/TB/GL/by-project/aging links + CSV.
+7. **Executive Dashboard** — aggregates 1–6 + cash + alerts. ← next
 8. **Petty Cash** — funds/transactions/replenishment.
 9. **Bank Reconciliation** — import + matching.
 10. **Treasury** — facilities/loans/guarantees/LC.
