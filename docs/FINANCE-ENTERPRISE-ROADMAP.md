@@ -21,10 +21,10 @@ records what **already exists** (so we don't duplicate or break it), what's
 | 6 | **Treasury** | ❌ new | ✅ **DONE** — `treasury_facilities` (loans/overdrafts/guarantees/LCs), limit-vs-utilization, maturity/expiry tracking, `/finance/treasury` |
 | 7 | **Project Cash Flow** | 🟡 company `cashFlowService` existed | ✅ **DONE** — `/finance/project-cashflow` (per-project monthly in/out + cumulative) |
 | 8 | **Petty Cash** | 🟡 PETTY_CASH account type existed | ✅ **DONE** — `petty_cash_funds` + `petty_cash_transactions` (expense claims, approvals, replenish/return), `/finance/petty-cash` |
-| 9 | Fixed Assets | 🟢 `fixedAssetService` + `depreciationService` + disposal exist | Surface under `/finance/assets` (reuse services); avoid rebuild |
+| 9 | **Fixed Assets** | 🟢 full module already at `/assets` | ✅ **DONE** — surfaced in the Finance nav (existing register/detail/depreciation reused, not rebuilt) |
 | 10 | **Financial Reports** | 🟡 `accountingExportService` existed | ✅ **DONE** — `/finance/reports`: P&L, Trial Balance, GL, cost/revenue by project, aging links, CSV export (Balance Sheet pending a COA map) |
 | 11 | **Executive Dashboard** | ❌ new | ✅ **DONE** — `/finance/executive`: cash/AR/AP/commitments/profit KPIs, cash & revenue trends, aging, project margin, risk alerts |
-| 12 | AI Finance Agent | ❌ new | New `/finance/ai`: rule-based risk scoring first; LLM later |
+| 12 | **AI Finance Agent** | ❌ new | ✅ **DONE** — `/finance/ai`: rule-based Financial Risk Score, predicted risks, and recommendations (collect/delay/review) with confidence; LLM-ready |
 
 **Important:** #9 Fixed Assets and #2/#3/#5/#7 partially exist — we **extend/surface**
 them rather than recreate, per "do not break existing modules".
@@ -37,12 +37,17 @@ them rather than recreate, per "do not break existing modules".
 4. ✅ **Project Cash Flow** — per-project monthly in/out + cumulative.
 5. ✅ **Retention Management** — view over the existing ledger.
 6. ✅ **Financial Reports** — P&L/TB/GL/by-project/aging links + CSV.
-7. **Executive Dashboard** — aggregates 1–6 + cash + alerts. ← next
-8. **Petty Cash** — funds/transactions/replenishment.
-9. **Bank Reconciliation** — import + matching.
-10. **Treasury** — facilities/loans/guarantees/LC.
-11. **Fixed Assets** — surface existing services under `/finance/assets`.
-12. **AI Finance Agent** — risk scoring + recommendations on top of 1–11.
+7. ✅ **Executive Dashboard** — aggregates everything + alerts.
+8. ✅ **Petty Cash** — funds/transactions/replenishment.
+9. ✅ **Bank Reconciliation** — import + matching.
+10. ✅ **Treasury** — facilities/loans/guarantees/LC.
+11. ✅ **Fixed Assets** — surfaced existing `/assets` module in Finance nav.
+12. ✅ **AI Finance Agent** — risk scoring + recommendations.
+
+**All 12 enterprise finance modules delivered.** Remaining polish (optional):
+Balance Sheet (needs a chart-of-accounts map), retention payable to
+subcontractors, formal supplier-payment↔account linking, and swapping the AI
+agent's rules for an LLM-backed narrative.
 
 Each module ships: migration, TypeScript types, service, hook(s), dashboard +
 list + detail pages, filters/search, export, Recharts, nav + Finance Hub link,
