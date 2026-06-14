@@ -13,9 +13,9 @@ records what **already exists** (so we don't duplicate or break it), what's
 
 | # | Module | Status today | Plan |
 |---|---|---|---|
-| 1 | **Budget & Cost Control** | ❌ new | ✅ **DONE** (this phase) |
-| 2 | Commitments | 🟡 `commitmentService` computes committed-by-system live (no table/page) | Add `cost_commitments` table + page; keep live calc as a source |
-| 3 | Project Profitability | 🟡 `projectFinancialsService.computeProjectFinancials` exists | Add `/finance/project-profitability` list + `[id]` pages + charts (reuse service) |
+| 1 | **Budget & Cost Control** | ❌ new | ✅ **DONE** |
+| 2 | **Commitments** | 🟡 `commitmentService` (by-system) existed | ✅ **DONE** — `cost_commitments` table + `commitmentLedgerService` (unifies LPO/payroll/manual) + `/finance/commitments` |
+| 3 | **Project Profitability** | 🟡 `projectFinancialsService` existed | ✅ **DONE** — `/finance/project-profitability` list + `[id]` charts (reuses service) |
 | 4 | Bank Reconciliation | 🟡 `statementImportService` parses statements | New `bank_reconciliations` + lines, CSV/Excel import, auto/manual match |
 | 5 | Retention Management | 🟡 `project_retention_ledger` + AR retention exist | New `/finance/retentions` view + `retention_forecasts`; reuse ledger |
 | 6 | Treasury | ❌ new | New `treasury_facilities` (loans/guarantees/LC), maturity tracking |
@@ -32,9 +32,10 @@ them rather than recreate, per "do not break existing modules".
 ## Build order (recommended)
 
 1. ✅ **Budget & Cost Control** — foundation; feeds variance, profitability, executive.
-2. **Commitments** (table + page) — formalises the committed-cost source.
-3. **Project Profitability** pages — thin UI over the existing service + Budget.
-4. **Project Cash Flow** — per-project, reuses cashflow patterns.
+2. ✅ **Commitments** (table + unified ledger + page).
+3. ✅ **Project Profitability** pages (list + detail charts).
+4. **Project Cash Flow** — per-project, reuses cashflow patterns. ← next
+5. **Retention Management** — view over the existing ledger + forecast.
 5. **Retention Management** — view over the existing ledger + forecast.
 6. **Financial Reports** — P&L/BS/TB/GL/aging (reads existing finance tables).
 7. **Executive Dashboard** — aggregates 1–6 + cash + alerts.
