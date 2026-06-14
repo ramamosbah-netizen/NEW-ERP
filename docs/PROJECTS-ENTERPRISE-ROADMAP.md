@@ -30,8 +30,8 @@ them. Resource planning (#4) builds on the existing payroll-by-project allocatio
 2. ✅ **WBS (Work Breakdown Structure)** — hierarchical work packages, budget/weight, rolled-up progress, seed-from-systems. `/projects/wbs`.
 3. ✅ **Schedule / Gantt** — Gantt timeline over WBS (planned dates + progress, today line, overdue). `/projects/schedule`.
 4. ✅ **Progress & EVM** — PV/EV/AC + SPI/CPI/EAC/VAC over WBS + actuals, chart + per-WBS table + PDF/Excel. `/projects/evm`.
-5. **Resource Planning** — manpower/equipment allocation + utilization. ← next
-6. **Risk Register** — likelihood × impact matrix, mitigation, owner.
+5. ✅ **Resource Planning** — manpower/equipment/subcontractor allocations, planned cost, cross-project utilization/double-booking, chart + PDF/Excel. `/projects/resources`.
+6. **Risk Register** — likelihood × impact matrix, mitigation, owner. ← next
 7. **Project Executive Dashboard** — portfolio schedule+cost+risk+handover health.
 8. **Testing & Commissioning** — surface/extend the existing `/tc` module.
 9. **DLP & Warranty Tracking** — DLP defects + warranty expiry reminders (extend handover).
