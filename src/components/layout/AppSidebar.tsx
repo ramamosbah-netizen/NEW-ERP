@@ -134,6 +134,7 @@ const NAV_SECTIONS = [
       { href: '/finance', label: 'Finance Hub', icon: DollarSign },
       { href: '/finance/ar', label: 'Receivables (AR)', icon: ArrowUpRight },
       { href: '/finance/ap', label: 'Payables (AP)', icon: ArrowDownLeft },
+      { href: '/finance/budget', label: 'Budget & Cost', icon: Calculator },
       { href: '/finance/cashflow', label: 'Cash Flow', icon: TrendingUp },
       { href: '/finance/grn-expense', label: 'GRN-to-Expense', icon: PackageCheck },
       { href: '/finance/vat', label: 'VAT Compliance', icon: Percent },
