@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { useSupplierInvoice } from '@/hooks/useSupplierInvoices';
 import { supplierInvoiceService } from '@/services/supplierInvoiceService';
 import { runUploadPipeline } from '@/lib/document-upload-service';
+import { supabase } from '@/lib/supabase';
 import WorkflowPanel from '@/components/workflow/WorkflowPanel';
 import {
   SUPPLIER_INVOICE_STATUS_LABELS,
@@ -62,6 +63,18 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
       if (m) setValDoc({ id: m[1], name: m[2] || file.name });
       else setValErr(e.message || 'Upload failed');
     } finally { setValBusy(false); }
+  };
+
+  const viewProforma = async () => {
+    const path = (invoice as any)?.proforma_path;
+    if (!path) return;
+    try {
+      const { data, error } = await supabase.storage
+        .from('tender-documents')
+        .createSignedUrl(path, 300, { download: (invoice as any)?.proforma_name || true });
+      if (error || !data?.signedUrl) throw error || new Error('No URL');
+      window.open(data.signedUrl, '_blank');
+    } catch { setValErr('Could not open the proforma.'); }
   };
 
   const formatAED = (v: number) => {
@@ -280,10 +293,15 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
             <div className="flex items-center gap-2 text-sm font-bold text-emerald-300 uppercase tracking-wider mb-1">
               <FileText size={15} /> Validate supplier invoice
             </div>
-            <p className="text-xs text-slate-500 mb-4">
+            <p className="text-xs text-slate-500 mb-3">
               This is a draft payable from the approved LPO. Record the supplier&apos;s actual invoice to register it.
-              {invoice.proforma_name ? ` Proforma on file: ${invoice.proforma_name}.` : ''}
             </p>
+            {(invoice as any).proforma_path && (
+              <button onClick={viewProforma}
+                className="inline-flex items-center gap-1.5 mb-4 px-3 py-1.5 rounded border border-slate-700 text-[11px] text-emerald-300 hover:bg-emerald-400/10 cursor-pointer">
+                <FileText size={12} /> View imported proforma{(invoice as any).proforma_name ? ` — ${(invoice as any).proforma_name}` : ''}
+              </button>
+            )}
             {valErr && <div className="text-xs text-red-400 mb-3">{valErr}</div>}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               <div>
