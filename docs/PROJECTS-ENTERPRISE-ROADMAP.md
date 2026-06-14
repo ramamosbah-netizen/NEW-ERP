@@ -32,8 +32,8 @@ them. Resource planning (#4) builds on the existing payroll-by-project allocatio
 4. ✅ **Progress & EVM** — PV/EV/AC + SPI/CPI/EAC/VAC over WBS + actuals, chart + per-WBS table + PDF/Excel. `/projects/evm`.
 5. ✅ **Resource Planning** — manpower/equipment/subcontractor allocations, planned cost, cross-project utilization/double-booking, chart + PDF/Excel. `/projects/resources`.
 6. ✅ **Risk Register** — 5×5 likelihood×impact heat map, rating, mitigation, owner, status, PDF/Excel. `/projects/risks`.
-7. **Project Executive Dashboard** — portfolio schedule+cost+risk+handover health. ← next
-8. **Testing & Commissioning** — surface/extend the existing `/tc` module.
+7. ✅ **Project Executive Dashboard** — batched portfolio rollup: contract/billed/collected/committed + projected margin, WBS progress, open-risk exposure, charts, drill-through, PDF/Excel. `/projects/dashboard`.
+8. **Testing & Commissioning** — surface/extend the existing `/tc` module. ← next
 9. **DLP & Warranty Tracking** — DLP defects + warranty expiry reminders (extend handover).
 10. **RFI / SI / NCR** — Requests for Information, Site Instructions, Non-Conformance Reports.
 11. **Snag Analytics & QA Dashboard** — surface existing snags + analytics.
