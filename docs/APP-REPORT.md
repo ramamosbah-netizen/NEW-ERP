@@ -139,6 +139,10 @@ Auth is per-page (`supabase.auth.getUser()`), with RBAC via `roles` /
 - **AP automation** — sending an LPO **auto-creates an expected supplier bill**
   (AWAITING-{LPO no}, due per LPO payment terms) so every purchase surfaces in
   AP; the accountant completes it (real invoice no, amounts, PDF) and submits.
+- **Bill completed phases (AR)** — `/finance/ar/from-phases`: pick a project,
+  claim its **completed (DONE) milestones** at an amount each, and generate a
+  **PROGRESS** client invoice with **advance recovery + retention auto-applied**
+  from the contract terms; the draft then enters the approval workflow.
 - **Configurable approval workflows** — both client invoices (`INV`) and
   supplier bills (`SINV`) carry a `WorkflowPanel` driven by the Admin Center →
   Workflows designer, so the **accountant → Financial Director → GM** approval

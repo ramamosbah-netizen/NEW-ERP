@@ -10,7 +10,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useClientInvoices, InvoiceFilters } from '@/hooks/useClientInvoices';
 import { INVOICE_TYPE_LABELS, INVOICE_STATUS_LABELS, INVOICE_STATUS_COLORS } from '@/constants/finance.constants';
-import { Search, Plus, Calendar, FileText, ArrowRight } from 'lucide-react';
+import { Search, Plus, Calendar, FileText, ArrowRight, CheckSquare } from 'lucide-react';
 
 export default function ClientInvoicesListPage() {
   const [filters, setFilters] = useState<InvoiceFilters>({
@@ -45,12 +45,20 @@ export default function ClientInvoicesListPage() {
               Client Invoice Registry (AR)
             </h1>
           </div>
-          <Link 
-            href="/finance/ar/create" 
-            className="flex items-center gap-1.5 px-4 py-2 bg-emerald-400 text-slate-950 text-xs font-bold rounded hover:bg-emerald-300 transition-all uppercase tracking-wider"
-          >
-            <Plus size={14} /> New Invoice Draft
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/finance/ar/from-phases"
+              className="flex items-center gap-1.5 px-4 py-2 border border-emerald-400/40 text-emerald-300 text-xs font-bold rounded hover:bg-emerald-400/10 transition-all uppercase tracking-wider"
+            >
+              <CheckSquare size={14} /> Bill Completed Phases
+            </Link>
+            <Link
+              href="/finance/ar/create"
+              className="flex items-center gap-1.5 px-4 py-2 bg-emerald-400 text-slate-950 text-xs font-bold rounded hover:bg-emerald-300 transition-all uppercase tracking-wider"
+            >
+              <Plus size={14} /> New Invoice Draft
+            </Link>
+          </div>
         </div>
 
         {/* Filters Panel */}
