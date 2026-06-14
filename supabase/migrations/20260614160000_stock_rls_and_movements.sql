@@ -13,23 +13,29 @@
 -- ============================================================
 
 -- 1. Relax write policies to authenticated (collaborative ERP rule)
+-- Drop both the old role-gated name and the new name so this is re-runnable.
 DROP POLICY IF EXISTS "Allow write on stock_locations for storekeeper, procurement, admin" ON public.stock_locations;
+DROP POLICY IF EXISTS "Allow write on stock_locations for authenticated" ON public.stock_locations;
 CREATE POLICY "Allow write on stock_locations for authenticated" ON public.stock_locations
   FOR ALL TO authenticated USING (true) WITH CHECK (true);
 
 DROP POLICY IF EXISTS "Allow write on stock_items for storekeeper, procurement, admin" ON public.stock_items;
+DROP POLICY IF EXISTS "Allow write on stock_items for authenticated" ON public.stock_items;
 CREATE POLICY "Allow write on stock_items for authenticated" ON public.stock_items
   FOR ALL TO authenticated USING (true) WITH CHECK (true);
 
 DROP POLICY IF EXISTS "Allow write on stock_balances for storekeeper, procurement, admin" ON public.stock_balances;
+DROP POLICY IF EXISTS "Allow write on stock_balances for authenticated" ON public.stock_balances;
 CREATE POLICY "Allow write on stock_balances for authenticated" ON public.stock_balances
   FOR ALL TO authenticated USING (true) WITH CHECK (true);
 
 DROP POLICY IF EXISTS "Allow insert on stock_transactions for storekeeper, procurement, admin" ON public.stock_transactions;
+DROP POLICY IF EXISTS "Allow insert on stock_transactions for authenticated" ON public.stock_transactions;
 CREATE POLICY "Allow insert on stock_transactions for authenticated" ON public.stock_transactions
   FOR INSERT TO authenticated WITH CHECK (true);
 
 DROP POLICY IF EXISTS "Allow write on serial_units for storekeeper, procurement, admin" ON public.serial_units;
+DROP POLICY IF EXISTS "Allow write on serial_units for authenticated" ON public.serial_units;
 CREATE POLICY "Allow write on serial_units for authenticated" ON public.serial_units
   FOR ALL TO authenticated USING (true) WITH CHECK (true);
 
