@@ -8,7 +8,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import financialReportsService, { PLRow, TBRow, ProjectAmountRow } from '@/services/financialReportsService';
+import financialReportsService, { PLRow, TBRow, ProjectAmountRow, BalanceSheet } from '@/services/financialReportsService';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -16,9 +16,9 @@ import { Download, FileText, FileSpreadsheet } from 'lucide-react';
 import { exportTablePdf, exportTableExcel, exportTableCsv, ExportTable } from '@/lib/finance-export';
 
 const money = (v: number) => new Intl.NumberFormat('en-AE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(v || 0);
-type Report = 'PL' | 'TB' | 'GL' | 'COST_PROJ' | 'REV_PROJ';
+type Report = 'PL' | 'BS' | 'TB' | 'GL' | 'COST_PROJ' | 'REV_PROJ';
 const TABS: { k: Report; l: string }[] = [
-  { k: 'PL', l: 'Profit & Loss' }, { k: 'TB', l: 'Trial Balance' }, { k: 'GL', l: 'General Ledger' },
+  { k: 'PL', l: 'Profit & Loss' }, { k: 'BS', l: 'Balance Sheet' }, { k: 'TB', l: 'Trial Balance' }, { k: 'GL', l: 'General Ledger' },
   { k: 'COST_PROJ', l: 'Cost by Project' }, { k: 'REV_PROJ', l: 'Revenue by Project' },
 ];
 
@@ -32,11 +32,13 @@ export default function FinancialReportsPage() {
   const [tb, setTb] = useState<TBRow[]>([]);
   const [gl, setGl] = useState<any[]>([]);
   const [proj, setProj] = useState<ProjectAmountRow[]>([]);
+  const [bs, setBs] = useState<BalanceSheet | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
     try {
       if (tab === 'PL') setPl(await financialReportsService.profitAndLoss(start, end));
+      else if (tab === 'BS') setBs(await financialReportsService.balanceSheet(end));
       else if (tab === 'TB') setTb(await financialReportsService.trialBalance(start, end));
       else if (tab === 'GL') setGl(await financialReportsService.generalLedger(start, end));
       else setProj(await financialReportsService.byProject(start, end, tab === 'COST_PROJ' ? 'COST' : 'REVENUE'));
@@ -48,6 +50,7 @@ export default function FinancialReportsPage() {
     const label = TABS.find(t => t.k === tab)?.l || 'Report';
     const meta = { title: `${label} — ${start} to ${end}`, subtitle: 'JEET INTECH L.L.C', fileName: `${label}_${start}_${end}` };
     if (tab === 'PL' && pl) return { ...meta, columns: ['Line', 'Amount (AED)'], rows: pl.rows.map(r => [r.label, r.amount]) };
+    if (tab === 'BS' && bs) return { ...meta, columns: ['Section', 'Account', 'Amount (AED)'], rows: bs.sections.flatMap(s => [...s.rows.map(r => [s.name, r.account, r.amount] as (string | number)[]), [s.name, 'Total ' + s.name, s.total] as (string | number)[]]) };
     if (tab === 'TB') return { ...meta, columns: ['Code', 'Account', 'Debit', 'Credit', 'Balance'], rows: tb.map(r => [r.account_code, r.account_name, r.debit, r.credit, r.balance]) };
     if (tab === 'GL') return { ...meta, columns: ['Date', 'Reference', 'Account', 'Description', 'Debit', 'Credit'], rows: gl.map((l: any) => [l.date, l.reference, `${l.account_code} ${l.account_name}`, l.description, l.debit, l.credit]) };
     return { ...meta, columns: ['Project', 'Name', 'Amount (AED)'], rows: proj.map(r => [r.project_number, r.project_name, r.amount]) };
@@ -106,6 +109,25 @@ export default function FinancialReportsPage() {
                 </tbody>
               </table>
             )}
+            {tab === 'BS' && bs && (
+              <table className="w-full text-sm">
+                <tbody>
+                  {bs.sections.map(s => (
+                    <React.Fragment key={s.name}>
+                      <tr className="bg-[var(--surface-hover)]"><td className="px-4 py-2 font-semibold text-[var(--text-primary)] uppercase text-xs tracking-wide" colSpan={2}>{s.name}</td></tr>
+                      {s.rows.map((r, i) => (
+                        <tr key={i} className="border-b border-[var(--border)] last:border-0"><td className="px-4 py-2 pl-8 text-[var(--text-secondary)]">{r.account}</td><td className="px-4 py-2 text-right tabular-nums">{money(r.amount)}</td></tr>
+                      ))}
+                      <tr className="border-b border-[var(--border)] font-semibold"><td className="px-4 py-2 pl-8">Total {s.name}</td><td className="px-4 py-2 text-right tabular-nums">{money(s.total)}</td></tr>
+                    </React.Fragment>
+                  ))}
+                  <tr className="border-t-2 border-[var(--border)] font-semibold">
+                    <td className="px-4 py-2.5">Assets vs Liabilities + Equity</td>
+                    <td className="px-4 py-2.5 text-right tabular-nums" style={{ color: bs.balanced ? 'var(--status-success-text)' : 'var(--status-danger-text)' }}>{money(bs.assetsTotal)} vs {money(bs.liabEquityTotal)} {bs.balanced ? '✓' : '⚠ out of balance'}</td>
+                  </tr>
+                </tbody>
+              </table>
+            )}
             {tab === 'TB' && (
               <table className="w-full text-xs">
                 <thead><tr className="border-b border-[var(--border)] text-left text-[var(--text-tertiary)]"><th className="px-4 py-2.5 font-medium">Code</th><th className="px-4 py-2.5 font-medium">Account</th><th className="px-4 py-2.5 font-medium text-right">Debit</th><th className="px-4 py-2.5 font-medium text-right">Credit</th><th className="px-4 py-2.5 font-medium text-right">Balance</th></tr></thead>
@@ -143,7 +165,7 @@ export default function FinancialReportsPage() {
         )}
       </Card>
 
-      <p className="text-[11px] text-[var(--text-tertiary)]">Trial Balance & General Ledger are built from the accounting journal (client/supplier invoices, VAT, payments). Balance Sheet requires a full chart-of-accounts mapping — planned next. For full double-entry Excel, use the journal export in the accounting service.</p>
+      <p className="text-[11px] text-[var(--text-tertiary)]">Trial Balance, General Ledger and Balance Sheet are derived from the accounting posting journal (client/supplier invoices, VAT, payments), classified by account-code range (1=asset, 2=liability, 3=equity, 4=revenue, 5/6=expense). Balance Sheet shows current-year earnings as equity; it balances to the extent the journal is complete.</p>
     </div>
   );
 }

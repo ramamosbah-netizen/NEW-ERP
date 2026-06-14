@@ -44,10 +44,10 @@ them rather than recreate, per "do not break existing modules".
 11. ✅ **Fixed Assets** — surfaced existing `/assets` module in Finance nav.
 12. ✅ **AI Finance Agent** — risk scoring + recommendations.
 
-**All 12 enterprise finance modules delivered.** Remaining polish (optional):
-Balance Sheet (needs a chart-of-accounts map), retention payable to
-subcontractors, formal supplier-payment↔account linking, and swapping the AI
-agent's rules for an LLM-backed narrative.
+**All 12 enterprise finance modules delivered.** Polish: ✅ Balance Sheet (done
+— Financial Reports tab). Remaining (optional): retention payable to
+subcontractors, formal supplier-payment↔account linking, per-route RBAC for the
+accountant role, and swapping the AI agent's rules for an LLM-backed narrative.
 
 Each module ships: migration, TypeScript types, service, hook(s), dashboard +
 list + detail pages, filters/search, export, Recharts, nav + Finance Hub link,

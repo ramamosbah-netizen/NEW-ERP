@@ -158,7 +158,8 @@ app-layer; per-route guards are a noted next step.
 
 ## 11. Known gaps / next
 
-- **Balance Sheet** (needs a chart-of-accounts asset/liability/equity map).
+- ✅ **Balance Sheet** — done (`/finance/reports` → Balance Sheet tab; derived
+  from the journal by account-code range, current-year earnings as equity).
 - **Retention payable** to subcontractors (ledger is client-side only).
 - **Formal supplier-payment ↔ account** linking in the disbursement UI.
 - **Per-route RBAC** enforcement for the accountant role.

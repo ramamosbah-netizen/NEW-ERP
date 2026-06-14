@@ -19,6 +19,18 @@ const AP_BOOKED = ['REGISTERED', 'PENDING_APPROVAL', 'APPROVED', 'SCHEDULED', 'P
 export interface PLRow { label: string; amount: number; group: 'REVENUE' | 'COST' | 'RESULT'; }
 export interface TBRow { account_code: string; account_name: string; debit: number; credit: number; balance: number; }
 export interface ProjectAmountRow { project_number: string; project_name: string; amount: number; }
+export interface BSSection { name: string; rows: { account: string; amount: number }[]; total: number; }
+export interface BalanceSheet { sections: BSSection[]; assetsTotal: number; liabEquityTotal: number; balanced: boolean; netIncome: number; }
+
+// Standard chart-of-accounts classification by leading digit.
+function classify(code: string): 'ASSET' | 'LIABILITY' | 'EQUITY' | 'REVENUE' | 'EXPENSE' {
+  const c = (code || '')[0];
+  if (c === '1') return 'ASSET';
+  if (c === '2') return 'LIABILITY';
+  if (c === '3') return 'EQUITY';
+  if (c === '4') return 'REVENUE';
+  return 'EXPENSE';
+}
 
 export const financialReportsService = {
   async profitAndLoss(start: string, end: string): Promise<{ rows: PLRow[]; netProfit: number }> {
@@ -63,6 +75,48 @@ export const financialReportsService = {
 
   async generalLedger(start: string, end: string): Promise<any[]> {
     return accountingExportService.generateJournalLines(start, end).catch(() => []);
+  },
+
+  /** Balance Sheet as-of a date, derived from the posting journal (since inception). */
+  async balanceSheet(asOf: string): Promise<BalanceSheet> {
+    const lines = await accountingExportService.generateJournalLines('2000-01-01', asOf).catch(() => [] as any[]);
+    const byAcct = new Map<string, { name: string; debit: number; credit: number }>();
+    for (const l of lines as any[]) {
+      const key = l.account_code || l.account_name;
+      const e = byAcct.get(key) || { name: l.account_name || key, debit: 0, credit: 0 };
+      e.debit += Number(l.debit) || 0; e.credit += Number(l.credit) || 0;
+      byAcct.set(key, e);
+    }
+
+    const assets: { account: string; amount: number }[] = [];
+    const liabilities: { account: string; amount: number }[] = [];
+    const equity: { account: string; amount: number }[] = [];
+    let revenueBal = 0, expenseBal = 0;
+    for (const [code, e] of byAcct) {
+      const net = r2(e.debit - e.credit);          // debit-positive
+      switch (classify(code)) {
+        case 'ASSET': if (Math.abs(net) > 0.01) assets.push({ account: e.name, amount: net }); break;
+        case 'LIABILITY': if (Math.abs(net) > 0.01) liabilities.push({ account: e.name, amount: r2(-net) }); break;
+        case 'EQUITY': if (Math.abs(net) > 0.01) equity.push({ account: e.name, amount: r2(-net) }); break;
+        case 'REVENUE': revenueBal += -net; break;
+        case 'EXPENSE': expenseBal += net; break;
+      }
+    }
+    const netIncome = r2(revenueBal - expenseBal);
+    equity.push({ account: 'Current-year earnings', amount: netIncome });
+
+    const assetsTotal = r2(assets.reduce((s, r) => s + r.amount, 0));
+    const liabTotal = r2(liabilities.reduce((s, r) => s + r.amount, 0));
+    const equityTotal = r2(equity.reduce((s, r) => s + r.amount, 0));
+    return {
+      sections: [
+        { name: 'Assets', rows: assets, total: assetsTotal },
+        { name: 'Liabilities', rows: liabilities, total: liabTotal },
+        { name: 'Equity', rows: equity, total: equityTotal },
+      ],
+      assetsTotal, liabEquityTotal: r2(liabTotal + equityTotal),
+      balanced: Math.abs(assetsTotal - (liabTotal + equityTotal)) < 1, netIncome,
+    };
   },
 
   async byProject(start: string, end: string, kind: 'COST' | 'REVENUE'): Promise<ProjectAmountRow[]> {
