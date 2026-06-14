@@ -136,9 +136,13 @@ Auth is per-page (`supabase.auth.getUser()`), with RBAC via `roles` /
 - **AR** (client invoices, payments, aging, statements), **AP** (register,
   schedule, 3-way match, aging), **Cash Flow** forecast, **VAT Compliance**,
   **GRN-to-Expense** report.
-- **AP automation** — sending an LPO **auto-creates an expected supplier bill**
-  (AWAITING-{LPO no}, due per LPO payment terms) so every purchase surfaces in
-  AP; the accountant completes it (real invoice no, amounts, PDF) and submits.
+- **AP automation & draft→validate lifecycle** — an **approved LPO** creates a
+  **DRAFT payable** ("action to spend money") in AP, **auto-importing the
+  supplier proforma** if one is attached to the LPO. The accountant **validates**
+  it by uploading the supplier's actual invoice (number, amounts, attachment),
+  which registers the bill. The AP register lists **all states** — Draft,
+  Registered, Pending, Approved, Scheduled, Partially/Fully paid, Disputed,
+  Revised, Cancelled.
 - **Expenses & Payment Accounts** (`/finance/ap/expenses`) — capture every
   payment (LPO / non-LPO purchase, car petrol, petty cash, office expense) as an
   invoiced AP bill, **paid from a tracked card / bank / cash account** (running
@@ -287,6 +291,7 @@ All idempotent. Apply any not yet run, then `NOTIFY pgrst, 'reload schema';`.
 | `20260614160000_stock_rls_and_movements` | **Fixes 403s** — relaxes stock_* write RLS to collaborative (authenticated); adds RETURN_TO_SUPPLIER movement type |
 | `20260614180000_stock_movement_receipt` | Adds received_by_name to stock_transactions (storekeeper↔receiver handover receipt) |
 | `20260614200000_ap_accounts_expenses` | payment_accounts (cards/bank/cash + balance); supplier_invoices gains cost_bucket, payment_account_id, payee_name, nullable supplier_id, wider expense_category; supplier_payments gains payment_account_id |
+| `20260614220000_ap_draft_lifecycle` | supplier_invoices DRAFT/REVISED statuses, proforma_path/name (auto-import), WORKFORCE expense category |
 
 Verify: `node scripts/verify-platform.mjs`.
 

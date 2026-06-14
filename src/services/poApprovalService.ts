@@ -5,6 +5,7 @@
 import { supabase } from '@/lib/supabase';
 import { eventService } from './eventService';
 import { commitmentService } from './commitmentService';
+import { supplierInvoiceService } from './supplierInvoiceService';
 import type { PurchaseOrder, POApprovalStage, POApprovalAction } from '@/types/po.types';
 
 export const poApprovalService = {
@@ -262,6 +263,14 @@ export const poApprovalService = {
             .eq('id', poId);
 
           if (updateErr) throw updateErr;
+
+          // Approved LPO → create a DRAFT payable ("action to spend money") in
+          // AP, importing any supplier proforma. Best-effort; never blocks approval.
+          try {
+            await supplierInvoiceService.createExpectedFromPO(poId);
+          } catch (apErr) {
+            console.warn('Could not auto-create AP draft for approved LPO:', apErr);
+          }
 
           // Emit approval event
           await eventService.emitEvent(

@@ -22,7 +22,7 @@ import { Wallet, CreditCard, Banknote, Plus, X, Save, Receipt, Paperclip, Check 
 const money = (v: number) => new Intl.NumberFormat('en-AE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(v || 0);
 const ACCT_ICON: Record<AccountType, any> = { BANK: Wallet, CARD: CreditCard, CASH: Banknote, PETTY_CASH: Banknote };
 const ACCT_LABEL: Record<AccountType, string> = { BANK: 'Bank', CARD: 'Card', CASH: 'Cash', PETTY_CASH: 'Petty cash' };
-const CATEGORIES = ['FUEL', 'VEHICLE', 'MATERIAL', 'TOOLS', 'TRANSPORT', 'MAINTENANCE', 'OFFICE_SUPPLIES', 'RENT', 'UTILITIES', 'SUBCONTRACTOR', 'PETTY_CASH', 'OTHER'];
+const CATEGORIES = ['FUEL', 'VEHICLE', 'MATERIAL', 'TOOLS', 'TRANSPORT', 'WORKFORCE', 'MAINTENANCE', 'OFFICE_SUPPLIES', 'RENT', 'UTILITIES', 'SUBCONTRACTOR', 'PETTY_CASH', 'OTHER'];
 const BUCKETS = [
   { key: 'PROJECT', label: 'Project (LPO / site)' },
   { key: 'PETTY_CASH', label: 'Petty cash (project)' },

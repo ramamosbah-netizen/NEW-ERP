@@ -120,14 +120,16 @@ export interface ProjectRetentionRecord {
 
 export type SupplierInvoiceType = 'PO_MATCHED' | 'DIRECT_EXPENSE';
 
-export type SupplierInvoiceStatus = 
-  | 'REGISTERED' 
-  | 'PENDING_APPROVAL' 
-  | 'APPROVED' 
-  | 'SCHEDULED' 
-  | 'PARTIALLY_PAID' 
-  | 'PAID' 
-  | 'DISPUTED' 
+export type SupplierInvoiceStatus =
+  | 'DRAFT'
+  | 'REGISTERED'
+  | 'PENDING_APPROVAL'
+  | 'APPROVED'
+  | 'SCHEDULED'
+  | 'PARTIALLY_PAID'
+  | 'PAID'
+  | 'DISPUTED'
+  | 'REVISED'
   | 'CANCELLED';
 
 export type MatchStatus = 'MATCHED' | 'EXCEPTION' | 'OVERRIDDEN' | 'NA';
@@ -180,6 +182,12 @@ export interface SupplierInvoice {
   created_at: string;
   updated_at: string;
   supplier_name?: string;
+  // AP expense / accounts extensions
+  cost_bucket?: 'PROJECT' | 'PETTY_CASH' | 'OFFICE' | null;
+  payment_account_id?: string | null;
+  payee_name?: string | null;
+  proforma_path?: string | null;
+  proforma_name?: string | null;
 }
 
 export interface SupplierInvoiceItem {

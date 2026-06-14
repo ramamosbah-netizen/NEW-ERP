@@ -99,7 +99,7 @@ export const supplierInvoiceService = {
 
     const { data: po } = await supabase
       .from('purchase_orders')
-      .select('po_number, supplier_id, project_id, subtotal, discount_amount, vat_amount, total, payment_terms_days')
+      .select('po_number, supplier_id, project_id, subtotal, discount_amount, vat_amount, total, payment_terms_days, proforma_invoice_path, proforma_invoice_name')
       .eq('id', poId)
       .single();
     if (!po) return null;
@@ -108,31 +108,69 @@ export const supplierInvoiceService = {
     const due = new Date(today);
     due.setDate(due.getDate() + (Number(po.payment_terms_days) || 30));
     const taxable = Math.round(((Number(po.subtotal) || 0) - (Number(po.discount_amount) || 0)) * 100) / 100;
+    const hasProforma = !!po.proforma_invoice_path;
 
-    const { data, error } = await supabase
-      .from('supplier_invoices')
-      .insert({
-        supplier_id: po.supplier_id,
-        supplier_invoice_number: `AWAITING-${po.po_number}`, // placeholder until the real invoice arrives
-        po_id: poId,
-        project_id: po.project_id || null,
-        invoice_type: 'PO_MATCHED',
-        invoice_date: today.toISOString().slice(0, 10),
-        received_date: today.toISOString().slice(0, 10),
-        due_date: due.toISOString().slice(0, 10),
-        taxable_amount: taxable,
-        vat_amount: Number(po.vat_amount) || 0,
-        total: Number(po.total) || 0,
-        match_status: 'NA',
-        status: 'REGISTERED',
-        notes: `Auto-created when LPO ${po.po_number} was sent to the supplier. Awaiting the supplier tax invoice — update the invoice number, amounts and attachment, then submit for approval.`,
-        created_by: user.id,
-      })
-      .select('id')
-      .single();
+    // Best-effort: tolerate DBs where the DRAFT/proforma migration isn't applied
+    const payload: Record<string, any> = {
+      supplier_id: po.supplier_id,
+      supplier_invoice_number: `AWAITING-${po.po_number}`, // placeholder until the real invoice arrives
+      po_id: poId,
+      project_id: po.project_id || null,
+      invoice_type: 'PO_MATCHED',
+      invoice_date: today.toISOString().slice(0, 10),
+      received_date: today.toISOString().slice(0, 10),
+      due_date: due.toISOString().slice(0, 10),
+      taxable_amount: taxable,
+      vat_amount: Number(po.vat_amount) || 0,
+      total: Number(po.total) || 0,
+      match_status: 'NA',
+      status: 'DRAFT',
+      cost_bucket: po.project_id ? 'PROJECT' : 'OFFICE',
+      proforma_path: po.proforma_invoice_path || null,
+      proforma_name: po.proforma_invoice_name || null,
+      notes: `Action to spend: created from approved LPO ${po.po_number}.` +
+        (hasProforma ? ` Supplier proforma "${po.proforma_invoice_name}" auto-imported.` : '') +
+        ' Upload and validate the supplier tax invoice to register it.',
+      created_by: user.id,
+    };
 
+    let { data, error } = await supabase.from('supplier_invoices').insert(payload).select('id').single();
+    if (error && /(status|cost_bucket|proforma)/i.test(error.message || '')) {
+      // migration not yet applied — fall back to a registered bill without the new fields
+      const { proforma_path, proforma_name, cost_bucket, ...legacy } = payload;
+      legacy.status = 'REGISTERED';
+      ({ data, error } = await supabase.from('supplier_invoices').insert(legacy).select('id').single());
+    }
     if (error) throw error;
     return data?.id ?? null;
+  },
+
+  /**
+   * Validates a DRAFT payable into a registered bill: records the supplier's
+   * actual invoice number, amounts and attached document. The internal_ref
+   * (id) already exists; this confirms the real invoice against it.
+   */
+  async validateExpected(id: string, input: {
+    supplier_invoice_number: string;
+    invoice_date?: string;
+    taxable_amount: number;
+    vat_amount: number;
+    total: number;
+    source_document_id?: string | null;
+  }): Promise<void> {
+    if (!input.supplier_invoice_number?.trim()) throw new Error('Enter the supplier invoice number to validate.');
+    const patch: Record<string, any> = {
+      supplier_invoice_number: input.supplier_invoice_number.trim(),
+      taxable_amount: Number(input.taxable_amount) || 0,
+      vat_amount: Number(input.vat_amount) || 0,
+      total: Number(input.total) || 0,
+      status: 'REGISTERED',
+      updated_at: new Date().toISOString(),
+    };
+    if (input.invoice_date) patch.invoice_date = input.invoice_date;
+    if (input.source_document_id) patch.source_document_id = input.source_document_id;
+    const { error } = await supabase.from('supplier_invoices').update(patch).eq('id', id);
+    if (error) throw new Error(error.message);
   },
 
   /**

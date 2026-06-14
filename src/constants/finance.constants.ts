@@ -76,6 +76,7 @@ export const SUPPLIER_INVOICE_TYPE_LABELS: Record<SupplierInvoiceType, string> =
 
 // --- Supplier Invoice Status Labels & Colors ---
 export const SUPPLIER_INVOICE_STATUS_LABELS: Record<SupplierInvoiceStatus, string> = {
+  DRAFT: 'Draft (to spend)',
   REGISTERED: 'Registered (New)',
   PENDING_APPROVAL: 'Awaiting Sign-off',
   APPROVED: 'Approved for Payment',
@@ -83,10 +84,12 @@ export const SUPPLIER_INVOICE_STATUS_LABELS: Record<SupplierInvoiceStatus, strin
   PARTIALLY_PAID: 'Partially Paid',
   PAID: 'Fully Settled',
   DISPUTED: 'Disputed / On Hold',
+  REVISED: 'Revised',
   CANCELLED: 'Voided',
 };
 
 export const SUPPLIER_INVOICE_STATUS_COLORS: Record<SupplierInvoiceStatus, { bg: string; text: string; border: string }> = {
+  DRAFT: { bg: 'rgba(148, 163, 184, 0.12)', text: '#cbd5e1', border: 'rgba(148, 163, 184, 0.3)' },
   REGISTERED: { bg: 'rgba(100, 116, 139, 0.12)', text: '#94a3b8', border: 'rgba(100, 116, 139, 0.25)' },
   PENDING_APPROVAL: { bg: 'rgba(245, 158, 11, 0.12)', text: '#f59e0b', border: 'rgba(245, 158, 11, 0.25)' },
   APPROVED: { bg: 'color-mix(in srgb, var(--accent) 12%, transparent)', text: 'var(--accent)', border: 'color-mix(in srgb, var(--accent) 25%, transparent)' },
@@ -94,6 +97,7 @@ export const SUPPLIER_INVOICE_STATUS_COLORS: Record<SupplierInvoiceStatus, { bg:
   PARTIALLY_PAID: { bg: 'rgba(249, 115, 22, 0.12)', text: '#f97316', border: 'rgba(249, 115, 22, 0.25)' },
   PAID: { bg: 'color-mix(in srgb, var(--primary) 12%, transparent)', text: 'var(--primary)', border: 'color-mix(in srgb, var(--primary) 25%, transparent)' },
   DISPUTED: { bg: 'rgba(239, 68, 68, 0.12)', text: '#ef4444', border: 'rgba(239, 68, 68, 0.25)' },
+  REVISED: { bg: 'rgba(168, 85, 247, 0.12)', text: '#a855f7', border: 'rgba(168, 85, 247, 0.25)' },
   CANCELLED: { bg: 'rgba(71, 85, 105, 0.2)', text: '#cbd5e1', border: 'rgba(71, 85, 105, 0.35)' },
 };
 
@@ -148,5 +152,5 @@ export const UAE_EMIRATE_LABELS: Record<UAEEmirate, string> = {
 export const ALL_INVOICE_TYPES: InvoiceType[] = ['ADVANCE', 'PROGRESS', 'FINAL', 'RETENTION_RELEASE', 'STANDALONE'];
 export const ALL_INVOICE_STATUSES: InvoiceStatus[] = ['DRAFT', 'PENDING_APPROVAL', 'APPROVED', 'SENT', 'PARTIALLY_PAID', 'PAID', 'OVERDUE', 'CANCELLED', 'WRITTEN_OFF'];
 export const ALL_PAYMENT_METHODS: PaymentMethod[] = ['TRANSFER', 'CHEQUE', 'CASH', 'CARD'];
-export const ALL_SUPPLIER_INVOICE_STATUSES: SupplierInvoiceStatus[] = ['REGISTERED', 'PENDING_APPROVAL', 'APPROVED', 'SCHEDULED', 'PARTIALLY_PAID', 'PAID', 'DISPUTED', 'CANCELLED'];
+export const ALL_SUPPLIER_INVOICE_STATUSES: SupplierInvoiceStatus[] = ['DRAFT', 'REGISTERED', 'PENDING_APPROVAL', 'APPROVED', 'SCHEDULED', 'PARTIALLY_PAID', 'PAID', 'DISPUTED', 'REVISED', 'CANCELLED'];
 export const ALL_EXPENSE_CATEGORIES: ExpenseCategory[] = ['RENT', 'UTILITIES', 'SALARIES_PLACEHOLDER', 'FUEL', 'OTHER'];

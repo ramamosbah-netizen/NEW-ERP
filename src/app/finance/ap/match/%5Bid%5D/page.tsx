@@ -9,6 +9,8 @@
 import React, { useState, use } from 'react';
 import Link from 'next/link';
 import { useSupplierInvoice } from '@/hooks/useSupplierInvoices';
+import { supplierInvoiceService } from '@/services/supplierInvoiceService';
+import { runUploadPipeline } from '@/lib/document-upload-service';
 import WorkflowPanel from '@/components/workflow/WorkflowPanel';
 import {
   SUPPLIER_INVOICE_STATUS_LABELS,
@@ -25,6 +27,42 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
 
   const [overrideReason, setOverrideReason] = useState('');
   const [showOverrideModal, setShowOverrideModal] = useState(false);
+
+  // DRAFT → validate (record the real supplier invoice)
+  const [val, setVal] = useState({ number: '', date: '', amount: '', vat_applicable: true });
+  const [valDoc, setValDoc] = useState<{ id: string; name: string } | null>(null);
+  const [valBusy, setValBusy] = useState(false);
+  const [valErr, setValErr] = useState<string | null>(null);
+
+  const validate = async () => {
+    const amt = Number(val.amount) || 0;
+    if (!val.number.trim()) { setValErr('Enter the supplier invoice number.'); return; }
+    if (!(amt > 0)) { setValErr('Enter the invoice amount.'); return; }
+    setValBusy(true); setValErr(null);
+    try {
+      const vatAmt = val.vat_applicable ? Math.round(amt * 0.05 * 100) / 100 : 0;
+      await supplierInvoiceService.validateExpected(id, {
+        supplier_invoice_number: val.number,
+        invoice_date: val.date || undefined,
+        taxable_amount: amt, vat_amount: vatAmt, total: Math.round((amt + vatAmt) * 100) / 100,
+        source_document_id: valDoc?.id || null,
+      });
+      window.location.reload();
+    } catch (e: any) { setValErr(e.message || 'Validation failed'); setValBusy(false); }
+  };
+
+  const uploadInvoiceDoc = async (file: File | undefined) => {
+    if (!file) return;
+    setValBusy(true); setValErr(null);
+    try {
+      const doc = await runUploadPipeline(file, 'SUPPLIER', undefined, ['supplier-invoice']);
+      setValDoc({ id: doc.id, name: file.name });
+    } catch (e: any) {
+      const m = /^DUPLICATE_FOUND:([^:]+):(.*)$/.exec(e?.message || '');
+      if (m) setValDoc({ id: m[1], name: m[2] || file.name });
+      else setValErr(e.message || 'Upload failed');
+    } finally { setValBusy(false); }
+  };
 
   const formatAED = (v: number) => {
     return new Intl.NumberFormat('en-AE', { minimumFractionDigits: 2 }).format(v) + ' AED';
@@ -233,6 +271,52 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
                 </div>
               </div>
             )}
+          </div>
+        )}
+
+        {/* DRAFT payable → validate the supplier's actual invoice */}
+        {invoice.status === 'DRAFT' && (
+          <div className="mb-6 bg-slate-950/60 border border-slate-800 rounded p-5">
+            <div className="flex items-center gap-2 text-sm font-bold text-emerald-300 uppercase tracking-wider mb-1">
+              <FileText size={15} /> Validate supplier invoice
+            </div>
+            <p className="text-xs text-slate-500 mb-4">
+              This is a draft payable from the approved LPO. Record the supplier&apos;s actual invoice to register it.
+              {invoice.proforma_name ? ` Proforma on file: ${invoice.proforma_name}.` : ''}
+            </p>
+            {valErr && <div className="text-xs text-red-400 mb-3">{valErr}</div>}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div>
+                <label className="text-[10px] text-slate-500 uppercase">Invoice no *</label>
+                <input value={val.number} onChange={e => setVal({ ...val, number: e.target.value })}
+                  className="w-full mt-1 bg-[#0a0f26] border border-slate-800 rounded py-2 px-3 text-xs text-slate-200" />
+              </div>
+              <div>
+                <label className="text-[10px] text-slate-500 uppercase">Invoice date</label>
+                <input type="date" value={val.date} onChange={e => setVal({ ...val, date: e.target.value })}
+                  className="w-full mt-1 bg-[#0a0f26] border border-slate-800 rounded py-2 px-3 text-xs text-slate-200" />
+              </div>
+              <div>
+                <label className="text-[10px] text-slate-500 uppercase">Amount (excl VAT)</label>
+                <input type="number" step="any" value={val.amount} onChange={e => setVal({ ...val, amount: e.target.value })}
+                  placeholder={String(invoice.taxable_amount || '')}
+                  className="w-full mt-1 bg-[#0a0f26] border border-slate-800 rounded py-2 px-3 text-xs text-slate-200 text-right" />
+              </div>
+              <label className="flex items-center gap-2 text-xs text-slate-400 mt-5 cursor-pointer">
+                <input type="checkbox" checked={val.vat_applicable} onChange={e => setVal({ ...val, vat_applicable: e.target.checked })} /> +5% VAT
+              </label>
+            </div>
+            <div className="flex items-center gap-3 mt-4">
+              <label className="flex items-center gap-2 px-3 py-2 rounded border border-dashed border-slate-700 text-xs text-slate-400 cursor-pointer hover:border-emerald-500/50">
+                {valDoc ? `✓ ${valDoc.name}` : (valBusy ? 'Uploading…' : 'Attach invoice (image/PDF)')}
+                <input type="file" accept="image/*,application/pdf" className="hidden" disabled={valBusy}
+                  onChange={e => uploadInvoiceDoc(e.target.files?.[0])} />
+              </label>
+              <button onClick={validate} disabled={valBusy}
+                className="ml-auto flex items-center gap-1.5 px-4 py-2 bg-emerald-400 text-slate-950 text-xs font-bold rounded hover:bg-emerald-300 disabled:opacity-50 uppercase tracking-wider">
+                <CheckCircle size={14} /> Validate & register
+              </button>
+            </div>
           </div>
         )}
 
