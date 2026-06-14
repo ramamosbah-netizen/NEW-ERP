@@ -249,6 +249,7 @@ All idempotent. Apply any not yet run, then `NOTIFY pgrst, 'reload schema';`.
 | `20260613280000_payment_method_and_direct_purchase` | payment_method on LPO/PR, direct-purchase, PROCUREMENT settings category |
 | `20260613300000_pr_item_line_status` | Per-line PR status (receive/cancel) |
 | `20260614100000_grn_auto_store_receipt` | GRN auto-routes goods to store on receipt; skips non-catalogue lines safely |
+| `20260614120000_grn_store_robust` | **Supersedes above** — auto-creates a default store if none, and a catalogue item for non-catalogue lines, so every received line becomes stock |
 
 Verify: `node scripts/verify-platform.mjs`.
 
