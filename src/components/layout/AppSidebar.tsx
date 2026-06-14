@@ -83,6 +83,7 @@ const NAV_SECTIONS = [
       { href: '/projects/daily-reports', label: 'Daily Site Reports', icon: ClipboardList },
       { href: '/projects/wbs', label: 'WBS', icon: ListTree },
       { href: '/projects/schedule', label: 'Schedule (Gantt)', icon: GanttChartSquare },
+      { href: '/projects/evm', label: 'Progress & EVM', icon: TrendingUp },
       { href: '/vo', label: 'Variation Orders', icon: GitCompare },
       { href: '/snags', label: 'Snag List', icon: Camera },
       { href: '/tc', label: 'Testing & Comm.', icon: ClipboardCheck },

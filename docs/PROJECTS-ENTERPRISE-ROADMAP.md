@@ -29,8 +29,8 @@ them. Resource planning (#4) builds on the existing payroll-by-project allocatio
 1. ✅ **Daily Site Report (DSR)** — table + capture + list + photo upload + PDF.
 2. ✅ **WBS (Work Breakdown Structure)** — hierarchical work packages, budget/weight, rolled-up progress, seed-from-systems. `/projects/wbs`.
 3. ✅ **Schedule / Gantt** — Gantt timeline over WBS (planned dates + progress, today line, overdue). `/projects/schedule`.
-4. **Progress & EVM** — % complete per WBS → PV/EV/AC, SPI/CPI. ← next
-5. **Resource Planning** — manpower/equipment allocation + utilization.
+4. ✅ **Progress & EVM** — PV/EV/AC + SPI/CPI/EAC/VAC over WBS + actuals, chart + per-WBS table + PDF/Excel. `/projects/evm`.
+5. **Resource Planning** — manpower/equipment allocation + utilization. ← next
 6. **Risk Register** — likelihood × impact matrix, mitigation, owner.
 7. **Project Executive Dashboard** — portfolio schedule+cost+risk+handover health.
 8. **Testing & Commissioning** — surface/extend the existing `/tc` module.
