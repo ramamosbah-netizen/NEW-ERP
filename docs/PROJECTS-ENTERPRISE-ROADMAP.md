@@ -13,7 +13,7 @@ are applied manually in Supabase, then `NOTIFY pgrst, 'reload schema';`.
 |---|---|---|---|
 | 1 | **Schedule / Gantt** | 🟡 flat milestone list (planned/actual dates) | Add task-level schedule with dependencies + a Gantt view; reuse milestones |
 | 2 | **Progress & Earned Value (EVM)** | ❌ new | % complete per milestone/system → planned vs earned vs actual (PV/EV/AC, SPI/CPI) |
-| 3 | **Daily Site Report (DSR)** | ❌ new | Manpower, weather, work done, materials, photos per day |
+| 3 | **Daily Site Report (DSR)** | ✅ **DONE** | `daily_site_reports`; manpower-by-trade, weather, work/materials/equipment/delays/safety/visitors, photo upload, draft→submit, PDF; `/projects/daily-reports` |
 | 4 | **Resource / Manpower planning** | 🟡 PM/site-engineer fields + payroll-by-project | Allocations table + utilization view across projects |
 | 5 | **Risk register** | ❌ new | Per-project risks (likelihood × impact, mitigation, owner, status) |
 | 6 | **Project Executive Dashboard** | 🟡 finance side exists | Portfolio health: schedule + cost + margin + risk + handover readiness |
@@ -26,8 +26,8 @@ them. Resource planning (#4) builds on the existing payroll-by-project allocatio
 
 ## Build order (recommended)
 
-1. **Daily Site Report (DSR)** — high daily-use value; new table + capture + list/PDF.
-2. **Progress & EVM** — % complete → SPI/CPI; feeds the executive dashboard.
+1. ✅ **Daily Site Report (DSR)** — table + capture + list + photo upload + PDF.
+2. **Progress & EVM** — % complete → SPI/CPI; feeds the executive dashboard. ← next
 3. **Schedule / Gantt** — task schedule + dependencies + Gantt view.
 4. **Risk register** — per-project risk matrix.
 5. **Resource / Manpower planning** — allocations + utilization.
@@ -41,5 +41,6 @@ Recharts, nav + project-detail tab where relevant, RBAC (existing roles), audit
 logging, and docs.
 
 ## Status
-- ✅ **Module report** (`PROJECTS-MODULE-REPORT.md`) and this roadmap — done.
-- ⏭ Next: **Daily Site Report (DSR)** — say "proceed".
+- ✅ **Module report** + roadmap.
+- ✅ **Phase 1 — Daily Site Report (DSR)**.
+- ⏭ Next: **Progress & Earned Value (EVM)** — say "proceed".
