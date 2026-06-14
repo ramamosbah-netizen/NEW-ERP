@@ -11,6 +11,8 @@ import type { AuditLog } from '@/types/audit.types';
 import Can from '@/lib/permissions/Can';
 import { supabase } from '@/lib/supabase';
 import { NAV_SECTIONS } from '@/components/layout/AppSidebar';
+import { PageHeader } from '@/components/ui/PageHeader';
+import Link from 'next/link';
 import { 
   Settings, 
   Building, 
@@ -48,13 +50,48 @@ export default function SettingsHubPage() {
 
   // Tab State
   const [activeTab, setActiveTab] = useState<
-    'COMPANY' | 'USERS_ROLES' | 'MODULE_CONTROL' | 'FINANCE' | 'PROCUREMENT' | 'INVENTORY' | 
-    'PROJECTS' | 'MAINTENANCE' | 'HR' | 'NOTIFICATIONS' | 'TEMPLATES' | 
+    'COMPANY' | 'USERS_ROLES' | 'SESSIONS' | 'MODULE_CONTROL' | 'FINANCE' | 'PROCUREMENT' | 'INVENTORY' |
+    'PROJECTS' | 'MAINTENANCE' | 'HR' | 'NOTIFICATIONS' | 'TEMPLATES' |
     'INTEGRATIONS' | 'SYSTEM_ADMIN' | 'SECURITY' | 'BACKUP'
   >('COMPANY');
 
   // --- Module Control State ---
   const [enabledModules, setEnabledModulesState] = useState<Record<string, boolean>>({});
+
+  // Deep-link support: /admin/settings?tab=SESSIONS (used by the Admin Center hub)
+  useEffect(() => {
+    const VALID_TABS = [
+      'COMPANY', 'USERS_ROLES', 'SESSIONS', 'MODULE_CONTROL', 'FINANCE', 'PROCUREMENT',
+      'INVENTORY', 'PROJECTS', 'MAINTENANCE', 'HR', 'NOTIFICATIONS', 'TEMPLATES',
+      'INTEGRATIONS', 'SYSTEM_ADMIN', 'SECURITY', 'BACKUP',
+    ];
+    try {
+      const requested = new URLSearchParams(window.location.search).get('tab');
+      if (requested && VALID_TABS.includes(requested.toUpperCase())) {
+        setActiveTab(requested.toUpperCase() as any);
+      }
+    } catch {
+      // Ignore malformed URLs
+    }
+  }, []);
+
+  // --- Sessions Tab State ---
+  type SessionUser = {
+    id: string;
+    email: string;
+    full_name: string;
+    legacy_role: string;
+    roles: { id: string; role_key: string; name: string; is_active: boolean }[];
+    created_at: string;
+    last_sign_in_at: string | null;
+    email_confirmed_at: string | null;
+    is_banned: boolean;
+    banned_until: string | null;
+  };
+  const [sessionUsers, setSessionUsers] = useState<SessionUser[]>([]);
+  const [sessionsLoading, setSessionsLoading] = useState<boolean>(false);
+  const [sessionActionBusy, setSessionActionBusy] = useState<string | null>(null);
+  const [sessionSearch, setSessionSearch] = useState<string>('');
 
   // --- Add User Modal State ---
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
@@ -122,6 +159,7 @@ export default function SettingsHubPage() {
 
   // --- Tab 4: Procurement ---
   const [thresholdPO, setThresholdPO] = useState<number>(20000);
+  const [directPurchaseThreshold, setDirectPurchaseThreshold] = useState<number>(10000);
   const [autoRank, setAutoRank] = useState<boolean>(true);
 
   // --- Tab 5: Inventory & Assets ---
@@ -263,6 +301,8 @@ export default function SettingsHubPage() {
       // 4. Procurement settings
       const threshPOVal = await settingsService.getSettingByKey('finance.approval_threshold_po', 20000);
       setThresholdPO(Number(threshPOVal));
+      const directThreshVal = await settingsService.getSettingByKey('procurement.direct_purchase_threshold', 10000);
+      setDirectPurchaseThreshold(Number(directThreshVal));
 
       const autoRankVal = await settingsService.getSettingByKey('procurement.auto_rank', true);
       setAutoRank(Boolean(autoRankVal));
@@ -523,6 +563,7 @@ export default function SettingsHubPage() {
     setSaving(true);
     try {
       await settingsService.updateSetting('finance.approval_threshold_po', thresholdPO, 'FINANCE', 'NUMBER', 'PO GM Threshold Limit');
+      await settingsService.updateSetting('procurement.direct_purchase_threshold', directPurchaseThreshold, 'PROCUREMENT', 'NUMBER', 'Max AED a PR can be purchased directly without an LPO');
       await settingsService.updateSetting('procurement.auto_rank', autoRank, 'FINANCE', 'BOOLEAN', 'Automatic comparison ranking weight toggling');
       showFeedback(true, 'Procurement configuration saved successfully.');
     } catch (err: any) {
@@ -795,6 +836,56 @@ export default function SettingsHubPage() {
     }
   };
 
+  // --- Sessions Tab Handlers ---
+  const loadSessions = async () => {
+    setSessionsLoading(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      const res = await fetch('/api/admin/users', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to load sessions');
+      setSessionUsers(data.users || []);
+    } catch (err: any) {
+      showFeedback(false, err.message || 'Failed to load session data.');
+    } finally {
+      setSessionsLoading(false);
+    }
+  };
+
+  const handleSessionAction = async (userId: string, action: 'signout' | 'ban' | 'unban') => {
+    const labels = { signout: 'Force sign-out', ban: 'Ban account', unban: 'Unban account' };
+    if (action !== 'unban' && !window.confirm(`${labels[action]} — are you sure?`)) return;
+    setSessionActionBusy(userId + action);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      const res = await fetch('/api/admin/sessions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ userId, action })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Action failed');
+      showFeedback(true, data.message || 'Done.');
+      await loadSessions();
+    } catch (err: any) {
+      showFeedback(false, err.message || 'Session action failed.');
+    } finally {
+      setSessionActionBusy(null);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === 'SESSIONS') loadSessions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab]);
+
   // --- Edit User Modal Handlers ---
   const handleOpenEditUser = (user: UserWithRoles) => {
     setEditingUser(user);
@@ -1062,36 +1153,24 @@ export default function SettingsHubPage() {
           </div>
         }
       >
-        <div className="flex-1 flex flex-col gap-6 p-6 max-w-6xl w-full mx-auto z-10 relative">
-          {/* Header */}
-          <header className="flex flex-col md:flex-row md:items-center justify-between border-b border-border-color/85 pb-5 mb-2">
-            <div className="flex items-center gap-3.5">
-              <div className="rounded-2xl bg-bg-card border border-border-color p-2.5 shadow-lg shadow-black/20 shadow-inner relative overflow-hidden group">
-                <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <Settings className="text-primary animate-spin-slow group-hover:scale-110 transition-transform duration-300" size={24} />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold font-heading tracking-tight bg-gradient-to-r from-text-primary via-slate-200 to-primary bg-clip-text text-transparent flex items-center gap-2">
-                  Central Configuration Hub
-                  <span className="hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[9px] font-bold font-mono bg-primary/10 text-primary border border-primary/20 tracking-normal uppercase">
-                    <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" /> SYSTEM READY
-                  </span>
-                </h1>
-                <p className="text-xs text-text-muted font-mono mt-0.5 uppercase tracking-wide flex items-center gap-1.5">
-                  Enterprise Settings Engine <span className="text-border-color">•</span> Multi-Module Calibration Control Matrix
-                </p>
-              </div>
-            </div>
-            {saving ? (
-              <div className="text-xs text-primary font-mono flex items-center gap-1.5 self-start md:self-auto mt-3 md:mt-0 bg-primary/5 border border-primary/25 px-3 py-1.5 rounded-xl shadow-[0_0_15px_var(--primary-glow)] animate-pulse">
-                <RefreshCw className="animate-spin" size={13} /> Syncing parameters...
-              </div>
-            ) : (
-              <div className="hidden md:flex text-[10px] text-text-muted font-mono items-center gap-1.5 border border-border-color bg-bg-card/45 px-3 py-1.5 rounded-xl select-none">
-                <Lock size={11} className="text-primary" /> Cryptographic Admin Session
-              </div>
-            )}
-          </header>
+        <div className="flex-1 flex flex-col gap-6 w-full z-10 relative">
+          {/* Header — consistent with the other Admin Center pages */}
+          <PageHeader
+            title="Global Settings"
+            subtitle="Company profile, finance & tax, operational thresholds, notifications, integrations, security and backup"
+            breadcrumbs={[{ label: 'Admin', href: '/admin' }, { label: 'Settings' }]}
+            actions={
+              saving ? (
+                <span className="text-xs text-[var(--text-muted)] flex items-center gap-1.5">
+                  <RefreshCw className="animate-spin" size={13} /> Saving…
+                </span>
+              ) : (
+                <span className="hidden md:flex text-xs text-[var(--text-muted)] items-center gap-1.5 border border-[var(--border-color)] bg-[var(--bg-card)] px-2.5 py-1.5 rounded-md select-none">
+                  <Lock size={11} /> Admin session
+                </span>
+              )
+            }
+          />
 
           {/* Feedback alerts */}
           {successMsg && (
@@ -1117,6 +1196,7 @@ export default function SettingsHubPage() {
                   { id: 'COMPANY', label: 'Company & Branding', icon: Building },
                   { id: 'MODULE_CONTROL', label: 'Module Control', icon: Sliders },
                   { id: 'USERS_ROLES', label: 'Users & Roles', icon: Users },
+                  { id: 'SESSIONS', label: 'Sessions & Access', icon: Key },
                   { id: 'FINANCE', label: 'Finance & Tax', icon: DollarSign },
                   { id: 'PROCUREMENT', label: 'Procurement', icon: Sliders },
                   { id: 'INVENTORY', label: 'Inventory & Assets', icon: Layers },
@@ -1163,6 +1243,7 @@ export default function SettingsHubPage() {
                     group: 'Access Control',
                     items: [
                       { id: 'USERS_ROLES', label: 'Users, Roles & Perms', icon: Users },
+                      { id: 'SESSIONS', label: 'Sessions & Account Access', icon: Key },
                     ]
                   },
                   {
@@ -1219,6 +1300,37 @@ export default function SettingsHubPage() {
                     </div>
                   </div>
                 ))}
+
+                {/* Platform Builder — dedicated Admin Center pages */}
+                <div className="flex flex-col gap-1.5">
+                  <span className="text-[9px] font-bold text-text-muted tracking-widest uppercase font-mono px-2 mb-1">
+                    Platform Builder
+                  </span>
+                  <div className="flex flex-col gap-1">
+                    {[
+                      { href: '/admin/workflows', label: 'Workflow Builder', icon: Share2 },
+                      { href: '/admin/rules', label: 'Business Rules', icon: Sliders },
+                      { href: '/admin/numbering', label: 'Document Numbering', icon: Key },
+                      { href: '/admin/forms', label: 'Forms Builder', icon: FileCheck },
+                      { href: '/admin/templates', label: 'Document Templates', icon: FileText },
+                    ].map(link => {
+                      const IconComponent = link.icon;
+                      return (
+                        <Link
+                          key={link.href}
+                          href={link.href}
+                          className="flex items-center justify-between gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold w-full text-left text-text-secondary border border-transparent hover:bg-bg-card-hover/30 hover:text-text-primary transition-all no-underline group"
+                        >
+                          <span className="flex items-center gap-2.5 min-w-0">
+                            <IconComponent size={14} className="shrink-0 text-text-muted group-hover:scale-110 transition-transform" />
+                            <span className="truncate">{link.label}</span>
+                          </span>
+                          <ArrowUpRight size={11} className="shrink-0 text-text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -2041,6 +2153,141 @@ export default function SettingsHubPage() {
                     </div>
                   )}
 
+                  {/* SESSIONS & ACCOUNT ACCESS */}
+                  {activeTab === 'SESSIONS' && (
+                    <div className="flex flex-col gap-5 animate-fadeIn">
+                      <div className="border-b border-[var(--border-color)] pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div>
+                          <h3 className="text-sm font-semibold text-[var(--text-primary)] flex items-center gap-1.5">
+                            <Key size={15} className="text-[var(--text-muted)]" /> Sessions & account access
+                          </h3>
+                          <p className="text-xs text-[var(--text-muted)] mt-1">
+                            Review sign-in activity, revoke active sessions, and ban or unban accounts. Revoked users stay signed in until their access token expires (max 1 hour).
+                          </p>
+                        </div>
+                        <button
+                          onClick={loadSessions}
+                          disabled={sessionsLoading}
+                          className="quote-btn quote-btn-secondary self-start sm:self-center"
+                        >
+                          <RefreshCw size={13} className={sessionsLoading ? 'animate-spin' : ''} /> Refresh
+                        </button>
+                      </div>
+
+                      <input
+                        type="text"
+                        placeholder="Search by name or email…"
+                        value={sessionSearch}
+                        onChange={e => setSessionSearch(e.target.value)}
+                        className="quote-filter-input max-w-sm"
+                      />
+
+                      {sessionsLoading ? (
+                        <div className="py-16 flex flex-col items-center gap-3">
+                          <div className="h-6 w-6 rounded-full border-2 border-[var(--border-color)] border-t-[var(--text-primary)] animate-spin" />
+                          <span className="text-xs text-[var(--text-muted)]">Loading account data…</span>
+                        </div>
+                      ) : (
+                        <div className="quote-table-wrap">
+                          <table className="quote-table">
+                            <thead>
+                              <tr>
+                                <th>User</th>
+                                <th>Roles</th>
+                                <th>Last sign-in</th>
+                                <th>Status</th>
+                                <th style={{ textAlign: 'right' }}>Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {sessionUsers
+                                .filter(u =>
+                                  !sessionSearch ||
+                                  u.full_name?.toLowerCase().includes(sessionSearch.toLowerCase()) ||
+                                  u.email?.toLowerCase().includes(sessionSearch.toLowerCase())
+                                )
+                                .map(u => (
+                                  <tr key={u.id}>
+                                    <td>
+                                      <div className="flex flex-col">
+                                        <span className="font-medium text-[var(--text-primary)] text-xs">{u.full_name}</span>
+                                        <span className="text-[var(--text-muted)] text-xs">{u.email}</span>
+                                      </div>
+                                    </td>
+                                    <td>
+                                      <div className="flex flex-wrap gap-1">
+                                        {u.roles.length === 0 ? (
+                                          <span className="q-badge q-badge-draft">{u.legacy_role}</span>
+                                        ) : (
+                                          u.roles.map(r => (
+                                            <span key={r.id} className={`q-badge ${r.role_key === 'admin' ? 'q-badge-approved' : 'q-badge-draft'}`}>
+                                              {r.name}
+                                            </span>
+                                          ))
+                                        )}
+                                      </div>
+                                    </td>
+                                    <td>
+                                      <span className="font-mono text-xs text-[var(--text-secondary)]">
+                                        {u.last_sign_in_at
+                                          ? new Date(u.last_sign_in_at).toLocaleString('en-AE', { dateStyle: 'medium', timeStyle: 'short' })
+                                          : 'Never'}
+                                      </span>
+                                    </td>
+                                    <td>
+                                      {u.is_banned ? (
+                                        <span className="q-badge q-badge-rejected">Banned</span>
+                                      ) : !u.email_confirmed_at ? (
+                                        <span className="q-badge q-badge-pending_commercial">Unconfirmed</span>
+                                      ) : (
+                                        <span className="q-badge q-badge-approved">Active</span>
+                                      )}
+                                    </td>
+                                    <td>
+                                      <div className="flex gap-1.5 justify-end">
+                                        <button
+                                          onClick={() => handleSessionAction(u.id, 'signout')}
+                                          disabled={sessionActionBusy !== null}
+                                          className="quote-btn quote-btn-secondary !px-2.5 !py-1.5 !text-[11px]"
+                                          title="Revoke all refresh tokens"
+                                        >
+                                          {sessionActionBusy === u.id + 'signout' ? '…' : 'Sign out'}
+                                        </button>
+                                        {u.is_banned ? (
+                                          <button
+                                            onClick={() => handleSessionAction(u.id, 'unban')}
+                                            disabled={sessionActionBusy !== null}
+                                            className="quote-btn quote-btn-secondary !px-2.5 !py-1.5 !text-[11px]"
+                                          >
+                                            {sessionActionBusy === u.id + 'unban' ? '…' : 'Unban'}
+                                          </button>
+                                        ) : (
+                                          <button
+                                            onClick={() => handleSessionAction(u.id, 'ban')}
+                                            disabled={sessionActionBusy !== null}
+                                            className="quote-btn quote-btn-danger !px-2.5 !py-1.5 !text-[11px]"
+                                          >
+                                            {sessionActionBusy === u.id + 'ban' ? '…' : 'Ban'}
+                                          </button>
+                                        )}
+                                      </div>
+                                    </td>
+                                  </tr>
+                                ))}
+                              {sessionUsers.length === 0 && (
+                                <tr>
+                                  <td colSpan={5} className="text-center py-10 text-xs text-[var(--text-muted)]">
+                                    No accounts found.
+                                  </td>
+                                </tr>
+                              )}
+                            </tbody>
+                          </table>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                     {/* 3. FINANCIAL & TAX */}
                   {activeTab === 'FINANCE' && (
                     <div className="flex flex-col gap-6 animate-fadeIn">
@@ -2145,13 +2392,24 @@ export default function SettingsHubPage() {
                             <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">Purchase Order limit (Requires GM Approval)</label>
                             <div className="relative">
                               <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[9px] font-mono font-bold text-text-muted uppercase">{currency}</span>
-                              <input 
-                                type="number" 
+                              <input
+                                type="number"
                                 value={thresholdPO}
                                 onChange={(e) => setThresholdPO(Number(e.target.value))}
                                 className="w-full bg-slate-955 border border-border-color rounded-xl pl-12 pr-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
                               />
                             </div>
+                            <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5 mt-4">Direct Purchase Limit (PR without LPO)</label>
+                            <div className="relative">
+                              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[9px] font-mono font-bold text-text-muted uppercase">{currency}</span>
+                              <input
+                                type="number"
+                                value={directPurchaseThreshold}
+                                onChange={(e) => setDirectPurchaseThreshold(Number(e.target.value))}
+                                className="w-full bg-slate-955 border border-border-color rounded-xl pl-12 pr-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
+                              />
+                            </div>
+                            <p className="text-[10px] text-text-muted mt-1.5 leading-relaxed">PRs at or below this value can be purchased directly without raising an LPO; larger ones must convert to an LPO.</p>
                           </div>
                         </div>
 

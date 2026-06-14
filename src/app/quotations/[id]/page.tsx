@@ -27,6 +27,7 @@ import {
 } from 'lucide-react';
 import { useQuotation } from '@/hooks/useQuotations';
 import { quotationPDFService } from '@/lib/quotation-pdf';
+import WorkflowPanel from '@/components/workflow/WorkflowPanel';
 import '../quotations.css';
 
 const fmtAED = (v: number) => {
@@ -46,7 +47,23 @@ export default function QuotationDetailPage({ params }: { params: Promise<{ id: 
   const [rejectReason, setRejectReason] = useState('');
   const [showAcceptModal, setShowAcceptModal] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
+  const [showSendModal, setShowSendModal] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
+
+  // Send-to-client email composition state
+  const [emailTo, setEmailTo] = useState('');
+  const [emailCc, setEmailCc] = useState('');
+  const [emailSubject, setEmailSubject] = useState('');
+  const [emailBody, setEmailBody] = useState('');
+
+  // Accept modal — client LPO/contract attachment
+  const [lpoFile, setLpoFile] = useState<File | null>(null);
+
+  // Project association (a project owns many quotations)
+  const [existingProject, setExistingProject] = useState<{ id: string; project_number: string } | null>(null);
+  const [showLinkModal, setShowLinkModal] = useState(false);
+  const [allProjects, setAllProjects] = useState<{ id: string; project_number: string; name: string }[]>([]);
+  const [linkProjectId, setLinkProjectId] = useState('');
 
   // Load current user profile
   useEffect(() => {
@@ -74,6 +91,46 @@ export default function QuotationDetailPage({ params }: { params: Promise<{ id: 
       });
     }
   }, [quotation]);
+
+  // Detect whether this quotation already belongs to a project
+  useEffect(() => {
+    if (!quotation) return;
+    actions.getLinkedProject()
+      .then(setExistingProject)
+      .catch(() => setExistingProject(null));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [quotation?.id]);
+
+  const openLinkModal = async () => {
+    try {
+      const { data } = await supabase
+        .from('projects')
+        .select('id, project_number, name')
+        .eq('is_active', true)
+        .order('project_number', { ascending: false });
+      setAllProjects(data || []);
+      setLinkProjectId('');
+      setShowLinkModal(true);
+    } catch (err: any) {
+      alert('Could not load projects: ' + err.message);
+    }
+  };
+
+  const handleLinkToProject = async () => {
+    if (!linkProjectId || !quotation) return;
+    try {
+      setActionLoading(true);
+      await actions.linkToProject(linkProjectId);
+      const proj = allProjects.find(p => p.id === linkProjectId);
+      setExistingProject(proj ? { id: proj.id, project_number: proj.project_number } : null);
+      setShowLinkModal(false);
+      alert('Quotation linked to the project.');
+    } catch (err: any) {
+      alert('Failed to link: ' + err.message);
+    } finally {
+      setActionLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -131,11 +188,40 @@ export default function QuotationDetailPage({ params }: { params: Promise<{ id: 
     }
   };
 
-  const handleSendToClient = async () => {
+  // Opens the email composition modal, prefilling recipient/subject/body.
+  const openSendModal = () => {
+    if (!quotation) return;
+    const fmtTotal = new Intl.NumberFormat('en-AE', { minimumFractionDigits: 2 }).format(quotation.grand_total_with_vat || 0);
+    setEmailTo(quotation.client_contact_email || '');
+    setEmailCc('');
+    setEmailSubject(`Quotation ${quotation.quotation_number}${quotation.revision_label ? ' ' + quotation.revision_label : ''} — ${quotation.subject || quotation.project_ref || ''}`);
+    setEmailBody(
+      `Dear ${quotation.client_contact_person || quotation.client_name || 'Sir/Madam'},\n\n` +
+      `Please find attached our quotation ${quotation.quotation_number} for ${quotation.subject || quotation.project_ref || 'your project'}.\n\n` +
+      `Total (incl. VAT): AED ${fmtTotal}\n` +
+      `Valid until: ${quotation.valid_until ? new Date(quotation.valid_until).toLocaleDateString('en-GB') : 'N/A'}\n\n` +
+      `Kindly review and confirm your acceptance by issuing your LPO/PO at your earliest convenience. We remain available for any clarifications.\n\n` +
+      `Best regards,\n${quotation.prepared_by_name || ''}\nJEET INTECH L.L.C`
+    );
+    setShowSendModal(true);
+  };
+
+  // Builds and opens a mailto: link in the user's default mail client.
+  const openMailClient = () => {
+    const params = new URLSearchParams();
+    if (emailCc) params.set('cc', emailCc);
+    params.set('subject', emailSubject);
+    params.set('body', emailBody);
+    window.location.href = `mailto:${encodeURIComponent(emailTo)}?${params.toString().replace(/\+/g, '%20')}`;
+  };
+
+  // Marks the quotation as sent (after the user has emailed it).
+  const handleConfirmSent = async () => {
     try {
       setActionLoading(true);
       await actions.sendToClient();
-      alert('Quotation marked as Sent to Client!');
+      setShowSendModal(false);
+      alert('Quotation marked as Sent to Client.');
     } catch (err: any) {
       alert('Operation failed: ' + err.message);
     } finally {
@@ -150,13 +236,50 @@ export default function QuotationDetailPage({ params }: { params: Promise<{ id: 
     }
     try {
       setActionLoading(true);
+
+      // Upload the client LPO/contract document (optional) before accepting
+      if (lpoFile && quotation) {
+        const path = `QUOTATION/${quotation.id}/LPO_${Date.now()}_${lpoFile.name}`;
+        const { error: upErr } = await supabase.storage
+          .from('tender-documents')
+          .upload(path, lpoFile, { cacheControl: '3600', upsert: true });
+        if (upErr) {
+          throw new Error(`Failed to upload LPO document: ${upErr.message}`);
+        }
+        // Persist the document reference. Degrades gracefully if the columns
+        // are not present yet (migration 20260613120000 not applied).
+        const { error: docErr } = await supabase
+          .from('quotations')
+          .update({ client_po_document_path: path, client_po_document_name: lpoFile.name })
+          .eq('id', quotation.id);
+        if (docErr) {
+          console.warn('LPO document uploaded but reference not saved (apply migration 20260613120000):', docErr.message);
+        }
+      }
+
       await actions.markAccepted(poNumber);
       setShowAcceptModal(false);
+      setLpoFile(null);
       alert('Quotation marked as ACCEPTED! Project status updated and item usage incremented.');
     } catch (err: any) {
       alert('Operation failed: ' + err.message);
     } finally {
       setActionLoading(false);
+    }
+  };
+
+  // Download the previously-uploaded client LPO/contract document.
+  const handleDownloadLpo = async () => {
+    const path = (quotation as any)?.client_po_document_path;
+    if (!path) return;
+    try {
+      const { data, error } = await supabase.storage
+        .from('tender-documents')
+        .createSignedUrl(path, 300, { download: (quotation as any)?.client_po_document_name || true });
+      if (error || !data?.signedUrl) throw error || new Error('No URL');
+      window.open(data.signedUrl, '_blank');
+    } catch {
+      alert('Could not open the LPO document.');
     }
   };
 
@@ -279,7 +402,7 @@ export default function QuotationDetailPage({ params }: { params: Promise<{ id: 
           {/* POST GM APPROVAL - ESTIMATOR ACTIONS */}
           {isEstimator && quotation.status === 'APPROVED' && (
             <>
-              <button className="quote-btn quote-btn-primary" disabled={actionLoading} onClick={handleSendToClient}>
+              <button className="quote-btn quote-btn-primary" disabled={actionLoading} onClick={openSendModal}>
                 <Send size={14} /> Send to Client
               </button>
               <button className="quote-btn quote-btn-secondary" disabled={actionLoading} onClick={handleCreateRevision}>
@@ -312,9 +435,25 @@ export default function QuotationDetailPage({ params }: { params: Promise<{ id: 
 
           {quotation.status === 'ACCEPTED' && (
             <>
-              <Link href={`/projects/new/${quotation.id}`} className="quote-btn quote-btn-primary" style={{ background: 'var(--secondary)', color: '#060814', fontWeight: 'bold', textDecoration: 'none' }}>
-                Initialize Project Master &rarr;
-              </Link>
+              {(quotation as any).client_po_document_path && (
+                <button className="quote-btn quote-btn-secondary" onClick={handleDownloadLpo}>
+                  <Download size={14} /> Client LPO / Contract
+                </button>
+              )}
+              {existingProject ? (
+                <Link href={`/projects/${existingProject.id}`} className="quote-btn quote-btn-primary" style={{ background: 'var(--secondary)', color: '#060814', fontWeight: 'bold', textDecoration: 'none' }}>
+                  View Project {existingProject.project_number} &rarr;
+                </Link>
+              ) : (
+                <>
+                  <Link href={`/projects/new/${quotation.id}`} className="quote-btn quote-btn-primary" style={{ background: 'var(--secondary)', color: '#060814', fontWeight: 'bold', textDecoration: 'none' }}>
+                    Initialize Project Master &rarr;
+                  </Link>
+                  <button className="quote-btn quote-btn-secondary" onClick={openLinkModal}>
+                    Link to Existing Project
+                  </button>
+                </>
+              )}
               <Link href={`/procurement/comparisons/new/${quotation.id}`} className="quote-btn quote-btn-primary" style={{ background: '#00E5A0', color: '#060814', fontWeight: 'bold', textDecoration: 'none' }}>
                 Create Supplier Comparison &rarr;
               </Link>
@@ -335,6 +474,16 @@ export default function QuotationDetailPage({ params }: { params: Promise<{ id: 
 
       {/* TAB CONTENT: OVERVIEW */}
       {activeTab === 'overview' && (
+        <>
+        {/* Configurable workflow (Admin Center → Workflows) */}
+        <WorkflowPanel
+          moduleKey="QTN"
+          entityId={id}
+          context={{ status: quotation.status, grand_total: Number(quotation.grand_total_with_vat) || 0 }}
+          onStatusChange={() => refetch()}
+          className="mb-6"
+        />
+
         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem', alignItems: 'start' }}>
           
           {/* Main Info */}
@@ -427,6 +576,7 @@ export default function QuotationDetailPage({ params }: { params: Promise<{ id: 
             </div>
           </div>
         </div>
+        </>
       )}
 
       {/* TAB CONTENT: LINE ITEMS */}
@@ -629,6 +779,89 @@ export default function QuotationDetailPage({ params }: { params: Promise<{ id: 
         </div>
       )}
 
+      {/* LINK TO EXISTING PROJECT MODAL */}
+      {showLinkModal && (
+        <div className="quote-modal-overlay">
+          <div className="quote-modal">
+            <div className="quote-modal-header">
+              <h3 className="quote-card-title">Link Quotation to Existing Project</h3>
+            </div>
+            <div className="quote-modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                Associate this quotation with an existing project. A project can own many quotations; this quotation will belong to the selected project.
+              </p>
+              <div className="quote-form-group">
+                <label>Project</label>
+                <select className="quote-form-input" value={linkProjectId} onChange={(e) => setLinkProjectId(e.target.value)}>
+                  <option value="">Select a project…</option>
+                  {allProjects.map(p => <option key={p.id} value={p.id}>{p.project_number} — {p.name}</option>)}
+                </select>
+              </div>
+              <div style={{ display: 'flex', gap: '0.8rem', justifyContent: 'flex-end', marginTop: '1rem' }}>
+                <button className="quote-btn quote-btn-secondary" onClick={() => setShowLinkModal(false)}>Cancel</button>
+                <button className="quote-btn quote-btn-primary" disabled={!linkProjectId || actionLoading} onClick={handleLinkToProject}>Link Quotation</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* SEND TO CLIENT — EMAIL COMPOSE MODAL */}
+      {showSendModal && (
+        <div className="quote-modal-overlay">
+          <div className="quote-modal" style={{ maxWidth: '620px' }}>
+            <div className="quote-modal-header">
+              <h3 className="quote-card-title"><Send size={16} /> Send Quotation to Client</h3>
+            </div>
+            <div className="quote-modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem' }}>
+              <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-start', background: 'rgba(37, 99, 235, 0.06)', padding: '0.7rem', borderRadius: '8px', border: '1px solid rgba(37, 99, 235, 0.15)' }}>
+                <FileText size={14} style={{ color: 'var(--primary)', flexShrink: 0, marginTop: '0.1rem' }} />
+                <p style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
+                  Download the PDF and attach it to the email (mail clients can't auto-attach). Opening your mail app pre-fills the recipient, subject and message. Then return here and mark it as sent.
+                </p>
+              </div>
+
+              <button
+                className="quote-btn quote-btn-secondary"
+                style={{ alignSelf: 'flex-start' }}
+                onClick={() => quotationPDFService.download(quotation.id)}
+              >
+                <Download size={14} /> Download Quotation PDF
+              </button>
+
+              <div className="quote-form-group">
+                <label>To</label>
+                <input type="email" className="quote-form-input" placeholder="client@email.com" value={emailTo} onChange={(e) => setEmailTo(e.target.value)} />
+              </div>
+              <div className="quote-form-group">
+                <label>Cc <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>(optional)</span></label>
+                <input type="text" className="quote-form-input" placeholder="cc@email.com" value={emailCc} onChange={(e) => setEmailCc(e.target.value)} />
+              </div>
+              <div className="quote-form-group">
+                <label>Subject</label>
+                <input type="text" className="quote-form-input" value={emailSubject} onChange={(e) => setEmailSubject(e.target.value)} />
+              </div>
+              <div className="quote-form-group">
+                <label>Message</label>
+                <textarea className="quote-form-textarea" rows={8} value={emailBody} onChange={(e) => setEmailBody(e.target.value)} />
+              </div>
+
+              <div style={{ display: 'flex', gap: '0.8rem', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.5rem' }}>
+                <button className="quote-btn quote-btn-secondary" onClick={openMailClient} disabled={!emailTo}>
+                  <Send size={14} /> Open in Email App
+                </button>
+                <div style={{ display: 'flex', gap: '0.6rem' }}>
+                  <button className="quote-btn quote-btn-secondary" onClick={() => setShowSendModal(false)}>Cancel</button>
+                  <button className="quote-btn quote-btn-primary" disabled={actionLoading} onClick={handleConfirmSent}>
+                    Mark as Sent
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ACCEPT MODAL */}
       {showAcceptModal && (
         <div className="quote-modal-overlay">
@@ -640,13 +873,30 @@ export default function QuotationDetailPage({ params }: { params: Promise<{ id: 
               <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Specify the client''s LPO (Local Purchase Order) or PO number reference below to complete the quotation. This will lock the quotation as ACCEPTED, increment pricing catalog usages, and set the project/tender status to Completed.</p>
               <div className="quote-form-group">
                 <label>LPO / PO Reference Number</label>
-                <input 
-                  type="text" 
-                  className="quote-form-input" 
-                  placeholder="e.g. LPO-2026-904" 
-                  value={poNumber} 
-                  onChange={(e) => setPoNumber(e.target.value)} 
+                <input
+                  type="text"
+                  className="quote-form-input"
+                  placeholder="e.g. LPO-2026-904"
+                  value={poNumber}
+                  onChange={(e) => setPoNumber(e.target.value)}
                 />
+              </div>
+              <div className="quote-form-group">
+                <label>Client LPO / Contract Document <span style={{ color: 'var(--text-muted)', fontWeight: 400 }}>(optional)</span></label>
+                <input
+                  type="file"
+                  className="quote-form-input"
+                  accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                  onChange={(e) => setLpoFile(e.target.files?.[0] || null)}
+                />
+                {lpoFile && (
+                  <span style={{ fontSize: '0.72rem', color: 'var(--success)', marginTop: '0.3rem' }}>
+                    Attached: {lpoFile.name} ({(lpoFile.size / 1024).toFixed(0)} KB)
+                  </span>
+                )}
+                <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
+                  Upload the signed LPO/PO or contract. (AI email/WhatsApp follow-up will populate this automatically in a future release.)
+                </span>
               </div>
               <div style={{ display: 'flex', gap: '0.8rem', justifyContent: 'flex-end', marginTop: '1rem' }}>
                 <button className="quote-btn quote-btn-secondary" onClick={() => setShowAcceptModal(false)}>Cancel</button>

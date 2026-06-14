@@ -1,22 +1,33 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+// ============================================================
+// JEET ERP — Audit Log
+// Immutable activity ledger: filters, table, diff inspector.
+// Styled with the Admin Center design system (theme-aware).
+// ============================================================
+
+import React, { useState, useEffect, useCallback } from 'react';
 import { auditService } from '@/services/auditService';
 import type { AuditLog, AuditLogFilter } from '@/types/audit.types';
-import { 
-  Search, 
-  Filter, 
-  Calendar, 
-  Database, 
-  User, 
-  Eye, 
-  Activity, 
-  Terminal, 
-  CheckCircle,
-  FileCode,
-  Clock,
-  Globe
+import { PageHeader } from '@/components/ui/PageHeader';
+import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/Card';
+import {
+  Search, Database, User, Eye, Terminal,
+  CheckCircle, FileCode, Clock, Globe, X,
 } from 'lucide-react';
+
+const MODULES = ['SYSTEM', 'QUOTATION', 'PROCUREMENT', 'FINANCE', 'SERVICE', 'TESTING', 'HR', 'INVENTORY', 'FLEET', 'ASSET'];
+const ACTIONS = ['CREATE', 'UPDATE', 'DELETE', 'APPROVE', 'REJECT', 'LOGIN', 'EXPORT'];
+const ENTITY_TYPES = [
+  // Platform / administration
+  'WORKFLOW', 'WORKFLOW_INSTANCE', 'BUSINESS_RULE', 'NUMBERING_RULE',
+  'FORM_DEFINITION', 'DOCUMENT_TEMPLATE', 'SYSTEM_SETTING', 'PERMISSION',
+  'USER_ACCOUNT', 'USER_SESSION',
+  // Business documents
+  'QUOTATION', 'PURCHASE_ORDER', 'GRN', 'INVOICE', 'TENDER', 'PROJECT',
+  'VARIATION_ORDER', 'TICKET', 'EMPLOYEE', 'ASSET',
+];
 
 export default function AuditTrailPage() {
   const [logs, setLogs] = useState<AuditLog[]>([]);
@@ -24,22 +35,19 @@ export default function AuditTrailPage() {
   const [search, setSearch] = useState<string>('');
   const [selectedModule, setSelectedModule] = useState<string>('');
   const [selectedAction, setSelectedAction] = useState<string>('');
+  const [selectedEntityType, setSelectedEntityType] = useState<string>('');
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
-  
-  // Diff viewer state
   const [selectedLog, setSelectedLog] = useState<AuditLog | null>(null);
 
-  const modules = ['QUOTATION', 'PROCUREMENT', 'FINANCE', 'SERVICE', 'TESTING', 'HR', 'INVENTORY', 'FLEET', 'ASSET', 'SYSTEM'];
-  const actions = ['CREATE', 'UPDATE', 'DELETE', 'APPROVE', 'REJECT', 'LOGIN', 'EXPORT'];
-
-  const fetchLogs = async () => {
+  const fetchLogs = useCallback(async () => {
     setLoading(true);
     try {
       const filters: AuditLogFilter = {};
       if (search) filters.search = search;
       if (selectedModule) filters.module = selectedModule;
       if (selectedAction) filters.action = selectedAction;
+      if (selectedEntityType) filters.entity_type = selectedEntityType;
       if (startDate) filters.startDate = new Date(startDate).toISOString();
       if (endDate) filters.endDate = new Date(endDate).toISOString();
 
@@ -50,11 +58,10 @@ export default function AuditTrailPage() {
     } finally {
       setLoading(false);
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedModule, selectedAction, selectedEntityType, startDate, endDate]);
 
-  useEffect(() => {
-    fetchLogs();
-  }, [selectedModule, selectedAction, startDate, endDate]);
+  useEffect(() => { fetchLogs(); }, [fetchLogs]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,221 +72,181 @@ export default function AuditTrailPage() {
     setSearch('');
     setSelectedModule('');
     setSelectedAction('');
+    setSelectedEntityType('');
     setStartDate('');
     setEndDate('');
-    fetchLogs();
   };
 
-  // Helper to render JSON nicely
-  const renderJsonPayload = (data: any) => {
-    if (!data) return <span className="text-slate-500 italic">None</span>;
+  const renderJsonPayload = (data: unknown) => {
+    if (!data) return <span className="text-[var(--text-muted)] italic">None</span>;
     return (
-      <pre className="p-3 bg-slate-950 border border-slate-900 rounded font-mono text-[11px] text-emerald-400 overflow-auto max-h-[250px]">
+      <pre className="p-3 bg-[var(--bg-dark)] border border-[var(--border-color)] rounded-md font-mono text-xs text-[var(--text-secondary)] overflow-auto max-h-[250px]">
         {JSON.stringify(data, null, 2)}
       </pre>
     );
   };
 
-  // Helper to render a visual diff between before and after keys
   const renderDiff = (before: any, after: any) => {
-    if (!before && !after) return <div className="text-slate-500 italic">No change details recorded.</div>;
-    
+    if (!before && !after) return <p className="text-xs text-[var(--text-muted)] italic">No change details recorded.</p>;
+
     const b = before || {};
     const a = after || {};
-    const allKeys = Array.from(new Set([...Object.keys(b), ...Object.keys(a)]));
+    const changedKeys = Array.from(new Set([...Object.keys(b), ...Object.keys(a)]))
+      .filter(key => JSON.stringify(b[key]) !== JSON.stringify(a[key]));
+
+    if (changedKeys.length === 0) {
+      return <p className="text-xs text-[var(--text-muted)] italic">No field-level differences.</p>;
+    }
 
     return (
-      <div className="border border-slate-900 rounded bg-slate-950/60 overflow-hidden text-xs">
-        <div className="grid grid-cols-3 bg-slate-900 px-4 py-2 border-b border-slate-900 font-bold text-slate-400">
-          <div>Field Key</div>
-          <div>Previous Value</div>
-          <div>New Value</div>
+      <div className="border border-[var(--border-color)] rounded-md overflow-hidden text-xs">
+        <div className="grid grid-cols-3 bg-[var(--bg-card-hover)] px-3 py-2 border-b border-[var(--border-color)] font-medium text-[var(--text-secondary)]">
+          <div>Field</div>
+          <div>Before</div>
+          <div>After</div>
         </div>
-        <div className="divide-y divide-slate-900 max-h-[300px] overflow-y-auto font-mono text-[11px]">
-          {allKeys.map(key => {
-            const valBefore = b[key];
-            const valAfter = a[key];
-            const isDifferent = JSON.stringify(valBefore) !== JSON.stringify(valAfter);
-
-            if (!isDifferent) return null; // Only show changes
-
-            return (
-              <div key={key} className="grid grid-cols-3 px-4 py-2 hover:bg-slate-900/30">
-                <div className="text-slate-400 font-semibold truncate pr-2">{key}</div>
-                <div className="text-red-400/90 line-through truncate pr-2">
-                  {valBefore !== undefined ? String(valBefore) : <span className="text-slate-700 italic">n/a</span>}
-                </div>
-                <div className="text-emerald-400 truncate pr-2">
-                  {valAfter !== undefined ? String(valAfter) : <span className="text-slate-700 italic">deleted</span>}
-                </div>
+        <div className="divide-y divide-[var(--border-color)] max-h-[300px] overflow-y-auto font-mono">
+          {changedKeys.map(key => (
+            <div key={key} className="grid grid-cols-3 px-3 py-2 hover:bg-[var(--bg-card-hover)]">
+              <div className="text-[var(--text-secondary)] font-medium truncate pr-2">{key}</div>
+              <div className="text-[var(--status-danger-text)] line-through truncate pr-2">
+                {b[key] !== undefined ? String(b[key]) : <span className="text-[var(--text-muted)] italic no-underline">n/a</span>}
               </div>
-            );
-          })}
+              <div className="text-[var(--status-success-text)] truncate pr-2">
+                {a[key] !== undefined ? String(a[key]) : <span className="text-[var(--text-muted)] italic">deleted</span>}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     );
   };
 
+  const hasFilters = search || selectedModule || selectedAction || selectedEntityType || startDate || endDate;
+
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
-<div className="flex-1 flex flex-col lg:flex-row gap-6 p-6 max-w-7xl w-full mx-auto">
-        {/* Left Side: Timeline and Logs */}
-        <div className="flex-1 flex flex-col gap-6">
-          <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-              <h1 className="text-2xl font-bold font-heading tracking-tight flex items-center gap-2">
-                <Activity className="text-emerald-400" size={22} /> Forensic Audit Ledger
-              </h1>
-              <p className="text-xs text-slate-400 font-mono mt-1">
-                IMMUTABLE FORENSIC ACTIVITY MONITORING LAYER
-              </p>
-            </div>
-            <button 
-              onClick={clearFilters}
-              className="px-3 py-1.5 rounded bg-slate-900 border border-slate-800 text-xs text-slate-400 hover:text-white hover:border-slate-700 transition-all font-semibold self-start"
-            >
-              Clear All Filters
-            </button>
-          </header>
+    <div className="flex flex-col gap-5">
+      <PageHeader
+        title="Audit Log"
+        subtitle="Immutable forensic trail of every change — who, what, when, before and after"
+        breadcrumbs={[{ label: 'Admin', href: '/admin' }, { label: 'Audit Log' }]}
+        actions={
+          hasFilters ? (
+            <Button size="sm" variant="secondary" icon={X} onClick={clearFilters}>Clear filters</Button>
+          ) : undefined
+        }
+      />
 
-          {/* Filtering Hub */}
-          <div className="p-4 bg-slate-900/40 border border-slate-900 rounded-lg flex flex-col gap-4">
-            <form onSubmit={handleSearchSubmit} className="flex gap-2">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-2.5 text-slate-500" size={16} />
-                <input 
-                  type="text"
-                  placeholder="Search ledger by summary, entity type, action..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-900 rounded px-3 py-2 pl-10 text-xs text-slate-200 focus:outline-none focus:border-emerald-500/50 font-medium"
-                />
-              </div>
-              <button 
-                type="submit"
-                className="bg-emerald-500 text-slate-950 font-bold px-4 py-2 rounded text-xs hover:bg-emerald-400 transition-all shadow-[0_0_15px_rgba(0,229,160,0.15)]"
-              >
-                Search
-              </button>
-            </form>
+      <div className="flex flex-col xl:flex-row gap-5 items-start">
+        {/* Left: filters + ledger */}
+        <div className="flex-1 w-full flex flex-col gap-4 min-w-0">
+          {/* Filters */}
+          <Card padding={false}>
+            <div className="p-4 flex flex-col gap-3">
+              <form onSubmit={handleSearchSubmit} className="flex gap-2">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" size={14} />
+                  <input
+                    type="text"
+                    placeholder="Search by summary, entity type, action…"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="quote-form-input w-full !pl-9"
+                  />
+                </div>
+                <Button type="submit" variant="primary" size="md">Search</Button>
+              </form>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <div>
-                <label className="block text-[10px] font-mono text-slate-500 uppercase font-bold mb-1">Module</label>
-                <select 
-                  value={selectedModule} 
-                  onChange={(e) => setSelectedModule(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-900 rounded px-2.5 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50"
-                >
-                  <option value="">All Modules</option>
-                  {modules.map(m => <option key={m} value={m}>{m}</option>)}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-[10px] font-mono text-slate-500 uppercase font-bold mb-1">Action Type</label>
-                <select 
-                  value={selectedAction} 
-                  onChange={(e) => setSelectedAction(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-900 rounded px-2.5 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50"
-                >
-                  <option value="">All Actions</option>
-                  {actions.map(a => <option key={a} value={a}>{a}</option>)}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-[10px] font-mono text-slate-500 uppercase font-bold mb-1">From Date</label>
-                <input 
-                  type="date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-900 rounded px-2.5 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[10px] font-mono text-slate-500 uppercase font-bold mb-1">To Date</label>
-                <input 
-                  type="date"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-900 rounded px-2.5 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50"
-                />
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                <div className="quote-form-group">
+                  <label>Module</label>
+                  <select value={selectedModule} onChange={(e) => setSelectedModule(e.target.value)} className="quote-form-input">
+                    <option value="">All modules</option>
+                    {MODULES.map(m => <option key={m} value={m}>{m}</option>)}
+                  </select>
+                </div>
+                <div className="quote-form-group">
+                  <label>Entity type</label>
+                  <select value={selectedEntityType} onChange={(e) => setSelectedEntityType(e.target.value)} className="quote-form-input">
+                    <option value="">All entities</option>
+                    {ENTITY_TYPES.map(t => <option key={t} value={t}>{t.replace(/_/g, ' ')}</option>)}
+                  </select>
+                </div>
+                <div className="quote-form-group">
+                  <label>Action</label>
+                  <select value={selectedAction} onChange={(e) => setSelectedAction(e.target.value)} className="quote-form-input">
+                    <option value="">All actions</option>
+                    {ACTIONS.map(a => <option key={a} value={a}>{a}</option>)}
+                  </select>
+                </div>
+                <div className="quote-form-group">
+                  <label>From</label>
+                  <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="quote-form-input" />
+                </div>
+                <div className="quote-form-group">
+                  <label>To</label>
+                  <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="quote-form-input" />
+                </div>
               </div>
             </div>
-          </div>
+          </Card>
 
-          {/* Audit Ledger List */}
-          <div className="flex-1 bg-slate-900/20 border border-slate-900 rounded-lg overflow-hidden flex flex-col min-h-[450px]">
+          {/* Ledger */}
+          <Card padding={false}>
             {loading ? (
-              <div className="flex-1 flex flex-col items-center justify-center py-12">
-                <div className="h-8 w-8 rounded-full border-2 border-emerald-500 border-t-transparent animate-spin mb-3"></div>
-                <p className="text-xs text-slate-500">Querying ledger logs...</p>
+              <div className="flex flex-col items-center justify-center py-16 gap-3">
+                <div className="h-7 w-7 rounded-full border-2 border-[var(--border-color)] border-t-[var(--text-primary)] animate-spin" />
+                <p className="text-xs text-[var(--text-muted)]">Loading audit records…</p>
               </div>
             ) : logs.length === 0 ? (
-              <div className="flex-1 flex flex-col items-center justify-center py-12 text-slate-500">
-                <Database size={32} className="opacity-20 mb-2" />
-                <p className="text-xs">No matching forensic logs found.</p>
+              <div className="flex flex-col items-center justify-center py-16 text-[var(--text-muted)] gap-2">
+                <Database size={28} className="opacity-30" />
+                <p className="text-xs">No matching audit records found.</p>
               </div>
             ) : (
-              <div className="overflow-x-auto flex-1">
-                <table className="w-full text-left border-collapse">
+              <div className="quote-table-wrap !border-0 !rounded-none">
+                <table className="quote-table">
                   <thead>
-                    <tr className="bg-slate-900/60 border-b border-slate-900 text-[10px] font-mono text-slate-500 uppercase font-bold tracking-wider">
-                      <th className="py-3 px-4">Timestamp</th>
-                      <th className="py-3 px-4">Actor</th>
-                      <th className="py-3 px-4">Module / Scope</th>
-                      <th className="py-3 px-4">Action</th>
-                      <th className="py-3 px-4">Entity Details</th>
-                      <th className="py-3 px-4 text-right">Details</th>
+                    <tr>
+                      <th>Timestamp</th>
+                      <th>Actor</th>
+                      <th>Module</th>
+                      <th>Action</th>
+                      <th>Summary</th>
+                      <th style={{ textAlign: 'right' }}>Details</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-900 font-mono text-xs">
+                  <tbody>
                     {logs.map(log => {
-                      const date = new Date(log.occurred_at).toLocaleString('en-AE', { 
-                        day: '2-digit', 
-                        month: '2-digit', 
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        second: '2-digit'
+                      const date = new Date(log.occurred_at).toLocaleString('en-AE', {
+                        day: '2-digit', month: 'short', year: 'numeric',
+                        hour: '2-digit', minute: '2-digit',
                       });
-
                       const isSelected = selectedLog?.id === log.id;
-
                       return (
-                        <tr 
-                          key={log.id} 
-                          className={`hover:bg-slate-900/40 transition-colors ${isSelected ? 'bg-slate-900/80' : ''}`}
-                        >
-                          <td className="py-3 px-4 text-slate-400 whitespace-nowrap">{date}</td>
-                          <td className="py-3 px-4">
+                        <tr key={log.id} className={isSelected ? 'bg-[var(--bg-card-hover)]' : ''}>
+                          <td><span className="font-mono text-xs text-[var(--text-secondary)] whitespace-nowrap">{date}</span></td>
+                          <td>
                             <div className="flex items-center gap-1.5">
-                              <User size={13} className="text-slate-500" />
-                              <div>
-                                <div className="font-semibold text-slate-200">{log.actor_name}</div>
-                                <div className="text-[9px] text-slate-500 font-bold uppercase tracking-wider">{log.actor_role || 'SYSTEM'}</div>
+                              <User size={12} className="text-[var(--text-muted)] flex-shrink-0" />
+                              <div className="min-w-0">
+                                <div className="text-xs font-medium text-[var(--text-primary)] truncate">{log.actor_name}</div>
+                                <div className="text-[0.6875rem] text-[var(--text-muted)] uppercase">{log.actor_role || 'system'}</div>
                               </div>
                             </div>
                           </td>
-                          <td className="py-3 px-4">
-                            <span className="px-2 py-0.5 rounded bg-slate-950 border border-slate-800 text-[10px] text-slate-300 font-semibold">
-                              {log.module}
-                            </span>
+                          <td><span className="q-badge q-badge-draft">{log.module}</span></td>
+                          <td><span className="text-xs font-medium text-[var(--text-primary)]">{log.action}</span></td>
+                          <td>
+                            <div className="text-xs text-[var(--text-secondary)] truncate max-w-[260px]">{log.summary}</div>
+                            <div className="text-[0.6875rem] text-[var(--text-muted)] font-mono mt-0.5">{log.entity_type}</div>
                           </td>
-                          <td className="py-3 px-4 font-semibold text-emerald-400">{log.action}</td>
-                          <td className="py-3 px-4">
-                            <div className="font-sans text-xs font-semibold text-slate-300 truncate max-w-[200px]">{log.summary}</div>
-                            <div className="text-[10px] text-slate-500 mt-0.5 font-mono">ID: {log.entity_id.slice(0, 8)}...</div>
-                          </td>
-                          <td className="py-3 px-4 text-right">
-                            <button
-                              onClick={() => setSelectedLog(log)}
-                              className="p-1 rounded bg-slate-950 border border-slate-900 text-slate-400 hover:text-emerald-400 hover:border-emerald-500/20 transition-all inline-flex items-center gap-1 text-[10px] font-semibold"
-                            >
-                              <Eye size={12} /> Inspect
-                            </button>
+                          <td>
+                            <div className="flex justify-end">
+                              <Button size="sm" variant="muted" icon={Eye} onClick={() => setSelectedLog(log)}>
+                                Inspect
+                              </Button>
+                            </div>
                           </td>
                         </tr>
                       );
@@ -288,95 +255,82 @@ export default function AuditTrailPage() {
                 </table>
               </div>
             )}
-          </div>
+          </Card>
         </div>
 
-        {/* Right Side: Log Inspector Panel */}
-        <div className="w-full lg:w-96 flex flex-col gap-6 lg:border-l lg:border-slate-900 lg:pl-6">
-          <div className="sticky top-24 flex flex-col gap-6">
-            <div className="p-4 bg-slate-900/40 border border-slate-900 rounded-lg">
-              <h3 className="text-sm font-bold tracking-wider uppercase text-slate-400 flex items-center gap-1.5 mb-4 font-heading">
-                <Terminal size={14} className="text-emerald-400" /> Audit Inspector
-              </h3>
-
+        {/* Right: inspector */}
+        <div className="w-full xl:w-96 flex flex-col gap-4 flex-shrink-0 xl:sticky xl:top-20">
+          <Card title="Record inspector" icon={Terminal} padding={false}>
+            <div className="p-4">
               {selectedLog ? (
-                <div className="flex flex-col gap-4 font-sans text-xs">
-                  <div className="border-b border-slate-900 pb-3">
-                    <div className="text-[10px] text-slate-500 font-mono uppercase font-bold">Log Record ID</div>
-                    <div className="font-mono text-emerald-400 font-bold mt-0.5">{selectedLog.id}</div>
+                <div className="flex flex-col gap-4 text-xs">
+                  <div className="border-b border-[var(--border-color)] pb-3">
+                    <span className="text-[0.6875rem] text-[var(--text-muted)] uppercase block">Record ID</span>
+                    <span className="font-mono text-[var(--text-primary)] break-all">{selectedLog.id}</span>
                   </div>
 
                   <div>
-                    <div className="text-[10px] text-slate-500 font-mono uppercase font-bold">Summary Description</div>
-                    <div className="font-semibold text-slate-200 mt-1 leading-relaxed">{selectedLog.summary}</div>
+                    <span className="text-[0.6875rem] text-[var(--text-muted)] uppercase block mb-1">Summary</span>
+                    <p className="text-[var(--text-primary)] leading-relaxed">{selectedLog.summary}</p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <div className="text-[10px] text-slate-500 font-mono uppercase font-bold">IP Coordinates</div>
-                      <div className="font-mono text-slate-300 mt-0.5 flex items-center gap-1">
-                        <Globe size={11} className="text-slate-500" />
-                        {selectedLog.ip || 'Local/Worker'}
-                      </div>
+                      <span className="text-[0.6875rem] text-[var(--text-muted)] uppercase block">Source</span>
+                      <span className="font-mono text-[var(--text-secondary)] flex items-center gap-1 mt-0.5">
+                        <Clock size={11} /> {selectedLog.source}
+                      </span>
                     </div>
                     <div>
-                      <div className="text-[10px] text-slate-500 font-mono uppercase font-bold">Event Source</div>
-                      <div className="font-mono text-slate-300 mt-0.5 flex items-center gap-1">
-                        <Clock size={11} className="text-slate-500" />
-                        {selectedLog.source}
-                      </div>
+                      <span className="text-[0.6875rem] text-[var(--text-muted)] uppercase block">IP address</span>
+                      <span className="font-mono text-[var(--text-secondary)] flex items-center gap-1 mt-0.5">
+                        <Globe size={11} /> {selectedLog.ip || 'Local'}
+                      </span>
                     </div>
                   </div>
 
-                  <div className="border-t border-slate-900 pt-4 flex flex-col gap-3">
+                  <div className="border-t border-[var(--border-color)] pt-3 flex flex-col gap-2.5">
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-mono text-slate-500 uppercase font-bold flex items-center gap-1">
-                        <FileCode size={13} className="text-emerald-400" /> State Payload Diff
+                      <span className="text-[0.6875rem] text-[var(--text-muted)] uppercase flex items-center gap-1">
+                        <FileCode size={12} /> Field changes
                       </span>
-                      <span className="text-[9px] text-slate-500 font-mono font-bold bg-slate-950 px-2 py-0.5 rounded border border-slate-900">
-                        {selectedLog.entity_type}
-                      </span>
+                      <span className="q-badge q-badge-draft">{selectedLog.entity_type}</span>
                     </div>
 
                     {renderDiff(selectedLog.before, selectedLog.after)}
 
-                    <div className="mt-2 flex flex-col gap-2">
-                      <details className="group">
-                        <summary className="text-[10px] font-mono font-bold text-slate-500 hover:text-slate-300 cursor-pointer select-none list-none flex items-center justify-between bg-slate-900 px-3 py-1.5 rounded border border-slate-900">
-                          <span>VIEW RAW BEFORE payload</span>
-                          <span className="text-[9px] transition-transform group-open:rotate-180">&#9662;</span>
-                        </summary>
-                        <div className="mt-2">{renderJsonPayload(selectedLog.before)}</div>
-                      </details>
-
-                      <details className="group">
-                        <summary className="text-[10px] font-mono font-bold text-slate-500 hover:text-slate-300 cursor-pointer select-none list-none flex items-center justify-between bg-slate-900 px-3 py-1.5 rounded border border-slate-900">
-                          <span>VIEW RAW AFTER payload</span>
-                          <span className="text-[9px] transition-transform group-open:rotate-180">&#9662;</span>
-                        </summary>
-                        <div className="mt-2">{renderJsonPayload(selectedLog.after)}</div>
-                      </details>
-                    </div>
+                    <details className="group">
+                      <summary className="text-[0.6875rem] font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)] cursor-pointer select-none bg-[var(--bg-card-hover)] border border-[var(--border-color)] px-3 py-1.5 rounded-md">
+                        Raw BEFORE payload
+                      </summary>
+                      <div className="mt-2">{renderJsonPayload(selectedLog.before)}</div>
+                    </details>
+                    <details className="group">
+                      <summary className="text-[0.6875rem] font-medium text-[var(--text-muted)] hover:text-[var(--text-primary)] cursor-pointer select-none bg-[var(--bg-card-hover)] border border-[var(--border-color)] px-3 py-1.5 rounded-md">
+                        Raw AFTER payload
+                      </summary>
+                      <div className="mt-2">{renderJsonPayload(selectedLog.after)}</div>
+                    </details>
                   </div>
                 </div>
               ) : (
-                <div className="text-center py-12 border border-dashed border-slate-900 rounded bg-slate-950/20">
-                  <Database size={24} className="mx-auto opacity-10 mb-2" />
-                  <p className="text-[11px] text-slate-500">Select any record in the ledger timeline to inspect payload diffs and transaction details.</p>
+                <div className="text-center py-12 border border-dashed border-[var(--border-color)] rounded-md">
+                  <Database size={22} className="mx-auto opacity-20 mb-2 text-[var(--text-muted)]" />
+                  <p className="text-xs text-[var(--text-muted)] px-4">
+                    Select a record in the ledger to inspect field-level changes and payloads.
+                  </p>
                 </div>
               )}
             </div>
+          </Card>
 
-            {/* Immutability Banner */}
-            <div className="p-4 bg-emerald-950/10 border border-emerald-900/30 rounded-lg flex gap-3">
-              <CheckCircle className="text-emerald-400 shrink-0 mt-0.5" size={16} />
-              <div>
-                <h4 className="text-xs font-bold text-emerald-400 font-heading">Ledger Integrity Active</h4>
-                <p className="text-[10px] text-slate-400 leading-relaxed mt-1 font-mono">
-                  This transaction log is backed by the database-level write-once constraint (prevent_audit_log_modification trigger). UPDATE and DELETE calls are permanently rejected.
-                </p>
-              </div>
-            </div>
+          <div className="flex gap-2.5 bg-[var(--status-success-bg)] border border-[var(--status-success-border)] rounded-lg p-3.5 text-xs items-start">
+            <CheckCircle size={14} className="flex-shrink-0 mt-0.5 text-[var(--status-success-text)]" />
+            <p className="text-[var(--status-success-text)] leading-relaxed">
+              <strong className="font-medium">Write-once ledger:</strong> the database trigger
+              <code className="font-mono"> prevent_audit_log_modification</code> permanently rejects
+              UPDATE and DELETE on this table.
+            </p>
           </div>
         </div>
       </div>

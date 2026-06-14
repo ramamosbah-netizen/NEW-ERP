@@ -23,7 +23,8 @@ import {
   FileCheck,
   MapPin,
   Calendar,
-  XCircle
+  XCircle,
+  PackageCheck
 } from 'lucide-react';
 import '@/app/procurement/comparisons/comparisons.css';
 
@@ -126,6 +127,9 @@ export default function GRNRegistryDashboard() {
         </div>
         
         <div style={{ display: 'flex', gap: '0.8rem' }}>
+          <Link href="/procurement/grn/receivables" className="quote-btn quote-btn-secondary">
+            <PackageCheck size={16} style={{ marginRight: '0.4rem' }} /> Receivables
+          </Link>
           <Link href="/procurement/po" className="quote-btn quote-btn-secondary">
             <FileText size={16} style={{ marginRight: '0.4rem' }} /> Purchase Orders (LPO)
           </Link>

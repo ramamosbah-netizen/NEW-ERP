@@ -271,10 +271,30 @@ export const comparisonService = {
       };
     });
 
+    // Compute the next comparison number client-side and pass it, so creation
+    // works regardless of the DB trigger state (the legacy trigger used a wrong
+    // SUBSTRING offset that produced duplicate numbers). The trigger only fires
+    // when comparison_number is null/empty, so providing it bypasses the bug;
+    // migration 20260613220000 fixes the trigger for race-safe DB generation.
+    const compYear = new Date().getFullYear();
+    const { data: existingNums } = await supabase
+      .from('supplier_comparisons')
+      .select('comparison_number')
+      .eq('revision', 0)
+      .like('comparison_number', `JI-CMP-${compYear}-%`);
+    let maxSeq = 0;
+    for (const r of existingNums || []) {
+      const seq = parseInt((r.comparison_number || '').split('-')[3], 10);
+      if (Number.isFinite(seq) && seq > maxSeq) maxSeq = seq;
+    }
+    const nextComparisonNumber = `JI-CMP-${compYear}-${String(maxSeq + 1).padStart(3, '0')}`;
+
     // Create Comparison Header
     const { data: compSheet, error: compInsertErr } = await supabase
       .from('supplier_comparisons')
       .insert({
+        comparison_number: nextComparisonNumber,
+        revision: 0,
         status: 'DRAFT',
         quotation_id: quotationId,
         boq_id: quote.boq_id,
@@ -334,6 +354,40 @@ export const comparisonService = {
   },
 
   // 4. Add a Supplier Offer to a Comparison Item
+  /**
+   * Resolves a supplier id from a name, registering the supplier in the
+   * supplier module (pricing_suppliers) when it doesn't exist yet. This keeps
+   * the supplier registry in sync with names entered in comparison sheets.
+   * Returns null only if the name is blank or registration fails.
+   */
+  async ensureSupplierByName(name?: string | null): Promise<string | null> {
+    const trimmed = (name || '').trim();
+    if (!trimmed) return null;
+    try {
+      const { data: existing } = await supabase
+        .from('pricing_suppliers')
+        .select('id')
+        .ilike('name', trimmed)
+        .limit(1)
+        .maybeSingle();
+      if (existing?.id) return existing.id;
+
+      const { data: created, error } = await supabase
+        .from('pricing_suppliers')
+        .insert({ name: trimmed, payment_terms_days: 30, systems_covered: [], is_active: true })
+        .select('id')
+        .single();
+      if (error) {
+        console.warn(`Could not auto-register supplier '${trimmed}':`, error.message);
+        return null;
+      }
+      return created.id;
+    } catch (err) {
+      console.warn('ensureSupplierByName failed:', err);
+      return null;
+    }
+  },
+
   async addOffer(itemId: string, offerData: Partial<SupplierOfferInput>) {
     const { data: item } = await supabase
       .from('comparison_items')
@@ -347,11 +401,14 @@ export const comparisonService = {
     const unitPrice = Number(offerData.unit_price) || 0;
     const totalPrice = unitPrice * qty;
 
+    // Auto-register the supplier in the supplier module if it's a new name
+    const resolvedSupplierId = offerData.supplier_id || await this.ensureSupplierByName(offerData.supplier_name);
+
     const { data: newOffer, error } = await supabase
       .from('supplier_offers')
       .insert({
         comparison_item_id: itemId,
-        supplier_id: offerData.supplier_id || null,
+        supplier_id: resolvedSupplierId,
         supplier_name: offerData.supplier_name,
         offer_source: offerData.offer_source || 'MANUAL',
         offer_document_url: offerData.offer_document_url || null,
@@ -398,10 +455,17 @@ export const comparisonService = {
     const unitPrice = Number(offerData.unit_price ?? existingOffer.unit_price);
     const totalPrice = unitPrice * qty;
 
+    // When the supplier name changes (e.g. rename), resolve/register the
+    // supplier in the supplier module and relink supplier_id.
+    let resolvedSupplierId = offerData.supplier_id !== undefined ? offerData.supplier_id : existingOffer.supplier_id;
+    if (offerData.supplier_name !== undefined && offerData.supplier_name !== existingOffer.supplier_name) {
+      resolvedSupplierId = await this.ensureSupplierByName(offerData.supplier_name);
+    }
+
     const { error } = await supabase
       .from('supplier_offers')
       .update({
-        supplier_id: offerData.supplier_id !== undefined ? offerData.supplier_id : existingOffer.supplier_id,
+        supplier_id: resolvedSupplierId,
         supplier_name: offerData.supplier_name !== undefined ? offerData.supplier_name : existingOffer.supplier_name,
         unit_price: unitPrice,
         total_price: totalPrice,
@@ -467,6 +531,73 @@ export const comparisonService = {
     await this.recalculateItem(itemId);
     await this.recalculateSheet(compId);
 
+    return true;
+  },
+
+  // 6b. Remove an entire supplier column (all its offers across every item of
+  // the comparison) in one operation. Handles duplicate offers; the
+  // selected_supplier_offer_id FK nulls out automatically (ON DELETE SET NULL).
+  async removeSupplierColumn(comparisonId: string, supplierName: string) {
+    const { data: items } = await supabase
+      .from('comparison_items')
+      .select('id')
+      .eq('comparison_id', comparisonId);
+    const itemIds = (items || []).map(i => i.id);
+    if (itemIds.length === 0) return true;
+
+    const { error } = await supabase
+      .from('supplier_offers')
+      .delete()
+      .in('comparison_item_id', itemIds)
+      .eq('supplier_name', supplierName);
+    if (error) throw error;
+
+    await this.recalculateAll(comparisonId);
+    return true;
+  },
+
+  // 6c. Rename a supplier column across every item, relinking supplier_id
+  // (registering the supplier if the new name is new).
+  async renameSupplierColumn(comparisonId: string, oldName: string, newName: string) {
+    const supplierId = await this.ensureSupplierByName(newName);
+    const { data: items } = await supabase
+      .from('comparison_items')
+      .select('id')
+      .eq('comparison_id', comparisonId);
+    const itemIds = (items || []).map(i => i.id);
+    if (itemIds.length === 0) return true;
+
+    const { error } = await supabase
+      .from('supplier_offers')
+      .update({ supplier_name: newName, supplier_id: supplierId })
+      .in('comparison_item_id', itemIds)
+      .eq('supplier_name', oldName);
+    if (error) throw error;
+
+    await this.recalculateAll(comparisonId);
+    return true;
+  },
+
+  // 6d. Flag (or clear) a comparison item as a procurement exception with a
+  // justification — lets the sheet be submitted when an item can't reach the
+  // 3-compliant-offers rule (e.g. sole-source / urgent).
+  async setItemException(itemId: string, isException: boolean, reason: string | null) {
+    const { data: item } = await supabase
+      .from('comparison_items')
+      .select('comparison_id')
+      .eq('id', itemId)
+      .single();
+
+    const { error } = await supabase
+      .from('comparison_items')
+      .update({
+        is_exception: isException,
+        exception_reason: isException ? (reason || null) : null,
+      })
+      .eq('id', itemId);
+    if (error) throw error;
+
+    if (item?.comparison_id) await this.recalculateSheet(item.comparison_id);
     return true;
   },
 
@@ -810,12 +941,20 @@ export const comparisonService = {
 
     // Perform inserts
     if (inserts.length > 0) {
+      // Resolve (find-or-register) a supplier id per distinct name once
+      const distinctNames = Array.from(new Set(inserts.map(i => (i.supplier_name || '').trim()).filter(Boolean)));
+      const nameToId = new Map<string, string | null>();
+      for (const nm of distinctNames) {
+        nameToId.set(nm.toLowerCase(), await this.ensureSupplierByName(nm));
+      }
+
       const insertsWithTotals = inserts.map(ins => {
         const qty = qtyMap[ins.comparison_item_id] || 1;
         const unitPrice = Number(ins.unit_price) || 0;
         const totalPrice = unitPrice * qty;
         return {
           comparison_item_id: ins.comparison_item_id,
+          supplier_id: ins.supplier_id || nameToId.get((ins.supplier_name || '').trim().toLowerCase()) || null,
           supplier_name: ins.supplier_name,
           unit_price: unitPrice,
           total_price: totalPrice,

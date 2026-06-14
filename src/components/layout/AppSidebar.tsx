@@ -82,10 +82,20 @@ const NAV_SECTIONS = [
     id: 'procurement',
     label: 'Procurement',
     items: [
+      { href: '/procurement/pr', label: 'Purchase Requests', icon: ClipboardList },
       { href: '/procurement/comparisons', label: 'Comparisons', icon: Scale },
       { href: '/procurement/po', label: 'Purchase Orders', icon: ShoppingCart },
       { href: '/procurement/grn', label: 'Goods Receipt', icon: PackageCheck },
-      { href: '/pricing', label: 'Pricing Catalog', icon: Package },
+    ],
+  },
+  {
+    id: 'warehouse',
+    label: 'Warehouse & Inventory',
+    items: [
+      { href: '/warehouse/suppliers', label: 'Suppliers & Subcon', icon: Users },
+      { href: '/warehouse/store', label: 'Store', icon: Package },
+      { href: '/warehouse/movements', label: 'Goods Movements', icon: Truck },
+      { href: '/pricing', label: 'Pricing Catalog', icon: Calculator },
     ],
   },
   {
@@ -123,6 +133,7 @@ const NAV_SECTIONS = [
       { href: '/finance/ar', label: 'Receivables (AR)', icon: ArrowUpRight },
       { href: '/finance/ap', label: 'Payables (AP)', icon: ArrowDownLeft },
       { href: '/finance/cashflow', label: 'Cash Flow', icon: TrendingUp },
+      { href: '/finance/grn-expense', label: 'GRN-to-Expense', icon: PackageCheck },
       { href: '/finance/vat', label: 'VAT Compliance', icon: Percent },
     ],
   },
@@ -145,6 +156,8 @@ const NAV_SECTIONS = [
     id: 'admin',
     label: 'Administration',
     items: [
+      { href: '/admin', label: 'Admin Center', icon: Layers },
+      { href: '/admin/workflows', label: 'Workflows', icon: GitCompare },
       { href: '/admin/settings', label: 'Settings', icon: Settings },
       { href: '/admin/audit', label: 'Audit Log', icon: AlertTriangle },
     ],
@@ -256,6 +269,8 @@ export default function AppSidebar({ mobileOpen = false, onMobileClose }: AppSid
     if (href === '/dashboard') return pathname === '/dashboard';
     // For finance sub-routes: /finance should only match exact
     if (href === '/finance') return pathname === '/finance';
+    // Admin hub should only match exact (sub-pages have their own links)
+    if (href === '/admin') return pathname === '/admin';
     return pathname === href || (pathname?.startsWith(href + '/') ?? false);
   };
 

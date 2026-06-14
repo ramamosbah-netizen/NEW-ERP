@@ -98,7 +98,7 @@ export default function AppTopbar({ onMobileMenuToggle }: AppTopbarProps) {
     email?: string;
   } | null>(null);
   const [isCompact, setIsCompact] = useState(false);
-  const [isDark, setIsDark] = useState(true);
+  const [themeMode, setThemeMode] = useState<'system' | 'light' | 'dark'>('system');
   const [profileOpen, setProfileOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
 
@@ -119,23 +119,20 @@ export default function AppTopbar({ onMobileMenuToggle }: AppTopbarProps) {
       setIsCompact(true);
       document.body.classList.add('theme-compact');
     }
-    const savedTheme = localStorage.getItem('erp-theme');
-    if (savedTheme === 'light') {
-      setIsDark(false);
-      document.body.classList.add('theme-light');
-    }
+    const savedTheme = (localStorage.getItem('erp-theme') || 'system') as 'system' | 'light' | 'dark';
+    setThemeMode(savedTheme);
+    document.body.classList.remove('theme-light', 'theme-dark');
+    if (savedTheme === 'light') document.body.classList.add('theme-light');
+    if (savedTheme === 'dark') document.body.classList.add('theme-dark');
   }, []);
 
-  const toggleTheme = () => {
-    setIsDark(prev => {
-      const next = !prev;
-      if (next) {
-        document.body.classList.remove('theme-light');
-        localStorage.setItem('erp-theme', 'dark');
-      } else {
-        document.body.classList.add('theme-light');
-        localStorage.setItem('erp-theme', 'light');
-      }
+  const cycleTheme = () => {
+    setThemeMode(prev => {
+      const next = prev === 'system' ? 'light' : prev === 'light' ? 'dark' : 'system';
+      document.body.classList.remove('theme-light', 'theme-dark');
+      if (next === 'light') document.body.classList.add('theme-light');
+      if (next === 'dark') document.body.classList.add('theme-dark');
+      localStorage.setItem('erp-theme', next);
       return next;
     });
   };
@@ -235,17 +232,16 @@ export default function AppTopbar({ onMobileMenuToggle }: AppTopbarProps) {
       </div>
 
       {/* Global search and quick controls */}
-      <div className="flex-1 max-w-xs md:max-w-sm mx-4 relative hidden md:block">
-        <div 
+      <div className="flex-1 max-w-xs md:max-w-sm mx-4 hidden md:block">
+        <div
           onClick={() => window.dispatchEvent(new Event('open-command-palette'))}
-          className="w-full bg-[var(--bg-dark)] border border-[var(--border-color)] rounded-lg pl-9 pr-12 py-1.5 text-xs text-[var(--text-secondary)] hover:border-[var(--text-muted)] cursor-pointer flex items-center gap-2 select-none"
+          className="w-full bg-[var(--bg-dark)] border border-[var(--border-color)] rounded-md py-1.5 px-3 text-xs text-[var(--text-muted)] hover:border-[var(--text-muted)] cursor-pointer flex items-center gap-2 select-none transition-colors duration-100"
         >
-          <Search size={14} className="text-text-muted" />
-          <span>Search directories & pages...</span>
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-0.5 bg-bg-card border border-[var(--border-color)] px-1.5 py-0.5 rounded text-[8px] text-[var(--text-muted)] font-mono font-bold">
-            <Command size={8} />
-            <span>K</span>
-          </div>
+          <Search size={13} className="opacity-60 flex-shrink-0" />
+          <span className="flex-1">Search…</span>
+          <kbd className="flex items-center gap-0.5 bg-[var(--bg-card)] border border-[var(--border-color)] px-1.5 py-0.5 rounded text-[9px] text-[var(--text-muted)] font-mono">
+            <Command size={8} />K
+          </kbd>
         </div>
       </div>
 
@@ -253,21 +249,20 @@ export default function AppTopbar({ onMobileMenuToggle }: AppTopbarProps) {
         {/* Density Toggle */}
         <button
           onClick={toggleDensity}
-          className="topbar-logout w-8 h-8 rounded-lg flex items-center justify-center bg-bg-dark/50 border border-border-color/80 text-text-muted hover:text-primary transition-colors cursor-pointer"
-          title={isCompact ? 'Comfortable Mode' : 'Compact Mode'}
-          style={{ color: isCompact ? 'var(--primary)' : 'var(--text-muted)' }}
+          className="topbar-logout w-8 h-8 rounded-md flex items-center justify-center bg-[var(--bg-dark)] border border-[var(--border-color)] transition-colors cursor-pointer"
+          title={isCompact ? 'Comfortable density' : 'Compact density'}
+          style={{ color: isCompact ? 'var(--text-primary)' : 'var(--text-muted)' }}
         >
-          <Sliders size={14} />
+          <Sliders size={13} />
         </button>
 
         {/* Theme Toggle */}
         <button
-          onClick={toggleTheme}
-          className="topbar-logout w-8 h-8 rounded-lg flex items-center justify-center bg-bg-dark/50 border border-border-color/80 text-text-muted hover:text-warning transition-colors cursor-pointer"
-          title={isDark ? 'Light Mode' : 'Dark Mode'}
-          style={{ color: isDark ? 'var(--text-muted)' : 'var(--warning)' }}
+          onClick={cycleTheme}
+          className="topbar-logout w-8 h-8 rounded-lg flex items-center justify-center bg-[var(--bg-dark)] border border-[var(--border-color)] text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors cursor-pointer"
+          title={themeMode === 'system' ? 'System theme — click for Light' : themeMode === 'light' ? 'Light mode — click for Dark' : 'Dark mode — click for System'}
         >
-          {isDark ? <Sun size={14} /> : <Moon size={14} />}
+          {themeMode === 'light' ? <Sun size={14} /> : themeMode === 'dark' ? <Moon size={14} /> : <Sun size={14} className="opacity-50" />}
         </button>
 
         {/* Notification Bell */}

@@ -86,21 +86,29 @@ export const poService = {
 
       if (itemsErr) throw itemsErr;
 
-      // Fetch approvals
+      // Fetch approvals (approver_id references auth.users, not profiles, so
+      // PostgREST can't embed it — resolve approver names separately).
       const { data: approvals, error: appErr } = await supabase
         .from('po_approvals')
-        .select(`
-          *,
-          profiles:approver_id (full_name)
-        `)
+        .select('*')
         .eq('po_id', poId)
         .order('created_at', { ascending: true });
 
       if (appErr) throw appErr;
 
+      const approverIds = Array.from(new Set((approvals || []).map(a => a.approver_id).filter(Boolean)));
+      const approverNames = new Map<string, string>();
+      if (approverIds.length > 0) {
+        const { data: profs } = await supabase
+          .from('profiles')
+          .select('id, full_name')
+          .in('id', approverIds);
+        for (const p of profs || []) approverNames.set(p.id, p.full_name);
+      }
+
       const formattedApprovals = (approvals || []).map(app => ({
         ...app,
-        approver_name: app.profiles?.full_name
+        approver_name: approverNames.get(app.approver_id) || null,
       }));
 
       return {
@@ -130,18 +138,32 @@ export const poService = {
 
       // 1. Insert PO Header
       // Trigger will generate autonumber JI-PO-YYYY-NNN race-safely
-      const { data: po, error: poErr } = await supabase
+      const headerBase = {
+        ...poData,
+        po_number: '', // database trigger handles this if empty
+        revision_number: 0,
+        is_latest: true,
+        status: 'DRAFT',
+        created_by: user.id,
+      };
+
+      let { data: po, error: poErr } = await supabase
         .from('purchase_orders')
-        .insert({
-          ...poData,
-          po_number: '', // database trigger handles this if empty
-          revision_number: 0,
-          is_latest: true,
-          status: 'DRAFT',
-          created_by: user.id
-        })
+        .insert(headerBase)
         .select()
         .single();
+
+      // Degrade gracefully if the optional payment_method / pr_id columns
+      // aren't present yet (migration 20260613280000 / 20260613260000 not applied)
+      if (poErr && poErr.code === 'PGRST204') {
+        const { payment_method, pr_id, ...fallback } = headerBase as any;
+        void payment_method; void pr_id;
+        ({ data: po, error: poErr } = await supabase
+          .from('purchase_orders')
+          .insert(fallback)
+          .select()
+          .single());
+      }
 
       if (poErr || !po) throw poErr || new Error('Failed to create PO header');
 

@@ -37,6 +37,58 @@ async function authenticateAdmin(req: Request) {
   return { caller: user };
 }
 
+// GET: List all users with auth/session metadata (admin only)
+export async function GET(req: Request) {
+  try {
+    const auth = await authenticateAdmin(req);
+    if (auth.error || !auth.caller) {
+      return NextResponse.json({ error: auth.error || 'Unauthorized' }, { status: auth.status || 401 });
+    }
+
+    // 1. Fetch all auth users (paginated — gather up to 1000)
+    const { data: authData, error: listErr } = await supabaseAdmin.auth.admin.listUsers({ page: 1, perPage: 1000 });
+    if (listErr) {
+      return NextResponse.json({ error: listErr.message }, { status: 500 });
+    }
+
+    // 2. Fetch profiles and roles in parallel
+    const [{ data: profiles }, { data: userRoles }] = await Promise.all([
+      supabaseAdmin.from('profiles').select('id, full_name, email, role'),
+      supabaseAdmin.from('user_roles').select('user_id, role:roles(id, role_key, name, is_active)'),
+    ]);
+
+    const profileMap = new Map((profiles || []).map(p => [p.id, p]));
+    const rolesMap = new Map<string, any[]>();
+    for (const ur of userRoles || []) {
+      if (!ur.user_id || !ur.role) continue;
+      if (!rolesMap.has(ur.user_id)) rolesMap.set(ur.user_id, []);
+      rolesMap.get(ur.user_id)!.push(ur.role);
+    }
+
+    const users = authData.users.map(u => {
+      const profile = profileMap.get(u.id);
+      const bannedUntil = (u as any).banned_until as string | null | undefined;
+      const isBanned = !!bannedUntil && new Date(bannedUntil) > new Date();
+      return {
+        id: u.id,
+        email: u.email,
+        full_name: profile?.full_name || u.user_metadata?.full_name || '—',
+        legacy_role: profile?.role || 'engineer',
+        roles: rolesMap.get(u.id) || [],
+        created_at: u.created_at,
+        last_sign_in_at: u.last_sign_in_at || null,
+        email_confirmed_at: u.email_confirmed_at || null,
+        is_banned: isBanned,
+        banned_until: isBanned ? bannedUntil : null,
+      };
+    });
+
+    return NextResponse.json({ users });
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message || 'Internal server error' }, { status: 500 });
+  }
+}
+
 // POST: Create a new user
 export async function POST(req: Request) {
   try {

@@ -88,6 +88,24 @@ export function useComparison(id: string) {
     return res;
   };
 
+  const removeSupplierColumn = async (supplierName: string) => {
+    const res = await comparisonService.removeSupplierColumn(id, supplierName);
+    await fetchDetail();
+    return res;
+  };
+
+  const setItemException = async (itemId: string, isException: boolean, reason: string | null) => {
+    const res = await comparisonService.setItemException(itemId, isException, reason);
+    await fetchDetail();
+    return res;
+  };
+
+  const renameSupplierColumn = async (oldName: string, newName: string) => {
+    const res = await comparisonService.renameSupplierColumn(id, oldName, newName);
+    await fetchDetail();
+    return res;
+  };
+
   const saveOffers = async (offersToSave: any[]) => {
     const res = await comparisonService.saveOffers(offersToSave, id);
     await fetchDetail();
@@ -156,6 +174,9 @@ export function useComparison(id: string) {
       updateOffer,
       deleteOffer,
       selectSupplier,
+      removeSupplierColumn,
+      renameSupplierColumn,
+      setItemException,
       saveOffers,
       bulkSelectRecommended,
       recalculateAll,

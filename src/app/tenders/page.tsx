@@ -43,6 +43,10 @@ export default function TendersDashboard() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
 
+  // Linked BOQ (latest version) and created project per tender
+  const [boqMap, setBoqMap] = useState<Record<string, { status: string; total: number; version: number }>>({});
+  const [projectMap, setProjectMap] = useState<Record<string, { id: string; number: string | null }>>({});
+
   useEffect(() => {
     const fetchTenders = async () => {
       setLoading(true);
@@ -68,6 +72,41 @@ export default function TendersDashboard() {
         }
 
         setTenders(data as Tender[] || []);
+
+        // 3. Enrich with latest BOQ (status + total sell price) and created project
+        const tenderIds = (data || []).map((t: any) => t.id);
+        if (tenderIds.length > 0) {
+          try {
+            const [{ data: boqs }, { data: projects }] = await Promise.all([
+              supabase.from('boqs').select('tender_id, status, version, financials').in('tender_id', tenderIds),
+              supabase.from('projects').select('id, project_number, tender_id').in('tender_id', tenderIds),
+            ]);
+
+            const bm: Record<string, { status: string; total: number; version: number }> = {};
+            for (const b of (boqs || []) as any[]) {
+              const existing = bm[b.tender_id];
+              const version = Number(b.version) || 0;
+              if (!existing || version > existing.version) {
+                bm[b.tender_id] = {
+                  status: b.status || 'draft',
+                  total: Number(b.financials?.total_selling_price) || 0,
+                  version,
+                };
+              }
+            }
+            setBoqMap(bm);
+
+            const pm: Record<string, { id: string; number: string | null }> = {};
+            for (const p of (projects || []) as any[]) {
+              if (p.tender_id && !pm[p.tender_id]) {
+                pm[p.tender_id] = { id: p.id, number: p.project_number || null };
+              }
+            }
+            setProjectMap(pm);
+          } catch (enrichErr) {
+            console.warn('Could not enrich tenders with BOQ/project data:', enrichErr);
+          }
+        }
       } catch (err: any) {
         console.error('Error fetching tenders:', err);
         setErrorMsg('Failed to load tenders. Ensure the database schemas have been applied.');
@@ -152,12 +191,19 @@ export default function TendersDashboard() {
     {
       accessorKey: 'budget',
       header: 'Budget Sum',
-      cell: ({ getValue }) => {
-        const val = getValue() as number | null;
+      cell: ({ row, getValue }) => {
+        const boq = boqMap[row.original.id];
+        const fromBoq = !!boq && boq.total > 0;
+        const val = fromBoq ? boq.total : (getValue() as number | null);
         return val ? (
-          <span className="inline-flex items-center gap-1 font-mono font-bold text-success text-xs">
+          <span className="inline-flex items-center gap-1 font-mono font-bold text-success text-xs" title={fromBoq ? 'Auto-filled from BOQ total selling price' : 'Manually entered budget'}>
             <DollarSign size={12} className="shrink-0" />
-            {formatBudget(val).replace('$', '')}
+            {new Intl.NumberFormat('en-AE', { maximumFractionDigits: 0 }).format(val)} AED
+            {fromBoq && (
+              <span className="text-[9px] font-bold px-1 py-0.5 rounded bg-[var(--status-info-bg)] text-[var(--status-info-text)] border border-[var(--status-info-border)]">
+                BOQ
+              </span>
+            )}
           </span>
         ) : (
           <span className="text-text-muted">—</span>
@@ -168,6 +214,35 @@ export default function TendersDashboard() {
       accessorKey: 'status',
       header: 'Status',
       cell: ({ getValue }) => <StatusChip status={String(getValue() || 'Draft')} />
+    },
+    {
+      id: 'boq_project',
+      header: 'BOQ / Project',
+      cell: ({ row }) => {
+        const boq = boqMap[row.original.id];
+        const project = projectMap[row.original.id];
+        return (
+          <div className="flex flex-col gap-1 items-start">
+            {boq ? (
+              <Link href={`/tenders/${row.original.id}/boq`} onClick={e => e.stopPropagation()} className="no-underline">
+                <StatusChip status={boq.status.toUpperCase()} />
+              </Link>
+            ) : (
+              <span className="text-[10px] text-text-muted font-mono">No BOQ</span>
+            )}
+            {project && (
+              <Link
+                href={`/projects/${project.id}`}
+                onClick={e => e.stopPropagation()}
+                className="text-[10px] font-mono font-bold text-primary hover:underline"
+                title="Project created from this tender"
+              >
+                {project.number || `PRJ ${project.id.slice(0, 8)}…`}
+              </Link>
+            )}
+          </div>
+        );
+      }
     },
     {
       accessorKey: 'updated_at',

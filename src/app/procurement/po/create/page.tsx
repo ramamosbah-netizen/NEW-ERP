@@ -10,8 +10,9 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { poService } from '@/services/poService';
+import { poFromComparisonService, POProposal } from '@/services/poFromComparisonService';
 import { ALL_PO_TYPES, PO_TYPE_LABELS } from '@/constants/po.constants';
-import { Plus, Trash, ArrowLeft, Save, AlertCircle, RefreshCw } from 'lucide-react';
+import { Plus, Trash, ArrowLeft, Save, AlertCircle, RefreshCw, Scale, Download } from 'lucide-react';
 import '@/app/procurement/comparisons/comparisons.css';
 
 const DEFAULT_ITEM = {
@@ -58,6 +59,7 @@ function POFormContent() {
   const searchParams = useSearchParams();
   const poIdParam = searchParams.get('po_id');
   const reviseIdParam = searchParams.get('revise_id');
+  const prIdParam = searchParams.get('pr_id');
 
   // Load Lists
   const [suppliers, setSuppliers] = useState<any[]>([]);
@@ -73,6 +75,8 @@ function POFormContent() {
   const [requiredDeliveryDate, setRequiredDeliveryDate] = useState<string>('');
   const [paymentTermsDays, setPaymentTermsDays] = useState<number>(30);
   const [paymentTermsText, setPaymentTermsText] = useState<string>('');
+  const [paymentMethod, setPaymentMethod] = useState<string>('BANK_TRANSFER');
+  const [comparisonThreshold, setComparisonThreshold] = useState<number>(10000);
   const [noComparisonJustification, setNoComparisonJustification] = useState<string>('');
   const [termsConditions, setTermsConditions] = useState<string>('');
   const [notesToSupplier, setNotesToSupplier] = useState<string>('');
@@ -105,6 +109,13 @@ function POFormContent() {
         if (supRes.data) setSuppliers(supRes.data);
         if (projRes.data) setProjects(projRes.data);
 
+        // Configurable comparison/direct-purchase threshold (Admin → Settings)
+        try {
+          const { default: settingsService } = await import('@/services/settingsService');
+          const t = await settingsService.getSettingByKey<number>('procurement.direct_purchase_threshold', 10000);
+          setComparisonThreshold(Number(t) || 10000);
+        } catch { /* keep default */ }
+
         // Load existing PO details if editing a draft or completing a revision
         const targetPoId = poIdParam || reviseIdParam;
         if (targetPoId) {
@@ -134,6 +145,33 @@ function POFormContent() {
             })));
           }
         }
+
+        // Pre-fill from an approved Purchase Request (convert PR -> LPO)
+        if (prIdParam && !targetPoId) {
+          const { prService } = await import('@/services/prService');
+          const pr = await prService.get(prIdParam);
+          // Category mapping: non-project PR categories become OVERHEAD POs
+          setPoType(pr.project_id ? 'PROJECT_MATERIAL' : 'OVERHEAD');
+          if (pr.project_id) setProjectId(pr.project_id);
+          if (pr.preferred_supplier_id) {
+            const sup = (supRes.data || []).find((s: any) => s.id === pr.preferred_supplier_id);
+            if (sup) { setSupplierId(sup.id); setPaymentTermsDays(sup.payment_terms_days || 30); setPaymentTermsText(`${sup.payment_terms_days || 30} Days Net`); }
+          }
+          setInternalNotes(`Converted from Purchase Request ${pr.pr_number}`);
+          setNoComparisonJustification(`Sourced via approved Purchase Request ${pr.pr_number}`);
+          if (pr.items?.length) {
+            setItems(pr.items.map((it: any) => ({
+              description: it.description,
+              brand: it.brand || '',
+              unit: it.unit || 'Pcs',
+              quantity: Number(it.quantity) || 1,
+              unit_price: Number(it.estimated_unit_cost) || 0,
+              discount_pct: 0,
+              vat_applicable: true,
+              system: it.system || 'OTHER',
+            })));
+          }
+        }
       } catch (err) {
         console.error('Failed to load form data or LPO draft:', err);
       } finally {
@@ -142,7 +180,7 @@ function POFormContent() {
     }
 
     loadOptionsAndLPO();
-  }, [poIdParam, reviseIdParam]);
+  }, [poIdParam, reviseIdParam, prIdParam]);
 
   // Set default values when supplier is selected
   const handleSupplierChange = (supId: string) => {
@@ -151,6 +189,50 @@ function POFormContent() {
     if (selected) {
       setPaymentTermsDays(selected.payment_terms_days || 30);
       setPaymentTermsText(`${selected.payment_terms_days || 30} Days Net`);
+    }
+  };
+
+  // Auto-import from approved comparison when a project is selected
+  const [comparisonProposals, setComparisonProposals] = useState<POProposal[]>([]);
+  const [comparisonId, setComparisonId] = useState<string | null>(null);
+  const [importSupplierId, setImportSupplierId] = useState<string>('');
+
+  useEffect(() => {
+    if (!projectId) { setComparisonProposals([]); setComparisonId(null); return; }
+    let cancelled = false;
+    poFromComparisonService.getProposalsForProject(projectId)
+      .then(({ comparisonId, proposals }) => {
+        if (cancelled) return;
+        setComparisonId(comparisonId);
+        setComparisonProposals(proposals);
+        setImportSupplierId(proposals[0]?.supplier_id || '');
+      })
+      .catch(() => { if (!cancelled) { setComparisonProposals([]); setComparisonId(null); } });
+    return () => { cancelled = true; };
+  }, [projectId]);
+
+  const handleImportFromComparison = () => {
+    const proposal = comparisonProposals.find(p => p.supplier_id === importSupplierId);
+    if (!proposal) return;
+    // Supplier
+    if (suppliers.some(s => s.id === proposal.supplier_id)) {
+      handleSupplierChange(proposal.supplier_id);
+    }
+    // Items
+    setItems(proposal.items.map(it => ({
+      description: it.description,
+      brand: it.brand || '',
+      unit: it.unit || 'Pcs',
+      quantity: it.quantity,
+      unit_price: it.unit_price,
+      discount_pct: 0,
+      vat_applicable: it.vat_applicable ?? true,
+      system: it.system || 'OTHER',
+      comparison_item_id: it.comparison_item_id,
+    })));
+    if (proposal.payment_terms_days) {
+      setPaymentTermsDays(proposal.payment_terms_days);
+      setPaymentTermsText(`${proposal.payment_terms_days} Days Net`);
     }
   };
 
@@ -237,6 +319,7 @@ function POFormContent() {
         promised_delivery_days: promisedDeliveryDays || null,
         payment_terms_days: paymentTermsDays,
         payment_terms_text: paymentTermsText || `${paymentTermsDays} Days Net`,
+        payment_method: paymentMethod || null,
         subtotal: totals.subtotal,
         discount_amount: totals.discount_amount,
         vat_amount: totals.vat_amount,
@@ -249,12 +332,13 @@ function POFormContent() {
 
       if (!targetPoId) {
         poHeader.origin = 'MANUAL';
+        if (prIdParam) poHeader.pr_id = prIdParam;
       }
 
       // Validate threshold constraint
       const errors = [];
-      if (totals.total > 10000.00 && poType !== 'OVERHEAD' && (!noComparisonJustification || noComparisonJustification.trim() === '')) {
-        errors.push('Justification Required: Manual LPOs exceeding 10,000 AED must specify why a comparison sheet was not generated.');
+      if (totals.total > comparisonThreshold && poType !== 'OVERHEAD' && (!noComparisonJustification || noComparisonJustification.trim() === '')) {
+        errors.push(`Justification Required: Manual LPOs exceeding ${comparisonThreshold.toLocaleString()} AED must specify why a comparison sheet was not generated.`);
       }
       if (poType !== 'OVERHEAD' && !projectId) {
         errors.push('Please select a project.');
@@ -289,6 +373,17 @@ function POFormContent() {
       const newPoId = targetPoId
         ? await poService.updatePO(targetPoId, poHeader, formattedItems).then(() => targetPoId)
         : await poService.createPO(poHeader, formattedItems);
+
+      // If this LPO was converted from a Purchase Request, mark the PR converted
+      if (prIdParam && !targetPoId && newPoId) {
+        try {
+          const { prService } = await import('@/services/prService');
+          await prService.markConverted(prIdParam, newPoId as string);
+        } catch (e) {
+          console.warn('Could not mark PR as converted:', e);
+        }
+      }
+
       router.push(`/procurement/po/${newPoId}`);
 
     } catch (err: any) {
@@ -299,7 +394,7 @@ function POFormContent() {
     }
   };
 
-  const isJustificationRequired = totals.total > 10000.00 && poType !== 'OVERHEAD';
+  const isJustificationRequired = totals.total > comparisonThreshold && poType !== 'OVERHEAD';
 
   return (
     <div className="comp-container">
@@ -424,15 +519,27 @@ function POFormContent() {
 
               <div className="quote-form-group">
                 <label>Payment Terms Days</label>
-                <input 
-                  type="number" 
-                  className="quote-form-input" 
+                <input
+                  type="number"
+                  className="quote-form-input"
                   value={paymentTermsDays}
                   onChange={(e) => {
                     setPaymentTermsDays(Number(e.target.value) || 0);
                     setPaymentTermsText(`${e.target.value} Days Net`);
                   }}
                 />
+              </div>
+
+              <div className="quote-form-group">
+                <label>Mode of Payment</label>
+                <select className="quote-form-input" value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}>
+                  <option value="BANK_TRANSFER">Bank Transfer</option>
+                  <option value="CHEQUE">Cheque</option>
+                  <option value="CASH">Cash</option>
+                  <option value="CREDIT">Credit (on account)</option>
+                  <option value="PETTY_CASH">Petty Cash</option>
+                  <option value="LC">Letter of Credit</option>
+                </select>
               </div>
 
               <div className="quote-form-group" style={{ gridColumn: 'span 2' }}>
@@ -466,6 +573,36 @@ function POFormContent() {
                     onChange={(e) => setNoComparisonJustification(e.target.value)}
                   />
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* Import-from-comparison banner (when the selected project has a comparison) */}
+          {comparisonProposals.length > 0 && (
+            <div className="quote-card" style={{ border: '1px solid rgba(0, 229, 160, 0.3)', background: 'rgba(0, 229, 160, 0.04)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', flexWrap: 'wrap' }}>
+                <Scale size={18} style={{ color: 'var(--secondary, #00E5A0)', flexShrink: 0 }} />
+                <div style={{ flex: 1, minWidth: '200px' }}>
+                  <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-primary)' }}>Comparison sheet found for this project</div>
+                  <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
+                    Import the selected supplier&apos;s items, prices and terms directly from the comparison.
+                  </div>
+                </div>
+                <select
+                  className="quote-form-input"
+                  style={{ maxWidth: '260px' }}
+                  value={importSupplierId}
+                  onChange={(e) => setImportSupplierId(e.target.value)}
+                >
+                  {comparisonProposals.map(p => (
+                    <option key={p.supplier_id} value={p.supplier_id}>
+                      {p.supplier_name} — {p.items.length} item(s), {new Intl.NumberFormat('en-AE', { maximumFractionDigits: 0 }).format(p.total)} AED
+                    </option>
+                  ))}
+                </select>
+                <button type="button" className="quote-btn quote-btn-primary" onClick={handleImportFromComparison} disabled={!importSupplierId}>
+                  <Download size={14} style={{ marginRight: '0.3rem' }} /> Import
+                </button>
               </div>
             </div>
           )}

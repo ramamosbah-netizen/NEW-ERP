@@ -62,6 +62,21 @@ import {
 import '@/app/pricing/pricing.css';
 
 // ============================================================
+// Price freshness indicator — shows when material cost was last
+// refreshed (e.g. auto-updated from a real supplier invoice).
+// Green = within 30d, amber = within 180d, grey = stale/never.
+// ============================================================
+function PriceFreshness({ ts }: { ts?: string | null }) {
+  if (!ts) {
+    return <span title="Material cost never refreshed from a supplier price" style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--p-text-muted, #64748b)', opacity: 0.4, display: 'inline-block', flexShrink: 0 }} />;
+  }
+  const days = Math.floor((Date.now() - new Date(ts).getTime()) / 86400000);
+  const color = days <= 30 ? 'var(--success, #10b981)' : days <= 180 ? 'var(--warning, #f59e0b)' : 'var(--p-text-muted, #64748b)';
+  const label = days === 0 ? 'today' : days === 1 ? 'yesterday' : days < 30 ? `${days}d ago` : days < 365 ? `${Math.round(days / 30)}mo ago` : `${Math.round(days / 365)}y ago`;
+  return <span title={`Cost last refreshed ${label} (${new Date(ts).toLocaleDateString('en-AE')})`} style={{ width: 7, height: 7, borderRadius: '50%', background: color, display: 'inline-block', flexShrink: 0 }} />;
+}
+
+// ============================================================
 // Page Component
 // ============================================================
 
@@ -433,7 +448,12 @@ export default function PricingItemsPage() {
                           </td>
                           <td style={{ color: 'var(--p-text-dim)', fontSize: '0.75rem' }}>{item.unit}</td>
                           <td style={{ color: 'var(--p-text-dim)' }}>{item.brand || '—'}</td>
-                          <td className="num">{formatAED(item.material_cost)}</td>
+                          <td className="num">
+                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', justifyContent: 'flex-end' }}>
+                              {formatAED(item.material_cost)}
+                              <PriceFreshness ts={item.last_price_change} />
+                            </span>
+                          </td>
                           <td className="num" style={{ color: 'var(--p-cyan)' }}>{formatAED(calc.labour_cost)}</td>
                           <td className="num" style={{ fontWeight: 600, color: 'var(--p-text-bright)' }}>
                             {formatAED(calc.sell_price)}

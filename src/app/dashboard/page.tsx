@@ -1,28 +1,27 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
-import { 
-  Briefcase, 
-  TrendingUp, 
-  Wallet, 
-  Percent, 
-  ShieldAlert, 
+import {
+  Briefcase,
+  TrendingUp,
+  Wallet,
+  Percent,
+  ShieldAlert,
   AlertTriangle,
   Activity,
   FileText,
-  CheckSquare,
   ArrowRight,
   RefreshCw,
-  Sliders,
   DollarSign,
   Ticket,
   Users,
-  Search,
   CheckCircle,
-  FileSpreadsheet
+  ShoppingCart,
+  Car,
+  BarChart3,
 } from 'lucide-react';
 import { kpiService, ExecutiveKPIs } from '@/services/kpiService';
 import { useExpiryAlerts } from '@/hooks/useExpiryAlerts';
@@ -33,19 +32,16 @@ import { Button } from '@/components/ui/Button';
 import { StatusChip } from '@/components/ui/StatusChip';
 import { TanstackDataTable } from '@/components/tables/TanstackDataTable';
 import { ColumnDef } from '@tanstack/react-table';
-import { 
-  ResponsiveContainer, 
-  AreaChart, 
-  Area, 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  Tooltip as ChartTooltip, 
-  Legend, 
-  PieChart, 
-  Pie, 
-  Cell 
+import {
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip as ChartTooltip,
+  PieChart,
+  Pie,
+  Cell,
 } from 'recharts';
 
 type Profile = {
@@ -55,18 +51,29 @@ type Profile = {
   email: string;
 };
 
-const PIE_COLORS = ['#3b82f6', '#10b981', '#06b6d4', '#8b5cf6', '#f59e0b', '#ef4444'];
+const PIE_COLORS = ['#71717a', '#a1a1aa', '#3f3f46', '#52525b', '#d4d4d8', '#18181b'];
+
+const LAUNCHPAD = [
+  { href: '/tenders',          label: 'Tenders',         icon: Briefcase },
+  { href: '/quotations',       label: 'Quotations',      icon: FileText },
+  { href: '/projects',         label: 'Projects',        icon: CheckCircle },
+  { href: '/procurement/po',   label: 'Purchase Orders', icon: ShoppingCart },
+  { href: '/service-desk',     label: 'Service Desk',    icon: Ticket },
+  { href: '/hr',               label: 'HR & Employees',  icon: Users },
+  { href: '/fleet',            label: 'Fleet',           icon: Car },
+  { href: '/finance/cashflow', label: 'Cash Flow',       icon: DollarSign },
+  { href: '/finance/vat',      label: 'VAT',             icon: Percent },
+  { href: '/reports',          label: 'Reports',         icon: BarChart3 },
+];
 
 export default function Dashboard() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isFallback, setIsFallback] = useState(false);
   const [kpiData, setKpiData] = useState<ExecutiveKPIs | null>(null);
   const [refreshing, setRefreshing] = useState(false);
 
-  // Summary sections lists state
   const [recentTenders, setRecentTenders] = useState<any[]>([]);
   const [recentBOQs, setRecentBOQs] = useState<any[]>([]);
   const [pendingApprovals, setPendingApprovals] = useState<any[]>([]);
@@ -74,505 +81,368 @@ export default function Dashboard() {
 
   const { alerts: expiryAlerts, loading: alertsLoading, acknowledgeAlert } = useExpiryAlerts();
 
-  const fetchSessionAndData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       setRefreshing(true);
-      // 1. Get authenticated user
       const { data: { user }, error: authError } = await supabase.auth.getUser();
-      if (authError || !user) {
-        router.replace('/signin');
-        return;
-      }
-      setUser(user);
+      if (authError || !user) { router.replace('/signin'); return; }
 
-      // 2. Fetch profile row
       const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .single();
+        .from('profiles').select('*').eq('id', user.id).single();
 
       if (profileError || !profileData) {
         setIsFallback(true);
-        setProfile({
-          id: user.id,
-          full_name: user.user_metadata.full_name || 'ERP User',
-          role: user.user_metadata.role || 'engineer',
-          email: user.email || ''
-        });
+        setProfile({ id: user.id, full_name: user.user_metadata.full_name || 'ERP User', role: user.user_metadata.role || 'engineer', email: user.email || '' });
       } else {
         setProfile(profileData as Profile);
       }
 
-      // 3. Fetch KPI Summary Data
-      const kpis = await kpiService.getExecutiveKPIs();
+      const [kpis, { data: tenderList }, { data: boqList }, { data: pendingPOList }] = await Promise.all([
+        kpiService.getExecutiveKPIs(),
+        supabase.from('tenders').select('id, title, client_name, deadline_date, budget, status, updated_at').order('updated_at', { ascending: false }).limit(5),
+        supabase.from('boqs').select('id, version, status, updated_at, tender_id').order('updated_at', { ascending: false }).limit(5),
+        supabase.from('purchase_orders').select('id, po_number, supplier_name, total, status, created_at').eq('status', 'PENDING_APPROVAL').limit(5),
+      ]);
+
       setKpiData(kpis);
-
-      // 4. Fetch Tenders list for data table
-      const { data: tenderList } = await supabase
-        .from('tenders')
-        .select('id, title, client_name, deadline_date, budget, status, updated_at')
-        .order('updated_at', { ascending: false })
-        .limit(5);
       setRecentTenders(tenderList || []);
-
-      // 5. Fetch BOQs list
-      const { data: boqList } = await supabase
-        .from('boqs')
-        .select('id, version, status, updated_at, tender_id')
-        .order('updated_at', { ascending: false })
-        .limit(5);
       setRecentBOQs(boqList || []);
-
-      // 6. Fetch Pending LPOs requiring approval
-      const { data: pendingPOList } = await supabase
-        .from('purchase_orders')
-        .select('id, po_number, supplier_name, total, status, created_at')
-        .eq('status', 'PENDING_APPROVAL')
-        .limit(5);
       setPendingApprovals(pendingPOList || []);
-
     } catch (err) {
-      console.error('Error loading dashboard data:', err);
+      console.error('Dashboard load error:', err);
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
-  };
-
-  useEffect(() => {
-    fetchSessionAndData();
   }, [router]);
 
+  useEffect(() => { fetchData(); }, [fetchData]);
+
   const handleAckAlert = async (id: string) => {
-    try {
-      await acknowledgeAlert(id);
-      const kpis = await kpiService.getExecutiveKPIs();
-      setKpiData(kpis);
-    } catch (err) {
-      console.error('Failed to acknowledge alert:', err);
-    }
+    await acknowledgeAlert(id);
+    const kpis = await kpiService.getExecutiveKPIs();
+    setKpiData(kpis);
   };
 
-  const formatAED = (v: number) => {
-    return new Intl.NumberFormat('en-AE', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(v) + ' AED';
-  };
+  const fmt = (v: number) =>
+    new Intl.NumberFormat('en-AE', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(v) + ' AED';
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#060814] flex flex-col items-center justify-center text-center p-6">
-        <div className="h-12 w-12 border-2 border-emerald-450 border-t-transparent animate-spin rounded-full mb-4"></div>
-        <h2 className="text-xl font-bold font-heading text-white">JEET ERP</h2>
-        <p className="text-slate-400 text-xs mt-1 font-mono uppercase tracking-wider">Aggregating executive cockpit parameters...</p>
+      <div className="min-h-screen bg-[var(--bg-dark)] flex flex-col items-center justify-center gap-3">
+        <div className="h-8 w-8 border-2 border-[var(--border-color)] border-t-[var(--text-primary)] animate-spin rounded-full" />
+        <p className="text-sm text-[var(--text-muted)]">Loading dashboard…</p>
       </div>
     );
   }
 
   if (!profile || !kpiData) return null;
 
-  // Recharts Project delivery phases dataset
   const statusChartData = [
     { name: 'Mobilization', value: kpiData.projectStatusCounts.mobilization },
-    { name: 'In Progress', value: kpiData.projectStatusCounts.inProgress },
-    { name: 'Testing', value: kpiData.projectStatusCounts.testing },
-    { name: 'Handover', value: kpiData.projectStatusCounts.handover },
-    { name: 'DLP (Warranty)', value: kpiData.projectStatusCounts.dlp },
-    { name: 'On Hold', value: kpiData.projectStatusCounts.onHold },
-  ].filter(item => item.value > 0);
+    { name: 'In Progress',  value: kpiData.projectStatusCounts.inProgress },
+    { name: 'Testing',      value: kpiData.projectStatusCounts.testing },
+    { name: 'Handover',     value: kpiData.projectStatusCounts.handover },
+    { name: 'DLP',          value: kpiData.projectStatusCounts.dlp },
+    { name: 'On Hold',      value: kpiData.projectStatusCounts.onHold },
+  ].filter(d => d.value > 0);
 
-  // Column definitions for the recent/pending tables
   const approvalColumns: ColumnDef<any>[] = [
     {
       accessorKey: 'po_number',
       header: 'LPO Number',
       cell: ({ row }) => (
-        <Link 
-          href={`/procurement/po/${row.original.id}`}
-          className="text-primary hover:underline font-mono font-bold"
-        >
-          {row.original.po_number || 'LPO-PENDING'}
+        <Link href={`/procurement/po/${row.original.id}`} className="font-mono text-xs font-medium text-[var(--text-primary)] hover:underline">
+          {row.original.po_number || 'PENDING'}
         </Link>
-      )
+      ),
     },
     {
       accessorKey: 'supplier_name',
-      header: 'Supplier Name',
-      cell: ({ getValue }) => <span className="font-semibold text-text-primary">{String(getValue() || 'Unspecified')}</span>
+      header: 'Supplier',
+      cell: ({ getValue }) => <span className="text-sm text-[var(--text-primary)]">{String(getValue() || '—')}</span>,
     },
     {
       accessorKey: 'total',
-      header: 'Total Amount',
-      cell: ({ getValue }) => <span className="font-mono text-success font-bold">{formatAED(Number(getValue() || 0))}</span>
+      header: 'Amount',
+      cell: ({ getValue }) => <span className="font-mono text-xs text-[var(--text-secondary)]">{fmt(Number(getValue() || 0))}</span>,
     },
     {
       accessorKey: 'status',
-      header: 'Approval Stage',
-      cell: ({ getValue }) => <StatusChip status={String(getValue() || 'PENDING')} />
-    }
+      header: 'Stage',
+      cell: ({ getValue }) => <StatusChip status={String(getValue() || 'PENDING')} />,
+    },
   ];
 
   const tenderColumns: ColumnDef<any>[] = [
     {
       accessorKey: 'title',
-      header: 'Tender Name',
+      header: 'Tender',
       cell: ({ row }) => (
-        <Link 
-          href={`/tenders/${row.original.id}`}
-          className="text-secondary hover:underline font-bold"
-        >
+        <Link href={`/tenders/${row.original.id}`} className="text-sm font-medium text-[var(--text-primary)] hover:underline">
           {row.original.title}
         </Link>
-      )
+      ),
     },
     {
       accessorKey: 'client_name',
-      header: 'Client Agency'
+      header: 'Client',
+      cell: ({ getValue }) => <span className="text-sm text-[var(--text-secondary)]">{String(getValue() || '—')}</span>,
     },
     {
       accessorKey: 'budget',
-      header: 'Estimated Sum',
+      header: 'Budget',
       cell: ({ getValue }) => {
-        const val = getValue();
-        return val ? <span className="font-mono">{formatAED(Number(val))}</span> : <span className="text-text-muted">Unspecified</span>;
-      }
+        const v = getValue();
+        return v ? <span className="font-mono text-xs text-[var(--text-secondary)]">{fmt(Number(v))}</span> : <span className="text-xs text-[var(--text-muted)]">—</span>;
+      },
     },
     {
       accessorKey: 'status',
       header: 'Status',
-      cell: ({ getValue }) => <StatusChip status={String(getValue() || 'Draft')} />
-    }
+      cell: ({ getValue }) => <StatusChip status={String(getValue() || 'DRAFT')} />,
+    },
   ];
 
   const boqColumns: ColumnDef<any>[] = [
     {
       accessorKey: 'version',
-      header: 'BOQ Version',
+      header: 'Version',
       cell: ({ row }) => (
-        <Link 
-          href={`/tenders/${row.original.tender_id}/boq`}
-          className="text-primary hover:underline font-mono font-bold"
-        >
-          v{row.original.version || 1} Estimations
+        <Link href={`/tenders/${row.original.tender_id}/boq`} className="font-mono text-xs font-medium text-[var(--text-primary)] hover:underline">
+          v{row.original.version || 1}
         </Link>
-      )
+      ),
     },
     {
       accessorKey: 'status',
       header: 'Status',
-      cell: ({ getValue }) => <StatusChip status={String(getValue() || 'draft')} />
+      cell: ({ getValue }) => <StatusChip status={String(getValue() || 'DRAFT')} />,
     },
     {
       accessorKey: 'updated_at',
-      header: 'Last Calibrated',
-      cell: ({ getValue }) => <span className="font-mono text-[10px] text-text-muted">{new Date(String(getValue())).toLocaleDateString()}</span>
-    }
+      header: 'Updated',
+      cell: ({ getValue }) => (
+        <span className="font-mono text-xs text-[var(--text-muted)]">
+          {new Date(String(getValue())).toLocaleDateString('en-AE')}
+        </span>
+      ),
+    },
   ];
 
+  const tabClass = (tab: typeof activeTab) =>
+    `px-3 py-2 text-xs font-medium border-b-2 cursor-pointer transition-colors duration-100 ${
+      activeTab === tab
+        ? 'text-[var(--text-primary)] border-[var(--text-primary)]'
+        : 'text-[var(--text-muted)] border-transparent hover:text-[var(--text-secondary)]'
+    }`;
+
   return (
-    <div className="flex flex-col gap-6 relative">
-      {/* Warning banner if fallback profiles table */}
+    <div className="flex flex-col gap-5">
       {isFallback && (
-        <div className="flex gap-3 bg-amber-500/10 border border-amber-500/20 rounded-lg p-4 text-amber-200 text-xs items-start">
-          <AlertTriangle className="flex-shrink-0 text-amber-400 mt-0.5" size={18} />
+        <div className="flex gap-2.5 bg-[var(--status-warning-bg)] border border-[var(--status-warning-border)] rounded-lg p-3 text-[var(--status-warning-text)] text-xs items-start">
+          <AlertTriangle size={15} className="flex-shrink-0 mt-0.5" />
           <div>
-            <strong>Profile Sync Mode Active</strong>
-            <p className="mt-1 leading-relaxed">
-              Unable to locate a matching profile record in database. Administrative permissions set from authenticated session attributes.
-            </p>
+            <strong className="font-medium">Profile sync issue</strong>
+            <p className="mt-0.5 opacity-80">Could not load profile from database. Using session metadata.</p>
           </div>
         </div>
       )}
 
-      {/* Page Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-white/5 pb-4">
-        <div>
-          <h1 className="font-heading font-extrabold text-2xl tracking-tight text-slate-100 uppercase">
-            Corporate Operations Executive (COE) Cockpit
-          </h1>
-          <p className="text-[10px] text-emerald-450 font-mono tracking-widest uppercase mt-0.5">
-            Unified contract sums · realized margin · liquid cash flow · risk matrix
-          </p>
-        </div>
-        <div className="flex gap-2 shrink-0">
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={fetchSessionAndData}
-            isLoading={refreshing}
-            className="flex items-center gap-1.5"
-          >
-            Refresh Cockpit
-          </Button>
-          <Link href="/finance" className="no-underline">
-            <Button size="sm" variant="primary" className="font-extrabold flex items-center gap-1.5">
-              Open Finance Hub <ArrowRight size={13} />
+      <PageHeader
+        title="Executive overview"
+        subtitle={`Welcome back, ${profile.full_name}`}
+        actions={
+          <div className="flex gap-2">
+            <Button variant="secondary" size="sm" icon={RefreshCw} onClick={fetchData} isLoading={refreshing}>
+              Refresh
             </Button>
-          </Link>
-        </div>
-      </div>
+            <Link href="/finance">
+              <Button variant="primary" size="sm" icon={ArrowRight} iconPosition="right">
+                Finance hub
+              </Button>
+            </Link>
+          </div>
+        }
+      />
 
-      {/* KPI Cards Strip */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      {/* KPI row */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
         <KPICard
-          title="Portfolio Value"
+          title="Portfolio value"
           value={kpiData.portfolioValue}
           valuePrefix="AED"
           trend={kpiData.portfolioValue > 0 ? 'up' : 'neutral'}
-          tooltip="Sum contract value of active projects (excludes submitted/lost/cancelled)"
-          borderAccent="primary"
+          tooltip="Sum contract value of active projects"
           icon={Briefcase}
-          sparklineData={[kpiData.portfolioValue * 0.9, kpiData.portfolioValue * 0.95, kpiData.portfolioValue]}
+          sparklineData={[kpiData.portfolioValue * 0.88, kpiData.portfolioValue * 0.94, kpiData.portfolioValue]}
         />
         <KPICard
-          title="Avg Margin"
+          title="Avg gross margin"
           value={`${kpiData.averageMargin}%`}
           trend={kpiData.averageMargin > 30 ? 'up' : 'neutral'}
-          tooltip="Weighted gross margin average computed from project actual material + labour costs"
-          borderAccent="success"
+          tooltip="Weighted average gross margin across active projects"
           icon={Percent}
-          sparklineData={[25, 28, kpiData.averageMargin]}
+          sparklineData={[24, 28, kpiData.averageMargin]}
         />
         <KPICard
-          title="Cash Position"
+          title="Cash position"
           value={kpiData.cashPosition}
           valuePrefix="AED"
-          trend="up"
-          tooltip="Net cash in hand based on client payments (receipts) minus supplier disbursements"
-          borderAccent="secondary"
+          trend="neutral"
+          tooltip="Net cash based on receipts minus supplier disbursements"
           icon={Wallet}
-          sparklineData={[500000, 520000, kpiData.cashPosition]}
+          sparklineData={[480000, 510000, kpiData.cashPosition]}
         />
         <KPICard
-          title="Active Pipeline"
+          title="Active pipeline"
           value={kpiData.activePipelineValue}
           valuePrefix="AED"
           change={kpiData.activePipelineCount}
-          changeText="bids pending"
+          changeText="bids"
           trend="neutral"
-          tooltip="Gross estimated commercial sum of pre-award quotations currently in submitted state"
-          borderAccent="accent"
+          tooltip="Gross value of submitted quotations awaiting award"
           icon={TrendingUp}
           sparklineData={[kpiData.activePipelineValue * 0.85, kpiData.activePipelineValue * 0.92, kpiData.activePipelineValue]}
         />
         <KPICard
-          title="SLA Compliance"
+          title="SLA compliance"
           value={`${kpiData.slaComplianceRate}%`}
           trend={kpiData.slaComplianceRate >= 90 ? 'up' : 'down'}
-          tooltip="Service desk response & resolution SLA compliance percentage rate"
-          borderAccent="warning"
+          tooltip="Service desk SLA compliance rate"
           icon={ShieldAlert}
-          sparklineData={[88, 92, kpiData.slaComplianceRate]}
+          sparklineData={[87, 91, kpiData.slaComplianceRate]}
         />
       </div>
 
-      {/* Main Grid Section: Charts on Left, Funnel on Right */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="lg:col-span-2 flex flex-col gap-4 min-w-0" borderAccent="none">
-          <div>
-            <h3 className="font-heading font-bold text-sm text-slate-200 uppercase tracking-wider">
-              Monthly Performance (Billed vs Spent)
-            </h3>
-            <p className="text-[10px] text-slate-500 font-mono mt-0.5">
-              Tax Invoices generated vs Supplier expenses registered (excl VAT)
-            </p>
-          </div>
-          
-          <div className="h-[280px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={kpiData.monthlyPerformance} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <XAxis dataKey="month" stroke="#475569" fontSize={10} className="font-mono" />
-                <YAxis stroke="#475569" fontSize={10} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
-                <ChartTooltip 
-                  contentStyle={{ backgroundColor: '#090e24', borderColor: 'rgba(255,255,255,0.1)' }}
-                  labelStyle={{ color: '#fff', fontSize: '12px' }}
-                  itemStyle={{ fontSize: '11px' }}
+      {/* Charts row */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+        <Card
+          title="Monthly performance"
+          subtitle="Billed revenue vs project expenses"
+          className="lg:col-span-2"
+          padding={false}
+        >
+          <div className="h-64 px-4 pb-4 pt-2">
+            <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+              <BarChart data={kpiData.monthlyPerformance} margin={{ top: 4, right: 4, left: -24, bottom: 0 }}>
+                <XAxis dataKey="month" stroke="var(--text-muted)" fontSize={11} tickLine={false} axisLine={false} />
+                <YAxis stroke="var(--text-muted)" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
+                <ChartTooltip
+                  contentStyle={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: '6px', fontSize: '12px' }}
+                  labelStyle={{ color: 'var(--text-primary)', fontWeight: 500 }}
+                  itemStyle={{ color: 'var(--text-secondary)' }}
                 />
-                <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
-                <Bar dataKey="billed" name="Billed Revenue" fill="#10b981" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="spent" name="Project Expenses" fill="#ef4444" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="billed" name="Billed" fill="var(--text-primary)" radius={[3, 3, 0, 0]} maxBarSize={20} />
+                <Bar dataKey="spent"  name="Expenses" fill="var(--border-color)" radius={[3, 3, 0, 0]} maxBarSize={20} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </Card>
 
-        <Card className="flex flex-col gap-4 min-w-0" borderAccent="none">
-          <div>
-            <h3 className="font-heading font-bold text-sm text-slate-200 uppercase tracking-wider">
-              Project Delivery Funnel
-            </h3>
-            <p className="text-[10px] text-slate-500 font-mono mt-0.5">
-              Distribution of projects by active execution phase
-            </p>
-          </div>
-
-          <div className="h-[200px] w-full relative flex items-center justify-center">
+        <Card title="Project phases" subtitle="Active project distribution" padding={false}>
+          <div className="p-4">
             {statusChartData.length === 0 ? (
-              <span className="text-slate-500 text-xs font-mono">No active projects to display</span>
-            ) : (
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={statusChartData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={80}
-                    paddingAngle={4}
-                    dataKey="value"
-                  >
-                    {statusChartData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <ChartTooltip 
-                    contentStyle={{ backgroundColor: '#090e24', borderColor: 'rgba(255,255,255,0.1)' }}
-                    itemStyle={{ color: '#fff', fontSize: '11px' }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            )}
-          </div>
-
-          <div className="grid grid-cols-2 gap-2 mt-auto">
-            {statusChartData.map((item, idx) => (
-              <div key={item.name} className="flex items-center gap-1.5 text-[10px] text-slate-400 font-mono">
-                <span className="h-2 w-2 rounded-full flex-shrink-0" style={{ backgroundColor: PIE_COLORS[idx % PIE_COLORS.length] }}></span>
-                <span className="truncate flex-1">{item.name}</span>
-                <span className="font-bold text-slate-200">{item.value}</span>
+              <div className="h-48 flex items-center justify-center text-xs text-[var(--text-muted)]">
+                <Activity size={16} className="mr-1.5" />No active projects
               </div>
-            ))}
+            ) : (
+              <>
+                <div className="h-36">
+                  <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+                    <PieChart>
+                      <Pie data={statusChartData} cx="50%" cy="50%" innerRadius={40} outerRadius={58} paddingAngle={3} dataKey="value">
+                        {statusChartData.map((_, i) => (
+                          <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <ChartTooltip
+                        contentStyle={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: '6px', fontSize: '12px' }}
+                        itemStyle={{ color: 'var(--text-secondary)' }}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="grid grid-cols-2 gap-1.5 mt-2">
+                  {statusChartData.map((item, i) => (
+                    <div key={item.name} className="flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
+                      <span className="h-2 w-2 rounded-full flex-shrink-0" style={{ backgroundColor: PIE_COLORS[i % PIE_COLORS.length] }} />
+                      <span className="truncate">{item.name}</span>
+                      <span className="font-medium text-[var(--text-primary)] ml-auto">{item.value}</span>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         </Card>
       </div>
 
-      {/* Interactive Tabs for Approvals, Tenders, and BOQ lists using TanstackDataTable */}
-      <Card className="flex flex-col gap-4" borderAccent="none">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-white/5 pb-2">
+      {/* Action queues */}
+      <Card padding={false}>
+        <div className="border-b border-[var(--border-color)] flex items-center justify-between px-4 py-3">
           <div>
-            <h3 className="font-heading font-bold text-sm text-slate-200 uppercase tracking-wider">
-              Recent Action Registers & Queues
-            </h3>
-            <p className="text-[10px] text-slate-500 font-mono mt-0.5">
-              Live queues computed directly from database audit triggers
-            </p>
+            <h3 className="text-sm font-medium text-[var(--text-primary)]">Action queues</h3>
+            <p className="text-xs text-[var(--text-muted)] mt-0.5">Live records requiring attention</p>
           </div>
-          
-          <div className="flex gap-1.5 bg-bg-dark border border-border-color p-1 rounded-xl">
-            <button
-              onClick={() => setActiveTab('approvals')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                activeTab === 'approvals' 
-                  ? 'bg-primary/10 text-primary shadow-[0_0_8px_var(--primary-glow)]' 
-                  : 'text-text-secondary hover:text-text-primary'
-              }`}
-            >
-              Approval Queue ({pendingApprovals.length})
-            </button>
-            <button
-              onClick={() => setActiveTab('tenders')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                activeTab === 'tenders' 
-                  ? 'bg-primary/10 text-primary shadow-[0_0_8px_var(--primary-glow)]' 
-                  : 'text-text-secondary hover:text-text-primary'
-              }`}
-            >
-              Tenders Summary ({recentTenders.length})
-            </button>
-            <button
-              onClick={() => setActiveTab('boqs')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                activeTab === 'boqs' 
-                  ? 'bg-primary/10 text-primary shadow-[0_0_8px_var(--primary-glow)]' 
-                  : 'text-text-secondary hover:text-text-primary'
-              }`}
-            >
-              BOQ Estimates ({recentBOQs.length})
-            </button>
+          <div className="flex border border-[var(--border-color)] rounded-md overflow-hidden">
+            {([['approvals', `Approvals (${pendingApprovals.length})`], ['tenders', `Tenders (${recentTenders.length})`], ['boqs', `BOQ (${recentBOQs.length})`]] as const).map(([tab, label]) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`px-3 py-1.5 text-xs font-medium transition-colors cursor-pointer ${activeTab === tab ? 'bg-[var(--bg-dark)] text-[var(--text-primary)]' : 'bg-[var(--bg-card)] text-[var(--text-muted)] hover:text-[var(--text-secondary)]'}`}
+              >
+                {label}
+              </button>
+            ))}
           </div>
         </div>
-
-        {activeTab === 'approvals' && (
-          <TanstackDataTable
-            columns={approvalColumns}
-            data={pendingApprovals}
-            emptyText="No local purchase orders pending executive authorization."
-          />
-        )}
-
-        {activeTab === 'tenders' && (
-          <TanstackDataTable
-            columns={tenderColumns}
-            data={recentTenders}
-            emptyText="No tenders found in the system database."
-          />
-        )}
-
-        {activeTab === 'boqs' && (
-          <TanstackDataTable
-            columns={boqColumns}
-            data={recentBOQs}
-            emptyText="No BOQ estimates registered."
-          />
-        )}
+        <div>
+          {activeTab === 'approvals' && <TanstackDataTable columns={approvalColumns} data={pendingApprovals} emptyText="No purchase orders pending approval." />}
+          {activeTab === 'tenders'  && <TanstackDataTable columns={tenderColumns}   data={recentTenders}    emptyText="No tenders found." />}
+          {activeTab === 'boqs'     && <TanstackDataTable columns={boqColumns}       data={recentBOQs}       emptyText="No BOQ estimates found." />}
+        </div>
       </Card>
 
-      {/* Compliance alerts and launcher */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Compliance warnings */}
-        <Card className="flex flex-col gap-3 min-h-[300px]" borderAccent="warning">
-          <div className="flex justify-between items-center border-b border-white/5 pb-2">
-            <div>
-              <h3 className="font-heading font-bold text-sm text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
-                <ShieldAlert className="text-amber-400" size={16} />
-                Risk & Compliance Feed
-              </h3>
-              <p className="text-[10px] text-slate-500 font-mono mt-0.5">
-                Document expiries, Mulkiya, visas & contract renewals pending
-              </p>
-            </div>
-            <span className="bg-amber-400/10 text-amber-400 border border-amber-400/20 text-[10px] px-2.5 py-0.5 rounded-full font-mono font-bold">
-              {kpiData.complianceWarningsCount} Pending Alerts
+      {/* Compliance + Launchpad */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+        {/* Compliance alerts */}
+        <Card
+          title="Compliance alerts"
+          subtitle="Document expiries and renewals"
+          headerActions={
+            <span className="text-xs font-medium text-[var(--status-warning-text)] bg-[var(--status-warning-bg)] border border-[var(--status-warning-border)] px-2 py-0.5 rounded-md">
+              {kpiData.complianceWarningsCount} pending
             </span>
-          </div>
-
-          <div className="flex-1 flex flex-col gap-2.5 overflow-y-auto max-h-[280px] pr-1">
+          }
+          padding={false}
+        >
+          <div className="flex flex-col divide-y divide-[var(--border-color)] max-h-72 overflow-y-auto">
             {alertsLoading ? (
-              <span className="text-slate-500 text-xs font-mono py-8 text-center">Loading compliance alerts...</span>
+              <div className="py-10 text-center text-xs text-[var(--text-muted)]">Loading alerts…</div>
             ) : expiryAlerts.length === 0 ? (
-              <div className="text-slate-500 text-xs font-mono py-12 text-center flex flex-col items-center gap-2">
-                <Activity size={24} className="opacity-30" />
-                <span>No compliance warnings active. System secure.</span>
+              <div className="py-10 text-center text-xs text-[var(--text-muted)] flex flex-col items-center gap-2">
+                <CheckCircle size={20} className="text-[var(--success)] opacity-60" />
+                All compliance items are clear.
               </div>
             ) : (
               expiryAlerts.map(alert => {
-                const daysLeft = Math.ceil(
-                  (new Date(alert.expiry_date).getTime() - new Date().getTime()) / (1000 * 3600 * 24)
-                );
+                const daysLeft = Math.ceil((new Date(alert.expiry_date).getTime() - Date.now()) / 86400000);
                 const isExpired = daysLeft < 0;
-
                 return (
-                  <div 
-                    key={alert.id} 
-                    className="bg-[#0b0f2a] border border-white/5 rounded p-3 flex justify-between items-center hover:border-white/10 transition-all"
-                  >
-                    <div className="flex flex-col gap-0.5">
-                      <span className="text-xs font-bold text-slate-200 truncate max-w-[260px]">
-                        {(alert.document as any)?.title || 'Document Expiry'}
-                      </span>
-                      <div className="flex flex-wrap items-center gap-2 text-[10px] text-slate-500 font-mono">
-                        <span>Expiry: {new Date(alert.expiry_date).toLocaleDateString('en-AE')}</span>
-                        <span>•</span>
-                        <span className={isExpired ? 'text-red-400 font-bold' : daysLeft <= 30 ? 'text-amber-400 font-bold' : ''}>
-                          {isExpired ? 'Expired' : `${daysLeft} days remaining`}
-                        </span>
+                  <div key={alert.id} className="flex items-center justify-between gap-3 px-4 py-3 hover:bg-[var(--bg-card-hover)] transition-colors">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className={`h-1.5 w-1.5 rounded-full flex-shrink-0 ${isExpired ? 'bg-[var(--error)]' : daysLeft <= 30 ? 'bg-[var(--warning)]' : 'bg-[var(--text-muted)]'}`} />
+                      <div className="min-w-0">
+                        <p className="text-xs font-medium text-[var(--text-primary)] truncate">
+                          {(alert.document as any)?.title || 'Document expiry'}
+                        </p>
+                        <p className="text-xs text-[var(--text-muted)]">
+                          {isExpired ? 'Expired' : `${daysLeft} days remaining`} · {new Date(alert.expiry_date).toLocaleDateString('en-AE')}
+                        </p>
                       </div>
                     </div>
-                    <Button 
-                      size="sm" 
-                      variant="secondary"
-                      onClick={() => handleAckAlert(alert.id)}
-                      className="bg-slate-900 border border-white/10 hover:bg-slate-800 text-[10px] font-mono"
-                    >
+                    <Button variant="secondary" size="sm" onClick={() => handleAckAlert(alert.id)}>
                       Dismiss
                     </Button>
                   </div>
@@ -582,41 +452,17 @@ export default function Dashboard() {
           </div>
         </Card>
 
-        {/* Launchpad shortcuts */}
-        <Card className="flex flex-col gap-4" borderAccent="none">
-          <div>
-            <h3 className="font-heading font-bold text-sm text-slate-200 uppercase tracking-wider">
-              Module Launchpad
-            </h3>
-            <p className="text-[10px] text-slate-500 font-mono mt-0.5">
-              Quick entry points to main command registers
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {[
-              { href: '/tenders', label: 'Tenders Hub', icon: FileText, color: 'text-indigo-400' },
-              { href: '/quotations', label: 'Quotations', icon: FileText, color: 'text-cyan-400' },
-              { href: '/projects', label: 'Projects Registry', icon: Briefcase, color: 'text-emerald-400' },
-              { href: '/procurement/po', label: 'Purchase Orders', icon: Sliders, color: 'text-purple-400' },
-              { href: '/service-desk', label: 'Service Desk', icon: Ticket, color: 'text-amber-400' },
-              { href: '/hr', label: 'HR & Employees', icon: Users, color: 'text-pink-400' },
-              { href: '/fleet', label: 'Fleet Registry', icon: Sliders, color: 'text-sky-400' },
-              { href: '/finance/cashflow', label: 'Cash Flow Forecast', icon: DollarSign, color: 'text-emerald-400' },
-              { href: '/finance/vat', label: 'VAT compliance', icon: Percent, color: 'text-purple-400' },
-            ].map(item => {
+        {/* Module launchpad */}
+        <Card title="Quick access" subtitle="Jump to any module" padding={false}>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-px bg-[var(--border-color)]">
+            {LAUNCHPAD.map(item => {
               const Icon = item.icon;
               return (
-                <Link key={item.href} href={item.href} className="no-underline group">
-                  <div className="bg-[#0b0f2a] border border-white/5 hover:border-emerald-450/30 p-3 rounded flex flex-col gap-2 h-full transition-all cursor-pointer">
-                    <Icon className={`${item.color} group-hover:scale-110 transition-transform`} size={18} />
-                    <div className="flex justify-between items-center">
-                      <span className="text-[11px] font-bold text-slate-300 group-hover:text-white truncate">
-                        {item.label}
-                      </span>
-                      <ArrowRight size={10} className="text-slate-600 group-hover:translate-x-1 transition-transform" />
-                    </div>
-                  </div>
+                <Link key={item.href} href={item.href} className="no-underline group bg-[var(--bg-card)] hover:bg-[var(--bg-card-hover)] transition-colors p-3.5 flex items-center gap-2.5">
+                  <Icon size={15} className="text-[var(--text-muted)] group-hover:text-[var(--text-primary)] transition-colors flex-shrink-0" />
+                  <span className="text-xs font-medium text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] transition-colors truncate">
+                    {item.label}
+                  </span>
                 </Link>
               );
             })}

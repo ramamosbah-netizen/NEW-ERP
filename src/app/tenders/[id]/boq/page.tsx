@@ -86,6 +86,9 @@ type Profile = {
   email: string;
 };
 
+const fmtNum = (v: number) =>
+  new Intl.NumberFormat('en-AE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(v);
+
 export default function BOQDashboard({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const resolvedParams = use(params);
@@ -162,7 +165,65 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
   const [boqExists, setBoqExists] = useState(false);
   const [catalog, setCatalog] = useState<any[]>([]);
   const [focusedItemId, setFocusedItemId] = useState<string | null>(null);
+  const [focusedField, setFocusedField] = useState<'code' | 'name'>('name');
+
+  // Simple view hides the detailed cost-buildup groups (labour, subcontract,
+  // equipment, logistics, wastage, risk, overhead) leaving a clean pricing
+  // sheet; Detailed view shows all 38 columns. Persisted per user.
+  const [compactView, setCompactView] = useState(true);
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('boq-compact-view');
+      if (saved !== null) setCompactView(saved === '1');
+    } catch { /* ignore */ }
+  }, []);
+  const toggleCompactView = () => {
+    setCompactView(prev => {
+      try { localStorage.setItem('boq-compact-view', prev ? '0' : '1'); } catch { /* ignore */ }
+      return !prev;
+    });
+  };
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Applies a Master Rate Catalogue selection to a grid row: every costing
+  // field (supply cost, labour hours/counts/rates, wastage/risk/overhead/
+  // profit) is imported and the row is recalculated immediately.
+  const applyCatalogSelection = (rowId: string, selectedItem: any) => {
+    setItems(prevItems => prevItems.map(i => {
+      if (i.id !== rowId) return i;
+      const updated = {
+        ...i,
+        item_code: selectedItem.item_code,
+        name: selectedItem.description,
+        unit: selectedItem.unit || 'Pcs',
+        material_unit_cost: selectedItem.material_cost,
+        net_purchase_cost_per_unit: selectedItem.material_cost,
+        labor_technician_hours: selectedItem.labour_technician_hours || 0,
+        labor_engineer_hours: selectedItem.labour_engineer_hours || 0,
+        labor_pm_hours: selectedItem.labour_pm_hours || 0,
+        labor_technician_count: selectedItem.labour_technician_count || 1,
+        labor_engineer_count: selectedItem.labour_engineer_count || 0,
+        labor_pm_count: selectedItem.labour_pm_count || 0,
+        labor_technician_rate: selectedItem.labour_technician_rate ?? costElements.technician_rate,
+        labor_engineer_rate: selectedItem.labour_engineer_rate ?? costElements.engineer_rate,
+        labor_pm_rate: selectedItem.labour_pm_rate ?? costElements.pm_rate,
+        wastage_pct: selectedItem.wastage_pct ?? costElements.wastage_pct,
+        risk_pct: selectedItem.risk_pct ?? costElements.risk_pct,
+        site_overhead_pct: selectedItem.overhead_pct ?? costElements.site_overhead_pct,
+        profit_pct: selectedItem.markup_pct ?? costElements.profit_pct,
+      };
+      return calculateItemFinancials(updated, {
+        wastage_pct: costElements.wastage_pct,
+        risk_pct: costElements.risk_pct,
+        site_overhead_pct: costElements.site_overhead_pct,
+        profit_pct: costElements.profit_pct,
+        technician_rate: costElements.technician_rate,
+        engineer_rate: costElements.engineer_rate,
+        pm_rate: costElements.pm_rate,
+      });
+    }));
+    setFocusedItemId(null);
+  };
 
   const isEditable = boqStatus === 'draft';
 
@@ -947,6 +1008,40 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
   };
 
   // --- Column Resize Drag Action ---
+  // Excel-style keyboard navigation: Enter/↓ moves to the same column in the
+  // next row, ↑ moves up; Enter on the last row appends a new line.
+  const handleGridKeyDown = useCallback((e: React.KeyboardEvent) => {
+    const input = e.target as HTMLInputElement;
+    if (input.tagName !== 'INPUT' || input.type === 'checkbox') return;
+    if (!['Enter', 'ArrowDown', 'ArrowUp'].includes(e.key)) return;
+
+    const cell = input.closest('td') as HTMLTableCellElement | null;
+    const row = input.closest('tr');
+    if (!cell || !row) return;
+
+    const goUp = e.key === 'ArrowUp';
+    const targetRow = (goUp ? row.previousElementSibling : row.nextElementSibling) as HTMLTableRowElement | null;
+
+    if (!targetRow) {
+      if (e.key === 'Enter' && isEditable) {
+        e.preventDefault();
+        addItem();
+      }
+      return;
+    }
+
+    const nextInput = targetRow.cells?.[cell.cellIndex]?.querySelector(
+      'input:not([type=checkbox])'
+    ) as HTMLInputElement | null;
+
+    if (nextInput && !nextInput.disabled) {
+      e.preventDefault();
+      nextInput.focus();
+      nextInput.select?.();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isEditable]);
+
   const startResize = useCallback((e: React.MouseEvent, colKey: string) => {
     e.preventDefault();
     const startX = e.clientX;
@@ -1187,15 +1282,26 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
                 <FileText size={16} className="text-secondary" />
                 Line Items Estimator Sheet
               </h3>
-              <Button 
-                variant="secondary" 
-                size="sm" 
-                onClick={addItem} 
-                disabled={!isEditable}
-                className="flex items-center gap-1 text-[11px] font-bold"
-              >
-                <Plus size={12} /> Add Item Line
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={toggleCompactView}
+                  className="flex items-center gap-1 text-[11px] font-bold"
+                  title={compactView ? 'Show the full 38-column cost buildup' : 'Hide intermediate cost columns for a clean pricing sheet'}
+                >
+                  {compactView ? 'Detailed View' : 'Simple View'}
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={addItem}
+                  disabled={!isEditable}
+                  className="flex items-center gap-1 text-[11px] font-bold"
+                >
+                  <Plus size={12} /> Add Item Line
+                </Button>
+              </div>
             </div>
 
             {/* Bulk actions bar */}
@@ -1238,8 +1344,8 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
             )}
 
             {/* Table Grid Wrapper with Horizontal Scrolling */}
-            <div className="boq-table-scroll-container">
-              <table className="boq-estimator-grid">
+            <div className="boq-table-scroll-container" onKeyDown={handleGridKeyDown}>
+              <table className={`boq-estimator-grid ${compactView ? 'boq-compact' : ''}`}>
                 <thead>
                   {/* Tier 1 Header: Group Groupings */}
                   <tr className="tier-1-header">
@@ -1447,13 +1553,36 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
 
                         {/* Group 1 Inputs */}
                         <td>
-                          <input 
-                            type="text" 
-                            className="excel-cell-input" 
-                            value={item.item_code || ''}
-                            onChange={e => updateItem(item.id, 'item_code', e.target.value)}
-                            disabled={!isEditable}
-                          />
+                          <div className="boq-autocomplete-wrapper">
+                            <input
+                              type="text"
+                              className="excel-cell-input"
+                              placeholder="Code…"
+                              value={item.item_code || ''}
+                              onChange={e => {
+                                updateItem(item.id, 'item_code', e.target.value);
+                                setFocusedItemId(item.id);
+                                setFocusedField('code');
+                                setSearchQuery(e.target.value);
+                              }}
+                              onFocus={() => {
+                                setFocusedItemId(item.id);
+                                setFocusedField('code');
+                                setSearchQuery(item.item_code || '');
+                              }}
+                              onBlur={() => {
+                                setTimeout(() => setFocusedItemId(null), 250);
+                              }}
+                              disabled={!isEditable}
+                            />
+                            {focusedItemId === item.id && focusedField === 'code' && (
+                              <SuggestionsDropdown
+                                query={searchQuery}
+                                catalog={catalog}
+                                onSelect={(selectedItem) => applyCatalogSelection(item.id, selectedItem)}
+                              />
+                            )}
+                          </div>
                         </td>
                         <td>
                           <div className="boq-autocomplete-wrapper">
@@ -1465,10 +1594,12 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
                               onChange={(e) => {
                                 updateItem(item.id, 'name', e.target.value);
                                 setFocusedItemId(item.id);
+                                setFocusedField('name');
                                 setSearchQuery(e.target.value);
                               }}
                               onFocus={() => {
                                 setFocusedItemId(item.id);
+                                setFocusedField('name');
                                 setSearchQuery(item.name);
                               }}
                               onBlur={() => {
@@ -1476,46 +1607,11 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
                               }}
                               disabled={!isEditable} 
                             />
-                            {focusedItemId === item.id && (
-                              <SuggestionsDropdown 
-                                query={searchQuery} 
-                                catalog={catalog} 
-                                onSelect={(selectedItem) => {
-                                  setItems(prevItems => prevItems.map(i => {
-                                    if (i.id !== item.id) return i;
-                                    const updated = {
-                                      ...i,
-                                      item_code: selectedItem.item_code,
-                                      name: selectedItem.description,
-                                      unit: selectedItem.unit || 'Pcs',
-                                      material_unit_cost: selectedItem.material_cost,
-                                      net_purchase_cost_per_unit: selectedItem.material_cost,
-                                      labor_technician_hours: selectedItem.labour_technician_hours || 0,
-                                      labor_engineer_hours: selectedItem.labour_engineer_hours || 0,
-                                      labor_pm_hours: selectedItem.labour_pm_hours || 0,
-                                      labor_technician_count: selectedItem.labour_technician_count || 1,
-                                      labor_engineer_count: selectedItem.labour_engineer_count || 0,
-                                      labor_pm_count: selectedItem.labour_pm_count || 0,
-                                      labor_technician_rate: selectedItem.labour_technician_rate ?? costElements.technician_rate,
-                                      labor_engineer_rate: selectedItem.labour_engineer_rate ?? costElements.engineer_rate,
-                                      labor_pm_rate: selectedItem.labour_pm_rate ?? costElements.pm_rate,
-                                      wastage_pct: selectedItem.wastage_pct ?? costElements.wastage_pct,
-                                      risk_pct: selectedItem.risk_pct ?? costElements.risk_pct,
-                                      site_overhead_pct: selectedItem.overhead_pct ?? costElements.site_overhead_pct,
-                                      profit_pct: selectedItem.markup_pct ?? costElements.profit_pct,
-                                    };
-                                    return calculateItemFinancials(updated, {
-                                      wastage_pct: costElements.wastage_pct,
-                                      risk_pct: costElements.risk_pct,
-                                      site_overhead_pct: costElements.site_overhead_pct,
-                                      profit_pct: costElements.profit_pct,
-                                      technician_rate: costElements.technician_rate,
-                                      engineer_rate: costElements.engineer_rate,
-                                      pm_rate: costElements.pm_rate,
-                                    });
-                                  }));
-                                  setFocusedItemId(null);
-                                }}
+                            {focusedItemId === item.id && focusedField === 'name' && (
+                              <SuggestionsDropdown
+                                query={searchQuery}
+                                catalog={catalog}
+                                onSelect={(selectedItem) => applyCatalogSelection(item.id, selectedItem)}
                               />
                             )}
                           </div>
@@ -1770,6 +1866,44 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
                     );
                   })}
                 </tbody>
+
+                {/* Pinned column totals */}
+                <tfoot>
+                  <tr className="boq-totals-row">
+                    <td className="col-num-val">Σ</td>
+                    <td></td>
+                    <td></td>
+                    <td className="t-label">TOTALS</td>
+                    <td className="t-label">{items.length} line{items.length === 1 ? '' : 's'}</td>
+                    <td></td>
+                    <td className="t-num">{items.reduce((s, i) => s + (Number(i.quantity) || 0), 0)}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td className="t-num">{fmtNum(items.reduce((s, i) => s + (i.material_total_cost || 0), 0))}</td>
+                    <td></td><td></td><td></td>
+                    <td className="t-num">{fmtNum(items.reduce((s, i) => s + (i.labor_technician_cost || 0), 0))}</td>
+                    <td></td><td></td><td></td>
+                    <td className="t-num">{fmtNum(items.reduce((s, i) => s + (i.labor_engineer_cost || 0), 0))}</td>
+                    <td></td><td></td><td></td>
+                    <td className="t-num">{fmtNum(items.reduce((s, i) => s + (i.labor_pm_cost || 0), 0))}</td>
+                    <td className="t-num">{fmtNum(items.reduce((s, i) => s + (i.gross_labour_cost || 0), 0))}</td>
+                    <td className="t-num">{fmtNum(items.reduce((s, i) => s + (i.subcontract_cost || 0), 0))}</td>
+                    <td className="t-num">{fmtNum(items.reduce((s, i) => s + (i.equipment_cost || 0), 0))}</td>
+                    <td className="t-num">{fmtNum(items.reduce((s, i) => s + (i.logistics_cost || 0), 0))}</td>
+                    <td></td>
+                    <td className="t-num">{fmtNum(items.reduce((s, i) => s + (i.wastage_cost || 0), 0))}</td>
+                    <td></td>
+                    <td className="t-num">{fmtNum(items.reduce((s, i) => s + (i.risk_cost || 0), 0))}</td>
+                    <td></td>
+                    <td className="t-num">{fmtNum(items.reduce((s, i) => s + (i.site_overhead_cost || 0), 0))}</td>
+                    <td className="t-num t-strong">{fmtNum(items.reduce((s, i) => s + (i.total_cost || 0), 0))}</td>
+                    <td></td>
+                    <td className="t-num">{fmtNum(items.reduce((s, i) => s + (i.profit_value || 0), 0))}</td>
+                    <td></td>
+                    <td className="t-num t-strong">{fmtNum(items.reduce((s, i) => s + (i.total_price || 0), 0))}</td>
+                  </tr>
+                </tfoot>
               </table>
             </div>
 
@@ -2118,6 +2252,8 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
 
 
 // --- Suggestions Autocomplete Dropdown ---
+type QuotedHistory = { price: number; client: string; date: string };
+
 function SuggestionsDropdown({
   query,
   catalog,
@@ -2127,6 +2263,8 @@ function SuggestionsDropdown({
   catalog: any[];
   onSelect: (item: any) => void;
 }) {
+  const [history, setHistory] = useState<Record<string, QuotedHistory>>({});
+
   const filtered = catalog.filter(item => {
     if (!query) return true;
     const q = query.toLowerCase();
@@ -2138,25 +2276,74 @@ function SuggestionsDropdown({
     );
   }).slice(0, 8); // show top 8 matches
 
+  // Price intelligence: latest sell price quoted per item code (any client)
+  const codesKey = filtered.map(f => f.item_code).filter(Boolean).join(',');
+  useEffect(() => {
+    if (!codesKey) return;
+    let cancelled = false;
+    const codes = codesKey.split(',');
+    supabase
+      .from('quotation_lines')
+      .select('item_code, unit_sell_price_after_discount, quotation:quotations(client_name, created_at)')
+      .in('item_code', codes)
+      .limit(100)
+      .then(({ data, error }) => {
+        if (cancelled || error || !data) return;
+        const map: Record<string, QuotedHistory> = {};
+        const rows = [...data].sort((a: any, b: any) =>
+          new Date(b.quotation?.created_at || 0).getTime() - new Date(a.quotation?.created_at || 0).getTime()
+        );
+        for (const row of rows as any[]) {
+          if (!row.item_code || map[row.item_code]) continue;
+          map[row.item_code] = {
+            price: Number(row.unit_sell_price_after_discount) || 0,
+            client: row.quotation?.client_name || '—',
+            date: row.quotation?.created_at || '',
+          };
+        }
+        setHistory(map);
+      });
+    return () => { cancelled = true; };
+  }, [codesKey]);
+
   if (filtered.length === 0) return null;
 
   return (
     <div className="boq-suggestions-dropdown">
-      {filtered.map(item => (
-        <div
-          key={item.id}
-          className="boq-suggestion-item"
-          onMouseDown={() => onSelect(item)}
-        >
-          <div className="boq-suggestion-code">
-            {item.item_code} <span style={{ color: 'var(--text-muted)', fontWeight: 'normal' }}>| {item.brand || 'No Brand'}</span>
+      {filtered.map(item => {
+        const quoted = item.item_code ? history[item.item_code] : undefined;
+        return (
+          <div
+            key={item.id}
+            className="boq-suggestion-item"
+            onMouseDown={() => onSelect(item)}
+          >
+            <div className="boq-suggestion-code">
+              {item.item_code} <span style={{ color: 'var(--text-muted)', fontWeight: 'normal' }}>| {item.brand || 'No Brand'}</span>
+              {item.stock_status && (
+                <span className="boq-suggestion-stock">{String(item.stock_status).replace(/_/g, ' ')}</span>
+              )}
+            </div>
+            <div className="boq-suggestion-desc">{item.description}</div>
+            <div className="boq-suggestion-meta">
+              Material Cost: {formatCurrency(item.material_cost)} | System: {item.system}
+            </div>
+            <div className="boq-suggestion-price-intel">
+              {quoted ? (
+                <span className="intel-quoted">
+                  Last quoted {formatCurrency(quoted.price)} · {quoted.client}
+                  {quoted.date ? ` · ${new Date(quoted.date).toLocaleDateString('en-AE')}` : ''}
+                </span>
+              ) : (
+                <span className="intel-none">No previous quotes</span>
+              )}
+              <span className="intel-market" title="Online market pricing arrives with the AI integration">
+                Market avg: —
+              </span>
+            </div>
           </div>
-          <div className="boq-suggestion-desc">{item.description}</div>
-          <div className="boq-suggestion-meta">
-            Material Cost: {formatCurrency(item.material_cost)} | System: {item.system}
-          </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

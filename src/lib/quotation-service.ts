@@ -7,6 +7,7 @@ import { supabase } from './supabase';
 import { amountToWords } from './amount-to-words';
 import { eventService } from '@/services/eventService';
 import { generateProjectNumber } from './project-number-service';
+import { recordAudit } from './audit/recordAudit';
 import type { 
   QuotationInput, 
   QuotationLineInput, 
@@ -754,6 +755,21 @@ export const quotationService = {
           }
         }
 
+        // C2. Import the target/budget cost from the linked BOQ (direct + indirect)
+        let budgetCost = 0;
+        if (quote.boq_id) {
+          const { data: boq } = await supabase
+            .from('boqs')
+            .select('financials')
+            .eq('id', quote.boq_id)
+            .maybeSingle();
+          const fin = (boq?.financials || {}) as any;
+          budgetCost = Number(fin.direct_total || 0) + Number(fin.indirect_total || 0);
+          if (budgetCost <= 0 && fin.total_selling_price) {
+            budgetCost = Number(fin.total_selling_price || 0) - Number(fin.profit_value || 0);
+          }
+        }
+
         // D. Insert projects row
         const { data: newProject, error: projectCreateError } = await supabase
           .from('projects')
@@ -771,7 +787,7 @@ export const quotationService = {
             quotation_id: id,
             contract_value: 0, // pre-award contract values remain zero/empty
             original_contract_value: 0,
-            budget_cost: 0,
+            budget_cost: Math.round(budgetCost * 100) / 100, // Target cost from BOQ
             status: 'SUBMITTED', // Created in SUBMITTED stage
             sira_applicable: systemsArray.includes('CCTV') || systemsArray.includes('ACCESS_CONTROL'),
             created_by: user.id,
@@ -891,6 +907,47 @@ export const quotationService = {
   },
 
   // 11. Client Accepted
+  /**
+   * Returns the project this quotation belongs to (via linked_project_id, or
+   * the legacy project.quotation_id link), or null if none yet.
+   */
+  async getLinkedProject(quotationId: string): Promise<{ id: string; project_number: string } | null> {
+    // Prefer the explicit link
+    const { data: q } = await supabase
+      .from('quotations')
+      .select('linked_project_id')
+      .eq('id', quotationId)
+      .maybeSingle();
+    const linkedId = (q as any)?.linked_project_id;
+    if (linkedId) {
+      const { data: p } = await supabase
+        .from('projects').select('id, project_number').eq('id', linkedId).maybeSingle();
+      if (p) return p as any;
+    }
+    // Fall back to a project that was created from this quotation
+    const { data: byOrigin } = await supabase
+      .from('projects')
+      .select('id, project_number')
+      .eq('quotation_id', quotationId)
+      .maybeSingle();
+    return (byOrigin as any) || null;
+  },
+
+  /** Associates a quotation with an existing project (many quotations → one project). */
+  async linkToProject(quotationId: string, projectId: string): Promise<void> {
+    const { error } = await supabase
+      .from('quotations')
+      .update({ linked_project_id: projectId, updated_at: new Date().toISOString() })
+      .eq('id', quotationId);
+    if (error) throw error;
+
+    await recordAudit({
+      action: 'UPDATE', entity_type: 'QUOTATION', entity_id: quotationId,
+      entity_label: quotationId, summary: `Quotation linked to project ${projectId}`,
+      module: 'QUOTATION',
+    }).catch(() => {});
+  },
+
   async markAccepted(id: string, poNumber: string) {
     // 1. Update status to ACCEPTED
     const { data: quote, error: updateError } = await supabase

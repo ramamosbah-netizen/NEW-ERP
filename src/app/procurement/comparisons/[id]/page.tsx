@@ -28,7 +28,8 @@ import {
   FileSpreadsheet,
   FileText,
   Clock,
-  Check
+  Check,
+  Pencil
 } from 'lucide-react';
 import { useComparison } from '@/hooks/useComparisons';
 import { offerExtractionService, fuzzyMatchExtractedLine } from '@/lib/offer-extraction-service';
@@ -64,6 +65,23 @@ export default function ComparisonMatrixPage({ params }: { params: Promise<{ id:
   // Manual Add Supplier Column State
   const [showAddSupplierModal, setShowAddSupplierModal] = useState<boolean>(false);
   const [newSupplierName, setNewSupplierName] = useState<string>('');
+  const [registeredSuppliers, setRegisteredSuppliers] = useState<{ id: string; name: string }[]>([]);
+
+  // Load registered suppliers from the supplier module for the picker
+  const openAddSupplierModal = async () => {
+    setNewSupplierName('');
+    setShowAddSupplierModal(true);
+    try {
+      const { data } = await supabase
+        .from('pricing_suppliers')
+        .select('id, name')
+        .eq('is_active', true)
+        .order('name');
+      setRegisteredSuppliers(data || []);
+    } catch {
+      setRegisteredSuppliers([]);
+    }
+  };
 
   // Local state for pricing cell edits to avoid DB keypress lag
   const [localEdits, setLocalEdits] = useState<Record<string, { 
@@ -362,6 +380,70 @@ export default function ComparisonMatrixPage({ params }: { params: Promise<{ id:
     }
   };
 
+  // Rename a supplier column (updates the name on every item's offer).
+  // Only allowed while the comparison is unlocked.
+  const handleRenameSupplier = async (oldName: string) => {
+    if (comparison.is_locked) return;
+    const input = window.prompt(`Rename supplier "${oldName}" to:`, oldName);
+    if (input === null) return;
+    const newName = input.trim();
+    if (!newName || newName === oldName) return;
+
+    if (allSupplierNames.some(s => s.toLowerCase() === newName.toLowerCase())) {
+      alert(`Supplier '${newName}' already exists in the grid.`);
+      return;
+    }
+    try {
+      setActionLoading(true);
+      await actions.renameSupplierColumn(oldName, newName);
+    } catch (e: any) {
+      alert('Failed to rename supplier: ' + e.message);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  // Remove a supplier column entirely (deletes all its offers in one operation).
+  // Only allowed while the comparison is unlocked.
+  const handleRemoveSupplier = async (supName: string) => {
+    if (comparison.is_locked) return;
+    if (!window.confirm(`Remove supplier "${supName}" from the comparison? All its offers across every line item will be deleted.`)) return;
+    try {
+      setActionLoading(true);
+      await actions.removeSupplierColumn(supName);
+    } catch (e: any) {
+      alert('Failed to remove supplier: ' + e.message);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  // Flag / clear a procurement exception on an item (allows submit when an
+  // item can't reach 3 compliant offers, e.g. sole-source).
+  const handleToggleException = async (item: any) => {
+    if (comparison.is_locked) return;
+    try {
+      if (item.is_exception) {
+        if (!window.confirm(`Clear the exception flag on "${item.description}"?`)) return;
+        setActionLoading(true);
+        await actions.setItemException(item.id, false, null);
+      } else {
+        const reason = window.prompt(
+          `Justify the procurement exception for "${item.description}" (e.g. sole-source supplier, urgent requirement, proprietary part):`,
+          item.exception_reason || ''
+        );
+        if (reason === null) return;
+        if (!reason.trim()) { alert('A justification is required to flag an exception.'); return; }
+        setActionLoading(true);
+        await actions.setItemException(item.id, true, reason.trim());
+      }
+    } catch (e: any) {
+      alert('Failed to update exception: ' + e.message);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   // ------------------------------------------------------------
   // GEMINI AI FILE UPLOAD AND PARSING DRAWER
   // ------------------------------------------------------------
@@ -542,7 +624,7 @@ export default function ComparisonMatrixPage({ params }: { params: Promise<{ id:
               <button 
                 className="quote-btn quote-btn-secondary" 
                 style={{ fontSize: '0.78rem', padding: '0.4rem 0.8rem' }} 
-                onClick={() => setShowAddSupplierModal(true)}
+                onClick={openAddSupplierModal}
               >
                 <Plus size={14} /> Add Supplier Column
               </button>
@@ -658,6 +740,28 @@ export default function ComparisonMatrixPage({ params }: { params: Promise<{ id:
                 <th key={supName} colSpan={6} className="supplier-group-header">
                   <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.4rem' }}>
                     <span>{supName}</span>
+                    {!comparison.is_locked && (
+                      <span style={{ display: 'inline-flex', gap: '0.2rem' }}>
+                        <button
+                          type="button"
+                          title={`Rename ${supName}`}
+                          onClick={() => handleRenameSupplier(supName)}
+                          disabled={actionLoading}
+                          style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', padding: '2px', display: 'inline-flex' }}
+                        >
+                          <Pencil size={12} />
+                        </button>
+                        <button
+                          type="button"
+                          title={`Remove ${supName}`}
+                          onClick={() => handleRemoveSupplier(supName)}
+                          disabled={actionLoading}
+                          style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--error)', padding: '2px', display: 'inline-flex' }}
+                        >
+                          <Trash2 size={12} />
+                        </button>
+                      </span>
+                    )}
                   </div>
                 </th>
               ))}
@@ -708,6 +812,32 @@ export default function ComparisonMatrixPage({ params }: { params: Promise<{ id:
                       <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
                         Code: {item.item_code}
                       </div>
+                      {/* Procurement exception flag (lets sub-3-offer items pass submit) */}
+                      {!item.is_optional && (
+                        <div style={{ marginTop: '0.15rem' }}>
+                          {item.is_exception ? (
+                            <button
+                              type="button"
+                              onClick={() => !comparison.is_locked && handleToggleException(item)}
+                              disabled={comparison.is_locked || actionLoading}
+                              title={item.exception_reason || 'Exception'}
+                              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', background: 'rgba(245,158,11,0.12)', color: 'var(--warning)', border: '1px solid rgba(245,158,11,0.3)', borderRadius: '4px', padding: '0.1rem 0.4rem', fontSize: '0.66rem', fontWeight: 600, cursor: comparison.is_locked ? 'default' : 'pointer' }}
+                            >
+                              <AlertTriangle size={10} /> Exception {comparison.is_locked ? '' : '✕'}
+                            </button>
+                          ) : !comparison.is_locked && (
+                            <button
+                              type="button"
+                              onClick={() => handleToggleException(item)}
+                              disabled={actionLoading}
+                              title="Flag this item as a procurement exception (e.g. sole-source) so it can be submitted with fewer than 3 offers"
+                              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', background: 'none', color: 'var(--text-muted)', border: '1px dashed var(--border-color)', borderRadius: '4px', padding: '0.1rem 0.4rem', fontSize: '0.66rem', cursor: 'pointer' }}
+                            >
+                              <AlertTriangle size={10} /> Flag exception
+                            </button>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </td>
 
@@ -960,18 +1090,28 @@ export default function ComparisonMatrixPage({ params }: { params: Promise<{ id:
             </div>
             <div className="quote-modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div className="quote-form-group">
-                <label>Supplier Corporate Name</label>
-                <input 
-                  type="text" 
-                  className="quote-form-input" 
-                  placeholder="e.g. Siemens MEP Trading" 
-                  value={newSupplierName} 
-                  onChange={(e) => setNewSupplierName(e.target.value)} 
+                <label>Supplier ({registeredSuppliers.length} registered)</label>
+                <input
+                  type="text"
+                  list="registered-suppliers-list"
+                  className="quote-form-input"
+                  placeholder="Pick a registered supplier or type a new name…"
+                  value={newSupplierName}
+                  onChange={(e) => setNewSupplierName(e.target.value)}
+                  autoFocus
                 />
+                <datalist id="registered-suppliers-list">
+                  {registeredSuppliers.map(s => <option key={s.id} value={s.name} />)}
+                </datalist>
+                {newSupplierName.trim() && !registeredSuppliers.some(s => s.name.toLowerCase() === newSupplierName.trim().toLowerCase()) && (
+                  <span style={{ fontSize: '0.72rem', color: 'var(--secondary)', marginTop: '0.35rem', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
+                    <Plus size={11} /> New supplier — will be registered in the supplier module.
+                  </span>
+                )}
               </div>
               <div style={{ display: 'flex', gap: '0.8rem', justifyContent: 'flex-end', marginTop: '1rem' }}>
                 <button className="quote-btn quote-btn-secondary" onClick={() => setShowAddSupplierModal(false)}>Cancel</button>
-                <button className="quote-btn quote-btn-primary" onClick={handleAddSupplierColumn}>Add Column</button>
+                <button className="quote-btn quote-btn-primary" onClick={handleAddSupplierColumn} disabled={!newSupplierName.trim()}>Add Column</button>
               </div>
             </div>
           </div>

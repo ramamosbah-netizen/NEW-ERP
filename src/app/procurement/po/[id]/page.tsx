@@ -15,22 +15,24 @@ import { PO_STATUS_LABELS, PO_STATUS_COLORS, PO_TYPE_LABELS, PO_DELIVERY_STATUS_
 import { poPDFService } from '@/services/poPDFService';
 import { grnService } from '@/services/grnService';
 import { useProjectCommitments } from '@/hooks/useProjectCommitments';
-import { 
-  ArrowLeft, 
-  Calendar, 
-  Download, 
-  FileText, 
-  Send, 
-  AlertCircle, 
-  CheckCircle, 
-  XCircle, 
-  RotateCcw, 
+import {
+  ArrowLeft,
+  Calendar,
+  Download,
+  FileText,
+  Send,
+  AlertCircle,
+  CheckCircle,
+  XCircle,
+  RotateCcw,
   ExternalLink,
   ChevronRight,
   User,
   Truck,
-  Ban
+  Ban,
+  Upload
 } from 'lucide-react';
+import WorkflowPanel from '@/components/workflow/WorkflowPanel';
 import '@/app/procurement/comparisons/comparisons.css';
 
 const fmtAED = (v: number) => {
@@ -94,6 +96,54 @@ export default function PODetailPage({ params }: PageProps) {
   const [approvalComment, setApprovalComment] = useState('');
   const [ackReference, setAckReference] = useState('');
   const [ackDate, setAckDate] = useState('');
+
+  // Supplier proforma invoice attachment
+  const [proformaUploading, setProformaUploading] = useState(false);
+
+  const handleUploadProforma = async (file: File) => {
+    if (!po) return;
+    setProformaUploading(true);
+    try {
+      const path = `PO/${po.id}/PROFORMA_${Date.now()}_${file.name}`;
+      const { error: upErr } = await supabase.storage
+        .from('tender-documents')
+        .upload(path, file, { cacheControl: '3600', upsert: true });
+      if (upErr) throw new Error(`Upload failed: ${upErr.message}`);
+
+      const { error: dbErr } = await supabase
+        .from('purchase_orders')
+        .update({
+          proforma_invoice_path: path,
+          proforma_invoice_name: file.name,
+          proforma_invoice_uploaded_at: new Date().toISOString(),
+        })
+        .eq('id', po.id);
+      if (dbErr) {
+        // Columns may not exist yet (migration 20260613140000 not applied)
+        console.warn('Proforma uploaded but reference not saved (apply migration 20260613140000):', dbErr.message);
+        alert('Proforma uploaded, but the reference could not be saved — apply migration 20260613140000.');
+      }
+      await refetch();
+    } catch (err: any) {
+      alert(err.message || 'Failed to upload proforma invoice');
+    } finally {
+      setProformaUploading(false);
+    }
+  };
+
+  const handleDownloadProforma = async () => {
+    const path = (po as any)?.proforma_invoice_path;
+    if (!path) return;
+    try {
+      const { data, error } = await supabase.storage
+        .from('tender-documents')
+        .createSignedUrl(path, 300, { download: (po as any)?.proforma_invoice_name || true });
+      if (error || !data?.signedUrl) throw error || new Error('No URL');
+      window.open(data.signedUrl, '_blank');
+    } catch {
+      alert('Could not open the proforma invoice.');
+    }
+  };
 
   // Fetch current user & associated GRNs
   useEffect(() => {
@@ -668,6 +718,62 @@ export default function PODetailPage({ params }: PageProps) {
                 </div>
               )}
             </div>
+          </div>
+
+          {/* Configurable workflow (Admin Center → Workflows). Renders only
+              when an active workflow is configured for the PO module. */}
+          <WorkflowPanel
+            moduleKey="PO"
+            entityId={poId}
+            context={{
+              total: Number(po.total),
+              status: po.status,
+              supplier_name: po.supplier_name,
+              po_type: po.po_type,
+            }}
+            onStatusChange={() => refetch()}
+          />
+
+          {/* Supplier Proforma Invoice */}
+          <div className="quote-card">
+            <h3 className="quote-card-title" style={{ marginBottom: '0.6rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+              <FileText size={16} /> Supplier Proforma Invoice
+            </h3>
+            {(po as any).proforma_invoice_path ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.6rem', background: 'rgba(16, 185, 129, 0.06)', border: '1px solid rgba(16, 185, 129, 0.2)', borderRadius: '6px', padding: '0.6rem 0.8rem' }}>
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {(po as any).proforma_invoice_name || 'Proforma Invoice'}
+                    </div>
+                    {(po as any).proforma_invoice_uploaded_at && (
+                      <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>
+                        Uploaded {new Date((po as any).proforma_invoice_uploaded_at).toLocaleDateString('en-AE')}
+                      </div>
+                    )}
+                  </div>
+                  <button className="quote-btn quote-btn-secondary" style={{ flexShrink: 0, padding: '0.4rem 0.7rem' }} onClick={handleDownloadProforma}>
+                    <Download size={13} /> Open
+                  </button>
+                </div>
+                <label className="quote-btn quote-btn-secondary" style={{ cursor: 'pointer', justifyContent: 'center' }}>
+                  {proformaUploading ? 'Uploading…' : 'Replace Proforma'}
+                  <input type="file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" style={{ display: 'none' }} disabled={proformaUploading}
+                    onChange={e => e.target.files?.[0] && handleUploadProforma(e.target.files[0])} />
+                </label>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                <p style={{ fontSize: '0.74rem', color: 'var(--text-secondary)' }}>
+                  Attach the supplier&apos;s proforma invoice issued against this LPO. It will be stored with the order and can be reviewed and exported.
+                </p>
+                <label className="quote-btn quote-btn-primary" style={{ cursor: 'pointer', justifyContent: 'center' }}>
+                  {proformaUploading ? 'Uploading…' : <><Upload size={13} /> Upload Proforma Invoice</>}
+                  <input type="file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" style={{ display: 'none' }} disabled={proformaUploading}
+                    onChange={e => e.target.files?.[0] && handleUploadProforma(e.target.files[0])} />
+                </label>
+              </div>
+            )}
           </div>
         </div>
       </div>

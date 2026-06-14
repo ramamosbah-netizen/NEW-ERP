@@ -214,7 +214,7 @@ export default function FinanceDashboard() {
                 No cash flow forecast data available
               </div>
             ) : (
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                 <AreaChart data={forecast} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
                   <defs>
                     <linearGradient id="colorBalance" x1="0" y1="0" x2="0" y2="1">
@@ -319,6 +319,11 @@ export default function FinanceDashboard() {
               <Link href="/finance/ap/schedule" className="no-underline">
                 <Button size="sm" variant="secondary" className="text-xs font-mono text-slate-300 border-white/10 hover:bg-white/5">
                   Disbursements
+                </Button>
+              </Link>
+              <Link href="/finance/grn-expense" className="no-underline">
+                <Button size="sm" variant="secondary" className="text-xs font-mono text-slate-300 border-white/10 hover:bg-white/5">
+                  GRN-to-Expense
                 </Button>
               </Link>
             </div>

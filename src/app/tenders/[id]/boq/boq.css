@@ -1527,3 +1527,153 @@
   font-size: 1.1rem;
   text-shadow: 0 0 12px var(--secondary-glow);
 }
+
+/* ============================================================
+   PINNED TOTALS FOOTER (professional pricing grid)
+   ============================================================ */
+.boq-estimator-grid tfoot {
+  position: sticky;
+  bottom: 0;
+  z-index: 90;
+}
+
+.boq-totals-row td {
+  background: rgba(18, 20, 32, 0.99) !important;
+  border-top: 2px solid rgba(255, 255, 255, 0.14) !important;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+body.theme-light .boq-totals-row td {
+  background: #f1f5f9 !important;
+  border-top: 2px solid rgba(15, 23, 42, 0.18) !important;
+}
+
+.boq-totals-row .t-label {
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-size: 0.65rem;
+}
+
+.boq-totals-row .t-num {
+  text-align: right;
+  color: var(--text-primary);
+}
+
+.boq-totals-row .t-strong {
+  color: var(--primary);
+  font-size: 0.76rem;
+}
+
+/* ============================================================
+   FROZEN LEFT COLUMNS (#, select, actions stay visible while
+   scrolling 38 columns horizontally)
+   ============================================================ */
+.boq-estimator-grid th.col-num,
+.boq-estimator-grid td.col-num-val {
+  position: sticky;
+  left: 0;
+  z-index: 60;
+  background: rgba(18, 20, 32, 0.99);
+}
+.boq-estimator-grid th.col-checkbox,
+.boq-estimator-grid td.col-checkbox-val {
+  position: sticky;
+  left: 35px;
+  z-index: 60;
+  background: rgba(18, 20, 32, 0.99);
+}
+.boq-estimator-grid th.col-actions,
+.boq-estimator-grid td.col-actions-val {
+  position: sticky;
+  left: 75px;
+  z-index: 60;
+  background: rgba(18, 20, 32, 0.99);
+  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.25);
+}
+.boq-estimator-grid thead th.col-num,
+.boq-estimator-grid thead th.col-checkbox,
+.boq-estimator-grid thead th.col-actions {
+  z-index: 110;
+}
+body.theme-light .boq-estimator-grid th.col-num,
+body.theme-light .boq-estimator-grid td.col-num-val,
+body.theme-light .boq-estimator-grid th.col-checkbox,
+body.theme-light .boq-estimator-grid td.col-checkbox-val,
+body.theme-light .boq-estimator-grid th.col-actions,
+body.theme-light .boq-estimator-grid td.col-actions-val {
+  background: #f8fafc;
+}
+
+/* ============================================================
+   SUGGESTION DROPDOWN — PRICE INTELLIGENCE
+   ============================================================ */
+.boq-suggestion-price-intel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.25rem;
+  padding-top: 0.25rem;
+  border-top: 1px dashed var(--border-color);
+  font-size: 0.66rem;
+  font-family: var(--font-mono);
+}
+.boq-suggestion-price-intel .intel-quoted {
+  color: var(--success);
+  font-weight: 600;
+}
+.boq-suggestion-price-intel .intel-none {
+  color: var(--text-muted);
+  font-style: italic;
+}
+.boq-suggestion-price-intel .intel-market {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+.boq-suggestion-stock {
+  margin-left: 0.4rem;
+  padding: 0.05rem 0.4rem;
+  border-radius: 9999px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: var(--status-info-bg);
+  color: var(--status-info-text);
+  border: 1px solid var(--status-info-border);
+}
+
+/* ============================================================
+   SIMPLE VIEW — hides the detailed cost-buildup groups (3-9):
+   labour breakdown, subcontract, equipment, logistics, wastage,
+   risk and site overhead (columns 12-33). What remains is a
+   clean pricing sheet: item, qty, supply, total cost, profit,
+   selling price.
+   ============================================================ */
+.boq-compact .tier-1-header th.group-3,
+.boq-compact .tier-1-header th.group-4,
+.boq-compact .tier-1-header th.group-5,
+.boq-compact .tier-1-header th.group-6,
+.boq-compact .tier-1-header th.group-7,
+.boq-compact .tier-1-header th.group-8,
+.boq-compact .tier-1-header th.group-9 {
+  display: none;
+}
+
+.boq-compact .tier-2-header th:nth-child(n+9):nth-child(-n+30) {
+  display: none;
+}
+
+.boq-compact tbody td:nth-child(n+12):nth-child(-n+33),
+.boq-compact tfoot td:nth-child(n+12):nth-child(-n+33) {
+  display: none;
+}
+
+/* In simple view the table fits without horizontal scroll */
+.boq-compact {
+  width: 100% !important;
+}

@@ -115,7 +115,7 @@ export const settingsService = {
       address: "Office 402, Business Bay, Dubai, UAE",
       phone: "+971 4 456 7890",
       email: "info@jeet.ae",
-      logo_url: "https://images.unsplash.com/photo-1541746972996-4e0b0f43e01a?q=80&w=200&auto=format&fit=crop",
+      logo_url: "", // Set your company logo in Admin Center → Settings → Company & Branding
       website: "www.jeet.ae"
     });
   },

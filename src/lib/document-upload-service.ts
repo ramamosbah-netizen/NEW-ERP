@@ -47,7 +47,8 @@ export async function triggerProcessing(documentId: string): Promise<void> {
   });
 
   if (error) {
-    console.error('Failed to trigger AI document processing Edge Function:', error);
+    // Non-fatal: AI processing is optional (no Gemini key / edge function not deployed)
+    console.warn('AI document processing unavailable; document kept for manual review.');
     throw error;
   }
 }
@@ -162,7 +163,7 @@ export async function runUploadPipeline(
   try {
     await triggerProcessing(documentRecord.id);
   } catch (err) {
-    console.error('Edge Function failed to start, falling back to manual review status:', err);
+    console.warn('AI document processing unavailable; marking document for manual review.');
     // Mark as NEEDS_REVIEW so it doesn't get stuck in PROCESSING forever
     await supabase
       .from('documents')
