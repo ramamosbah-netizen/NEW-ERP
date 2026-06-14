@@ -11,11 +11,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import warehouseService, { MovementRow } from '@/services/warehouseService';
 import { supabase } from '@/lib/supabase';
+import { exportMovementsExcel } from '@/lib/stock-export';
+import stockMovementPDF from '@/lib/stock-movement-pdf';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { Truck, Search, Plus, X, Save } from 'lucide-react';
+import { Truck, Search, Plus, X, Save, FileSpreadsheet, FileText } from 'lucide-react';
 import type { StockTransactionType } from '@/types/stock.types';
 
 const TYPE_META: Record<string, { label: string; tone: 'in' | 'out' | 'neutral' }> = {
@@ -54,7 +56,7 @@ export default function MovementsPage() {
   const [items, setItems] = useState<{ id: string; item_code: string; description: string; unit: string }[]>([]);
   const [locations, setLocations] = useState<{ id: string; name: string; location_code: string; type: string }[]>([]);
   const [projects, setProjects] = useState<{ id: string; project_number: string }[]>([]);
-  const [mForm, setMForm] = useState({ type: 'GRN_RECEIPT' as StockTransactionType, stock_item_id: '', location_id: '', quantity: '', unit_cost: '', project_id: '', reason: '' });
+  const [mForm, setMForm] = useState({ type: 'GRN_RECEIPT' as StockTransactionType, stock_item_id: '', location_id: '', quantity: '', unit_cost: '', project_id: '', reason: '', received_by: '' });
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -93,9 +95,10 @@ export default function MovementsPage() {
         unit_cost: Number(mForm.unit_cost) || 0,
         project_id: mForm.project_id || null,
         reason: mForm.reason || null,
+        received_by_name: mForm.received_by || null,
       });
       setShowAdd(false);
-      setMForm({ type: 'GRN_RECEIPT', stock_item_id: '', location_id: '', quantity: '', unit_cost: '', project_id: '', reason: '' });
+      setMForm({ type: 'GRN_RECEIPT', stock_item_id: '', location_id: '', quantity: '', unit_cost: '', project_id: '', reason: '', received_by: '' });
       await load();
       setError(null);
     } catch (err: any) {
@@ -140,6 +143,28 @@ export default function MovementsPage() {
     URL.revokeObjectURL(url);
   };
 
+  const PERIOD_LABEL: Record<string, string> = { ALL: 'All time', WEEK: 'This week', MONTH: 'This month', YEAR: 'This year' };
+  const exportExcel = () => exportMovementsExcel(filtered, { period: PERIOD_LABEL[period] });
+
+  const downloadReceipt = (r: MovementRow) => {
+    stockMovementPDF.download({
+      receipt_no: r.transaction_number,
+      type: r.type,
+      date: r.created_at,
+      item_code: r.item_code,
+      description: r.description,
+      unit: '',
+      qty: r.qty,
+      unit_cost: r.unit_cost,
+      from_name: r.from_name,
+      to_name: r.to_name,
+      project_number: r.project_number,
+      issued_by: r.issued_by || '—',
+      received_by: r.received_by || '—',
+      reason: r.reason,
+    });
+  };
+
   return (
     <div className="flex flex-col gap-5">
       <PageHeader
@@ -172,7 +197,10 @@ export default function MovementsPage() {
           <option value="YEAR">This year</option>
         </select>
         <span className="text-xs text-[var(--text-muted)]">{filtered.length} movement{filtered.length === 1 ? '' : 's'}</span>
-        <Button size="sm" variant="secondary" onClick={exportCSV} disabled={filtered.length === 0} className="ml-auto">Export log (CSV)</Button>
+        <div className="ml-auto flex gap-2">
+          <Button size="sm" variant="secondary" onClick={exportCSV} disabled={filtered.length === 0}>CSV</Button>
+          <Button size="sm" variant="secondary" icon={FileSpreadsheet} onClick={exportExcel} disabled={filtered.length === 0}>Export Excel</Button>
+        </div>
       </div>
 
       {loading ? (
@@ -191,8 +219,11 @@ export default function MovementsPage() {
                   <th>Item</th>
                   <th>Qty</th>
                   <th>Value</th>
-                  <th>Location</th>
+                  <th>From</th>
+                  <th>To</th>
+                  <th>Received by</th>
                   <th>Project</th>
+                  <th>Receipt</th>
                 </tr>
               </thead>
               <tbody>
@@ -217,8 +248,16 @@ export default function MovementsPage() {
                       </td>
                       <td><span className={`font-mono text-xs font-medium ${r.qty < 0 ? 'text-[var(--warning)]' : 'text-[var(--success)]'}`}>{fmtQty(r.qty)}</span></td>
                       <td><span className="font-mono text-xs">{fmtAED(r.total_value)}</span></td>
-                      <td><span className="text-xs text-[var(--text-secondary)]">{r.location_name}</span></td>
+                      <td><span className="text-xs text-[var(--text-secondary)]">{r.from_name}</span></td>
+                      <td><span className="text-xs text-[var(--text-secondary)]">{r.to_name}</span></td>
+                      <td><span className="text-xs text-[var(--text-secondary)]">{r.received_by || '—'}</span></td>
                       <td><span className="font-mono text-xs text-[var(--text-secondary)]">{r.project_number || '—'}</span></td>
+                      <td>
+                        <button onClick={() => downloadReceipt(r)} title="Download handover receipt"
+                          className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-[0.6875rem] border border-[var(--border-color)] text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] cursor-pointer">
+                          <FileText size={11} /> Receipt
+                        </button>
+                      </td>
                     </tr>
                   );
                 })}
@@ -284,6 +323,10 @@ export default function MovementsPage() {
                     {projects.map(p => <option key={p.id} value={p.id}>{p.project_number}</option>)}
                   </select>
                 </div>
+              </div>
+              <div className="quote-form-group">
+                <label>Received by (handover receipt)</label>
+                <input className="quote-form-input" value={mForm.received_by} onChange={e => setMForm({ ...mForm, received_by: e.target.value })} placeholder="Name of person receiving the goods" />
               </div>
               <div className="quote-form-group">
                 <label>Reason / note (optional)</label>

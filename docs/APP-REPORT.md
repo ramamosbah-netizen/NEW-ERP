@@ -105,12 +105,16 @@ Auth is per-page (`supabase.auth.getUser()`), with RBAC via `roles` /
   fields** (type, trade, day rate), **historic performance scoring** from PO
   history, **scorecard** detail page with PO-by-PO history.
 - **Store** — stock items + balances across locations, valuation, **stock-risk**
-  (out / below reorder), register stock items, manage locations. **Per-item
-  movement** action records issue-to-project/site, return from site, return to
-  supplier, damage/write-off, store-to-store transfer, and adjustments —
-  movements link to a **project for cost allocation**.
+  (out / below reorder), register stock items, manage locations. Grid shows
+  **category + system** with filters (and **location** filter); **Excel export**
+  of stock per location. **Per-item movement** action records issue-to-project/
+  site, return from site, return to supplier, damage/write-off, store-to-store
+  transfer, and adjustments — movements link to a **project for cost
+  allocation** and generate a **handover receipt** (storekeeper ↔ receiver).
 - **Goods Movements** — receipts, issues to project/ticket, returns, transfers,
-  adjustments, write-offs; **period filter (week/month/year)** + **CSV export**.
+  adjustments, write-offs; **period filter (week/month/year)**, **CSV + Excel
+  export** showing **from / to / received-by / issued-by** and the receipt no;
+  per-row **handover receipt PDF**.
 - **Pricing Catalogue** — master rate catalogue feeding BOQ/quotations;
   **price auto-update from supplier invoices** + price-history trail; freshness
   indicator showing when a rate was last refreshed.
@@ -262,6 +266,7 @@ All idempotent. Apply any not yet run, then `NOTIFY pgrst, 'reload schema';`.
 | `20260614120000_grn_store_robust` | **Supersedes above** — auto-creates a default store if none, and a catalogue item for non-catalogue lines, so every received line becomes stock |
 | `20260614140000_rfq` | RFQ (Request for Quotation) tables, numbering, RLS — sourcing requests from a BOQ |
 | `20260614160000_stock_rls_and_movements` | **Fixes 403s** — relaxes stock_* write RLS to collaborative (authenticated); adds RETURN_TO_SUPPLIER movement type |
+| `20260614180000_stock_movement_receipt` | Adds received_by_name to stock_transactions (storekeeper↔receiver handover receipt) |
 
 Verify: `node scripts/verify-platform.mjs`.
 

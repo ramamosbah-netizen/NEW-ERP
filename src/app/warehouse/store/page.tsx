@@ -9,12 +9,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import warehouseService, { StockRow } from '@/services/warehouseService';
 import stockTransactionService from '@/services/stockTransactionService';
+import { exportStockExcel } from '@/lib/stock-export';
+import stockMovementPDF from '@/lib/stock-movement-pdf';
+import { supabase } from '@/lib/supabase';
 import type { StockTransactionType } from '@/types/stock.types';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { Package, Search, AlertTriangle, Plus, MapPin, X, Save, ArrowLeftRight } from 'lucide-react';
+import { Package, Search, AlertTriangle, Plus, MapPin, X, Save, ArrowLeftRight, FileSpreadsheet } from 'lucide-react';
 
 // Movement types offered from the Store, mapped to ledger transaction types.
 // dir OUT => stock leaves (negative qty); IN => stock enters (positive qty).
@@ -50,6 +53,12 @@ export default function StorePage() {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
+  // Grid filters
+  const [locationFilter, setLocationFilter] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('');
+  const [systemFilter, setSystemFilter] = useState('');
+  const [storeLocations, setStoreLocations] = useState<{ id: string; name: string; location_code: string; type: string }[]>([]);
+
   // Register stock item modal
   const [showRegister, setShowRegister] = useState(false);
   const [registerable, setRegisterable] = useState<{ id: string; item_code: string; description: string; unit: string }[]>([]);
@@ -66,15 +75,20 @@ export default function StorePage() {
   const [locations, setLocations] = useState<{ id: string; name: string; location_code: string; type: string }[]>([]);
   const [moveForm, setMoveForm] = useState({
     type: 'ISSUE_TO_PROJECT' as StockTransactionType,
-    location_id: '', qty: '', project_id: '', counterparty_location_id: '', reason: '',
+    location_id: '', qty: '', project_id: '', counterparty_location_id: '', reason: '', received_by: '',
   });
 
   const load = useCallback(async () => {
     setLoading(true);
-    try { setRows(await warehouseService.getStock()); }
+    try { setRows(await warehouseService.getStock(locationFilter || undefined)); }
     finally { setLoading(false); }
-  }, []);
+  }, [locationFilter]);
   useEffect(() => { load(); }, [load]);
+
+  // Locations for the filter dropdown + Excel scope label
+  useEffect(() => {
+    warehouseService.getLocations().then(setStoreLocations).catch(() => {});
+  }, []);
 
   const openRegister = async () => {
     try {
@@ -118,7 +132,7 @@ export default function StorePage() {
 
   const openMove = async (row: StockRow) => {
     setMoveRow(row);
-    setMoveForm({ type: 'ISSUE_TO_PROJECT', location_id: '', qty: '', project_id: '', counterparty_location_id: '', reason: '' });
+    setMoveForm({ type: 'ISSUE_TO_PROJECT', location_id: '', qty: '', project_id: '', counterparty_location_id: '', reason: '', received_by: '' });
     try {
       const [bals, projs, locs] = await Promise.all([
         warehouseService.getItemBalances(row.stock_item_id),
@@ -147,14 +161,24 @@ export default function StorePage() {
     if (!(qty > 0)) { setError('Enter a quantity greater than zero.'); return; }
     if (moveDef.needsProject && !moveForm.project_id) { setError('Select the project this is issued to.'); return; }
     if (moveDef.needsCounterparty && !moveForm.counterparty_location_id) { setError('Select the destination store.'); return; }
+    if (moveDef.dir === 'OUT' && moveForm.type !== 'WRITE_OFF' && !moveForm.received_by.trim()) {
+      setError('Enter who received the goods (for the handover receipt).'); return;
+    }
 
     setBusy(true);
     try {
       const unitCost = srcBalance?.avg_unit_cost || moveRow.avg_unit_cost || 0;
       const signedQty = moveDef.dir === 'OUT' ? -Math.abs(qty) : Math.abs(qty);
       const isTransfer = moveForm.type === 'TRANSFER_OUT';
+      const projectId = (moveDef.needsProject || moveDef.allowProject) && moveForm.project_id ? moveForm.project_id : null;
+      const fromName = srcBalance?.location_name || 'Store';
+      const toName = isTransfer
+        ? (locations.find(l => l.id === moveForm.counterparty_location_id)?.name || 'Store')
+        : moveDef.dir === 'OUT'
+          ? (projects.find(p => p.id === projectId)?.project_number || (moveForm.type === 'RETURN_TO_SUPPLIER' ? 'Supplier' : 'Out'))
+          : fromName;
 
-      await stockTransactionService.recordTransaction({
+      const txId = await stockTransactionService.recordTransaction({
         type: moveForm.type,
         stock_item_id: moveRow.stock_item_id,
         location_id: moveForm.location_id,
@@ -163,9 +187,10 @@ export default function StorePage() {
         total_value: Math.abs(qty) * unitCost,
         source_type: isTransfer ? 'TRANSFER' : 'MANUAL',
         source_id: null,
-        project_id: (moveDef.needsProject || moveDef.allowProject) && moveForm.project_id ? moveForm.project_id : null,
+        project_id: projectId,
         counterparty_location_id: isTransfer ? moveForm.counterparty_location_id : null,
         reason: moveForm.reason || null,
+        received_by_name: moveForm.received_by.trim() || null,
       } as any);
 
       // For a transfer, post the matching inbound leg at the destination store
@@ -182,8 +207,35 @@ export default function StorePage() {
           project_id: null,
           counterparty_location_id: moveForm.location_id,
           reason: moveForm.reason || null,
+          received_by_name: moveForm.received_by.trim() || null,
         } as any);
       }
+
+      // Handover receipt between storekeeper and receiver
+      try {
+        const { data: auth } = await supabase.auth.getUser();
+        let issuedBy = auth?.user?.email || 'Storekeeper';
+        if (auth?.user?.id) {
+          const { data: prof } = await supabase.from('profiles').select('full_name').eq('id', auth.user.id).maybeSingle();
+          if (prof?.full_name) issuedBy = prof.full_name;
+        }
+        const { data: tx } = await supabase.from('stock_transactions').select('transaction_number').eq('id', txId).maybeSingle();
+        stockMovementPDF.download({
+          receipt_no: tx?.transaction_number || txId.slice(0, 8),
+          type: moveForm.type,
+          item_code: moveRow.item_code,
+          description: moveRow.description,
+          unit: moveRow.unit,
+          qty: Math.abs(qty),
+          unit_cost: unitCost,
+          from_name: fromName,
+          to_name: toName,
+          project_number: projects.find(p => p.id === projectId)?.project_number || null,
+          issued_by: issuedBy,
+          received_by: moveForm.received_by.trim() || '—',
+          reason: moveForm.reason || null,
+        });
+      } catch { /* receipt is best-effort */ }
 
       setMoveRow(null);
       await load();
@@ -192,12 +244,23 @@ export default function StorePage() {
     } finally { setBusy(false); }
   };
 
+  const categories = Array.from(new Set(rows.map(r => r.category).filter(c => c && c !== '—'))).sort();
+  const systems = Array.from(new Set(rows.map(r => r.system).filter(s => s && s !== '—'))).sort();
+
   const filtered = rows.filter(r => {
     if (riskOnly && !(r.risk === 'OUT' || r.risk === 'LOW')) return false;
+    if (categoryFilter && r.category !== categoryFilter) return false;
+    if (systemFilter && r.system !== systemFilter) return false;
     if (!search) return true;
     const q = search.toLowerCase();
-    return r.item_code.toLowerCase().includes(q) || r.description.toLowerCase().includes(q);
+    return r.item_code.toLowerCase().includes(q) || r.description.toLowerCase().includes(q) ||
+      r.category.toLowerCase().includes(q) || r.system.toLowerCase().includes(q);
   });
+
+  const exportExcel = () => {
+    const locName = locationFilter ? (storeLocations.find(l => l.id === locationFilter)?.name || 'Location') : 'All locations';
+    exportStockExcel(filtered, { locationName: locName });
+  };
 
   const totalValue = rows.reduce((s, r) => s + r.stock_value, 0);
   const atRisk = rows.filter(r => r.risk === 'OUT' || r.risk === 'LOW').length;
@@ -238,13 +301,26 @@ export default function StorePage() {
       </div>
 
       <div className="flex flex-wrap gap-3 items-center">
-        <div className="relative max-w-sm flex-1">
+        <div className="relative max-w-xs flex-1 min-w-[180px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" size={14} />
-          <input className="quote-form-input w-full !pl-9" placeholder="Search item code or description…" value={search} onChange={e => setSearch(e.target.value)} />
+          <input className="quote-form-input w-full !pl-9" placeholder="Search item, category, system…" value={search} onChange={e => setSearch(e.target.value)} />
         </div>
+        <select className="quote-form-input max-w-[180px]" value={locationFilter} onChange={e => setLocationFilter(e.target.value)}>
+          <option value="">All locations</option>
+          {storeLocations.map(l => <option key={l.id} value={l.id}>{l.name}</option>)}
+        </select>
+        <select className="quote-form-input max-w-[160px]" value={categoryFilter} onChange={e => setCategoryFilter(e.target.value)}>
+          <option value="">All categories</option>
+          {categories.map(c => <option key={c} value={c}>{c}</option>)}
+        </select>
+        <select className="quote-form-input max-w-[160px]" value={systemFilter} onChange={e => setSystemFilter(e.target.value)}>
+          <option value="">All systems</option>
+          {systems.map(s => <option key={s} value={s}>{s}</option>)}
+        </select>
         <label className="flex items-center gap-2 text-xs text-[var(--text-secondary)] cursor-pointer">
           <input type="checkbox" checked={riskOnly} onChange={e => setRiskOnly(e.target.checked)} /> At-risk only
         </label>
+        <Button size="sm" variant="secondary" icon={FileSpreadsheet} onClick={exportExcel} disabled={filtered.length === 0} className="ml-auto">Export Excel</Button>
       </div>
 
       {loading ? (
@@ -260,6 +336,8 @@ export default function StorePage() {
               <thead>
                 <tr>
                   <th>Item</th>
+                  <th>Category</th>
+                  <th>System</th>
                   <th>On hand</th>
                   <th>Available</th>
                   <th>Reserved</th>
@@ -281,6 +359,8 @@ export default function StorePage() {
                           <span className="font-mono text-[0.6875rem] text-[var(--text-muted)]">{r.item_code} · {r.unit}</span>
                         </div>
                       </td>
+                      <td><span className="text-xs text-[var(--text-secondary)]">{r.category}</span></td>
+                      <td><span className="text-xs text-[var(--text-secondary)]">{r.system}</span></td>
                       <td><span className="font-mono text-xs">{fmtQty(r.qty_on_hand)}</span></td>
                       <td><span className="font-mono text-xs">{fmtQty(r.qty_available)}</span></td>
                       <td><span className="font-mono text-xs text-[var(--text-muted)]">{fmtQty(r.qty_reserved)}</span></td>
@@ -450,6 +530,15 @@ export default function StorePage() {
                     <option value="">{moveDef.needsProject ? 'Select project…' : 'No project'}</option>
                     {projects.map(p => <option key={p.id} value={p.id}>{p.project_number}</option>)}
                   </select>
+                </div>
+              )}
+
+              {moveDef.dir === 'OUT' && moveForm.type !== 'WRITE_OFF' && (
+                <div className="quote-form-group">
+                  <label>Received by {' '}<span className="text-[var(--text-muted)] font-normal">(handover receipt)</span> *</label>
+                  <input className="quote-form-input" value={moveForm.received_by}
+                    onChange={e => setMoveForm({ ...moveForm, received_by: e.target.value })}
+                    placeholder="Name of person receiving the goods" />
                 </div>
               )}
 
