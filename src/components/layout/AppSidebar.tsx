@@ -133,6 +133,7 @@ const NAV_SECTIONS = [
     label: 'Finance',
     items: [
       { href: '/finance', label: 'Finance Hub', icon: DollarSign },
+      { href: '/finance/executive', label: 'Executive Dashboard', icon: BarChart3 },
       { href: '/finance/ar', label: 'Receivables (AR)', icon: ArrowUpRight },
       { href: '/finance/ap', label: 'Payables (AP)', icon: ArrowDownLeft },
       { href: '/finance/budget', label: 'Budget & Cost', icon: Calculator },

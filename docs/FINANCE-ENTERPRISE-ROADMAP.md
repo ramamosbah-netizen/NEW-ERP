@@ -23,7 +23,7 @@ records what **already exists** (so we don't duplicate or break it), what's
 | 8 | Petty Cash | 🟡 `payment_accounts` has PETTY_CASH type + expense capture | New `petty_cash_funds` + `petty_cash_transactions`, requests/replenish |
 | 9 | Fixed Assets | 🟢 `fixedAssetService` + `depreciationService` + disposal exist | Surface under `/finance/assets` (reuse services); avoid rebuild |
 | 10 | **Financial Reports** | 🟡 `accountingExportService` existed | ✅ **DONE** — `/finance/reports`: P&L, Trial Balance, GL, cost/revenue by project, aging links, CSV export (Balance Sheet pending a COA map) |
-| 11 | Executive Dashboard | ❌ new (aggregation) | New `/finance/executive` aggregating cash/AR/AP/budget/profitability + alerts |
+| 11 | **Executive Dashboard** | ❌ new | ✅ **DONE** — `/finance/executive`: cash/AR/AP/commitments/profit KPIs, cash & revenue trends, aging, project margin, risk alerts |
 | 12 | AI Finance Agent | ❌ new | New `/finance/ai`: rule-based risk scoring first; LLM later |
 
 **Important:** #9 Fixed Assets and #2/#3/#5/#7 partially exist — we **extend/surface**
