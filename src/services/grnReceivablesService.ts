@@ -125,18 +125,23 @@ export const grnReceivablesService = {
         ? await safe<any[]>(supabase.from('projects').select('id, project_number').in('id', prProjIds), [])
         : [];
       const prProjMap = new Map(prProjects.map((p: any) => [p.id, p.project_number]));
+      // select('*') so the optional line_status column (migration 20260613300000)
+      // is included when present without breaking the query when it is not.
       const prItems = await safe<any[]>(
         supabase.from('purchase_request_items')
-          .select('id, pr_id, description, system, unit, quantity, estimated_unit_cost')
+          .select('*')
           .in('pr_id', prIds), []);
       const prMap = new Map(prs.map(p => [p.id, p]));
       for (const it of prItems) {
         const pr = prMap.get(it.pr_id);
         if (!pr) continue;
+        // skip cancelled / received PR lines
+        if (it.line_status === 'CANCELLED' || it.line_status === 'RECEIVED') continue;
         rows.push({
           source: 'PR',
           source_id: it.pr_id,
           source_ref: pr.pr_number,
+          po_item_id: it.id, // reuse field to carry the pr_item id for cancel
           description: it.description,
           system: it.system || null,
           unit: it.unit,
@@ -182,6 +187,37 @@ export const grnReceivablesService = {
         .update({ status: 'CANCELLED', updated_at: new Date().toISOString() })
         .eq('id', item.po_id)
         .then(({ error: e }) => { if (e) console.warn('Could not auto-cancel LPO:', e.message); });
+    }
+  },
+
+  /**
+   * Cancels a Purchase Request line item. When every line of the PR is
+   * cancelled, the PR itself is cancelled. Requires migration 20260613300000.
+   */
+  async cancelPRLineItem(prItemId: string): Promise<void> {
+    const { data: item } = await supabase
+      .from('purchase_request_items').select('id, pr_id').eq('id', prItemId).single();
+    if (!item) throw new Error('Requested item not found');
+
+    const { error } = await supabase
+      .from('purchase_request_items')
+      .update({ line_status: 'CANCELLED', cancelled_at: new Date().toISOString() })
+      .eq('id', prItemId);
+    if (error) {
+      throw (error.code === 'PGRST204' || /line_status/.test(error.message))
+        ? new Error('Per-line PR cancellation needs migration 20260613300000 applied.')
+        : error;
+    }
+
+    // If every line is cancelled, cancel the PR
+    const { data: siblings } = await supabase
+      .from('purchase_request_items').select('line_status').eq('pr_id', item.pr_id);
+    const allCancelled = (siblings || []).length > 0 && (siblings || []).every(s => s.line_status === 'CANCELLED');
+    if (allCancelled) {
+      await supabase.from('purchase_requests')
+        .update({ status: 'CANCELLED', updated_at: new Date().toISOString() })
+        .eq('id', item.pr_id)
+        .then(({ error: e }) => { if (e) console.warn('Could not auto-cancel PR:', e.message); });
     }
   },
 };

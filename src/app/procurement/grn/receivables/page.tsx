@@ -49,14 +49,17 @@ export default function GRNReceivablesPage() {
   useEffect(() => { load(); }, [load]);
 
   const cancelItem = async (it: ReceivableItem) => {
-    if (it.source !== 'LPO' || !it.po_item_id) {
-      alert('Only LPO line items can be cancelled here. Cancel a PR from its detail page.');
-      return;
-    }
-    if (!window.confirm(`Cancel "${it.description}" from ${it.source_ref}? It will be closed short; if it is the last open line the LPO is cancelled too.`)) return;
+    if (!it.po_item_id) return;
+    const what = it.source === 'LPO'
+      ? `Cancel "${it.description}" from ${it.source_ref}? It will be closed short; if it is the last open line the LPO is cancelled too.`
+      : `Cancel "${it.description}" from ${it.source_ref}? If it is the last open line the PR is cancelled too.`;
+    if (!window.confirm(what)) return;
     setBusy(it.po_item_id);
-    try { await grnReceivablesService.cancelLineItem(it.po_item_id); await load(); }
-    catch (err: any) { setError(err.message || 'Cancel failed'); }
+    try {
+      if (it.source === 'LPO') await grnReceivablesService.cancelLineItem(it.po_item_id);
+      else await grnReceivablesService.cancelPRLineItem(it.po_item_id);
+      await load();
+    } catch (err: any) { setError(err.message || 'Cancel failed'); }
     finally { setBusy(null); }
   };
 
@@ -154,7 +157,7 @@ export default function GRNReceivablesPage() {
                           {it.source === 'LPO' && (
                             <Button size="sm" variant="muted" icon={Truck} onClick={() => router.push(`/procurement/grn/create?po_id=${it.source_id}`)} title="Receive against this LPO" />
                           )}
-                          {it.source === 'LPO' && (
+                          {it.po_item_id && (
                             <Button size="sm" variant="muted" icon={Ban} disabled={busy !== null} onClick={() => cancelItem(it)} title="Cancel this line" />
                           )}
                         </div>
