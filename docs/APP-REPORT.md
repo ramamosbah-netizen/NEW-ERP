@@ -143,7 +143,9 @@ Auth is per-page (`supabase.auth.getUser()`), with RBAC via `roles` /
   payment (LPO / non-LPO purchase, car petrol, petty cash, office expense) as an
   invoiced AP bill, **paid from a tracked card / bank / cash account** (running
   balance), **bucketed** to Project (LPO), Petty cash (project-linked) or Office.
-  Every expense requires an invoice/receipt reference.
+  Every expense requires an invoice/receipt reference and can **attach a receipt
+  photo/PDF** (uploaded to the DMS). The AP register shows a **Received (LPO)**
+  column — delivered/received line count per PO-matched bill.
 - **Bill completed phases (AR)** — `/finance/ar/from-phases`: pick a project,
   claim its **completed (DONE) milestones** at an amount each, and generate a
   **PROGRESS** client invoice with **advance recovery + retention auto-applied**

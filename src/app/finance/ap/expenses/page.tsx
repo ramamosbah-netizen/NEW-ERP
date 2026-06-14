@@ -12,11 +12,12 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import paymentAccountService, { PaymentAccountWithBalance, AccountType } from '@/services/paymentAccountService';
 import { supplierInvoiceService } from '@/services/supplierInvoiceService';
+import { runUploadPipeline } from '@/lib/document-upload-service';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { Wallet, CreditCard, Banknote, Plus, X, Save, Receipt } from 'lucide-react';
+import { Wallet, CreditCard, Banknote, Plus, X, Save, Receipt, Paperclip, Check } from 'lucide-react';
 
 const money = (v: number) => new Intl.NumberFormat('en-AE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(v || 0);
 const ACCT_ICON: Record<AccountType, any> = { BANK: Wallet, CARD: CreditCard, CASH: Banknote, PETTY_CASH: Banknote };
@@ -46,6 +47,10 @@ export default function ExpensesAccountsPage() {
     supplier_invoice_number: '', invoice_date: new Date().toISOString().slice(0, 10),
     amount: '', vat_applicable: true, payment_account_id: '', mark_paid: true, notes: '',
   });
+
+  // receipt attachment
+  const [receipt, setReceipt] = useState<{ docId: string; name: string } | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   const load = useCallback(async () => {
     try {
@@ -83,6 +88,23 @@ export default function ExpensesAccountsPage() {
     } catch (err: any) { setError(err.message); } finally { setBusy(false); }
   };
 
+  const uploadReceipt = async (file: File | undefined) => {
+    if (!file) return;
+    setUploading(true);
+    setError(null);
+    try {
+      const entityType = exp.cost_bucket !== 'OFFICE' && exp.project_id ? 'PROJECT' : 'COMPANY';
+      const entityId = entityType === 'PROJECT' ? exp.project_id : undefined;
+      const doc = await runUploadPipeline(file, entityType, entityId, ['expense', 'receipt']);
+      setReceipt({ docId: doc.id, name: file.name });
+    } catch (err: any) {
+      // Re-use an already-stored identical receipt instead of failing
+      const m = /^DUPLICATE_FOUND:([^:]+):(.*)$/.exec(err?.message || '');
+      if (m) setReceipt({ docId: m[1], name: m[2] || file.name });
+      else setError(err.message || 'Receipt upload failed');
+    } finally { setUploading(false); }
+  };
+
   const saveExpense = async (e: React.FormEvent) => {
     e.preventDefault();
     setBusy(true);
@@ -98,10 +120,12 @@ export default function ExpensesAccountsPage() {
         vat_amount: vat,
         total,
         payment_account_id: exp.mark_paid ? exp.payment_account_id : null,
+        source_document_id: receipt?.docId || null,
         mark_paid: exp.mark_paid,
         notes: exp.notes,
       });
       setExp(s => ({ ...s, payee_name: '', supplier_invoice_number: '', amount: '', notes: '' }));
+      setReceipt(null);
       setError(null);
       await load();
     } catch (err: any) { setError(err.message || 'Failed to record expense'); } finally { setBusy(false); }
@@ -233,7 +257,23 @@ export default function ExpensesAccountsPage() {
               </label>
             </div>
 
-            <Button type="submit" variant="primary" size="sm" icon={Save} isLoading={busy} className="mt-1">Record expense</Button>
+            <div>
+              <label className="text-xs font-medium text-[var(--text-secondary)]">Receipt photo / PDF</label>
+              {receipt ? (
+                <div className="flex items-center gap-2 mt-1 text-xs text-[var(--status-success-text)] bg-[var(--status-success-bg)] border border-[var(--status-success-border)] rounded-md px-3 py-2">
+                  <Check size={13} /> <span className="flex-1 truncate">{receipt.name}</span>
+                  <button type="button" onClick={() => setReceipt(null)} className="cursor-pointer text-[var(--text-tertiary)]"><X size={13} /></button>
+                </div>
+              ) : (
+                <label className="flex items-center gap-2 mt-1 px-3 h-9 rounded-md border border-dashed border-[var(--border)] bg-[var(--surface)] text-xs text-[var(--text-tertiary)] cursor-pointer hover:border-[var(--accent)]">
+                  <Paperclip size={13} /> {uploading ? 'Uploading…' : 'Attach receipt (image or PDF)'}
+                  <input type="file" accept="image/*,application/pdf" className="hidden" disabled={uploading}
+                    onChange={e => uploadReceipt(e.target.files?.[0])} />
+                </label>
+              )}
+            </div>
+
+            <Button type="submit" variant="primary" size="sm" icon={Save} isLoading={busy} disabled={uploading} className="mt-1">Record expense</Button>
           </form>
         </Card>
 

@@ -6,8 +6,9 @@
 
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { supabase } from '@/lib/supabase';
 import { useSupplierInvoices, SupplierInvoiceFilters } from '@/hooks/useSupplierInvoices';
 import { 
   SUPPLIER_INVOICE_STATUS_LABELS, 
@@ -25,6 +26,32 @@ export default function SupplierInvoicesListPage() {
   const [search, setSearch] = useState('');
 
   const { invoices, loading } = useSupplierInvoices(filters);
+
+  // Per-LPO received-items summary (delivered/received lines) for PO-matched bills
+  const [received, setReceived] = useState<Record<string, { complete: number; partial: number; total: number }>>({});
+  useEffect(() => {
+    const poIds = Array.from(new Set(invoices.map(i => (i as any).po_id).filter(Boolean))) as string[];
+    if (poIds.length === 0) { setReceived({}); return; }
+    supabase.from('po_items').select('po_id, receipt_status').in('po_id', poIds).then(({ data }) => {
+      const m: Record<string, { complete: number; partial: number; total: number }> = {};
+      for (const r of (data || []) as any[]) {
+        const e = m[r.po_id] || (m[r.po_id] = { complete: 0, partial: 0, total: 0 });
+        e.total++;
+        if (r.receipt_status === 'COMPLETE') e.complete++;
+        else if (r.receipt_status === 'PARTIAL') e.partial++;
+      }
+      setReceived(m);
+    });
+  }, [invoices]);
+
+  const receivedCell = (poId: string | null | undefined) => {
+    if (!poId) return { label: 'Direct', tone: 'rgba(100,116,139,0.6)' };
+    const e = received[poId];
+    if (!e) return { label: '—', tone: 'rgba(100,116,139,0.6)' };
+    if (e.complete >= e.total && e.total > 0) return { label: `Delivered ${e.complete}/${e.total}`, tone: '#34d399' };
+    if (e.complete > 0 || e.partial > 0) return { label: `Partial ${e.complete}/${e.total}`, tone: '#fbbf24' };
+    return { label: `Pending 0/${e.total}`, tone: '#f87171' };
+  };
 
   const formatAED = (v: number) => {
     return new Intl.NumberFormat('en-AE', { minimumFractionDigits: 2 }).format(v) + ' AED';
@@ -106,6 +133,7 @@ export default function SupplierInvoicesListPage() {
                   <th className="py-3.5 px-4">Ref ID</th>
                   <th className="py-3.5 px-4">Supplier / Vendor</th>
                   <th className="py-3.5 px-4">Bill Number</th>
+                  <th className="py-3.5 px-4 text-center">Received (LPO)</th>
                   <th className="py-3.5 px-4">Due Date</th>
                   <th className="py-3.5 px-4 text-right">Total Amount</th>
                   <th className="py-3.5 px-4 text-center">3-Way Match</th>
@@ -116,13 +144,13 @@ export default function SupplierInvoicesListPage() {
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan={8} className="py-8 text-center text-slate-500 font-mono">
+                    <td colSpan={9} className="py-8 text-center text-slate-500 font-mono">
                       Querying supplier ledger...
                     </td>
                   </tr>
                 ) : filteredInvoices.length === 0 ? (
                   <tr>
-                    <td colSpan={8} className="py-8 text-center text-slate-500 font-mono">
+                    <td colSpan={9} className="py-8 text-center text-slate-500 font-mono">
                       No registered bills found.
                     </td>
                   </tr>
@@ -144,6 +172,11 @@ export default function SupplierInvoicesListPage() {
                         </td>
                         <td className="py-4 px-4 font-mono font-bold text-slate-300">
                           {inv.supplier_invoice_number}
+                        </td>
+                        <td className="py-4 px-4 text-center">
+                          {(() => { const c = receivedCell((inv as any).po_id); return (
+                            <span className="font-mono text-[10px] font-bold" style={{ color: c.tone }}>{c.label}</span>
+                          ); })()}
                         </td>
                         <td className="py-4 px-4 text-slate-400">
                           {new Date(inv.due_date).toLocaleDateString('en-GB')}
