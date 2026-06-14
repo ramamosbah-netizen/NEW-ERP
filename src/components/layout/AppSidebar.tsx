@@ -139,6 +139,8 @@ const NAV_SECTIONS = [
       { href: '/finance/commitments', label: 'Commitments', icon: FileSignature },
       { href: '/finance/project-profitability', label: 'Project Profitability', icon: TrendingUp },
       { href: '/finance/cashflow', label: 'Cash Flow', icon: TrendingUp },
+      { href: '/finance/project-cashflow', label: 'Project Cash Flow', icon: TrendingUp },
+      { href: '/finance/retentions', label: 'Retentions', icon: Shield },
       { href: '/finance/grn-expense', label: 'GRN-to-Expense', icon: PackageCheck },
       { href: '/finance/vat', label: 'VAT Compliance', icon: Percent },
     ],

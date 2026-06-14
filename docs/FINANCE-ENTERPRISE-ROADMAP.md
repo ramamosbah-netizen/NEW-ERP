@@ -17,9 +17,9 @@ records what **already exists** (so we don't duplicate or break it), what's
 | 2 | **Commitments** | 🟡 `commitmentService` (by-system) existed | ✅ **DONE** — `cost_commitments` table + `commitmentLedgerService` (unifies LPO/payroll/manual) + `/finance/commitments` |
 | 3 | **Project Profitability** | 🟡 `projectFinancialsService` existed | ✅ **DONE** — `/finance/project-profitability` list + `[id]` charts (reuses service) |
 | 4 | Bank Reconciliation | 🟡 `statementImportService` parses statements | New `bank_reconciliations` + lines, CSV/Excel import, auto/manual match |
-| 5 | Retention Management | 🟡 `project_retention_ledger` + AR retention exist | New `/finance/retentions` view + `retention_forecasts`; reuse ledger |
+| 5 | **Retention Management** | 🟡 `project_retention_ledger` existed | ✅ **DONE** — `/finance/retentions` view over the ledger (held/released/net, release schedule, overdue) |
 | 6 | Treasury | ❌ new | New `treasury_facilities` (loans/guarantees/LC), maturity tracking |
-| 7 | Project Cash Flow | 🟡 company `cashFlowService` (13-week) exists | New `/finance/project-cashflow` (per-project monthly in/out) |
+| 7 | **Project Cash Flow** | 🟡 company `cashFlowService` existed | ✅ **DONE** — `/finance/project-cashflow` (per-project monthly in/out + cumulative) |
 | 8 | Petty Cash | 🟡 `payment_accounts` has PETTY_CASH type + expense capture | New `petty_cash_funds` + `petty_cash_transactions`, requests/replenish |
 | 9 | Fixed Assets | 🟢 `fixedAssetService` + `depreciationService` + disposal exist | Surface under `/finance/assets` (reuse services); avoid rebuild |
 | 10 | Financial Reports | 🟡 `accountingExportService` (journal CSV/Excel) exists | New `/finance/reports`: P&L, Balance Sheet, Trial Balance, GL, aging, by-project |
@@ -34,10 +34,9 @@ them rather than recreate, per "do not break existing modules".
 1. ✅ **Budget & Cost Control** — foundation; feeds variance, profitability, executive.
 2. ✅ **Commitments** (table + unified ledger + page).
 3. ✅ **Project Profitability** pages (list + detail charts).
-4. **Project Cash Flow** — per-project, reuses cashflow patterns. ← next
-5. **Retention Management** — view over the existing ledger + forecast.
-5. **Retention Management** — view over the existing ledger + forecast.
-6. **Financial Reports** — P&L/BS/TB/GL/aging (reads existing finance tables).
+4. ✅ **Project Cash Flow** — per-project monthly in/out + cumulative.
+5. ✅ **Retention Management** — view over the existing ledger.
+6. **Financial Reports** — P&L/BS/TB/GL/aging (reads existing finance tables). ← next
 7. **Executive Dashboard** — aggregates 1–6 + cash + alerts.
 8. **Petty Cash** — funds/transactions/replenishment.
 9. **Bank Reconciliation** — import + matching.
