@@ -6,6 +6,7 @@
 // ============================================================
 
 import { supabase } from '@/lib/supabase';
+import { auditService } from './auditService';
 
 export type PettyTxnType = 'EXPENSE' | 'REPLENISH' | 'RETURN';
 export type PettyTxnStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
@@ -75,11 +76,13 @@ export const pettyCashService = {
       approved_by: input.type === 'EXPENSE' ? null : (auth?.user?.id ?? null),
     });
     if (error) throw new Error(error.message);
+    auditService.logEvent({ module: 'FINANCE', action: 'CREATE', entity_type: 'PETTY_CASH_TXN', entity_id: input.fund_id, summary: `Petty cash ${input.type} ${input.amount} AED` });
   },
 
   async setStatus(id: string, status: PettyTxnStatus): Promise<void> {
     const { data: auth } = await supabase.auth.getUser();
     await supabase.from('petty_cash_transactions').update({ status, approved_by: auth?.user?.id ?? null }).eq('id', id);
+    auditService.logEvent({ module: 'FINANCE', action: status === 'APPROVED' ? 'APPROVE' : 'REJECT', entity_type: 'PETTY_CASH_TXN', entity_id: id, summary: `Petty cash claim ${status.toLowerCase()}` });
   },
 };
 

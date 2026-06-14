@@ -8,9 +8,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import retentionService, { RetentionRow } from '@/services/retentionService';
 import { PageHeader } from '@/components/ui/PageHeader';
+import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { ShieldCheck, AlertTriangle } from 'lucide-react';
+import { ShieldCheck, AlertTriangle, FileText, FileSpreadsheet } from 'lucide-react';
+import { exportTablePdf, exportTableExcel, ExportTable } from '@/lib/finance-export';
 
 const money = (v: number) => new Intl.NumberFormat('en-AE', { maximumFractionDigits: 0 }).format(v || 0);
 const fmtDate = (d?: string | null) => d ? new Date(d).toLocaleDateString('en-AE', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
@@ -38,12 +40,24 @@ export default function RetentionsPage() {
   const dueThisMonth = open.filter(r => r.status === 'DUE').reduce((s, r) => s + r.net, 0);
   const overdue = open.filter(r => r.status === 'OVERDUE').reduce((s, r) => s + r.net, 0);
 
+  const retentionTable = (): ExportTable => ({
+    title: 'Retention Receivable', subtitle: 'JEET INTECH L.L.C', fileName: 'retentions',
+    columns: ['Invoice', 'Project', 'Client', 'Held', 'Released', 'Net', 'Expected release', 'Status'],
+    rows: rows.map(r => [r.invoice_number, r.project_number, r.client_name, r.held, r.released, r.net, r.expected_release_date || '', r.status]),
+  });
+
   return (
     <div className="flex flex-col gap-5">
       <PageHeader
         title="Retention Management"
         subtitle="Retention receivable held on client invoices — release schedule and forecast"
         breadcrumbs={[{ label: 'Finance', href: '/finance' }, { label: 'Retentions' }]}
+        actions={
+          <div className="flex gap-2">
+            <Button size="sm" variant="secondary" icon={FileText} onClick={() => exportTablePdf(retentionTable())} disabled={rows.length === 0}>PDF</Button>
+            <Button size="sm" variant="secondary" icon={FileSpreadsheet} onClick={() => exportTableExcel(retentionTable())} disabled={rows.length === 0}>Excel</Button>
+          </div>
+        }
       />
 
       {error && <div className="bg-[var(--status-danger-bg)] border border-[var(--status-danger-border)] rounded-lg p-3 text-xs text-[var(--status-danger-text)]">{error}</div>}

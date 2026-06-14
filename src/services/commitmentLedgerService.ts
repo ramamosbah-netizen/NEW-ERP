@@ -8,6 +8,7 @@
 // ============================================================
 
 import { supabase } from '@/lib/supabase';
+import { auditService } from './auditService';
 
 export type CommitmentSource = 'PR' | 'PO' | 'SUBCONTRACT' | 'PAYROLL' | 'RECURRING' | 'OTHER';
 export type CommitmentStatus = 'OPEN' | 'PARTIAL' | 'SETTLED' | 'CANCELLED';
@@ -116,10 +117,12 @@ export const commitmentLedgerService = {
       status: 'OPEN', created_by: auth?.user?.id ?? null,
     });
     if (error) throw new Error(error.message);
+    auditService.logEvent({ module: 'FINANCE', action: 'CREATE', entity_type: 'COMMITMENT', entity_id: 'manual', summary: `Added ${input.source_type} commitment ${input.vendor_name || ''} (${input.amount} AED)` });
   },
 
   async cancelManual(id: string): Promise<void> {
     await supabase.from('cost_commitments').update({ status: 'CANCELLED', updated_at: new Date().toISOString() }).eq('id', id);
+    auditService.logEvent({ module: 'FINANCE', action: 'CANCEL', entity_type: 'COMMITMENT', entity_id: id, summary: 'Cancelled commitment' });
   },
 };
 

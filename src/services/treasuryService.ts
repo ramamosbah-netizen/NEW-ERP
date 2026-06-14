@@ -5,6 +5,7 @@
 // ============================================================
 
 import { supabase } from '@/lib/supabase';
+import { auditService } from './auditService';
 
 export type FacilityType = 'LOAN' | 'OVERDRAFT' | 'FACILITY' | 'BANK_GUARANTEE' | 'LC';
 export type FacilityStatus = 'ACTIVE' | 'EXPIRED' | 'CLOSED' | 'RELEASED';
@@ -46,10 +47,12 @@ export const treasuryService = {
       status: 'ACTIVE', notes: input.notes || null, created_by: auth?.user?.id ?? null,
     });
     if (error) throw new Error(error.message);
+    auditService.logEvent({ module: 'FINANCE', action: 'CREATE', entity_type: 'TREASURY_FACILITY', entity_id: input.bank_name || 'facility', summary: `Added ${input.type} — ${input.bank_name} (${input.facility_limit || 0} AED)` });
   },
 
   async setStatus(id: string, status: FacilityStatus): Promise<void> {
     await supabase.from('treasury_facilities').update({ status, updated_at: new Date().toISOString() }).eq('id', id);
+    auditService.logEvent({ module: 'FINANCE', action: 'UPDATE', entity_type: 'TREASURY_FACILITY', entity_id: id, summary: `Facility status → ${status}` });
   },
 };
 

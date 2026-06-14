@@ -13,7 +13,8 @@ import { PageHeader } from '@/components/ui/PageHeader';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { FileSignature, Plus, X, Search } from 'lucide-react';
+import { FileSignature, Plus, X, Search, FileText, FileSpreadsheet } from 'lucide-react';
+import { exportTablePdf, exportTableExcel, ExportTable } from '@/lib/finance-export';
 
 const money = (v: number) => new Intl.NumberFormat('en-AE', { maximumFractionDigits: 0 }).format(v || 0);
 const SRC: Record<string, { bg: string; text: string }> = {
@@ -59,6 +60,12 @@ export default function CommitmentsPage() {
     e.amount += r.amount; e.count++; m.set(key, e); return m;
   }, new Map<string, { key: string; amount: number; count: number }>()).values()).sort((a, b) => b.amount - a.amount);
 
+  const commitTable = (): ExportTable => ({
+    title: 'Commitments', subtitle: 'JEET INTECH L.L.C', fileName: 'commitments',
+    columns: ['Source', 'Project', 'Vendor', 'Category', 'Expected pay', 'Committed (AED)'],
+    rows: filtered.map(r => [r.source_type, r.project_number, r.vendor_name, r.category, r.expected_payment_date || '', r.amount]),
+  });
+
   const add = async () => {
     setBusy(true);
     try {
@@ -77,7 +84,13 @@ export default function CommitmentsPage() {
         title="Commitments"
         subtitle="Outstanding committed cost — approved LPOs, payroll and manual commitments (subcontracts, recurring)"
         breadcrumbs={[{ label: 'Finance', href: '/finance' }, { label: 'Commitments' }]}
-        actions={<Button size="sm" variant="primary" icon={Plus} onClick={() => setShowAdd(true)}>Add commitment</Button>}
+        actions={
+          <div className="flex gap-2">
+            <Button size="sm" variant="secondary" icon={FileText} onClick={() => exportTablePdf(commitTable())} disabled={filtered.length === 0}>PDF</Button>
+            <Button size="sm" variant="secondary" icon={FileSpreadsheet} onClick={() => exportTableExcel(commitTable())} disabled={filtered.length === 0}>Excel</Button>
+            <Button size="sm" variant="primary" icon={Plus} onClick={() => setShowAdd(true)}>Add commitment</Button>
+          </div>
+        }
       />
 
       {error && (

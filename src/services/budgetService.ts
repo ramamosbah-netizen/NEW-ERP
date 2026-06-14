@@ -8,6 +8,7 @@
 
 import { supabase } from '@/lib/supabase';
 import { commitmentService } from './commitmentService';
+import { auditService } from './auditService';
 
 export type BudgetStatus = 'DRAFT' | 'APPROVED' | 'SUPERSEDED';
 
@@ -129,6 +130,7 @@ export const budgetService = {
         .insert(lines.map(l => ({ ...l, budget_id: budget.id })));
       if (lerr) throw new Error(lerr.message);
     }
+    auditService.logEvent({ module: 'FINANCE', action: 'CREATE', entity_type: 'PROJECT_BUDGET', entity_id: budget.id, summary: `Created budget revision ${revision_no} from BOQ (${total} AED)` });
     return budget.id;
   },
 
@@ -169,6 +171,7 @@ export const budgetService = {
       .update({ status: 'APPROVED', approved_date: new Date().toISOString().slice(0, 10), approved_by: auth?.user?.id ?? null, updated_at: new Date().toISOString() })
       .eq('id', id);
     if (error) throw new Error(error.message);
+    auditService.logEvent({ module: 'FINANCE', action: 'APPROVE', entity_type: 'PROJECT_BUDGET', entity_id: id, summary: 'Approved & froze project budget' });
   },
 };
 

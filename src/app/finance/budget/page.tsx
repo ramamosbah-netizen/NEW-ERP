@@ -12,7 +12,8 @@ import { PageHeader } from '@/components/ui/PageHeader';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { Wallet, Plus, X, AlertTriangle, TrendingUp, Search } from 'lucide-react';
+import { Wallet, Plus, X, AlertTriangle, TrendingUp, Search, FileText, FileSpreadsheet } from 'lucide-react';
+import { exportTablePdf, exportTableExcel, ExportTable } from '@/lib/finance-export';
 
 const money = (v: number) => new Intl.NumberFormat('en-AE', { maximumFractionDigits: 0 }).format(v || 0);
 const STATUS: Record<string, { bg: string; text: string }> = {
@@ -62,6 +63,12 @@ export default function BudgetListPage() {
 
   const filtered = rows.filter(r => !search || r.project_number.toLowerCase().includes(search.toLowerCase()) || r.project_name.toLowerCase().includes(search.toLowerCase()));
 
+  const budgetTable = (): ExportTable => ({
+    title: 'Project Budgets', subtitle: 'JEET INTECH L.L.C', fileName: 'project_budgets',
+    columns: ['Project', 'Name', 'Rev', 'Status', 'Planned', 'Committed', 'Forecast', 'Util %', 'Forecast profit'],
+    rows: filtered.map(r => [r.project_number, r.project_name, r.revision_no, r.status, r.totals.planned, r.totals.committed, r.totals.forecast, r.totals.utilizationPct, r.totals.forecastProfit]),
+  });
+
   const kpis = [
     { label: 'Budget utilization', value: `${utilization}%`, hint: 'Committed ÷ planned', warn: utilization > 100 },
     { label: 'Cost variance', value: `${money(costVariance)} AED`, hint: 'Planned − forecast', warn: costVariance < 0 },
@@ -75,7 +82,13 @@ export default function BudgetListPage() {
         title="Budget & Cost Control"
         subtitle="Project budgets from BOQ — planned vs committed vs forecast, variance and overrun alerts"
         breadcrumbs={[{ label: 'Finance', href: '/finance' }, { label: 'Budgets' }]}
-        actions={<Button size="sm" variant="primary" icon={Plus} onClick={() => setShowCreate(true)}>New budget from BOQ</Button>}
+        actions={
+          <div className="flex gap-2">
+            <Button size="sm" variant="secondary" icon={FileText} onClick={() => exportTablePdf(budgetTable())} disabled={filtered.length === 0}>PDF</Button>
+            <Button size="sm" variant="secondary" icon={FileSpreadsheet} onClick={() => exportTableExcel(budgetTable())} disabled={filtered.length === 0}>Excel</Button>
+            <Button size="sm" variant="primary" icon={Plus} onClick={() => setShowCreate(true)}>New budget from BOQ</Button>
+          </div>
+        }
       />
 
       {error && (

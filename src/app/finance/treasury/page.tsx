@@ -10,7 +10,8 @@ import { PageHeader } from '@/components/ui/PageHeader';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { Landmark, Plus, X, AlertTriangle } from 'lucide-react';
+import { Landmark, Plus, X, AlertTriangle, FileText, FileSpreadsheet } from 'lucide-react';
+import { exportTablePdf, exportTableExcel, ExportTable } from '@/lib/finance-export';
 
 const money = (v: number) => new Intl.NumberFormat('en-AE', { maximumFractionDigits: 0 }).format(v || 0);
 const fmtDate = (d?: string | null) => d ? new Date(d).toLocaleDateString('en-AE', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
@@ -42,6 +43,12 @@ export default function TreasuryPage() {
   const available = active.reduce((s, r) => s + r.available, 0);
   const expiring = active.filter(r => r.expiringSoon);
 
+  const treasuryTable = (): ExportTable => ({
+    title: 'Treasury Facilities', subtitle: 'JEET INTECH L.L.C', fileName: 'treasury_facilities',
+    columns: ['Type', 'Bank', 'Reference', 'Beneficiary', 'Limit', 'Utilized', 'Available', 'Maturity', 'Status'],
+    rows: rows.map(r => [TYPE_LABEL[r.type], r.bank_name, r.reference || '', r.beneficiary || '', r.facility_limit, r.utilized_amount, r.available, r.maturity_date || '', r.status]),
+  });
+
   const create = async () => {
     setBusy(true);
     try {
@@ -62,7 +69,13 @@ export default function TreasuryPage() {
         title="Treasury Management"
         subtitle="Loans, overdrafts, bank guarantees and LCs — limits, utilization and maturity"
         breadcrumbs={[{ label: 'Finance', href: '/finance' }, { label: 'Treasury' }]}
-        actions={<Button size="sm" variant="primary" icon={Plus} onClick={() => setShow(true)}>Add facility</Button>}
+        actions={
+          <div className="flex gap-2">
+            <Button size="sm" variant="secondary" icon={FileText} onClick={() => exportTablePdf(treasuryTable())} disabled={rows.length === 0}>PDF</Button>
+            <Button size="sm" variant="secondary" icon={FileSpreadsheet} onClick={() => exportTableExcel(treasuryTable())} disabled={rows.length === 0}>Excel</Button>
+            <Button size="sm" variant="primary" icon={Plus} onClick={() => setShow(true)}>Add facility</Button>
+          </div>
+        }
       />
 
       {error && <div className="flex items-center justify-between gap-3 bg-[var(--status-danger-bg)] border border-[var(--status-danger-border)] rounded-lg p-3 text-xs text-[var(--status-danger-text)]"><span>{error}</span><button onClick={() => setError(null)} className="cursor-pointer"><X size={13} /></button></div>}

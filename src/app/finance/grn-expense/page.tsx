@@ -14,7 +14,8 @@ import { PageHeader } from '@/components/ui/PageHeader';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { PackageCheck, Download, X, FileText } from 'lucide-react';
+import { PackageCheck, Download, X, FileText, FileSpreadsheet } from 'lucide-react';
+import { exportTablePdf, exportTableExcel, ExportTable } from '@/lib/finance-export';
 
 const PERIODS: { key: ExpensePeriod; label: string }[] = [
   { key: 'MONTH', label: 'This month' },
@@ -39,6 +40,12 @@ export default function GRNExpenseReportPage() {
     finally { setLoading(false); }
   }, [period]);
   useEffect(() => { load(); }, [load]);
+
+  const grnTable = (): ExportTable => ({
+    title: `GRN-to-Expense — ${period}`, subtitle: 'JEET INTECH L.L.C', fileName: `grn_expense_${period.toLowerCase()}`,
+    columns: ['Project', 'Received', 'Invoiced', 'Paid', 'Outstanding', 'Uninvoiced'],
+    rows: (report?.rows || []).map(r => [r.project_number, r.received_value, r.invoiced_value, r.paid_value, r.outstanding, r.uninvoiced]),
+  });
 
   const exportCsv = () => {
     if (!report) return;
@@ -76,8 +83,10 @@ export default function GRNExpenseReportPage() {
         actions={
           <div className="flex gap-2">
             <Button size="sm" variant="secondary" onClick={() => router.push('/procurement/grn/receivables')}>Receivables</Button>
+            <Button size="sm" variant="secondary" onClick={() => exportTablePdf(grnTable())} disabled={!report || report.rows.length === 0}><FileText size={14} /> PDF</Button>
+            <Button size="sm" variant="secondary" onClick={() => exportTableExcel(grnTable())} disabled={!report || report.rows.length === 0}><FileSpreadsheet size={14} /> Excel</Button>
             <Button size="sm" variant="primary" onClick={exportCsv} disabled={!report || report.rows.length === 0}>
-              <Download size={14} /> Export CSV
+              <Download size={14} /> CSV
             </Button>
           </div>
         }

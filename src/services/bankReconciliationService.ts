@@ -7,6 +7,7 @@
 // ============================================================
 
 import { supabase } from '@/lib/supabase';
+import { auditService } from './auditService';
 
 export interface ReconHeader {
   id: string; payment_account_id: string | null; account_name: string | null; statement_date: string;
@@ -96,6 +97,7 @@ export const bankReconciliationService = {
 
   async complete(id: string): Promise<void> {
     await supabase.from('bank_reconciliations').update({ status: 'COMPLETED' }).eq('id', id);
+    auditService.logEvent({ module: 'FINANCE', action: 'COMPLETE', entity_type: 'BANK_RECONCILIATION', entity_id: id, summary: 'Completed bank reconciliation' });
   },
 };
 

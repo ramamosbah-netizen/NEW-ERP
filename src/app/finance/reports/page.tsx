@@ -12,7 +12,8 @@ import financialReportsService, { PLRow, TBRow, ProjectAmountRow } from '@/servi
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
-import { Download } from 'lucide-react';
+import { Download, FileText, FileSpreadsheet } from 'lucide-react';
+import { exportTablePdf, exportTableExcel, exportTableCsv, ExportTable } from '@/lib/finance-export';
 
 const money = (v: number) => new Intl.NumberFormat('en-AE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(v || 0);
 type Report = 'PL' | 'TB' | 'GL' | 'COST_PROJ' | 'REV_PROJ';
@@ -20,13 +21,6 @@ const TABS: { k: Report; l: string }[] = [
   { k: 'PL', l: 'Profit & Loss' }, { k: 'TB', l: 'Trial Balance' }, { k: 'GL', l: 'General Ledger' },
   { k: 'COST_PROJ', l: 'Cost by Project' }, { k: 'REV_PROJ', l: 'Revenue by Project' },
 ];
-
-function downloadCSV(name: string, headers: string[], rows: (string | number)[][]) {
-  const esc = (v: any) => `"${String(v ?? '').replace(/"/g, '""')}"`;
-  const csv = [headers.map(esc).join(','), ...rows.map(r => r.map(esc).join(','))].join('\n');
-  const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
-  const a = document.createElement('a'); a.href = url; a.download = `${name}.csv`; a.click(); URL.revokeObjectURL(url);
-}
 
 export default function FinancialReportsPage() {
   const now = new Date();
@@ -50,11 +44,13 @@ export default function FinancialReportsPage() {
   }, [tab, start, end]);
   useEffect(() => { load(); }, [load]);
 
-  const exportCsv = () => {
-    if (tab === 'PL' && pl) downloadCSV(`P&L_${start}_${end}`, ['Line', 'Amount (AED)'], pl.rows.map(r => [r.label, r.amount]));
-    else if (tab === 'TB') downloadCSV(`TrialBalance_${start}_${end}`, ['Code', 'Account', 'Debit', 'Credit', 'Balance'], tb.map(r => [r.account_code, r.account_name, r.debit, r.credit, r.balance]));
-    else if (tab === 'GL') downloadCSV(`GeneralLedger_${start}_${end}`, ['Date', 'Reference', 'Account', 'Description', 'Debit', 'Credit'], gl.map((l: any) => [l.date, l.reference, `${l.account_code} ${l.account_name}`, l.description, l.debit, l.credit]));
-    else downloadCSV(`${tab}_${start}_${end}`, ['Project', 'Name', 'Amount (AED)'], proj.map(r => [r.project_number, r.project_name, r.amount]));
+  const currentTable = (): ExportTable => {
+    const label = TABS.find(t => t.k === tab)?.l || 'Report';
+    const meta = { title: `${label} — ${start} to ${end}`, subtitle: 'JEET INTECH L.L.C', fileName: `${label}_${start}_${end}` };
+    if (tab === 'PL' && pl) return { ...meta, columns: ['Line', 'Amount (AED)'], rows: pl.rows.map(r => [r.label, r.amount]) };
+    if (tab === 'TB') return { ...meta, columns: ['Code', 'Account', 'Debit', 'Credit', 'Balance'], rows: tb.map(r => [r.account_code, r.account_name, r.debit, r.credit, r.balance]) };
+    if (tab === 'GL') return { ...meta, columns: ['Date', 'Reference', 'Account', 'Description', 'Debit', 'Credit'], rows: gl.map((l: any) => [l.date, l.reference, `${l.account_code} ${l.account_name}`, l.description, l.debit, l.credit]) };
+    return { ...meta, columns: ['Project', 'Name', 'Amount (AED)'], rows: proj.map(r => [r.project_number, r.project_name, r.amount]) };
   };
 
   const tbTotals = tb.reduce((a, r) => ({ d: a.d + r.debit, c: a.c + r.credit }), { d: 0, c: 0 });
@@ -66,7 +62,13 @@ export default function FinancialReportsPage() {
         title="Financial Reports"
         subtitle="P&L, Trial Balance, General Ledger, cost & revenue by project — period-based, exportable"
         breadcrumbs={[{ label: 'Finance', href: '/finance' }, { label: 'Reports' }]}
-        actions={<Button size="sm" variant="primary" icon={Download} onClick={exportCsv}>Export CSV</Button>}
+        actions={
+          <div className="flex gap-2">
+            <Button size="sm" variant="secondary" icon={FileText} onClick={() => exportTablePdf(currentTable())}>PDF</Button>
+            <Button size="sm" variant="secondary" icon={FileSpreadsheet} onClick={() => exportTableExcel(currentTable())}>Excel</Button>
+            <Button size="sm" variant="secondary" icon={Download} onClick={() => exportTableCsv(currentTable())}>CSV</Button>
+          </div>
+        }
       />
 
       <div className="flex flex-wrap gap-2 items-center">
