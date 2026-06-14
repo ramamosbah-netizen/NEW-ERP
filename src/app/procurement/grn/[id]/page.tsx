@@ -9,8 +9,10 @@ import { useState, useEffect, use } from 'react';
 import Link from 'next/link';
 import { useGRN } from '@/hooks/useGRNs';
 import { GRN_STATUS_LABELS, GRN_STATUS_COLORS, GRN_LOCATION_LABELS, GRN_REJECTION_REASONS } from '@/constants/po.constants';
-import { ArrowLeft, Truck, Calendar, User, FileText, MapPin, AlertOctagon, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Truck, Calendar, User, FileText, MapPin, AlertOctagon, CheckCircle, Download } from 'lucide-react';
 import WorkflowPanel from '@/components/workflow/WorkflowPanel';
+import { grnPDFService } from '@/lib/grn-pdf';
+import { supabase } from '@/lib/supabase';
 import '@/app/procurement/comparisons/comparisons.css';
 
 interface PageProps {
@@ -79,6 +81,29 @@ export default function GRNDetailPage({ params }: PageProps) {
               Received by: {grn.receiver_name || 'System'} | Log Date: {new Date(grn.received_at).toLocaleDateString('en-GB')}
             </p>
           </div>
+        </div>
+        <div style={{ display: 'flex', gap: '0.6rem' }}>
+          <button className="quote-btn quote-btn-primary" onClick={() => grnPDFService.download(grn as any)}>
+            <Download size={14} style={{ marginRight: '0.3rem' }} /> Download Receipt
+          </button>
+          {grn.delivery_note_document_id && (
+            <button
+              className="quote-btn quote-btn-secondary"
+              onClick={async () => {
+                try {
+                  const { data: doc } = await supabase.from('documents').select('storage_path, original_filename').eq('id', grn.delivery_note_document_id).maybeSingle();
+                  if (!doc?.storage_path) { alert('Delivery note file not found.'); return; }
+                  const { data, error } = await supabase.storage.from('documents').createSignedUrl(doc.storage_path, 300, { download: doc.original_filename || true });
+                  if (error || !data?.signedUrl) throw error || new Error('No URL');
+                  window.open(data.signedUrl, '_blank');
+                } catch {
+                  alert('Could not open the delivery note document.');
+                }
+              }}
+            >
+              <FileText size={14} style={{ marginRight: '0.3rem' }} /> Delivery Note
+            </button>
+          )}
         </div>
       </header>
 

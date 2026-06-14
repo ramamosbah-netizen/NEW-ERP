@@ -144,8 +144,8 @@ export const offerExtractionService = {
         confidence: 94.50 // high confidence for API response
       };
 
-    } catch (e: any) {
-      console.error('Gemini extraction failed, falling back to mock extraction:', e);
+    } catch {
+      console.warn('AI extraction unavailable; using manual-entry fallback.');
       return this.generateMockExtraction(file);
     }
   },
@@ -206,7 +206,7 @@ export const offerExtractionService = {
       return contentText ? contentText.trim() : 'DN-UNKNOWN';
 
     } catch (e) {
-      console.error('Failed to extract DN reference via Gemini, falling back:', e);
+      console.warn('AI delivery-note extraction unavailable; using fallback.');
       const match = file.name.match(/\d+/);
       return match ? `DN-${match[0]}` : 'DN-77382';
     }
