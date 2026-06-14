@@ -24,16 +24,20 @@ are applied manually in Supabase, then `NOTIFY pgrst, 'reload schema';`.
 **Reuse, don't rebuild:** snags (#7) and handover (#8) already exist — extend/surface
 them. Resource planning (#4) builds on the existing payroll-by-project allocation.
 
-## Build order (recommended)
+## Build order (full 12-module program)
 
 1. ✅ **Daily Site Report (DSR)** — table + capture + list + photo upload + PDF.
-2. **Progress & EVM** — % complete → SPI/CPI; feeds the executive dashboard. ← next
-3. **Schedule / Gantt** — task schedule + dependencies + Gantt view.
-4. **Risk register** — per-project risk matrix.
-5. **Resource / Manpower planning** — allocations + utilization.
-6. **Project Executive Dashboard** — portfolio schedule+cost+risk+handover health.
-7. **Snag board + analytics** (surface existing) and **DLP/warranty tracking** (extend handover).
-8. **Fixes/polish pass** — embed audit, audit logging, exports — folded in as we go.
+2. ✅ **WBS (Work Breakdown Structure)** — hierarchical work packages, budget/weight, rolled-up progress, seed-from-systems. `/projects/wbs`.
+3. **Schedule / Gantt** — WBS/task schedule with dependencies + Gantt view.
+4. **Progress & EVM** — % complete per WBS → PV/EV/AC, SPI/CPI.
+5. **Resource Planning** — manpower/equipment allocation + utilization.
+6. **Risk Register** — likelihood × impact matrix, mitigation, owner.
+7. **Project Executive Dashboard** — portfolio schedule+cost+risk+handover health.
+8. **Testing & Commissioning** — surface/extend the existing `/tc` module.
+9. **DLP & Warranty Tracking** — DLP defects + warranty expiry reminders (extend handover).
+10. **RFI / SI / NCR** — Requests for Information, Site Instructions, Non-Conformance Reports.
+11. **Snag Analytics & QA Dashboard** — surface existing snags + analytics.
+12. **Audit & Export Polish** — embed-400 audit, audit logging, PDF/Excel/CSV across project pages.
 
 Each module ships: migration, types, service, hook(s), dashboard + list + detail,
 filters/search, export (PDF/Excel/CSV via the shared `finance-export` helper),
