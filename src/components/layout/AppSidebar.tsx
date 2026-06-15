@@ -119,6 +119,7 @@ const NAV_SECTIONS = [
       { href: '/warehouse/movements', label: 'Goods Movements', icon: Truck },
       { href: '/warehouse/mrf', label: 'Requisitions (MRF)', icon: ClipboardList },
       { href: '/warehouse/stock-count', label: 'Stock Count', icon: ClipboardCheck },
+      { href: '/warehouse/replenishment', label: 'Replenishment', icon: ShoppingCart },
       { href: '/pricing', label: 'Pricing Catalog', icon: Calculator },
     ],
   },
