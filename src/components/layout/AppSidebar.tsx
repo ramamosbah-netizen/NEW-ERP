@@ -89,6 +89,7 @@ const NAV_SECTIONS = [
       { href: '/projects/dashboard', label: 'Executive Dashboard', icon: LayoutDashboard },
       { href: '/vo', label: 'Variation Orders', icon: GitCompare },
       { href: '/snags', label: 'Snag List', icon: Camera },
+      { href: '/projects/snag-analytics', label: 'Snag Analytics & QA', icon: BarChart3 },
       { href: '/tc', label: 'Testing & Comm.', icon: ClipboardCheck },
       { href: '/handover', label: 'Handover', icon: Handshake },
       { href: '/projects/dlp', label: 'DLP & Warranty', icon: Shield },

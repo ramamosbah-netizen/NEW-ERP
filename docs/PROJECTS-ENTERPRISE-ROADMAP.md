@@ -36,8 +36,8 @@ them. Resource planning (#4) builds on the existing payroll-by-project allocatio
 8. ✅ **Testing & Commissioning** — existing `/tc` module surfaced in the Projects nav; extended the Executive Dashboard with a T&C-readiness rollup (packages done/total + avg completion per project, portfolio KPI + column + export).
 9. ✅ **DLP & Warranty Tracking** — warranty register (DLP/manufacturer/supplier, auto expiry status + reminders) + DLP-period defect tracker (severity/status/assignee, auto DEF-### ref), tabs, KPIs, PDF/Excel. `/projects/dlp`.
 10. ✅ **RFI / SI / NCR** — unified register (doc_type discriminator, per-type running ref), priority/status, response capture, cost/time impact (SI/NCR), overdue flag, tabs, KPIs, PDF/Excel. `/projects/site-records`.
-11. **Snag Analytics & QA Dashboard** — surface existing snags + analytics. ← next
-12. **Audit & Export Polish** — embed-400 audit, audit logging, PDF/Excel/CSV across project pages.
+11. ✅ **Snag Analytics & QA Dashboard** — read-only analytics over snags: KPIs (open/critical/overdue/closure rate/avg age), by-status pie, severity open-vs-closed, by-system, ageing buckets, by-project, filters, PDF/Excel. `/projects/snag-analytics`.
+12. **Audit & Export Polish** — embed-400 audit, audit logging, PDF/Excel/CSV across project pages. ← next
 
 Each module ships: migration, types, service, hook(s), dashboard + list + detail,
 filters/search, export (PDF/Excel/CSV via the shared `finance-export` helper),
