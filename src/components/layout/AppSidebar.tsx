@@ -143,6 +143,7 @@ const NAV_SECTIONS = [
       { href: '/service-desk', label: 'Service Desk', icon: Ticket },
       { href: '/service/sla', label: 'SLA Analytics', icon: Gauge },
       { href: '/service/technicians', label: 'Technicians', icon: Users },
+      { href: '/service/parts', label: 'Spare Parts', icon: Wrench },
       { href: '/ppm/calendar', label: 'PPM Schedule', icon: CalendarClock },
       { href: '/service/ppm-compliance', label: 'PPM Compliance', icon: CalendarClock },
       { href: '/amc', label: 'AMC Contracts', icon: Shield },

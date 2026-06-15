@@ -34,4 +34,5 @@ RBAC (existing roles), audit logging, and a roadmap update.
 - ✅ **Phase 5 — AMC Renewals Pipeline** (`/amc/pipeline`): contracts expiring ≤90d (and expired, not yet renewed) bucketed by window, value at risk, auto-renew + SIRA-expiry, value-by-window chart, drill-through, PDF/Excel.
 - ✅ **Phase 6 — Contract Profitability** (`/amc/profitability`): annual value vs covered (non-chargeable) spare-parts cost + service activity (tickets/visits) → indicative margin per contract (labour not modelled). Revenue-vs-cost chart, margin %, low-margin KPI, PDF/Excel.
 - ✅ **Phase 7 — Equipment / Asset Register** (`/amc/equipment`): consolidated AMC equipment across contracts with condition, by-system + by-condition charts, search/system/condition filters, per-equipment ticket-history count, PDF/Excel.
-- ⏭ Then: Spare Parts → Service History → AMC Billing → Polish.
+- ✅ **Phase 8 — Spare Parts & Consumption** (`/service/parts`): flattens ticket `parts_used` → total value, chargeable vs covered split, top items by value, monthly consumption trend, per-item table, PDF/Excel.
+- ⏭ Then: Service History → AMC Billing → Polish.
