@@ -21,14 +21,14 @@ export default function WorkloadPage() {
           <div className="flex items-center gap-3">
             <button
               onClick={() => router.push('/tasks')}
-              className="p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 hover:text-emerald-400 hover:border-emerald-500/20 transition-all"
+              className="p-2 rounded-lg bg-[var(--surface-hover)] border border-[var(--border)] text-[var(--text-secondary)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-all"
               title="Back to Tasks"
             >
               <ArrowLeft size={16} />
             </button>
             <div>
               <h1 className="quote-header-title flex items-center gap-2">
-                <BarChart2 className="text-emerald-400" size={24} />
+                <BarChart2 className="text-[var(--accent)]" size={24} />
                 Team Capacity Registry
               </h1>
               <p className="quote-header-subtitle">Realtime capacity logs evaluating task queue density across team roles.</p>

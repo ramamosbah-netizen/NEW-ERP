@@ -180,28 +180,28 @@ export default function FinesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#060814] text-[#f8fafc]">
+    <div className="min-h-screen bg-[var(--bg-dark)] text-[#f8fafc]">
 <main className="max-w-[1600px] mx-auto px-6 py-8">
         
         {/* BACK BUTTON */}
-        <Link href="/fleet" className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-200 mb-6 font-semibold">
+        <Link href="/fleet" className="inline-flex items-center gap-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] mb-6 font-semibold">
           <ArrowLeft size={13} /> Back to Fleet Dashboard
         </Link>
 
         {/* HEADER BAR */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-900 pb-6 mb-8">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[var(--border)] pb-6 mb-8">
           <div>
-            <h1 className="font-heading font-extrabold text-2xl tracking-tight text-slate-100 flex items-center gap-2">
-              <AlertTriangle size={24} className="text-amber-400" />
+            <h1 className="font-heading font-extrabold text-2xl tracking-tight text-[var(--text-primary)] flex items-center gap-2">
+              <AlertTriangle size={24} className="text-[var(--status-warning-text)]" />
               Traffic Violations & Fines Ledger
             </h1>
-            <p className="text-xs text-[#94a3b8] mt-1 uppercase tracking-widest font-mono">
+            <p className="text-xs text-[var(--text-secondary)] mt-1 uppercase tracking-widest font-mono">
               RTA Salik, UAE Traffic Police imports & Driver liability recoveries
             </p>
           </div>
           <button
             onClick={() => setShowImportPanel(!showImportPanel)}
-            className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold bg-[var(--primary)] text-slate-950 hover:bg-[var(--primary-hover)] rounded-lg font-mono transition-all"
+            className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold bg-[var(--primary)] text-white hover:bg-[var(--primary-hover)] rounded-lg font-mono transition-all"
           >
             <Upload size={14} />
             Gemini Statement Import
@@ -210,13 +210,13 @@ export default function FinesPage() {
 
         {/* GEMINI STATEMENT IMPORT PANEL */}
         {showImportPanel && (
-          <div className="mb-8 p-6 bg-slate-900/30 border border-slate-800 rounded-xl">
+          <div className="mb-8 p-6 bg-[var(--surface-hover)] border border-[var(--border)] rounded-xl">
             <div className="flex justify-between items-start mb-4">
               <div>
-                <h3 className="font-heading font-bold text-xs uppercase tracking-widest text-slate-200">
+                <h3 className="font-heading font-bold text-xs uppercase tracking-widest text-[var(--text-primary)]">
                   Import Salik / Traffic Fine Statement (PDF/Excel)
                 </h3>
-                <p className="text-[10px] text-slate-500 font-mono mt-1">
+                <p className="text-[10px] text-[var(--text-primary)]0 font-mono mt-1">
                   Upload an RTA Salik statement or Dubai/Abu Dhabi Police fine report. Gemini will parse rows for human review.
                 </p>
               </div>
@@ -225,16 +225,16 @@ export default function FinesPage() {
                   setShowImportPanel(false);
                   setReviewFines([]);
                 }}
-                className="text-slate-500 hover:text-slate-300"
+                className="text-[var(--text-primary)]0 hover:text-[var(--text-secondary)]"
               >
                 <X size={16} />
               </button>
             </div>
 
             {reviewFines.length === 0 ? (
-              <div className="border border-dashed border-slate-800 rounded-xl p-8 flex flex-col items-center justify-center bg-slate-950/20">
-                <Upload size={28} className="text-slate-500 mb-3" />
-                <label className="text-xs font-bold text-slate-300 cursor-pointer bg-slate-900 hover:bg-slate-800 border border-slate-800 px-4 py-2 rounded-lg transition-all font-mono">
+              <div className="border border-dashed border-[var(--border)] rounded-xl p-8 flex flex-col items-center justify-center bg-[var(--bg-card)]">
+                <Upload size={28} className="text-[var(--text-primary)]0 mb-3" />
+                <label className="text-xs font-bold text-[var(--text-secondary)] cursor-pointer bg-[var(--surface-hover)] hover:bg-[var(--surface-hover)] border border-[var(--border)] px-4 py-2 rounded-lg transition-all font-mono">
                   {uploading ? 'Parsing File...' : 'Select Statement File'}
                   <input
                     type="file"
@@ -244,15 +244,15 @@ export default function FinesPage() {
                     className="hidden"
                   />
                 </label>
-                <span className="text-[10px] text-slate-600 mt-2 font-mono">Supports PDF statements or spreadsheet exports</span>
+                <span className="text-[10px] text-[var(--text-tertiary)] mt-2 font-mono">Supports PDF statements or spreadsheet exports</span>
               </div>
             ) : (
               /* Review Grid Table */
               <div className="flex flex-col gap-4">
-                <div className="overflow-x-auto max-h-[300px] border border-slate-900 rounded-xl">
-                  <table className="w-full text-left border-collapse bg-slate-950/30 text-xs">
+                <div className="overflow-x-auto max-h-[300px] border border-[var(--border)] rounded-xl">
+                  <table className="w-full text-left border-collapse bg-[var(--bg-card)] text-xs">
                     <thead>
-                      <tr className="border-b border-slate-900 text-[10px] font-mono text-slate-500 uppercase tracking-widest bg-slate-950/60 sticky top-0">
+                      <tr className="border-b border-[var(--border)] text-[10px] font-mono text-[var(--text-primary)]0 uppercase tracking-widest bg-[var(--bg-card)] sticky top-0">
                         <th className="p-3 w-8">Import</th>
                         <th className="p-3">Fine No.</th>
                         <th className="p-3">Date</th>
@@ -263,9 +263,9 @@ export default function FinesPage() {
                         <th className="p-3">Attributed Driver</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-950/40">
+                    <tbody className="divide-y divide-[var(--border)]">
                       {reviewFines.map((f, idx) => (
-                        <tr key={idx} className="hover:bg-slate-900/10">
+                        <tr key={idx} className="hover:bg-[var(--surface-hover)]">
                           <td className="p-3 text-center">
                             <input 
                               type="checkbox"
@@ -278,11 +278,11 @@ export default function FinesPage() {
                               className="accent-[var(--primary)]"
                             />
                           </td>
-                          <td className="p-3 font-mono font-bold text-slate-200">{f.fine_number}</td>
-                          <td className="p-3 font-mono text-[10px] text-slate-400">{f.fine_date}</td>
-                          <td className="p-3 text-slate-300">{f.violation_type}</td>
-                          <td className="p-3 text-[10px] font-mono text-slate-500">{f.source}</td>
-                          <td className="p-3 font-mono font-bold text-slate-300">{formatAED(f.amount)}</td>
+                          <td className="p-3 font-mono font-bold text-[var(--text-primary)]">{f.fine_number}</td>
+                          <td className="p-3 font-mono text-[10px] text-[var(--text-secondary)]">{f.fine_date}</td>
+                          <td className="p-3 text-[var(--text-secondary)]">{f.violation_type}</td>
+                          <td className="p-3 text-[10px] font-mono text-[var(--text-primary)]0">{f.source}</td>
+                          <td className="p-3 font-mono font-bold text-[var(--text-secondary)]">{formatAED(f.amount)}</td>
                           <td className="p-3">
                             <select
                               value={f.vehicle_id}
@@ -292,7 +292,7 @@ export default function FinesPage() {
                                 setReviewFines(copy);
                               }}
                               required
-                              className="bg-slate-900 border border-slate-800 rounded p-1 text-[11px] text-slate-300"
+                              className="bg-[var(--surface-hover)] border border-[var(--border)] rounded p-1 text-[11px] text-[var(--text-secondary)]"
                             >
                               <option value="">Select Vehicle...</option>
                               {vehicles.map(v => (
@@ -308,7 +308,7 @@ export default function FinesPage() {
                                 copy[idx].driver_id = e.target.value;
                                 setReviewFines(copy);
                               }}
-                              className="bg-slate-900 border border-slate-800 rounded p-1 text-[11px] text-slate-300"
+                              className="bg-[var(--surface-hover)] border border-[var(--border)] rounded p-1 text-[11px] text-[var(--text-secondary)]"
                             >
                               <option value="">Unassigned...</option>
                               {employees.map(emp => (
@@ -325,14 +325,14 @@ export default function FinesPage() {
                 <div className="flex justify-end gap-3">
                   <button
                     onClick={() => setReviewFines([])}
-                    className="px-4 py-2 bg-slate-900 border border-slate-800 text-slate-400 rounded-lg hover:text-slate-200 text-xs font-semibold"
+                    className="px-4 py-2 bg-[var(--surface-hover)] border border-[var(--border)] text-[var(--text-secondary)] rounded-lg hover:text-[var(--text-primary)] text-xs font-semibold"
                   >
                     Clear Results
                   </button>
                   <button
                     onClick={handleBulkSubmit}
                     disabled={uploading}
-                    className="px-4 py-2 bg-[var(--primary)] text-slate-950 rounded-lg font-bold hover:bg-[var(--primary-hover)] text-xs flex items-center gap-1.5"
+                    className="px-4 py-2 bg-[var(--primary)] text-white rounded-lg font-bold hover:bg-[var(--primary-hover)] text-xs flex items-center gap-1.5"
                   >
                     {uploading && <RefreshCw size={12} className="animate-spin" />}
                     Confirm Bulk Create
@@ -346,20 +346,20 @@ export default function FinesPage() {
         {/* FINES DIRECTORY TABLE */}
         <div className="p-6 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-            <h3 className="font-heading font-extrabold text-sm uppercase tracking-wider text-slate-200">
+            <h3 className="font-heading font-extrabold text-sm uppercase tracking-wider text-[var(--text-primary)]">
               Active Violations Ledger ({filteredFines.length} fines)
             </h3>
             
             <div className="flex flex-wrap items-center gap-3">
               {/* Search */}
               <div className="relative">
-                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-primary)]0" />
                 <input 
                   type="text"
                   placeholder="Search fine, code, driver, location..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-64 bg-slate-950/60 border border-slate-900 rounded-lg pl-9 pr-4 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-[var(--primary)] transition-all"
+                  className="w-64 bg-[var(--bg-card)] border border-[var(--border)] rounded-lg pl-9 pr-4 py-1.5 text-xs text-[var(--text-primary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:border-[var(--primary)] transition-all"
                 />
               </div>
 
@@ -367,7 +367,7 @@ export default function FinesPage() {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="bg-slate-950/60 border border-slate-900 rounded-lg px-3 py-1.5 text-xs text-slate-400 focus:outline-none focus:border-[var(--primary)]"
+                className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg px-3 py-1.5 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--primary)]"
               >
                 <option value="">All Statuses</option>
                 <option value="UNPAID">Unpaid</option>
@@ -377,31 +377,31 @@ export default function FinesPage() {
               </select>
 
               {/* Payroll period select */}
-              <div className="flex items-center gap-1 text-[10px] text-slate-500 font-mono">
+              <div className="flex items-center gap-1 text-[10px] text-[var(--text-primary)]0 font-mono">
                 Deductions target:
                 <input 
                   type="month"
                   value={payrollPeriod}
                   onChange={(e) => setPayrollPeriod(e.target.value)}
-                  className="bg-slate-950 border border-slate-900 rounded px-1.5 py-1 text-slate-300"
+                  className="bg-[var(--bg-card)] border border-[var(--border)] rounded px-1.5 py-1 text-[var(--text-secondary)]"
                 />
               </div>
             </div>
           </div>
 
           {loading ? (
-            <div className="h-60 flex items-center justify-center text-xs font-mono text-slate-500">
+            <div className="h-60 flex items-center justify-center text-xs font-mono text-[var(--text-primary)]0">
               <RefreshCw className="animate-spin mr-2" size={15} /> Loading traffic fines...
             </div>
           ) : filteredFines.length === 0 ? (
-            <div className="h-60 flex items-center justify-center text-xs font-mono text-slate-500 border border-dashed border-slate-900 rounded-lg">
+            <div className="h-60 flex items-center justify-center text-xs font-mono text-[var(--text-primary)]0 border border-dashed border-[var(--border)] rounded-lg">
               No traffic fines found matching filters.
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-slate-900 text-[10px] font-mono text-slate-500 uppercase tracking-widest">
+                  <tr className="border-b border-[var(--border)] text-[10px] font-mono text-[var(--text-primary)]0 uppercase tracking-widest">
                     <th className="pb-3">Fine Number</th>
                     <th className="pb-3">Date</th>
                     <th className="pb-3">Vehicle Code</th>
@@ -414,11 +414,11 @@ export default function FinesPage() {
                     <th className="pb-3 text-right">Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-950/40 text-xs">
+                <tbody className="divide-y divide-[var(--border)] text-xs">
                   {filteredFines.map(f => (
-                    <tr key={f.id} className="hover:bg-slate-900/10">
-                      <td className="py-4 font-mono font-bold text-slate-200">{f.fine_number}</td>
-                      <td className="py-4 font-mono text-[10px] text-slate-400">
+                    <tr key={f.id} className="hover:bg-[var(--surface-hover)]">
+                      <td className="py-4 font-mono font-bold text-[var(--text-primary)]">{f.fine_number}</td>
+                      <td className="py-4 font-mono text-[10px] text-[var(--text-secondary)]">
                         {new Date(f.fine_date).toLocaleDateString('en-GB')} {f.fine_time || ''}
                       </td>
                       <td className="py-4 font-mono text-[var(--primary)] font-bold">
@@ -426,26 +426,26 @@ export default function FinesPage() {
                           {f.vehicle_code}
                         </Link>
                       </td>
-                      <td className="py-4 text-[10px] text-slate-400 font-mono">{f.source}</td>
-                      <td className="py-4 text-slate-300">
-                        {f.violation_type} {f.black_points > 0 && <span className="text-red-400 font-bold">({f.black_points} pts)</span>}
+                      <td className="py-4 text-[10px] text-[var(--text-secondary)] font-mono">{f.source}</td>
+                      <td className="py-4 text-[var(--text-secondary)]">
+                        {f.violation_type} {f.black_points > 0 && <span className="text-[var(--status-danger-text)] font-bold">({f.black_points} pts)</span>}
                       </td>
-                      <td className="py-4 text-slate-400">{f.location}</td>
+                      <td className="py-4 text-[var(--text-secondary)]">{f.location}</td>
                       <td className="py-4">
                         {f.driver_name ? (
-                          <span className="text-slate-300">{f.driver_name}</span>
+                          <span className="text-[var(--text-secondary)]">{f.driver_name}</span>
                         ) : (
-                          <span className="text-slate-600 italic">Unassigned</span>
+                          <span className="text-[var(--text-tertiary)] italic">Unassigned</span>
                         )}
                       </td>
-                      <td className="py-4 font-mono font-bold text-slate-200">{formatAED(f.amount)}</td>
+                      <td className="py-4 font-mono font-bold text-[var(--text-primary)]">{formatAED(f.amount)}</td>
                       <td className="py-4">
                         <span className={`inline-block px-2 py-0.5 rounded text-[9px] font-mono uppercase font-bold border ${
                           f.status === 'PAID'
-                            ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                            ? 'bg-[var(--accent-glow)] text-[var(--accent)] border-[var(--accent)]'
                             : f.status === 'TRANSFERRED_TO_DRIVER'
                             ? 'bg-purple-500/10 text-purple-400 border-purple-500/20'
-                            : 'bg-red-500/10 text-red-400 border-red-500/20'
+                            : 'bg-[var(--status-danger-bg)] text-[var(--status-danger-text)] border-[var(--status-danger-border)]'
                         }`}>
                           {f.status.replace(/_/g, ' ')}
                         </span>

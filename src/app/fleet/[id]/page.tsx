@@ -139,7 +139,7 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#060814] text-[#f8fafc] flex items-center justify-center font-mono text-xs">
+      <div className="min-h-screen bg-[var(--bg-dark)] text-[#f8fafc] flex items-center justify-center font-mono text-xs">
         Loading vehicle workspace...
       </div>
     );
@@ -147,8 +147,8 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
 
   if (!vehicle) {
     return (
-      <div className="min-h-screen bg-[#060814] text-[#f8fafc] flex flex-col items-center justify-center gap-4">
-        <span className="text-xs font-mono text-slate-500">Vehicle record not found or deleted.</span>
+      <div className="min-h-screen bg-[var(--bg-dark)] text-[#f8fafc] flex flex-col items-center justify-center gap-4">
+        <span className="text-xs font-mono text-[var(--text-primary)]0">Vehicle record not found or deleted.</span>
         <Link href="/fleet" className="text-xs text-[var(--primary)] font-bold flex items-center gap-1.5">
           <ArrowLeft size={14} /> Back to Fleet Directory
         </Link>
@@ -260,39 +260,39 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
     const diffTime = expiry.getTime() - today.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     
-    if (diffDays < 0) return { text: `EXPIRED (${Math.abs(diffDays)} days ago)`, color: 'text-red-400 font-bold animate-pulse' };
-    if (diffDays <= 7) return { text: `${diffDays} days left (Critical)`, color: 'text-red-400 font-bold' };
-    if (diffDays <= 30) return { text: `${diffDays} days left (Amber)`, color: 'text-amber-400 font-semibold' };
-    return { text: `${diffDays} days left`, color: 'text-slate-400' };
+    if (diffDays < 0) return { text: `EXPIRED (${Math.abs(diffDays)} days ago)`, color: 'text-[var(--status-danger-text)] font-bold animate-pulse' };
+    if (diffDays <= 7) return { text: `${diffDays} days left (Critical)`, color: 'text-[var(--status-danger-text)] font-bold' };
+    if (diffDays <= 30) return { text: `${diffDays} days left (Amber)`, color: 'text-[var(--status-warning-text)] font-semibold' };
+    return { text: `${diffDays} days left`, color: 'text-[var(--text-secondary)]' };
   };
 
   const activeAssignment = assignments.find(a => !a.to_date);
 
   return (
-    <div className="min-h-screen bg-[#060814] text-[#f8fafc]">
+    <div className="min-h-screen bg-[var(--bg-dark)] text-[#f8fafc]">
 <main className="max-w-[1600px] mx-auto px-6 py-8">
         
         {/* BACK TO DIRECTORY */}
-        <Link href="/fleet" className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-200 mb-6 font-semibold">
+        <Link href="/fleet" className="inline-flex items-center gap-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] mb-6 font-semibold">
           <ArrowLeft size={13} /> Back to Fleet list
         </Link>
 
         {/* WORKSPACE HEADER */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-900 pb-6 mb-8 gap-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-[var(--border)] pb-6 mb-8 gap-4">
           <div className="flex items-center gap-4">
-            <div className="h-14 w-14 rounded-2xl bg-[var(--primary)]/10 border border-[var(--primary)]/20 flex items-center justify-center text-[var(--primary)] shadow-[0_0_20px_rgba(0,229,160,0.1)]">
+            <div className="h-14 w-14 rounded-2xl bg-[var(--primary)]/10 border border-[var(--primary)]/20 flex items-center justify-center text-[var(--primary)] shadow-[0_0_20px_var(--accent-glow)]">
               <Car size={26} />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-heading font-extrabold text-xl text-slate-100 uppercase">
+                <span className="font-heading font-extrabold text-xl text-[var(--text-primary)] uppercase">
                   {vehicle.vehicle_code}
                 </span>
-                <span className="font-mono text-xs bg-slate-950 px-2 py-0.5 rounded border border-slate-800 text-slate-400">
+                <span className="font-mono text-xs bg-[var(--bg-card)] px-2 py-0.5 rounded border border-[var(--border)] text-[var(--text-secondary)]">
                   {vehicle.plate_number} ({vehicle.plate_emirate})
                 </span>
               </div>
-              <p className="text-xs text-slate-400 mt-1.5 font-mono">
+              <p className="text-xs text-[var(--text-secondary)] mt-1.5 font-mono">
                 {vehicle.make} {vehicle.model} • Odo: {vehicle.odometer_km.toLocaleString()} km • status:{' '}
                 <span className="text-[var(--primary)] font-bold">{vehicle.status}</span>
               </p>
@@ -307,14 +307,14 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
                   setEndAssignForm(prev => ({ ...prev, return_odometer: vehicle.odometer_km }));
                   setShowEndAssignModal(true);
                 }}
-                className="px-4 py-2 text-xs font-bold bg-amber-500/10 border border-amber-500/20 text-amber-400 hover:bg-amber-500/20 rounded-lg transition-all font-mono"
+                className="px-4 py-2 text-xs font-bold bg-[var(--status-warning-bg)] border border-[var(--status-warning-border)] text-[var(--status-warning-text)] hover:bg-[var(--status-warning-bg)] rounded-lg transition-all font-mono"
               >
                 Hand Back (Custody Release)
               </button>
             ) : (
               <button 
                 onClick={() => setShowAssignModal(true)}
-                className="px-4 py-2 text-xs font-bold bg-[var(--primary)] text-slate-950 hover:bg-[var(--primary-hover)] rounded-lg transition-all font-mono"
+                className="px-4 py-2 text-xs font-bold bg-[var(--primary)] text-white hover:bg-[var(--primary-hover)] rounded-lg transition-all font-mono"
               >
                 Assign Custody (Driver)
               </button>
@@ -324,14 +324,14 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
 
         {/* COMPLIANCE ALERT BOXES */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-          <div className="p-4 bg-slate-900/35 border border-slate-900 rounded-xl flex items-center justify-between">
+          <div className="p-4 bg-[var(--surface-hover)] border border-[var(--border)] rounded-xl flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="h-9 w-9 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+              <div className="h-9 w-9 rounded-lg bg-[var(--accent-glow)] border border-[var(--accent)] flex items-center justify-center text-[var(--accent)]">
                 <FileText size={16} />
               </div>
               <div>
-                <span className="text-[10px] text-slate-500 uppercase tracking-widest font-mono">Mulkiya Renewal</span>
-                <div className="text-xs font-semibold text-slate-200 mt-0.5">
+                <span className="text-[10px] text-[var(--text-primary)]0 uppercase tracking-widest font-mono">Mulkiya Renewal</span>
+                <div className="text-xs font-semibold text-[var(--text-primary)] mt-0.5">
                   Expiry: {new Date(vehicle.registration_expiry).toLocaleDateString('en-GB')}
                 </div>
               </div>
@@ -341,14 +341,14 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
             </span>
           </div>
 
-          <div className="p-4 bg-slate-900/35 border border-slate-900 rounded-xl flex items-center justify-between">
+          <div className="p-4 bg-[var(--surface-hover)] border border-[var(--border)] rounded-xl flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="h-9 w-9 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+              <div className="h-9 w-9 rounded-lg bg-[var(--accent-glow)] border border-[var(--accent)] flex items-center justify-center text-[var(--accent)]">
                 <ShieldAlert size={16} />
               </div>
               <div>
-                <span className="text-[10px] text-slate-500 uppercase tracking-widest font-mono">Insurance Policy</span>
-                <div className="text-xs font-semibold text-slate-200 mt-0.5">
+                <span className="text-[10px] text-[var(--text-primary)]0 uppercase tracking-widest font-mono">Insurance Policy</span>
+                <div className="text-xs font-semibold text-[var(--text-primary)] mt-0.5">
                   Expiry: {new Date(vehicle.insurance_expiry).toLocaleDateString('en-GB')}
                 </div>
               </div>
@@ -360,15 +360,15 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
         </div>
 
         {/* WORKSPACE NAVIGATION TABS */}
-        <div className="flex items-center gap-2 border-b border-slate-900 pb-3 mb-8 overflow-x-auto">
+        <div className="flex items-center gap-2 border-b border-[var(--border)] pb-3 mb-8 overflow-x-auto">
           {(['profile', 'assignments', 'fines', 'fuel', 'maintenance', 'costs'] as const).map(tab => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`px-4 py-2 rounded-lg text-xs font-semibold capitalize font-mono transition-all ${
                 activeTab === tab 
-                  ? 'bg-slate-900 border border-slate-800 text-[var(--primary)] font-bold' 
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/35'
+                  ? 'bg-[var(--surface-hover)] border border-[var(--border)] text-[var(--primary)] font-bold' 
+                  : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-hover)]'
               }`}
             >
               {tab}
@@ -383,58 +383,58 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
           {activeTab === 'profile' && (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="md:col-span-2 p-6 bg-[var(--bg-card)] backdrop-blur-xl border border-[var(--border-color)] rounded-xl flex flex-col gap-6">
-                <h3 className="font-heading font-bold text-xs uppercase tracking-widest text-slate-300 border-b border-slate-950 pb-3">
+                <h3 className="font-heading font-bold text-xs uppercase tracking-widest text-[var(--text-secondary)] border-b border-[var(--border)] pb-3">
                   Vehicle Specifications
                 </h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
                   <div>
-                    <span className="block text-[10px] text-slate-500 uppercase font-mono">Make & Model</span>
-                    <span className="text-xs text-slate-200 font-bold mt-1 block">{vehicle.make} {vehicle.model}</span>
+                    <span className="block text-[10px] text-[var(--text-primary)]0 uppercase font-mono">Make & Model</span>
+                    <span className="text-xs text-[var(--text-primary)] font-bold mt-1 block">{vehicle.make} {vehicle.model}</span>
                   </div>
                   <div>
-                    <span className="block text-[10px] text-slate-500 uppercase font-mono">Model Year</span>
-                    <span className="text-xs text-slate-200 font-mono mt-1 block">{vehicle.year}</span>
+                    <span className="block text-[10px] text-[var(--text-primary)]0 uppercase font-mono">Model Year</span>
+                    <span className="text-xs text-[var(--text-primary)] font-mono mt-1 block">{vehicle.year}</span>
                   </div>
                   <div>
-                    <span className="block text-[10px] text-slate-500 uppercase font-mono">Vehicle Type</span>
-                    <span className="text-xs text-slate-200 font-mono mt-1 block">{vehicle.vehicle_type}</span>
+                    <span className="block text-[10px] text-[var(--text-primary)]0 uppercase font-mono">Vehicle Type</span>
+                    <span className="text-xs text-[var(--text-primary)] font-mono mt-1 block">{vehicle.vehicle_type}</span>
                   </div>
                   <div>
-                    <span className="block text-[10px] text-slate-500 uppercase font-mono">Chassis Number</span>
-                    <span className="text-xs text-slate-200 font-mono mt-1 block">{vehicle.chassis_no}</span>
+                    <span className="block text-[10px] text-[var(--text-primary)]0 uppercase font-mono">Chassis Number</span>
+                    <span className="text-xs text-[var(--text-primary)] font-mono mt-1 block">{vehicle.chassis_no}</span>
                   </div>
                   <div>
-                    <span className="block text-[10px] text-slate-500 uppercase font-mono">Engine Number</span>
-                    <span className="text-xs text-slate-200 font-mono mt-1 block">{vehicle.engine_no}</span>
+                    <span className="block text-[10px] text-[var(--text-primary)]0 uppercase font-mono">Engine Number</span>
+                    <span className="text-xs text-[var(--text-primary)] font-mono mt-1 block">{vehicle.engine_no}</span>
                   </div>
                   <div>
-                    <span className="block text-[10px] text-slate-500 uppercase font-mono">Seating Capacity</span>
-                    <span className="text-xs text-slate-200 font-mono mt-1 block">{vehicle.seating_capacity || 'N/A'}</span>
+                    <span className="block text-[10px] text-[var(--text-primary)]0 uppercase font-mono">Seating Capacity</span>
+                    <span className="text-xs text-[var(--text-primary)] font-mono mt-1 block">{vehicle.seating_capacity || 'N/A'}</span>
                   </div>
                 </div>
 
-                <h3 className="font-heading font-bold text-xs uppercase tracking-widest text-slate-300 border-b border-slate-950 pb-3 mt-4">
+                <h3 className="font-heading font-bold text-xs uppercase tracking-widest text-[var(--text-secondary)] border-b border-[var(--border)] pb-3 mt-4">
                   Ownership & Purchase Details
                 </h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
                   <div>
-                    <span className="block text-[10px] text-slate-500 uppercase font-mono">Ownership Status</span>
-                    <span className="text-xs text-slate-200 font-bold mt-1 block">{vehicle.ownership}</span>
+                    <span className="block text-[10px] text-[var(--text-primary)]0 uppercase font-mono">Ownership Status</span>
+                    <span className="text-xs text-[var(--text-primary)] font-bold mt-1 block">{vehicle.ownership}</span>
                   </div>
                   <div>
-                    <span className="block text-[10px] text-slate-500 uppercase font-mono">Purchase Date</span>
-                    <span className="text-xs text-slate-200 font-mono mt-1 block">
+                    <span className="block text-[10px] text-[var(--text-primary)]0 uppercase font-mono">Purchase Date</span>
+                    <span className="text-xs text-[var(--text-primary)] font-mono mt-1 block">
                       {vehicle.purchase_date ? new Date(vehicle.purchase_date).toLocaleDateString('en-GB') : 'N/A'}
                     </span>
                   </div>
                   <div>
-                    <span className="block text-[10px] text-slate-500 uppercase font-mono">Purchase Cost</span>
-                    <span className="text-xs text-slate-200 font-mono mt-1 block">
+                    <span className="block text-[10px] text-[var(--text-primary)]0 uppercase font-mono">Purchase Cost</span>
+                    <span className="text-xs text-[var(--text-primary)] font-mono mt-1 block">
                       {vehicle.purchase_cost ? formatAED(vehicle.purchase_cost) : 'N/A'}
                     </span>
                   </div>
                   <div>
-                    <span className="block text-[10px] text-slate-500 uppercase font-mono">Linked Asset</span>
+                    <span className="block text-[10px] text-[var(--text-primary)]0 uppercase font-mono">Linked Asset</span>
                     {vehicle.fixed_asset_id ? (
                       <Link 
                         href={`/assets/${vehicle.fixed_asset_id}`}
@@ -443,7 +443,7 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
                         {vehicle.asset_number || 'View Asset Register'}
                       </Link>
                     ) : (
-                      <span className="text-xs text-slate-500 italic mt-1 block">Not linked to Asset Register</span>
+                      <span className="text-xs text-[var(--text-primary)]0 italic mt-1 block">Not linked to Asset Register</span>
                     )}
                   </div>
                 </div>
@@ -451,24 +451,24 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
 
               {/* Sidebar profile info */}
               <div className="p-6 bg-[var(--bg-card)] backdrop-blur-xl border border-[var(--border-color)] rounded-xl flex flex-col gap-6">
-                <h3 className="font-heading font-bold text-xs uppercase tracking-widest text-slate-300 border-b border-slate-950 pb-3">
+                <h3 className="font-heading font-bold text-xs uppercase tracking-widest text-[var(--text-secondary)] border-b border-[var(--border)] pb-3">
                   Salik & Insurance Information
                 </h3>
                 <div>
-                  <span className="block text-[10px] text-slate-500 uppercase font-mono">Salik Tag Number</span>
-                  <span className="text-xs text-slate-200 font-mono mt-1 block">{vehicle.salik_tag_number || 'N/A'}</span>
+                  <span className="block text-[10px] text-[var(--text-primary)]0 uppercase font-mono">Salik Tag Number</span>
+                  <span className="text-xs text-[var(--text-primary)] font-mono mt-1 block">{vehicle.salik_tag_number || 'N/A'}</span>
                 </div>
                 <div>
-                  <span className="block text-[10px] text-slate-500 uppercase font-mono">Salik Account Link</span>
-                  <span className="text-xs text-slate-200 font-mono mt-1 block">{vehicle.salik_account || 'N/A'}</span>
+                  <span className="block text-[10px] text-[var(--text-primary)]0 uppercase font-mono">Salik Account Link</span>
+                  <span className="text-xs text-[var(--text-primary)] font-mono mt-1 block">{vehicle.salik_account || 'N/A'}</span>
                 </div>
                 <div>
-                  <span className="block text-[10px] text-slate-500 uppercase font-mono">Insurance Company</span>
-                  <span className="text-xs text-slate-200 font-semibold mt-1 block">{vehicle.insurance_company}</span>
+                  <span className="block text-[10px] text-[var(--text-primary)]0 uppercase font-mono">Insurance Company</span>
+                  <span className="text-xs text-[var(--text-primary)] font-semibold mt-1 block">{vehicle.insurance_company}</span>
                 </div>
                 <div>
-                  <span className="block text-[10px] text-slate-500 uppercase font-mono">Policy Number</span>
-                  <span className="text-xs text-slate-200 font-mono mt-1 block">{vehicle.insurance_policy_no}</span>
+                  <span className="block text-[10px] text-[var(--text-primary)]0 uppercase font-mono">Policy Number</span>
+                  <span className="text-xs text-[var(--text-primary)] font-mono mt-1 block">{vehicle.insurance_policy_no}</span>
                 </div>
               </div>
             </div>
@@ -478,35 +478,35 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
           {activeTab === 'assignments' && (
             <div className="p-6 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl">
               <div className="flex justify-between items-center mb-6">
-                <h3 className="font-heading font-bold text-xs uppercase tracking-widest text-slate-200">
+                <h3 className="font-heading font-bold text-xs uppercase tracking-widest text-[var(--text-primary)]">
                   Custody Chain & Handovers
                 </h3>
               </div>
 
               {assignments.length === 0 ? (
-                <div className="h-40 flex items-center justify-center text-xs text-slate-500 font-mono border border-dashed border-slate-900 rounded-lg">
+                <div className="h-40 flex items-center justify-center text-xs text-[var(--text-primary)]0 font-mono border border-dashed border-[var(--border)] rounded-lg">
                   No custody logs registered for this vehicle.
                 </div>
               ) : (
-                <div className="relative border-l border-slate-900 pl-6 ml-3 gap-6 flex flex-col">
+                <div className="relative border-l border-[var(--border)] pl-6 ml-3 gap-6 flex flex-col">
                   {assignments.map(a => (
-                    <div key={a.id} className="relative bg-slate-950/50 border border-slate-900 p-4 rounded-xl flex flex-col sm:flex-row justify-between gap-4">
+                    <div key={a.id} className="relative bg-[var(--bg-card)] border border-[var(--border)] p-4 rounded-xl flex flex-col sm:flex-row justify-between gap-4">
                       {/* Timeline dot */}
-                      <span className={`absolute -left-[31px] top-5 h-4.5 w-4.5 rounded-full border border-[#060814] ${!a.to_date ? 'bg-[var(--primary)]' : 'bg-slate-800'}`}></span>
+                      <span className={`absolute -left-[31px] top-5 h-4.5 w-4.5 rounded-full border border-[#060814] ${!a.to_date ? 'bg-[var(--primary)]' : 'bg-[var(--surface-hover)]'}`}></span>
                       
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="font-bold text-xs text-slate-200">{a.driver_name}</span>
+                          <span className="font-bold text-xs text-[var(--text-primary)]">{a.driver_name}</span>
                           {!a.to_date && (
-                            <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 text-[9px] px-1.5 py-0.5 rounded font-mono font-bold uppercase">
+                            <span className="bg-[var(--accent-glow)] text-[var(--accent)] border border-[var(--accent)] text-[9px] px-1.5 py-0.5 rounded font-mono font-bold uppercase">
                               Active Custody
                             </span>
                           )}
                         </div>
-                        <div className="text-[10px] font-mono text-slate-500 mt-1.5">
+                        <div className="text-[10px] font-mono text-[var(--text-primary)]0 mt-1.5">
                           Purpose: {a.purpose} {a.project_name ? `• Project: ${a.project_name}` : ''}
                         </div>
-                        <div className="text-[10px] text-slate-400 mt-2 font-mono flex items-center gap-1.5">
+                        <div className="text-[10px] text-[var(--text-secondary)] mt-2 font-mono flex items-center gap-1.5">
                           <Clock size={11} />
                           {new Date(a.from_date).toLocaleDateString('en-GB')} {new Date(a.from_date).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
                           {a.to_date ? ` to ${new Date(a.to_date).toLocaleDateString('en-GB')}` : ' (Present)'}
@@ -515,13 +515,13 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
 
                       <div className="text-xs sm:text-right flex sm:flex-col justify-between items-baseline sm:justify-start gap-2">
                         <div>
-                          <span className="text-[10px] text-slate-500 uppercase block">Handover Odo</span>
-                          <span className="font-mono text-slate-300">{a.handover_odometer.toLocaleString()} km</span>
+                          <span className="text-[10px] text-[var(--text-primary)]0 uppercase block">Handover Odo</span>
+                          <span className="font-mono text-[var(--text-secondary)]">{a.handover_odometer.toLocaleString()} km</span>
                         </div>
                         {a.to_date && (
                           <div className="sm:mt-2">
-                            <span className="text-[10px] text-slate-500 uppercase block">Return Odo</span>
-                            <span className="font-mono text-slate-300">{(a.return_odometer || 0).toLocaleString()} km</span>
+                            <span className="text-[10px] text-[var(--text-primary)]0 uppercase block">Return Odo</span>
+                            <span className="font-mono text-[var(--text-secondary)]">{(a.return_odometer || 0).toLocaleString()} km</span>
                           </div>
                         )}
                       </div>
@@ -536,12 +536,12 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
           {activeTab === 'fines' && (
             <div className="p-6 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl">
               <div className="flex justify-between items-center mb-6">
-                <h3 className="font-heading font-bold text-xs uppercase tracking-widest text-slate-200">
+                <h3 className="font-heading font-bold text-xs uppercase tracking-widest text-[var(--text-primary)]">
                   Traffic Violation History ({fines.length} records)
                 </h3>
                 <button 
                   onClick={() => setShowFineModal(true)}
-                  className="px-3 py-1.5 text-xs font-bold bg-slate-900 border border-slate-800 text-slate-200 rounded-lg hover:bg-slate-800 transition-all font-mono"
+                  className="px-3 py-1.5 text-xs font-bold bg-[var(--surface-hover)] border border-[var(--border)] text-[var(--text-primary)] rounded-lg hover:bg-[var(--surface-hover)] transition-all font-mono"
                 >
                   Log Fine Notice
                 </button>
@@ -549,29 +549,29 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
 
               {/* Payroll period select bar for driver liabilities */}
               {fines.some(f => f.status === 'UNPAID') && (
-                <div className="mb-4 p-3 bg-slate-950/50 border border-slate-900 rounded-lg flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-                  <div className="flex items-center gap-1.5 text-slate-400">
-                    <Info size={14} className="text-amber-400" />
+                <div className="mb-4 p-3 bg-[var(--bg-card)] border border-[var(--border)] rounded-lg flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                  <div className="flex items-center gap-1.5 text-[var(--text-secondary)]">
+                    <Info size={14} className="text-[var(--status-warning-text)]" />
                     Adjustments target payroll period:
                     <input 
                       type="month"
                       value={payrollPeriod}
                       onChange={(e) => setPayrollPeriod(e.target.value)}
-                      className="bg-slate-900 border border-slate-800 text-slate-200 px-2 py-1 rounded"
+                      className="bg-[var(--surface-hover)] border border-[var(--border)] text-[var(--text-primary)] px-2 py-1 rounded"
                     />
                   </div>
                 </div>
               )}
 
               {fines.length === 0 ? (
-                <div className="h-40 flex items-center justify-center text-xs text-slate-500 font-mono border border-dashed border-slate-900 rounded-lg">
+                <div className="h-40 flex items-center justify-center text-xs text-[var(--text-primary)]0 font-mono border border-dashed border-[var(--border)] rounded-lg">
                   No traffic violations registered.
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="border-b border-slate-900 text-[10px] font-mono text-slate-500 uppercase tracking-widest">
+                      <tr className="border-b border-[var(--border)] text-[10px] font-mono text-[var(--text-primary)]0 uppercase tracking-widest">
                         <th className="pb-3">Fine Number</th>
                         <th className="pb-3">Fine Date</th>
                         <th className="pb-3">Authority</th>
@@ -582,32 +582,32 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
                         <th className="pb-3 text-right">Action</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-950/40 text-xs">
+                    <tbody className="divide-y divide-[var(--border)] text-xs">
                       {fines.map(f => (
-                        <tr key={f.id} className="hover:bg-slate-900/10">
-                          <td className="py-4 font-mono font-bold text-slate-200">{f.fine_number}</td>
-                          <td className="py-4 font-mono text-[10px] text-slate-400">
+                        <tr key={f.id} className="hover:bg-[var(--surface-hover)]">
+                          <td className="py-4 font-mono font-bold text-[var(--text-primary)]">{f.fine_number}</td>
+                          <td className="py-4 font-mono text-[10px] text-[var(--text-secondary)]">
                             {new Date(f.fine_date).toLocaleDateString('en-GB')} {f.fine_time || ''}
                           </td>
-                          <td className="py-4 text-[10px] text-slate-400 font-mono">{f.source}</td>
-                          <td className="py-4 text-slate-300">
-                            {f.violation_type} {f.black_points > 0 && <span className="text-red-400">({f.black_points} pts)</span>}
+                          <td className="py-4 text-[10px] text-[var(--text-secondary)] font-mono">{f.source}</td>
+                          <td className="py-4 text-[var(--text-secondary)]">
+                            {f.violation_type} {f.black_points > 0 && <span className="text-[var(--status-danger-text)]">({f.black_points} pts)</span>}
                           </td>
                           <td className="py-4">
                             {f.driver_name ? (
-                              <span className="text-slate-300">{f.driver_name}</span>
+                              <span className="text-[var(--text-secondary)]">{f.driver_name}</span>
                             ) : (
-                              <span className="text-slate-600 italic">Unassigned</span>
+                              <span className="text-[var(--text-tertiary)] italic">Unassigned</span>
                             )}
                           </td>
-                          <td className="py-4 font-mono font-bold text-slate-200">{formatAED(f.amount)}</td>
+                          <td className="py-4 font-mono font-bold text-[var(--text-primary)]">{formatAED(f.amount)}</td>
                           <td className="py-4">
                             <span className={`inline-block px-2 py-0.5 rounded text-[9px] font-mono uppercase font-bold border ${
                               f.status === 'PAID'
-                                ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                                ? 'bg-[var(--accent-glow)] text-[var(--accent)] border-[var(--accent)]'
                                 : f.status === 'TRANSFERRED_TO_DRIVER'
                                 ? 'bg-purple-500/10 text-purple-400 border-purple-500/20'
-                                : 'bg-red-500/10 text-red-400 border-red-500/20'
+                                : 'bg-[var(--status-danger-bg)] text-[var(--status-danger-text)] border-[var(--status-danger-border)]'
                             }`}>
                               {f.status.replace(/_/g, ' ')}
                             </span>
@@ -635,26 +635,26 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
           {activeTab === 'fuel' && (
             <div className="p-6 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl">
               <div className="flex justify-between items-center mb-6">
-                <h3 className="font-heading font-bold text-xs uppercase tracking-widest text-slate-200">
+                <h3 className="font-heading font-bold text-xs uppercase tracking-widest text-[var(--text-primary)]">
                   Fuel Consumption Ledger
                 </h3>
                 <button 
                   onClick={() => setShowFuelModal(true)}
-                  className="px-3 py-1.5 text-xs font-bold bg-slate-900 border border-slate-800 text-slate-200 rounded-lg hover:bg-slate-800 transition-all font-mono"
+                  className="px-3 py-1.5 text-xs font-bold bg-[var(--surface-hover)] border border-[var(--border)] text-[var(--text-primary)] rounded-lg hover:bg-[var(--surface-hover)] transition-all font-mono"
                 >
                   Log Fill-up
                 </button>
               </div>
 
               {fuelLogs.length === 0 ? (
-                <div className="h-40 flex items-center justify-center text-xs text-slate-500 font-mono border border-dashed border-slate-900 rounded-lg">
+                <div className="h-40 flex items-center justify-center text-xs text-[var(--text-primary)]0 font-mono border border-dashed border-[var(--border)] rounded-lg">
                   No fuel fill-ups registered.
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="border-b border-slate-900 text-[10px] font-mono text-slate-500 uppercase tracking-widest">
+                      <tr className="border-b border-[var(--border)] text-[10px] font-mono text-[var(--text-primary)]0 uppercase tracking-widest">
                         <th className="pb-3">Fill Date</th>
                         <th className="pb-3">Odometer</th>
                         <th className="pb-3">Litres</th>
@@ -665,27 +665,27 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
                         <th className="pb-3 text-right">Status</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-950/40 text-xs">
+                    <tbody className="divide-y divide-[var(--border)] text-xs">
                       {fuelLogs.map(log => (
-                        <tr key={log.id} className="hover:bg-slate-900/10">
-                          <td className="py-4 font-mono text-[10px] text-slate-400">
+                        <tr key={log.id} className="hover:bg-[var(--surface-hover)]">
+                          <td className="py-4 font-mono text-[10px] text-[var(--text-secondary)]">
                             {new Date(log.log_date).toLocaleDateString('en-GB')}
                           </td>
-                          <td className="py-4 font-mono text-slate-300">{log.odometer_km.toLocaleString()} km</td>
-                          <td className="py-4 font-mono text-slate-300">{log.litres.toFixed(2)} L</td>
-                          <td className="py-4 font-mono font-bold text-slate-200">{formatAED(log.amount)}</td>
-                          <td className="py-4 text-slate-400">{log.fuel_type}</td>
-                          <td className="py-4 font-mono font-bold text-slate-300">
+                          <td className="py-4 font-mono text-[var(--text-secondary)]">{log.odometer_km.toLocaleString()} km</td>
+                          <td className="py-4 font-mono text-[var(--text-secondary)]">{log.litres.toFixed(2)} L</td>
+                          <td className="py-4 font-mono font-bold text-[var(--text-primary)]">{formatAED(log.amount)}</td>
+                          <td className="py-4 text-[var(--text-secondary)]">{log.fuel_type}</td>
+                          <td className="py-4 font-mono font-bold text-[var(--text-secondary)]">
                             {log.efficiency_km_l > 0 ? `${log.efficiency_km_l.toFixed(2)} km/L` : 'First fill'}
                           </td>
-                          <td className="py-4 text-slate-300">{log.driver_name}</td>
+                          <td className="py-4 text-[var(--text-secondary)]">{log.driver_name}</td>
                           <td className="py-4 text-right">
                             {log.is_anomaly ? (
-                              <span className="bg-red-500/15 text-red-400 border border-red-500/25 px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase animate-pulse">
+                              <span className="bg-[var(--status-danger-bg)] text-[var(--status-danger-text)] border border-[var(--status-danger-border)] px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase animate-pulse">
                                 Anomaly Flag
                               </span>
                             ) : (
-                              <span className="text-slate-600 font-mono text-[10px]">Normal</span>
+                              <span className="text-[var(--text-tertiary)] font-mono text-[10px]">Normal</span>
                             )}
                           </td>
                         </tr>
@@ -701,26 +701,26 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
           {activeTab === 'maintenance' && (
             <div className="p-6 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl">
               <div className="flex justify-between items-center mb-6">
-                <h3 className="font-heading font-bold text-xs uppercase tracking-widest text-slate-200">
+                <h3 className="font-heading font-bold text-xs uppercase tracking-widest text-[var(--text-primary)]">
                   Maintenance & Service logs
                 </h3>
                 <button 
                   onClick={() => setShowMaintModal(true)}
-                  className="px-3 py-1.5 text-xs font-bold bg-slate-900 border border-slate-800 text-slate-200 rounded-lg hover:bg-slate-800 transition-all font-mono"
+                  className="px-3 py-1.5 text-xs font-bold bg-[var(--surface-hover)] border border-[var(--border)] text-[var(--text-primary)] rounded-lg hover:bg-[var(--surface-hover)] transition-all font-mono"
                 >
                   Schedule Service
                 </button>
               </div>
 
               {maintenance.length === 0 ? (
-                <div className="h-40 flex items-center justify-center text-xs text-slate-500 font-mono border border-dashed border-slate-900 rounded-lg">
+                <div className="h-40 flex items-center justify-center text-xs text-[var(--text-primary)]0 font-mono border border-dashed border-[var(--border)] rounded-lg">
                   No maintenance records found.
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="border-b border-slate-900 text-[10px] font-mono text-slate-500 uppercase tracking-widest">
+                      <tr className="border-b border-[var(--border)] text-[10px] font-mono text-[var(--text-primary)]0 uppercase tracking-widest">
                         <th className="pb-3">Service Date</th>
                         <th className="pb-3">Odometer</th>
                         <th className="pb-3">Type</th>
@@ -731,21 +731,21 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
                         <th className="pb-3 text-right">Status</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-950/40 text-xs">
+                    <tbody className="divide-y divide-[var(--border)] text-xs">
                       {maintenance.map(m => (
-                        <tr key={m.id} className="hover:bg-slate-900/10">
-                          <td className="py-4 font-mono text-[10px] text-slate-400">
+                        <tr key={m.id} className="hover:bg-[var(--surface-hover)]">
+                          <td className="py-4 font-mono text-[10px] text-[var(--text-secondary)]">
                             {new Date(m.service_date).toLocaleDateString('en-GB')}
                           </td>
-                          <td className="py-4 font-mono text-slate-300">{m.odometer_km.toLocaleString()} km</td>
-                          <td className="py-4 font-mono text-[10px] text-slate-400">{m.type}</td>
-                          <td className="py-4 text-slate-300 font-semibold">{m.vendor}</td>
-                          <td className="py-4 text-slate-400">{m.description}</td>
-                          <td className="py-4 font-mono font-bold text-slate-200">{formatAED(m.cost)}</td>
-                          <td className="py-4 font-mono text-slate-400">{m.downtime_days} days</td>
+                          <td className="py-4 font-mono text-[var(--text-secondary)]">{m.odometer_km.toLocaleString()} km</td>
+                          <td className="py-4 font-mono text-[10px] text-[var(--text-secondary)]">{m.type}</td>
+                          <td className="py-4 text-[var(--text-secondary)] font-semibold">{m.vendor}</td>
+                          <td className="py-4 text-[var(--text-secondary)]">{m.description}</td>
+                          <td className="py-4 font-mono font-bold text-[var(--text-primary)]">{formatAED(m.cost)}</td>
+                          <td className="py-4 font-mono text-[var(--text-secondary)]">{m.downtime_days} days</td>
                           <td className="py-4 text-right">
                             {m.status === 'COMPLETED' ? (
-                              <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase">
+                              <span className="bg-[var(--accent-glow)] text-[var(--accent)] border border-[var(--accent)] px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase">
                                 Completed
                               </span>
                             ) : (
@@ -775,35 +775,35 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               
               <div className="md:col-span-2 p-6 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl flex flex-col gap-6">
-                <h3 className="font-heading font-bold text-xs uppercase tracking-widest text-slate-300 border-b border-slate-950 pb-3">
+                <h3 className="font-heading font-bold text-xs uppercase tracking-widest text-[var(--text-secondary)] border-b border-[var(--border)] pb-3">
                   TCO Cost Breakdown Ledger
                 </h3>
                 
                 <div className="gap-4 flex flex-col">
                   {/* Row 1: Fuel */}
-                  <div className="flex justify-between items-center text-xs p-3 bg-slate-950/40 border border-slate-900 rounded-lg">
-                    <span className="text-slate-400 font-semibold flex items-center gap-1.5"><Fuel size={14} /> Total Fuel cost</span>
-                    <span className="font-bold font-mono text-slate-200">{formatAED(totalFuelCost)}</span>
+                  <div className="flex justify-between items-center text-xs p-3 bg-[var(--bg-card)] border border-[var(--border)] rounded-lg">
+                    <span className="text-[var(--text-secondary)] font-semibold flex items-center gap-1.5"><Fuel size={14} /> Total Fuel cost</span>
+                    <span className="font-bold font-mono text-[var(--text-primary)]">{formatAED(totalFuelCost)}</span>
                   </div>
                   {/* Row 2: Maintenance */}
-                  <div className="flex justify-between items-center text-xs p-3 bg-slate-950/40 border border-slate-900 rounded-lg">
-                    <span className="text-slate-400 font-semibold flex items-center gap-1.5"><Wrench size={14} /> Total Maintenance Cost</span>
-                    <span className="font-bold font-mono text-slate-200">{formatAED(totalMaintCost)}</span>
+                  <div className="flex justify-between items-center text-xs p-3 bg-[var(--bg-card)] border border-[var(--border)] rounded-lg">
+                    <span className="text-[var(--text-secondary)] font-semibold flex items-center gap-1.5"><Wrench size={14} /> Total Maintenance Cost</span>
+                    <span className="font-bold font-mono text-[var(--text-primary)]">{formatAED(totalMaintCost)}</span>
                   </div>
                   {/* Row 3: Fines */}
-                  <div className="flex justify-between items-center text-xs p-3 bg-slate-950/40 border border-slate-900 rounded-lg">
-                    <span className="text-slate-400 font-semibold flex items-center gap-1.5"><AlertTriangle size={14} /> Traffic Fines (all)</span>
-                    <span className="font-bold font-mono text-slate-200">{formatAED(totalFinesCost)}</span>
+                  <div className="flex justify-between items-center text-xs p-3 bg-[var(--bg-card)] border border-[var(--border)] rounded-lg">
+                    <span className="text-[var(--text-secondary)] font-semibold flex items-center gap-1.5"><AlertTriangle size={14} /> Traffic Fines (all)</span>
+                    <span className="font-bold font-mono text-[var(--text-primary)]">{formatAED(totalFinesCost)}</span>
                   </div>
                   {/* Row 4: Insurance */}
-                  <div className="flex justify-between items-center text-xs p-3 bg-slate-950/40 border border-slate-900 rounded-lg">
-                    <span className="text-slate-400 font-semibold flex items-center gap-1.5"><ShieldAlert size={14} /> Insurance Premiums</span>
-                    <span className="font-bold font-mono text-slate-200">{formatAED(insuranceCost)}</span>
+                  <div className="flex justify-between items-center text-xs p-3 bg-[var(--bg-card)] border border-[var(--border)] rounded-lg">
+                    <span className="text-[var(--text-secondary)] font-semibold flex items-center gap-1.5"><ShieldAlert size={14} /> Insurance Premiums</span>
+                    <span className="font-bold font-mono text-[var(--text-primary)]">{formatAED(insuranceCost)}</span>
                   </div>
                   {/* Row 5: Depreciation */}
-                  <div className="flex justify-between items-center text-xs p-3 bg-slate-950/40 border border-slate-900 rounded-lg">
-                    <span className="text-slate-400 font-semibold flex items-center gap-1.5"><DollarSign size={14} /> Accumulated Asset Depreciation</span>
-                    <span className="font-bold font-mono text-slate-200">{formatAED(depreciation)}</span>
+                  <div className="flex justify-between items-center text-xs p-3 bg-[var(--bg-card)] border border-[var(--border)] rounded-lg">
+                    <span className="text-[var(--text-secondary)] font-semibold flex items-center gap-1.5"><DollarSign size={14} /> Accumulated Asset Depreciation</span>
+                    <span className="font-bold font-mono text-[var(--text-primary)]">{formatAED(depreciation)}</span>
                   </div>
                 </div>
               </div>
@@ -811,20 +811,20 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
               {/* Cost metrics summary */}
               <div className="p-6 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl flex flex-col justify-between h-[300px]">
                 <div>
-                  <h3 className="font-heading font-bold text-xs uppercase tracking-widest text-slate-300 border-b border-slate-950 pb-3 mb-6">
+                  <h3 className="font-heading font-bold text-xs uppercase tracking-widest text-[var(--text-secondary)] border-b border-[var(--border)] pb-3 mb-6">
                     Total Cost of Ownership
                   </h3>
                   <div className="text-3xl font-heading font-extrabold text-[var(--primary)] font-mono">
                     {formatAED(tco)}
                   </div>
-                  <p className="text-[10px] text-slate-500 font-mono mt-1.5">
+                  <p className="text-[10px] text-[var(--text-primary)]0 font-mono mt-1.5">
                     Accumulated costs including running expenses & asset depreciation
                   </p>
                 </div>
 
-                <div className="border-t border-slate-900 pt-4">
-                  <div className="text-[10px] text-slate-500 uppercase tracking-widest font-mono">Running Cost / km</div>
-                  <div className="text-lg font-heading font-bold text-slate-200 mt-1 font-mono">
+                <div className="border-t border-[var(--border)] pt-4">
+                  <div className="text-[10px] text-[var(--text-primary)]0 uppercase tracking-widest font-mono">Running Cost / km</div>
+                  <div className="text-lg font-heading font-bold text-[var(--text-primary)] mt-1 font-mono">
                     {costPerKm.toFixed(4)} AED / km
                   </div>
                 </div>
@@ -837,19 +837,19 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
 
         {/* MODAL: ASSIGN CUSTODY */}
         {showAssignModal && (
-          <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-[#0c0f24] border border-slate-800 rounded-2xl w-full max-w-md p-6 relative">
-              <h2 className="font-heading font-extrabold text-sm uppercase tracking-wider text-slate-100 mb-4">
+          <div className="fixed inset-0 z-50 bg-[var(--bg-card)] backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="bg-[#0c0f24] border border-[var(--border)] rounded-2xl w-full max-w-md p-6 relative">
+              <h2 className="font-heading font-extrabold text-sm uppercase tracking-wider text-[var(--text-primary)] mb-4">
                 Assign Custody to Driver
               </h2>
               <form onSubmit={handleAssignSubmit} className="flex flex-col gap-4 text-xs">
                 <div>
-                  <label className="block text-slate-400 mb-1.5 font-mono">Select Driver (Employee)</label>
+                  <label className="block text-[var(--text-secondary)] mb-1.5 font-mono">Select Driver (Employee)</label>
                   <select
                     value={assignForm.driver_id}
                     onChange={(e) => setAssignForm({ ...assignForm, driver_id: e.target.value })}
                     required
-                    className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-[var(--primary)]"
+                    className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)]"
                   >
                     <option value="">Choose Driver...</option>
                     {employees.map(emp => (
@@ -859,35 +859,35 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
                 </div>
 
                 <div>
-                  <label className="block text-slate-400 mb-1.5 font-mono">Handover Odometer Reading (km)</label>
+                  <label className="block text-[var(--text-secondary)] mb-1.5 font-mono">Handover Odometer Reading (km)</label>
                   <input
                     type="number"
                     value={assignForm.handover_odometer}
                     onChange={(e) => setAssignForm({ ...assignForm, handover_odometer: Number(e.target.value) })}
                     required
                     min={vehicle.odometer_km}
-                    className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 font-mono focus:outline-none focus:border-[var(--primary)]"
+                    className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--text-primary)] font-mono focus:outline-none focus:border-[var(--primary)]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-slate-400 mb-1.5 font-mono">Purpose of Assignment</label>
+                  <label className="block text-[var(--text-secondary)] mb-1.5 font-mono">Purpose of Assignment</label>
                   <input
                     type="text"
                     value={assignForm.purpose}
                     onChange={(e) => setAssignForm({ ...assignForm, purpose: e.target.value })}
                     required
                     placeholder="e.g. Project site coordination / Technicians transport"
-                    className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-[var(--primary)]"
+                    className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-slate-400 mb-1.5 font-mono">Link Project (Optional)</label>
+                  <label className="block text-[var(--text-secondary)] mb-1.5 font-mono">Link Project (Optional)</label>
                   <select
                     value={assignForm.project_id}
                     onChange={(e) => setAssignForm({ ...assignForm, project_id: e.target.value })}
-                    className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-[var(--primary)]"
+                    className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)]"
                   >
                     <option value="">No Project Tag...</option>
                     {projects.map(p => (
@@ -900,13 +900,13 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
                   <button
                     type="button"
                     onClick={() => setShowAssignModal(false)}
-                    className="px-4 py-2 bg-slate-900 border border-slate-800 text-slate-400 rounded-lg hover:text-slate-200 font-semibold"
+                    className="px-4 py-2 bg-[var(--surface-hover)] border border-[var(--border)] text-[var(--text-secondary)] rounded-lg hover:text-[var(--text-primary)] font-semibold"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-[var(--primary)] text-slate-950 rounded-lg font-bold hover:bg-[var(--primary-hover)]"
+                    className="px-4 py-2 bg-[var(--primary)] text-white rounded-lg font-bold hover:bg-[var(--primary-hover)]"
                   >
                     Assign Custody
                   </button>
@@ -918,51 +918,51 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
 
         {/* MODAL: END CUSTODY */}
         {showEndAssignModal && (
-          <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-[#0c0f24] border border-slate-800 rounded-2xl w-full max-w-md p-6 relative">
-              <h2 className="font-heading font-extrabold text-sm uppercase tracking-wider text-slate-100 mb-4">
+          <div className="fixed inset-0 z-50 bg-[var(--bg-card)] backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="bg-[#0c0f24] border border-[var(--border)] rounded-2xl w-full max-w-md p-6 relative">
+              <h2 className="font-heading font-extrabold text-sm uppercase tracking-wider text-[var(--text-primary)] mb-4">
                 Release Driver Custody
               </h2>
               <form onSubmit={handleEndAssignSubmit} className="flex flex-col gap-4 text-xs">
                 <div>
-                  <label className="block text-slate-400 mb-1.5 font-mono">Return Odometer Reading (km)</label>
+                  <label className="block text-[var(--text-secondary)] mb-1.5 font-mono">Return Odometer Reading (km)</label>
                   <input
                     type="number"
                     value={endAssignForm.return_odometer}
                     onChange={(e) => setEndAssignForm({ ...endAssignForm, return_odometer: Number(e.target.value) })}
                     required
                     min={vehicle.odometer_km}
-                    className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 font-mono focus:outline-none focus:border-[var(--primary)]"
+                    className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--text-primary)] font-mono focus:outline-none focus:border-[var(--primary)]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-slate-400 mb-1.5 font-mono">Condition Notes / Defects</label>
+                  <label className="block text-[var(--text-secondary)] mb-1.5 font-mono">Condition Notes / Defects</label>
                   <textarea
                     value={endAssignForm.condition_notes}
                     onChange={(e) => setEndAssignForm({ ...endAssignForm, condition_notes: e.target.value })}
                     placeholder="Describe any scratch, dent, tyre wear, cleaning status, or mechanical issues..."
                     rows={3}
-                    className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-[var(--primary)]"
+                    className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)]"
                   />
                 </div>
 
-                <div className="p-3 bg-slate-950 border border-slate-900 rounded-lg flex items-center gap-2">
-                  <Signature className="text-emerald-400" size={16} />
-                  <span className="text-[10px] text-slate-400">Driver Check-in signature canvas linked (Mocked)</span>
+                <div className="p-3 bg-[var(--bg-card)] border border-[var(--border)] rounded-lg flex items-center gap-2">
+                  <Signature className="text-[var(--accent)]" size={16} />
+                  <span className="text-[10px] text-[var(--text-secondary)]">Driver Check-in signature canvas linked (Mocked)</span>
                 </div>
 
                 <div className="flex justify-end gap-3 mt-4">
                   <button
                     type="button"
                     onClick={() => setShowEndAssignModal(false)}
-                    className="px-4 py-2 bg-slate-900 border border-slate-800 text-slate-400 rounded-lg hover:text-slate-200 font-semibold"
+                    className="px-4 py-2 bg-[var(--surface-hover)] border border-[var(--border)] text-[var(--text-secondary)] rounded-lg hover:text-[var(--text-primary)] font-semibold"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-amber-500 text-slate-950 rounded-lg font-bold hover:bg-amber-400"
+                    className="px-4 py-2 bg-[var(--status-warning-bg)] text-white rounded-lg font-bold hover:bg-[var(--status-warning-bg)]"
                   >
                     End Custody
                   </button>
@@ -974,30 +974,30 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
 
         {/* MODAL: LOG FUEL */}
         {showFuelModal && (
-          <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-[#0c0f24] border border-slate-800 rounded-2xl w-full max-w-md p-6 relative">
-              <h2 className="font-heading font-extrabold text-sm uppercase tracking-wider text-slate-100 mb-4">
+          <div className="fixed inset-0 z-50 bg-[var(--bg-card)] backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="bg-[#0c0f24] border border-[var(--border)] rounded-2xl w-full max-w-md p-6 relative">
+              <h2 className="font-heading font-extrabold text-sm uppercase tracking-wider text-[var(--text-primary)] mb-4">
                 Log Fuel Fill-up (Mobile Form)
               </h2>
               <form onSubmit={handleFuelSubmit} className="flex flex-col gap-4 text-xs">
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-slate-400 mb-1.5 font-mono">Fill Date</label>
+                    <label className="block text-[var(--text-secondary)] mb-1.5 font-mono">Fill Date</label>
                     <input
                       type="date"
                       value={fuelForm.log_date}
                       onChange={(e) => setFuelForm({ ...fuelForm, log_date: e.target.value })}
                       required
-                      className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-[var(--primary)]"
+                      className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)]"
                     />
                   </div>
                   <div>
-                    <label className="block text-slate-400 mb-1.5 font-mono">Fuel Type</label>
+                    <label className="block text-[var(--text-secondary)] mb-1.5 font-mono">Fuel Type</label>
                     <select
                       value={fuelForm.fuel_type}
                       onChange={(e) => setFuelForm({ ...fuelForm, fuel_type: e.target.value })}
                       required
-                      className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-[var(--primary)]"
+                      className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)]"
                     >
                       <option value="SPECIAL_95">Special 95</option>
                       <option value="SUPER_98">Super 98</option>
@@ -1009,61 +1009,61 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
 
                 <div className="grid grid-cols-3 gap-3">
                   <div className="col-span-2">
-                    <label className="block text-slate-400 mb-1.5 font-mono">Odometer Reading (km)</label>
+                    <label className="block text-[var(--text-secondary)] mb-1.5 font-mono">Odometer Reading (km)</label>
                     <input
                       type="number"
                       value={fuelForm.odometer_km}
                       onChange={(e) => setFuelForm({ ...fuelForm, odometer_km: Number(e.target.value) })}
                       required
                       min={vehicle.odometer_km}
-                      className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 font-mono focus:outline-none focus:border-[var(--primary)]"
+                      className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--text-primary)] font-mono focus:outline-none focus:border-[var(--primary)]"
                     />
                   </div>
                   <div>
-                    <label className="block text-slate-400 mb-1.5 font-mono">Litres</label>
+                    <label className="block text-[var(--text-secondary)] mb-1.5 font-mono">Litres</label>
                     <input
                       type="number"
                       step="0.01"
                       value={fuelForm.litres || ''}
                       onChange={(e) => setFuelForm({ ...fuelForm, litres: Number(e.target.value) })}
                       required
-                      className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 font-mono focus:outline-none focus:border-[var(--primary)]"
+                      className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--text-primary)] font-mono focus:outline-none focus:border-[var(--primary)]"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-slate-400 mb-1.5 font-mono">Cost (AED)</label>
+                    <label className="block text-[var(--text-secondary)] mb-1.5 font-mono">Cost (AED)</label>
                     <input
                       type="number"
                       step="0.01"
                       value={fuelForm.amount || ''}
                       onChange={(e) => setFuelForm({ ...fuelForm, amount: Number(e.target.value) })}
                       required
-                      className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 font-mono focus:outline-none focus:border-[var(--primary)]"
+                      className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--text-primary)] font-mono focus:outline-none focus:border-[var(--primary)]"
                     />
                   </div>
                   <div>
-                    <label className="block text-slate-400 mb-1.5 font-mono">Fuel Card / Station</label>
+                    <label className="block text-[var(--text-secondary)] mb-1.5 font-mono">Fuel Card / Station</label>
                     <input
                       type="text"
                       value={fuelForm.station}
                       onChange={(e) => setFuelForm({ ...fuelForm, station: e.target.value })}
                       placeholder="e.g. ADNOC / ENOC"
-                      className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-[var(--primary)]"
+                      className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)]"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-slate-400 mb-1.5 font-mono">Logging Driver</label>
+                    <label className="block text-[var(--text-secondary)] mb-1.5 font-mono">Logging Driver</label>
                     <select
                       value={fuelForm.driver_id}
                       onChange={(e) => setFuelForm({ ...fuelForm, driver_id: e.target.value })}
                       required
-                      className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-[var(--primary)]"
+                      className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)]"
                     >
                       <option value="">Select...</option>
                       {employees.map(emp => (
@@ -1072,11 +1072,11 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
                     </select>
                   </div>
                   <div>
-                    <label className="block text-slate-400 mb-1.5 font-mono">Link Project</label>
+                    <label className="block text-[var(--text-secondary)] mb-1.5 font-mono">Link Project</label>
                     <select
                       value={fuelForm.project_id}
                       onChange={(e) => setFuelForm({ ...fuelForm, project_id: e.target.value })}
-                      className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-[var(--primary)]"
+                      className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)]"
                     >
                       <option value="">No Project...</option>
                       {projects.map(p => (
@@ -1090,13 +1090,13 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
                   <button
                     type="button"
                     onClick={() => setShowFuelModal(false)}
-                    className="px-4 py-2 bg-slate-900 border border-slate-800 text-slate-400 rounded-lg hover:text-slate-200 font-semibold"
+                    className="px-4 py-2 bg-[var(--surface-hover)] border border-[var(--border)] text-[var(--text-secondary)] rounded-lg hover:text-[var(--text-primary)] font-semibold"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-[var(--primary)] text-slate-950 rounded-lg font-bold hover:bg-[var(--primary-hover)]"
+                    className="px-4 py-2 bg-[var(--primary)] text-white rounded-lg font-bold hover:bg-[var(--primary-hover)]"
                   >
                     Log Fill-up
                   </button>
@@ -1108,30 +1108,30 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
 
         {/* MODAL: LOG MAINTENANCE */}
         {showMaintModal && (
-          <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-[#0c0f24] border border-slate-800 rounded-2xl w-full max-w-md p-6 relative">
-              <h2 className="font-heading font-extrabold text-sm uppercase tracking-wider text-slate-100 mb-4">
+          <div className="fixed inset-0 z-50 bg-[var(--bg-card)] backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="bg-[#0c0f24] border border-[var(--border)] rounded-2xl w-full max-w-md p-6 relative">
+              <h2 className="font-heading font-extrabold text-sm uppercase tracking-wider text-[var(--text-primary)] mb-4">
                 Log Maintenance / Service Request
               </h2>
               <form onSubmit={handleMaintSubmit} className="flex flex-col gap-4 text-xs">
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-slate-400 mb-1.5 font-mono">Service Date</label>
+                    <label className="block text-[var(--text-secondary)] mb-1.5 font-mono">Service Date</label>
                     <input
                       type="date"
                       value={maintForm.service_date}
                       onChange={(e) => setMaintForm({ ...maintForm, service_date: e.target.value })}
                       required
-                      className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-[var(--primary)]"
+                      className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)]"
                     />
                   </div>
                   <div>
-                    <label className="block text-slate-400 mb-1.5 font-mono">Service Type</label>
+                    <label className="block text-[var(--text-secondary)] mb-1.5 font-mono">Service Type</label>
                     <select
                       value={maintForm.type}
                       onChange={(e) => setMaintForm({ ...maintForm, type: e.target.value as any })}
                       required
-                      className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-[var(--primary)]"
+                      className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)]"
                     >
                       <option value="SERVICE">Scheduled Service</option>
                       <option value="REPAIR">Repair</option>
@@ -1145,93 +1145,93 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
 
                 <div className="grid grid-cols-3 gap-3">
                   <div className="col-span-2">
-                    <label className="block text-slate-400 mb-1.5 font-mono">Odometer (km)</label>
+                    <label className="block text-[var(--text-secondary)] mb-1.5 font-mono">Odometer (km)</label>
                     <input
                       type="number"
                       value={maintForm.odometer_km}
                       onChange={(e) => setMaintForm({ ...maintForm, odometer_km: Number(e.target.value) })}
                       required
                       min={vehicle.odometer_km}
-                      className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 font-mono focus:outline-none focus:border-[var(--primary)]"
+                      className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--text-primary)] font-mono focus:outline-none focus:border-[var(--primary)]"
                     />
                   </div>
                   <div>
-                    <label className="block text-slate-400 mb-1.5 font-mono">Cost (AED)</label>
+                    <label className="block text-[var(--text-secondary)] mb-1.5 font-mono">Cost (AED)</label>
                     <input
                       type="number"
                       value={maintForm.cost || ''}
                       onChange={(e) => setMaintForm({ ...maintForm, cost: Number(e.target.value) })}
                       required
-                      className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 font-mono focus:outline-none focus:border-[var(--primary)]"
+                      className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--text-primary)] font-mono focus:outline-none focus:border-[var(--primary)]"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-slate-400 mb-1.5 font-mono">Service Vendor</label>
+                    <label className="block text-[var(--text-secondary)] mb-1.5 font-mono">Service Vendor</label>
                     <input
                       type="text"
                       value={maintForm.vendor}
                       onChange={(e) => setMaintForm({ ...maintForm, vendor: e.target.value })}
                       required
                       placeholder="e.g. Al Futtaim Toyota"
-                      className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-[var(--primary)]"
+                      className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)]"
                     />
                   </div>
                   <div>
-                    <label className="block text-slate-400 mb-1.5 font-mono">Downtime (Days)</label>
+                    <label className="block text-[var(--text-secondary)] mb-1.5 font-mono">Downtime (Days)</label>
                     <input
                       type="number"
                       value={maintForm.downtime_days}
                       onChange={(e) => setMaintForm({ ...maintForm, downtime_days: Number(e.target.value) })}
                       required
-                      className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 font-mono focus:outline-none focus:border-[var(--primary)]"
+                      className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--text-primary)] font-mono focus:outline-none focus:border-[var(--primary)]"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-slate-400 mb-1.5 font-mono">Description of Work</label>
+                  <label className="block text-[var(--text-secondary)] mb-1.5 font-mono">Description of Work</label>
                   <input
                     type="text"
                     value={maintForm.description}
                     onChange={(e) => setMaintForm({ ...maintForm, description: e.target.value })}
                     required
                     placeholder="e.g. 100,000 km minor service, brake pads replacement"
-                    className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-[var(--primary)]"
+                    className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)]"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-slate-400 mb-1.5 font-mono">Next Service Odo (km)</label>
+                    <label className="block text-[var(--text-secondary)] mb-1.5 font-mono">Next Service Odo (km)</label>
                     <input
                       type="number"
                       value={maintForm.next_service_odometer}
                       onChange={(e) => setMaintForm({ ...maintForm, next_service_odometer: e.target.value })}
                       placeholder="e.g. 110000"
-                      className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 font-mono focus:outline-none focus:border-[var(--primary)]"
+                      className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--text-primary)] font-mono focus:outline-none focus:border-[var(--primary)]"
                     />
                   </div>
                   <div>
-                    <label className="block text-slate-400 mb-1.5 font-mono">Next Service Date</label>
+                    <label className="block text-[var(--text-secondary)] mb-1.5 font-mono">Next Service Date</label>
                     <input
                       type="date"
                       value={maintForm.next_service_date}
                       onChange={(e) => setMaintForm({ ...maintForm, next_service_date: e.target.value })}
-                      className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-[var(--primary)]"
+                      className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)]"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-slate-400 mb-1.5 font-mono">Status</label>
+                  <label className="block text-[var(--text-secondary)] mb-1.5 font-mono">Status</label>
                   <select
                     value={maintForm.status}
                     onChange={(e) => setMaintForm({ ...maintForm, status: e.target.value as any })}
                     required
-                    className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-[var(--primary)]"
+                    className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)]"
                   >
                     <option value="SCHEDULED">Scheduled</option>
                     <option value="IN_PROGRESS">In Progress</option>
@@ -1243,13 +1243,13 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
                   <button
                     type="button"
                     onClick={() => setShowMaintModal(false)}
-                    className="px-4 py-2 bg-slate-900 border border-slate-800 text-slate-400 rounded-lg hover:text-slate-200 font-semibold"
+                    className="px-4 py-2 bg-[var(--surface-hover)] border border-[var(--border)] text-[var(--text-secondary)] rounded-lg hover:text-[var(--text-primary)] font-semibold"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-[var(--primary)] text-slate-950 rounded-lg font-bold hover:bg-[var(--primary-hover)]"
+                    className="px-4 py-2 bg-[var(--primary)] text-white rounded-lg font-bold hover:bg-[var(--primary-hover)]"
                   >
                     Schedule Service
                   </button>
@@ -1261,78 +1261,78 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
 
         {/* MODAL: LOG FINE */}
         {showFineModal && (
-          <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-[#0c0f24] border border-slate-800 rounded-2xl w-full max-w-md p-6 relative">
-              <h2 className="font-heading font-extrabold text-sm uppercase tracking-wider text-slate-100 mb-4">
+          <div className="fixed inset-0 z-50 bg-[var(--bg-card)] backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="bg-[#0c0f24] border border-[var(--border)] rounded-2xl w-full max-w-md p-6 relative">
+              <h2 className="font-heading font-extrabold text-sm uppercase tracking-wider text-[var(--text-primary)] mb-4">
                 Log Fine Ticket Notice
               </h2>
               <form onSubmit={handleFineSubmit} className="flex flex-col gap-4 text-xs">
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-slate-400 mb-1.5 font-mono">Fine Number</label>
+                    <label className="block text-[var(--text-secondary)] mb-1.5 font-mono">Fine Number</label>
                     <input
                       type="text"
                       value={fineForm.fine_number}
                       onChange={(e) => setFineForm({ ...fineForm, fine_number: e.target.value })}
                       required
                       placeholder="e.g. DXB-1928472"
-                      className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-[var(--primary)]"
+                      className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)]"
                     />
                   </div>
                   <div>
-                    <label className="block text-slate-400 mb-1.5 font-mono">Fine Date</label>
+                    <label className="block text-[var(--text-secondary)] mb-1.5 font-mono">Fine Date</label>
                     <input
                       type="date"
                       value={fineForm.fine_date}
                       onChange={(e) => setFineForm({ ...fineForm, fine_date: e.target.value })}
                       required
-                      className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-[var(--primary)]"
+                      className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)]"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-3 gap-3">
                   <div className="col-span-2">
-                    <label className="block text-slate-400 mb-1.5 font-mono">Violation Type (Offence)</label>
+                    <label className="block text-[var(--text-secondary)] mb-1.5 font-mono">Violation Type (Offence)</label>
                     <input
                       type="text"
                       value={fineForm.violation_type}
                       onChange={(e) => setFineForm({ ...fineForm, violation_type: e.target.value })}
                       required
                       placeholder="e.g. Speeding > 20km/h"
-                      className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-[var(--primary)]"
+                      className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)]"
                     />
                   </div>
                   <div>
-                    <label className="block text-slate-400 mb-1.5 font-mono">Black Points</label>
+                    <label className="block text-[var(--text-secondary)] mb-1.5 font-mono">Black Points</label>
                     <input
                       type="number"
                       value={fineForm.black_points || ''}
                       onChange={(e) => setFineForm({ ...fineForm, black_points: Number(e.target.value) })}
                       required
-                      className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 font-mono focus:outline-none focus:border-[var(--primary)]"
+                      className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--text-primary)] font-mono focus:outline-none focus:border-[var(--primary)]"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-slate-400 mb-1.5 font-mono">Amount (AED)</label>
+                    <label className="block text-[var(--text-secondary)] mb-1.5 font-mono">Amount (AED)</label>
                     <input
                       type="number"
                       value={fineForm.amount || ''}
                       onChange={(e) => setFineForm({ ...fineForm, amount: Number(e.target.value) })}
                       required
-                      className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 font-mono focus:outline-none focus:border-[var(--primary)]"
+                      className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--text-primary)] font-mono focus:outline-none focus:border-[var(--primary)]"
                     />
                   </div>
                   <div>
-                    <label className="block text-slate-400 mb-1.5 font-mono">Fine Source</label>
+                    <label className="block text-[var(--text-secondary)] mb-1.5 font-mono">Fine Source</label>
                     <select
                       value={fineForm.source}
                       onChange={(e) => setFineForm({ ...fineForm, source: e.target.value as any })}
                       required
-                      className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-[var(--primary)]"
+                      className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)]"
                     >
                       <option value="DUBAI_POLICE">Dubai Police</option>
                       <option value="ABU_DHABI_POLICE">Abu Dhabi Police</option>
@@ -1345,22 +1345,22 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-slate-400 mb-1.5 font-mono">Location</label>
+                    <label className="block text-[var(--text-secondary)] mb-1.5 font-mono">Location</label>
                     <input
                       type="text"
                       value={fineForm.location}
                       onChange={(e) => setFineForm({ ...fineForm, location: e.target.value })}
                       required
                       placeholder="e.g. Sheikh Zayed Road, Dubai"
-                      className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-[var(--primary)]"
+                      className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)]"
                     />
                   </div>
                   <div>
-                    <label className="block text-slate-400 mb-1.5 font-mono">Override Driver</label>
+                    <label className="block text-[var(--text-secondary)] mb-1.5 font-mono">Override Driver</label>
                     <select
                       value={fineForm.driver_id}
                       onChange={(e) => setFineForm({ ...fineForm, driver_id: e.target.value })}
-                      className="w-full bg-slate-950 border border-slate-900 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-[var(--primary)]"
+                      className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-2.5 text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary)]"
                     >
                       <option value="">Auto-resolve from assignments...</option>
                       {employees.map(emp => (
@@ -1374,13 +1374,13 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
                   <button
                     type="button"
                     onClick={() => setShowFineModal(false)}
-                    className="px-4 py-2 bg-slate-900 border border-slate-800 text-slate-400 rounded-lg hover:text-slate-200 font-semibold"
+                    className="px-4 py-2 bg-[var(--surface-hover)] border border-[var(--border)] text-[var(--text-secondary)] rounded-lg hover:text-[var(--text-primary)] font-semibold"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-[var(--primary)] text-slate-950 rounded-lg font-bold hover:bg-[var(--primary-hover)]"
+                    className="px-4 py-2 bg-[var(--primary)] text-white rounded-lg font-bold hover:bg-[var(--primary-hover)]"
                   >
                     Log Fine
                   </button>

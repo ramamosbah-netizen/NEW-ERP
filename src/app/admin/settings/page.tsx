@@ -1364,7 +1364,7 @@ export default function SettingsHubPage() {
                               type="text" 
                               value={companyName}
                               onChange={(e) => setCompanyName(e.target.value)}
-                              className="w-full bg-slate-950/40 border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-sans font-semibold"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-sans font-semibold"
                             />
                           </div>
                           <div>
@@ -1373,7 +1373,7 @@ export default function SettingsHubPage() {
                               type="text" 
                               value={trn}
                               onChange={(e) => setTrn(e.target.value)}
-                              className="w-full bg-slate-950/40 border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono font-semibold"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono font-semibold"
                               placeholder="e.g. 100293849500003"
                             />
                           </div>
@@ -1383,7 +1383,7 @@ export default function SettingsHubPage() {
                               type="text" 
                               value={tradeLicense}
                               onChange={(e) => setTradeLicense(e.target.value)}
-                              className="w-full bg-slate-950/40 border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-sans font-semibold"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-sans font-semibold"
                             />
                           </div>
                           <div>
@@ -1392,7 +1392,7 @@ export default function SettingsHubPage() {
                               type="text" 
                               value={website}
                               onChange={(e) => setWebsite(e.target.value)}
-                              className="w-full bg-slate-950/40 border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono font-semibold"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono font-semibold"
                               placeholder="e.g. https://jeetmep.ae"
                             />
                           </div>
@@ -1402,7 +1402,7 @@ export default function SettingsHubPage() {
                               type="text" 
                               value={logoUrl}
                               onChange={(e) => setLogoUrl(e.target.value)}
-                              className="w-full bg-slate-950/40 border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono font-semibold"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono font-semibold"
                             />
                           </div>
                           <div>
@@ -1411,7 +1411,7 @@ export default function SettingsHubPage() {
                               type="text" 
                               value={email}
                               onChange={(e) => setEmail(e.target.value)}
-                              className="w-full bg-slate-950/40 border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-sans font-semibold"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-sans font-semibold"
                             />
                           </div>
                           <div>
@@ -1420,7 +1420,7 @@ export default function SettingsHubPage() {
                               type="text" 
                               value={phone}
                               onChange={(e) => setPhone(e.target.value)}
-                              className="w-full bg-slate-950/40 border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono font-semibold"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono font-semibold"
                             />
                           </div>
                           <div className="md:col-span-2">
@@ -1429,7 +1429,7 @@ export default function SettingsHubPage() {
                               type="text" 
                               value={address}
                               onChange={(e) => setAddress(e.target.value)}
-                              className="w-full bg-slate-950/40 border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-sans font-semibold"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-sans font-semibold"
                             />
                           </div>
                         </div>
@@ -1441,7 +1441,7 @@ export default function SettingsHubPage() {
                             {/* Card Glow Background */}
                             <div className="absolute -right-20 -top-20 w-40 h-40 bg-primary/5 blur-3xl rounded-full transition-all duration-700 group-hover:bg-primary/10" />
                             
-                            <div className="w-24 h-24 rounded-2xl bg-slate-950/80 border border-border-color flex items-center justify-center overflow-hidden shadow-inner relative group-hover:border-primary/30 transition-colors duration-300">
+                            <div className="w-24 h-24 rounded-2xl bg-[var(--bg-card)] border border-border-color flex items-center justify-center overflow-hidden shadow-inner relative group-hover:border-primary/30 transition-colors duration-300">
                               {logoUrl ? (
                                 <img 
                                   src={logoUrl} 
@@ -1599,12 +1599,12 @@ export default function SettingsHubPage() {
                                     onClick={() => setModuleCategoryFilter(cat.id as any)}
                                     className={`px-3.5 py-1.5 rounded-xl border transition-all text-xs font-semibold flex items-center gap-2 ${
                                       isSelected
-                                        ? 'bg-slate-900 border-primary/45 text-text-primary shadow-[0_0_12px_var(--primary-glow)]'
-                                        : 'bg-slate-950/40 border-border-color text-text-muted hover:border-text-secondary hover:text-text-secondary'
+                                        ? 'bg-[var(--surface-hover)] border-primary/45 text-text-primary shadow-[0_0_12px_var(--primary-glow)]'
+                                        : 'bg-[var(--bg-card)] border-border-color text-text-muted hover:border-text-secondary hover:text-text-secondary'
                                     }`}
                                   >
                                     <span>{cat.name}</span>
-                                    <span className={`text-[9px] font-mono px-2 py-0.5 rounded-full ${isSelected ? 'bg-primary/10 text-primary' : 'bg-slate-900 text-text-muted'}`}>
+                                    <span className={`text-[9px] font-mono px-2 py-0.5 rounded-full ${isSelected ? 'bg-primary/10 text-primary' : 'bg-[var(--surface-hover)] text-text-muted'}`}>
                                       {cat.count}
                                     </span>
                                   </button>
@@ -1629,14 +1629,14 @@ export default function SettingsHubPage() {
                                       return (
                                         <div key={item.href} className="flex items-start justify-between p-3.5 bg-slate-955/40 border border-border-color/60 rounded-xl hover:border-border-color transition-all duration-200 group/item">
                                           <div className="flex items-start gap-3">
-                                            <span className={`p-2 rounded-xl bg-slate-900 border border-border-color/65 shrink-0 transition-colors duration-300 ${isEnabled ? 'text-primary border-primary/25' : 'text-text-muted'}`}>
+                                            <span className={`p-2 rounded-xl bg-[var(--surface-hover)] border border-border-color/65 shrink-0 transition-colors duration-300 ${isEnabled ? 'text-primary border-primary/25' : 'text-text-muted'}`}>
                                               <item.icon size={15} />
                                             </span>
                                             <div className="flex flex-col truncate pr-2">
                                               <span className="text-xs font-bold text-text-primary flex items-center gap-1.5">
                                                 {item.label}
                                                 {isDashboardOrSettings && (
-                                                  <span className="text-[8px] font-bold font-mono px-1.5 py-0.5 rounded bg-slate-900 text-text-muted border border-border-color">SYSTEM CORE</span>
+                                                  <span className="text-[8px] font-bold font-mono px-1.5 py-0.5 rounded bg-[var(--surface-hover)] text-text-muted border border-border-color">SYSTEM CORE</span>
                                                 )}
                                               </span>
                                               <p className="text-[10px] text-text-muted leading-relaxed mt-0.5 whitespace-normal pr-1 max-w-sm">
@@ -1708,7 +1708,7 @@ export default function SettingsHubPage() {
                               placeholder="Filter by name or email..."
                               value={userSearch}
                               onChange={(e) => setUserSearch(e.target.value)}
-                              className="bg-slate-950/40 border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-primary/50 transition-all font-mono"
+                              className="bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-primary/50 transition-all font-mono"
                             />
                             <button
                               onClick={handleOpenAddUser}
@@ -1744,7 +1744,7 @@ export default function SettingsHubPage() {
                                   </td>
                                   <td className="p-3.5 font-mono text-text-secondary">{user.email}</td>
                                   <td className="p-3.5">
-                                    <span className="bg-slate-950/50 text-[9px] font-bold text-text-muted px-2.5 py-1 rounded-lg border border-border-color/80 font-mono uppercase">
+                                    <span className="bg-[var(--bg-card)] text-[9px] font-bold text-text-muted px-2.5 py-1 rounded-lg border border-border-color/80 font-mono uppercase">
                                       {user.role}
                                     </span>
                                   </td>
@@ -1777,7 +1777,7 @@ export default function SettingsHubPage() {
                                       </button>
                                       <button 
                                         onClick={() => handleOpenEditUser(user)}
-                                        className="px-2.5 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 hover:bg-amber-500/20 hover:border-amber-500/30 transition-all font-semibold flex items-center gap-1 text-[10px]"
+                                        className="px-2.5 py-1.5 rounded-xl bg-[var(--status-warning-bg)] border border-[var(--status-warning-border)] text-[var(--status-warning-text)] hover:bg-[var(--status-warning-bg)] hover:border-[var(--status-warning-border)] transition-all font-semibold flex items-center gap-1 text-[10px]"
                                       >
                                         Edit
                                       </button>
@@ -1819,7 +1819,7 @@ export default function SettingsHubPage() {
                                   className={`p-2.5 border text-left rounded-xl text-xs transition-all ${
                                     isChecked
                                       ? 'bg-primary/10 border-primary/30 text-primary font-bold shadow-[0_0_10px_var(--primary-glow)]'
-                                      : 'bg-slate-900/50 border-border-color text-text-secondary hover:border-text-muted'
+                                      : 'bg-[var(--surface-hover)] border-border-color text-text-secondary hover:border-text-muted'
                                   }`}
                                 >
                                   {r.name}
@@ -1861,11 +1861,11 @@ export default function SettingsHubPage() {
                                   placeholder="Filter permissions..."
                                   value={auditPermissionSearch}
                                   onChange={(e) => setAuditPermissionSearch(e.target.value)}
-                                  className="bg-slate-950/60 border border-border-color rounded-xl px-3.5 py-1.5 text-[11px] text-text-primary placeholder-text-muted focus:outline-none w-48"
+                                  className="bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-[11px] text-text-primary placeholder-text-muted focus:outline-none w-48"
                                 />
                               </div>
                               
-                              <div className="max-h-[240px] overflow-y-auto border border-border-color rounded-xl shadow-inner bg-slate-950/20">
+                              <div className="max-h-[240px] overflow-y-auto border border-border-color rounded-xl shadow-inner bg-[var(--bg-card)]">
                                 <table className="w-full text-left border-collapse">
                                   <thead className="bg-bg-card sticky top-0 border-b border-border-color text-[9px] font-mono text-text-muted uppercase">
                                     <tr>
@@ -1893,8 +1893,8 @@ export default function SettingsHubPage() {
                                                 scope === 'ALL' ? 'bg-primary/10 text-primary border-primary/20' :
                                                 scope === 'TEAM' ? 'bg-secondary/10 text-secondary border-secondary/20' :
                                                 scope === 'ASSIGNED' ? 'bg-accent/10 text-accent border-accent/20' :
-                                                scope === 'OWN' ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' :
-                                                'bg-slate-800 text-text-muted border-transparent'
+                                                scope === 'OWN' ? 'bg-[var(--status-warning-bg)] text-[var(--status-warning-text)] border-[var(--status-warning-border)]' :
+                                                'bg-[var(--surface-hover)] text-text-muted border-transparent'
                                               }`}>
                                                 {scope}
                                               </span>
@@ -1922,7 +1922,7 @@ export default function SettingsHubPage() {
                             <select
                               value={selectedRoleForMatrix}
                               onChange={(e) => setSelectedRoleForMatrix(e.target.value)}
-                              className="bg-slate-950/60 border border-border-color text-text-secondary rounded-xl px-3 py-1.5 text-xs font-semibold focus:outline-none focus:border-primary/50"
+                              className="bg-[var(--bg-card)] border border-border-color text-text-secondary rounded-xl px-3 py-1.5 text-xs font-semibold focus:outline-none focus:border-primary/50"
                             >
                               {roles.map(r => (
                                 <option key={r.id} value={r.id}>{r.name}</option>
@@ -1969,14 +1969,14 @@ export default function SettingsHubPage() {
                               const isExpanded = expandedModules[mod];
                               const activeCount = permsList.filter(p => (matrixPermissions[p.permission_key] || 'NONE') !== 'NONE').length;
                               return (
-                                <div key={mod} className="border border-border-color bg-slate-950/20 rounded-2xl overflow-hidden transition-all shadow-inner">
+                                <div key={mod} className="border border-border-color bg-[var(--bg-card)] rounded-2xl overflow-hidden transition-all shadow-inner">
                                   <button
                                     type="button"
                                     onClick={() => setExpandedModules({
                                       ...expandedModules,
                                       [mod]: !isExpanded
                                     })}
-                                    className="w-full flex items-center justify-between p-4 bg-slate-950/40 hover:bg-slate-900/25 text-left transition-colors font-sans select-none"
+                                    className="w-full flex items-center justify-between p-4 bg-[var(--bg-card)] hover:bg-[var(--surface-hover)] text-left transition-colors font-sans select-none"
                                   >
                                     <div className="flex items-center gap-2">
                                       <span className="text-xs font-bold text-text-primary font-mono tracking-wider">{mod}</span>
@@ -1990,10 +1990,10 @@ export default function SettingsHubPage() {
                                   </button>
                                   
                                   {isExpanded && (
-                                    <div className="border-t border-border-color/40 overflow-x-auto bg-slate-950/10">
+                                    <div className="border-t border-border-color/40 overflow-x-auto bg-[var(--bg-card)]">
                                       <table className="w-full text-left border-collapse">
                                         <thead>
-                                          <tr className="bg-slate-950/50 text-[9px] font-mono text-text-muted uppercase border-b border-border-color/30">
+                                          <tr className="bg-[var(--bg-card)] text-[9px] font-mono text-text-muted uppercase border-b border-border-color/30">
                                             <th className="p-3 pl-4">Permission Key</th>
                                             <th className="p-3">Description</th>
                                             <th className="p-3 pr-4 text-right">Assigned Scope / Matrix Rule</th>
@@ -2013,7 +2013,7 @@ export default function SettingsHubPage() {
                                                       ...matrixPermissions,
                                                       [perm.permission_key]: e.target.value as any
                                                     })}
-                                                    className={`bg-slate-950 border text-[11px] font-mono font-bold rounded-xl px-3 py-1.5 focus:outline-none transition-all duration-300 ${
+                                                    className={`bg-[var(--bg-card)] border text-[11px] font-mono font-bold rounded-xl px-3 py-1.5 focus:outline-none transition-all duration-300 ${
                                                       currentScope === 'NONE' ? 'border-border-color text-text-muted hover:border-text-muted/45' :
                                                       currentScope === 'ALL' ? 'border-primary/40 text-primary bg-primary/5 shadow-[0_0_10px_var(--primary-glow)]' :
                                                       currentScope === 'TEAM' ? 'border-secondary/40 text-secondary bg-secondary/5' :
@@ -2061,7 +2061,7 @@ export default function SettingsHubPage() {
                                   placeholder="e.g. Sales Consultant"
                                   value={newRoleName}
                                   onChange={(e) => setNewRoleName(e.target.value)}
-                                  className="w-full bg-slate-950/40 border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary focus:outline-none focus:border-primary/50"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary focus:outline-none focus:border-primary/50"
                                 />
                               </div>
                               <div>
@@ -2071,7 +2071,7 @@ export default function SettingsHubPage() {
                                   placeholder="e.g. sales_consultant"
                                   value={newRoleKey}
                                   onChange={(e) => setNewRoleKey(e.target.value)}
-                                  className="w-full bg-slate-950/40 border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50"
                                 />
                               </div>
                             </div>
@@ -2083,7 +2083,7 @@ export default function SettingsHubPage() {
                                   max="100"
                                   value={newRoleHierarchy}
                                   onChange={(e) => setNewRoleHierarchy(Number(e.target.value))}
-                                  className="w-full bg-slate-950/40 border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50 font-semibold"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50 font-semibold"
                                 />
                             </div>
                             <div>
@@ -2093,13 +2093,13 @@ export default function SettingsHubPage() {
                                 placeholder="Role duties and capabilities..."
                                 value={newRoleDesc}
                                 onChange={(e) => setNewRoleDesc(e.target.value)}
-                                className="w-full bg-slate-950/40 border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary focus:outline-none focus:border-primary/50"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary focus:outline-none focus:border-primary/50"
                               />
                             </div>
                             <button
                               type="submit"
                               disabled={saving}
-                              className="bg-slate-900 border border-border-color hover:bg-slate-850 hover:border-text-muted/50 text-text-secondary px-4 py-2 rounded-xl text-xs font-bold transition-all active:scale-98 select-none self-end mt-1"
+                              className="bg-[var(--surface-hover)] border border-border-color hover:bg-slate-850 hover:border-text-muted/50 text-text-secondary px-4 py-2 rounded-xl text-xs font-bold transition-all active:scale-98 select-none self-end mt-1"
                             >
                               + Register Role
                             </button>
@@ -2116,7 +2116,7 @@ export default function SettingsHubPage() {
                                   placeholder="e.g. tenders.approve"
                                   value={newPermKey}
                                   onChange={(e) => setNewPermKey(e.target.value)}
-                                  className="w-full bg-slate-950/40 border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50"
                                 />
                               </div>
                               <div>
@@ -2126,7 +2126,7 @@ export default function SettingsHubPage() {
                                   placeholder="e.g. SALES"
                                   value={newPermModule}
                                   onChange={(e) => setNewPermModule(e.target.value)}
-                                  className="w-full bg-slate-950/40 border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50"
                                 />
                               </div>
                             </div>
@@ -2137,13 +2137,13 @@ export default function SettingsHubPage() {
                                 placeholder="Describe what access this permission control regulates..."
                                 value={newPermDesc}
                                 onChange={(e) => setNewPermDesc(e.target.value)}
-                                className="w-full bg-slate-950/40 border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary focus:outline-none focus:border-primary/50"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary focus:outline-none focus:border-primary/50"
                               />
                             </div>
                             <button
                               type="submit"
                               disabled={saving}
-                              className="bg-slate-900 border border-border-color hover:bg-slate-850 hover:border-text-muted/50 text-text-secondary px-4.5 rounded-xl text-[11px] font-bold transition-all active:scale-98 select-none self-end mt-1"
+                              className="bg-[var(--surface-hover)] border border-border-color hover:bg-slate-850 hover:border-text-muted/50 text-text-secondary px-4.5 rounded-xl text-[11px] font-bold transition-all active:scale-98 select-none self-end mt-1"
                             >
                               + Catalog Entry
                             </button>
@@ -2500,7 +2500,7 @@ export default function SettingsHubPage() {
                         <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono border-b border-border-color/60 pb-2">Straight-Line Depreciation Lifetimes (Months)</h4>
                         <div className="grid grid-cols-2 sm:grid-cols-5 gap-3.5">
                           {Object.entries(usefulLives).map(([category, months]) => (
-                            <div key={category} className="p-3.5 bg-slate-950/40 border border-border-color/80 rounded-xl flex flex-col gap-2 relative overflow-hidden group">
+                            <div key={category} className="p-3.5 bg-[var(--bg-card)] border border-border-color/80 rounded-xl flex flex-col gap-2 relative overflow-hidden group">
                               <label className="block text-[9px] font-mono text-text-muted uppercase font-bold tracking-wide truncate" title={category.replace('_', ' ')}>{category.replace('_', ' ')}</label>
                               <div className="relative">
                                 <input 
@@ -2510,7 +2510,7 @@ export default function SettingsHubPage() {
                                     ...usefulLives,
                                     [category]: Number(e.target.value)
                                   })}
-                                  className="w-full bg-slate-950/50 border border-border-color/70 rounded-lg pl-2.5 pr-8 py-1.5 text-xs text-text-primary font-bold focus:outline-none focus:border-primary/50 transition-all"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color/70 rounded-lg pl-2.5 pr-8 py-1.5 text-xs text-text-primary font-bold focus:outline-none focus:border-primary/50 transition-all"
                                 />
                                 <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[8px] font-mono font-bold text-text-muted">M</span>
                               </div>
@@ -2547,7 +2547,7 @@ export default function SettingsHubPage() {
                         <div className="flex flex-wrap gap-2.5 p-4.5 bg-slate-955/40 border border-border-color/60 rounded-xl min-h-[60px] items-center">
                           {defaultStages.map((stage, idx) => (
                             <div key={stage} className="flex items-center gap-2">
-                              <span className="bg-slate-950/70 text-text-secondary text-[10px] font-semibold px-2.5 py-1.5 rounded-xl border border-border-color/80 flex items-center gap-2 font-mono tracking-wide">
+                              <span className="bg-[var(--bg-card)] text-text-secondary text-[10px] font-semibold px-2.5 py-1.5 rounded-xl border border-border-color/80 flex items-center gap-2 font-mono tracking-wide">
                                 <span className="h-1.5 w-1.5 rounded-full bg-primary" />
                                 {stage}
                                 <button 
@@ -2573,11 +2573,11 @@ export default function SettingsHubPage() {
                             placeholder="Add stage name (e.g. Subcontractor Bid)..."
                             value={newStageInput}
                             onChange={(e) => setNewStageInput(e.target.value)}
-                            className="bg-slate-950/40 border border-border-color rounded-xl px-4 py-2 text-xs text-text-primary focus:outline-none focus:border-primary/50 w-64 font-mono font-semibold"
+                            className="bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2 text-xs text-text-primary focus:outline-none focus:border-primary/50 w-64 font-mono font-semibold"
                           />
                           <button 
                             onClick={addProjectStage}
-                            className="bg-slate-900 border border-border-color hover:bg-slate-850 hover:border-text-muted text-text-secondary px-4.5 rounded-xl text-[11px] font-bold transition-all active:scale-98 select-none"
+                            className="bg-[var(--surface-hover)] border border-border-color hover:bg-slate-850 hover:border-text-muted text-text-secondary px-4.5 rounded-xl text-[11px] font-bold transition-all active:scale-98 select-none"
                           >
                             + Add Stage
                           </button>
@@ -2629,7 +2629,7 @@ export default function SettingsHubPage() {
                         <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono border-b border-border-color/60 pb-2">PPM Visits Timings Slots</h4>
                         <div className="flex flex-wrap gap-2.5 p-4.5 bg-slate-955/40 border border-border-color/60 rounded-xl min-h-[60px] items-center">
                           {maintenanceSlots.map(slot => (
-                            <span key={slot} className="bg-slate-950/70 text-text-secondary text-[10px] font-semibold px-2.5 py-1.5 rounded-xl border border-border-color/80 flex items-center gap-2 font-mono">
+                            <span key={slot} className="bg-[var(--bg-card)] text-text-secondary text-[10px] font-semibold px-2.5 py-1.5 rounded-xl border border-border-color/80 flex items-center gap-2 font-mono">
                               <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
                               {slot}
                               <button 
@@ -2648,11 +2648,11 @@ export default function SettingsHubPage() {
                             placeholder="e.g. 18:00 - 20:00"
                             value={newSlotInput}
                             onChange={(e) => setNewSlotInput(e.target.value)}
-                            className="bg-slate-950/40 border border-border-color rounded-xl px-4 py-2 text-xs text-text-primary focus:outline-none focus:border-primary/50 w-48 font-mono font-semibold"
+                            className="bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2 text-xs text-text-primary focus:outline-none focus:border-primary/50 w-48 font-mono font-semibold"
                           />
                           <button 
                             onClick={addMaintSlot}
-                            className="bg-slate-900 border border-border-color hover:bg-slate-850 hover:border-text-muted text-text-secondary px-4.5 rounded-xl text-[11px] font-bold transition-all active:scale-98 select-none"
+                            className="bg-[var(--surface-hover)] border border-border-color hover:bg-slate-850 hover:border-text-muted text-text-secondary px-4.5 rounded-xl text-[11px] font-bold transition-all active:scale-98 select-none"
                           >
                             + Add Slot
                           </button>
@@ -2668,11 +2668,11 @@ export default function SettingsHubPage() {
                             const isHigh = category === 'HIGH';
                             const isMedium = category === 'MEDIUM';
                             return (
-                              <div key={category} className="p-4 bg-slate-950/30 border border-border-color/80 rounded-xl flex flex-col gap-2 relative overflow-hidden group">
+                              <div key={category} className="p-4 bg-[var(--bg-card)] border border-border-color/80 rounded-xl flex flex-col gap-2 relative overflow-hidden group">
                                 <div className="flex items-center gap-1.5">
                                   <span className={`h-2 w-2 rounded-full ${
                                     isCritical ? 'bg-error' :
-                                    isHigh ? 'bg-amber-400' :
+                                    isHigh ? 'bg-[var(--status-warning-bg)]' :
                                     isMedium ? 'bg-secondary' : 'bg-success'
                                   }`} />
                                   <label className="block text-[10px] font-mono font-bold uppercase tracking-wider text-text-secondary">{category}</label>
@@ -2685,7 +2685,7 @@ export default function SettingsHubPage() {
                                       ...slaCategories,
                                       [category]: Number(e.target.value)
                                     })}
-                                    className="w-full bg-slate-950/50 border border-border-color/60 rounded-xl pl-3 pr-14 py-2 text-xs text-text-primary font-mono font-bold focus:outline-none focus:border-primary/50 transition-all"
+                                    className="w-full bg-[var(--bg-card)] border border-border-color/60 rounded-xl pl-3 pr-14 py-2 text-xs text-text-primary font-mono font-bold focus:outline-none focus:border-primary/50 transition-all"
                                   />
                                   <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[9px] font-mono font-bold text-text-muted uppercase">Hours</span>
                                 </div>
@@ -2768,7 +2768,7 @@ export default function SettingsHubPage() {
                                 className={`px-4 py-2 rounded-xl text-xs font-semibold border transition-all active:scale-95 select-none ${
                                   isSelected
                                     ? 'bg-primary/10 border-primary/30 text-primary font-bold shadow-[0_0_12px_var(--primary-glow)]'
-                                    : 'bg-slate-950/60 border-border-color text-text-muted hover:text-text-secondary hover:border-text-muted/50'
+                                    : 'bg-[var(--bg-card)] border-border-color text-text-muted hover:text-text-secondary hover:border-text-muted/50'
                                 }`}
                               >
                                 {day}
@@ -2792,7 +2792,7 @@ export default function SettingsHubPage() {
                                   ...gratuityEntitlement,
                                   under_1yr: Number(e.target.value)
                                 })}
-                                className="w-full bg-slate-950/50 border border-border-color rounded-xl pl-3.5 pr-14 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-3.5 pr-14 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50"
                               />
                               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[8px] font-mono font-bold text-text-muted uppercase">Days</span>
                             </div>
@@ -2807,7 +2807,7 @@ export default function SettingsHubPage() {
                                   ...gratuityEntitlement,
                                   '1to5yr': Number(e.target.value)
                                 })}
-                                className="w-full bg-slate-950/50 border border-border-color rounded-xl pl-3.5 pr-14 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-3.5 pr-14 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50"
                               />
                               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[8px] font-mono font-bold text-text-muted uppercase">Days</span>
                             </div>
@@ -2881,7 +2881,7 @@ export default function SettingsHubPage() {
                           <div className="flex flex-wrap items-center gap-1.5">
                             <span className="text-[9px] font-mono text-text-muted uppercase font-bold">Variables:</span>
                             {['{client_name}', '{number}', '{total_incl_vat}', '{site_name}'].map(v => (
-                              <code key={v} className="text-[9px] font-mono font-bold bg-slate-950 border border-border-color/60 text-primary px-1.5 py-0.5 rounded select-all">{v}</code>
+                              <code key={v} className="text-[9px] font-mono font-bold bg-[var(--bg-card)] border border-border-color/60 text-primary px-1.5 py-0.5 rounded select-all">{v}</code>
                             ))}
                           </div>
                         </div>
@@ -2970,10 +2970,10 @@ export default function SettingsHubPage() {
                             <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-2.5">Document Theme Accent Palette</label>
                             <div className="flex flex-wrap items-center gap-2.5">
                               {[
-                                { id: 'slate', name: 'Slate Dark', bg: 'bg-slate-500', text: 'text-slate-400' },
+                                { id: 'slate', name: 'Slate Dark', bg: 'bg-slate-500', text: 'text-[var(--text-secondary)]' },
                                 { id: 'mint', name: 'Electric Mint', bg: 'bg-[#10b981]', text: 'text-primary' },
-                                { id: 'gold', name: 'Metallic Gold', bg: 'bg-[#f59e0b]', text: 'text-amber-500' },
-                                { id: 'red', name: 'Crimson Red', bg: 'bg-[#ef4444]', text: 'text-red-500' },
+                                { id: 'gold', name: 'Metallic Gold', bg: 'bg-[#f59e0b]', text: 'text-[var(--status-warning-text)]' },
+                                { id: 'red', name: 'Crimson Red', bg: 'bg-[#ef4444]', text: 'text-[var(--status-danger-text)]' },
                               ].map((color) => {
                                 const isSelected = docTemplates.accent_color === color.id;
                                 return (
@@ -2999,7 +2999,7 @@ export default function SettingsHubPage() {
                         {/* Live PDF Header Mockup */}
                         <div className="md:col-span-2 p-5 bg-bg-card/35 border border-border-color rounded-2xl flex flex-col gap-3.5 shadow-lg">
                           <label className="block text-[10px] font-mono text-text-muted uppercase font-bold tracking-wide">PDF Live Accent Preview</label>
-                          <div className="bg-slate-950 text-text-primary p-6 rounded-xl border border-border-color/80 shadow flex justify-between items-start font-sans relative overflow-hidden group">
+                          <div className="bg-[var(--bg-card)] text-text-primary p-6 rounded-xl border border-border-color/80 shadow flex justify-between items-start font-sans relative overflow-hidden group">
                             {/* Accent Glow backdrop */}
                             <div className={`absolute right-0 top-0 w-48 h-48 blur-[80px] rounded-full opacity-10 transition-all duration-500 ${
                               docTemplates.accent_color === 'mint' ? 'bg-[#10b981]' :
@@ -3010,8 +3010,8 @@ export default function SettingsHubPage() {
                             <div className="flex flex-col gap-1 relative z-10">
                               <h4 className={`text-base font-extrabold uppercase tracking-tight transition-colors duration-300 ${
                                 docTemplates.accent_color === 'mint' ? 'text-primary' :
-                                docTemplates.accent_color === 'gold' ? 'text-amber-400' :
-                                docTemplates.accent_color === 'red' ? 'text-red-400' : 'text-slate-300'
+                                docTemplates.accent_color === 'gold' ? 'text-[var(--status-warning-text)]' :
+                                docTemplates.accent_color === 'red' ? 'text-[var(--status-danger-text)]' : 'text-[var(--text-secondary)]'
                               }`}>
                                 {docTemplates.header_title || 'JEET MEP ENGINEERING'}
                               </h4>
@@ -3019,8 +3019,8 @@ export default function SettingsHubPage() {
                             </div>
                             <div className={`text-right border-t-2 py-1.5 px-3 transition-all duration-300 relative z-10 ${
                               docTemplates.accent_color === 'mint' ? 'border-primary text-primary bg-primary/5' :
-                              docTemplates.accent_color === 'gold' ? 'border-amber-500 text-amber-400 bg-amber-500/5' :
-                              docTemplates.accent_color === 'red' ? 'border-red-500 text-red-400 bg-red-500/5' : 'border-slate-500 text-slate-400 bg-slate-900/40'
+                              docTemplates.accent_color === 'gold' ? 'border-[var(--status-warning-border)] text-[var(--status-warning-text)] bg-[var(--status-warning-bg)]' :
+                              docTemplates.accent_color === 'red' ? 'border-[var(--status-danger-border)] text-[var(--status-danger-text)] bg-[var(--status-danger-bg)]' : 'border-[var(--border)] text-[var(--text-secondary)] bg-[var(--surface-hover)]'
                             }`}>
                               <span className="text-[10px] font-extrabold font-mono tracking-wider">TAX INVOICE</span>
                             </div>
@@ -3204,11 +3204,11 @@ export default function SettingsHubPage() {
                       </div>
 
                       {appMode === 'maintenance' && (
-                        <div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-xl text-xs text-amber-450 flex items-start gap-3 shadow-[0_0_15px_rgba(245,158,11,0.06)] animate-pulse">
-                          <AlertTriangle className="shrink-0 mt-0.5 text-amber-450 animate-bounce" size={16} />
+                        <div className="p-4 bg-[var(--status-warning-bg)] border border-[var(--status-warning-border)] rounded-xl text-xs text-[var(--status-warning-text)] flex items-start gap-3 shadow-[0_0_15px_rgba(245,158,11,0.06)] animate-pulse">
+                          <AlertTriangle className="shrink-0 mt-0.5 text-[var(--status-warning-text)] animate-bounce" size={16} />
                           <div>
                             <span className="font-bold uppercase tracking-wider font-mono">Maintenance Mode Triggered:</span>
-                            <p className="text-[10px] text-amber-400/80 mt-1 leading-relaxed">
+                            <p className="text-[10px] text-[var(--status-warning-text)] mt-1 leading-relaxed">
                               Database write locks are enabled. Live client interfaces will be locked with an operational maintenance screen. Administrative consoles remain accessible.
                             </p>
                           </div>
@@ -3221,8 +3221,8 @@ export default function SettingsHubPage() {
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                           {[
                             { id: 'production', name: 'Production Mode', desc: 'High-speed caching & optimization for live operations.', badge: 'RECOMMENDED', badgeColor: 'bg-primary/10 text-primary border border-primary/20' },
-                            { id: 'development', name: 'Development Mode', desc: 'Detailed error tracing and hot-reloading for testing.', badge: 'DEBUGGING', badgeColor: 'bg-blue-500/10 text-blue-400 border border-blue-500/20' },
-                            { id: 'maintenance', name: 'Maintenance Mode', desc: 'Locks database writes and shows maintenance screen to users.', badge: 'WRITE LOCKS', badgeColor: 'bg-amber-500/10 text-amber-400 border border-amber-500/20' }
+                            { id: 'development', name: 'Development Mode', desc: 'Detailed error tracing and hot-reloading for testing.', badge: 'DEBUGGING', badgeColor: 'bg-[var(--surface-hover)] text-[var(--accent)] border border-[var(--border)]' },
+                            { id: 'maintenance', name: 'Maintenance Mode', desc: 'Locks database writes and shows maintenance screen to users.', badge: 'WRITE LOCKS', badgeColor: 'bg-[var(--status-warning-bg)] text-[var(--status-warning-text)] border border-[var(--status-warning-border)]' }
                           ].map((mode) => {
                             const isSelected = appMode === mode.id;
                             return (
@@ -3270,7 +3270,7 @@ export default function SettingsHubPage() {
                                   className={`p-3.5 rounded-xl border text-left flex flex-col gap-0.5 transition-all active:scale-98 ${
                                     isSelected
                                       ? 'bg-primary/10 border-primary/45 text-primary font-bold shadow-[0_0_12px_var(--primary-glow)]'
-                                      : 'bg-slate-950/40 border-border-color text-text-muted hover:border-text-muted/50 hover:text-text-secondary'
+                                      : 'bg-[var(--bg-card)] border-border-color text-text-muted hover:border-text-muted/50 hover:text-text-secondary'
                                   }`}
                                 >
                                   <span className="text-[10px] font-mono font-bold">{item.name}</span>
@@ -3413,7 +3413,7 @@ export default function SettingsHubPage() {
                                 const isDelete = log.action === 'DELETE' || log.action === 'PURGE' || log.action === 'REMOVE';
                                 const isUpdate = log.action === 'UPDATE' || log.action === 'RESET' || log.action === 'EDIT';
                                 return (
-                                  <tr key={log.id} className="border-b border-border-color/40 hover:bg-slate-900/20 text-xs text-text-secondary font-mono transition-colors">
+                                  <tr key={log.id} className="border-b border-border-color/40 hover:bg-[var(--surface-hover)] text-xs text-text-secondary font-mono transition-colors">
                                     <td className="p-3.5 pl-5 whitespace-nowrap text-text-muted/80">{new Date(log.occurred_at).toLocaleString('en-AE', { hour12: false })}</td>
                                     <td className="p-3.5">
                                       <div className="flex flex-col gap-0.5">
@@ -3424,9 +3424,9 @@ export default function SettingsHubPage() {
                                     <td className="p-3.5">
                                       <span className={`px-2 py-0.5 rounded-lg text-[9px] font-bold font-mono tracking-wider ${
                                         isCreate ? 'bg-primary/10 text-primary border border-primary/20' :
-                                        isDelete ? 'bg-red-500/10 text-red-400 border border-red-500/20' :
-                                        isUpdate ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' :
-                                        'bg-blue-500/10 text-blue-400 border border-blue-500/20'
+                                        isDelete ? 'bg-[var(--status-danger-bg)] text-[var(--status-danger-text)] border border-[var(--status-danger-border)]' :
+                                        isUpdate ? 'bg-[var(--status-warning-bg)] text-[var(--status-warning-text)] border border-[var(--status-warning-border)]' :
+                                        'bg-[var(--surface-hover)] text-[var(--accent)] border border-[var(--border)]'
                                       }`}>
                                         {log.action}
                                       </span>
@@ -3535,7 +3535,7 @@ export default function SettingsHubPage() {
                             disabled={backupRunning}
                             className={`px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 font-bold transition-all shrink-0 active:scale-98 border select-none ${
                               backupRunning
-                                ? 'bg-slate-900 border-border-color text-text-muted cursor-not-allowed'
+                                ? 'bg-[var(--surface-hover)] border-border-color text-text-muted cursor-not-allowed'
                                 : 'bg-primary/10 border-primary/30 text-primary shadow-md hover:shadow-[0_0_12px_var(--primary-glow)] active:scale-95'
                             }`}
                           >
@@ -3544,7 +3544,7 @@ export default function SettingsHubPage() {
                         </div>
 
                         {(backupRunning || backupLogs.length > 0) && (
-                          <div className="p-4 bg-slate-950 border border-border-color/80 rounded-2xl flex flex-col gap-3 shadow-inner animate-fadeIn">
+                          <div className="p-4 bg-[var(--bg-card)] border border-border-color/80 rounded-2xl flex flex-col gap-3 shadow-inner animate-fadeIn">
                             {backupRunning && (
                               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[10px] font-mono font-bold">
                                 <span className="text-primary animate-pulse flex items-center gap-1">
@@ -3555,7 +3555,7 @@ export default function SettingsHubPage() {
                               </div>
                             )}
                             {backupRunning && (
-                              <div className="w-full bg-slate-900 rounded-full h-1 relative overflow-hidden mt-1">
+                              <div className="w-full bg-[var(--surface-hover)] rounded-full h-1 relative overflow-hidden mt-1">
                                 <div className="bg-primary h-full rounded-full absolute left-0 top-0 animate-pulse" style={{ width: '100%' }} />
                               </div>
                             )}
@@ -3667,7 +3667,7 @@ export default function SettingsHubPage() {
                           className={`p-2 border text-left rounded-xl text-[10px] truncate transition-all active:scale-95 ${
                             isChecked
                               ? 'bg-primary/10 border-primary/45 text-primary font-bold shadow-[0_0_8px_var(--primary-glow)]'
-                              : 'bg-slate-900/40 border-border-color text-text-muted hover:text-text-secondary hover:border-text-muted/50'
+                              : 'bg-[var(--surface-hover)] border-border-color text-text-muted hover:text-text-secondary hover:border-text-muted/50'
                           }`}
                         >
                           {r.name}
@@ -3680,7 +3680,7 @@ export default function SettingsHubPage() {
                   <button
                     type="button"
                     onClick={() => setIsAddModalOpen(false)}
-                    className="bg-slate-900 border border-border-color hover:bg-slate-850 text-text-secondary px-4.5 py-2 rounded-xl text-xs font-bold transition-all active:scale-98 select-none"
+                    className="bg-[var(--surface-hover)] border border-border-color hover:bg-slate-850 text-text-secondary px-4.5 py-2 rounded-xl text-xs font-bold transition-all active:scale-98 select-none"
                   >
                     Cancel
                   </button>
@@ -3769,7 +3769,7 @@ export default function SettingsHubPage() {
                           className={`p-2 border text-left rounded-xl text-[10px] truncate transition-all active:scale-95 ${
                             isChecked
                               ? 'bg-primary/10 border-primary/45 text-primary font-bold shadow-[0_0_8px_var(--primary-glow)]'
-                              : 'bg-slate-900/40 border-border-color text-text-muted hover:text-text-secondary hover:border-text-muted/50'
+                              : 'bg-[var(--surface-hover)] border-border-color text-text-muted hover:text-text-secondary hover:border-text-muted/50'
                           }`}
                         >
                           {r.name}
@@ -3782,7 +3782,7 @@ export default function SettingsHubPage() {
                   <button
                     type="button"
                     onClick={() => setIsEditModalOpen(false)}
-                    className="bg-slate-900 border border-border-color hover:bg-slate-850 text-text-secondary px-4.5 py-2 rounded-xl text-xs font-bold transition-all active:scale-98 select-none"
+                    className="bg-[var(--surface-hover)] border border-border-color hover:bg-slate-850 text-text-secondary px-4.5 py-2 rounded-xl text-xs font-bold transition-all active:scale-98 select-none"
                   >
                     Cancel
                   </button>
@@ -3822,7 +3822,7 @@ export default function SettingsHubPage() {
                 <button
                   type="button"
                   onClick={() => setIsDeleteModalOpen(false)}
-                  className="bg-slate-900 border border-border-color hover:bg-slate-850 text-text-secondary px-4.5 py-2 rounded-xl text-xs font-bold transition-all active:scale-98 select-none"
+                  className="bg-[var(--surface-hover)] border border-border-color hover:bg-slate-850 text-text-secondary px-4.5 py-2 rounded-xl text-xs font-bold transition-all active:scale-98 select-none"
                 >
                   Cancel
                 </button>

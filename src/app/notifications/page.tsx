@@ -85,7 +85,7 @@ export default function NotificationsCenterPage() {
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
             <h1 className="quote-header-title flex items-center gap-2">
-              <Bell className="text-emerald-400" size={26} />
+              <Bell className="text-[var(--accent)]" size={26} />
               Alert Notifications Center
             </h1>
             <p className="quote-header-subtitle">Realtime feed and audit trail of platform events, approvals, and escalations.</p>
@@ -111,21 +111,21 @@ export default function NotificationsCenterPage() {
         </div>
 
         {/* Filters and Search Display */}
-        <div className="quote-card py-4 flex justify-between items-center bg-slate-900/25 border border-slate-900/60">
-          <div className="flex items-center gap-2 text-xs text-slate-400 font-mono">
+        <div className="quote-card py-4 flex justify-between items-center bg-[var(--surface-hover)] border border-[var(--border)]">
+          <div className="flex items-center gap-2 text-xs text-[var(--text-secondary)] font-mono">
             <span>SHOWING LOG FEED:</span>
-            <span className="px-1.5 py-0.5 rounded bg-slate-900 text-emerald-400 font-bold border border-slate-800">
+            <span className="px-1.5 py-0.5 rounded bg-[var(--surface-hover)] text-[var(--accent)] font-bold border border-[var(--border)]">
               {notifications.length} EVENTS RECORDED
             </span>
             {unreadCount > 0 && (
-              <span className="px-1.5 py-0.5 rounded bg-slate-900 text-amber-500 font-bold border border-slate-800">
+              <span className="px-1.5 py-0.5 rounded bg-[var(--surface-hover)] text-[var(--status-warning-text)] font-bold border border-[var(--border)]">
                 {unreadCount} PENDING ACTION
               </span>
             )}
           </div>
           <button
             onClick={refetch}
-            className="text-slate-500 hover:text-emerald-400 transition-colors p-1"
+            className="text-[var(--text-primary)]0 hover:text-[var(--accent)] transition-colors p-1"
             title="Reload alerts"
           >
             <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
@@ -135,16 +135,16 @@ export default function NotificationsCenterPage() {
         {/* Notifications list registry */}
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 gap-3">
-            <RefreshCw className="animate-spin text-emerald-400" size={32} />
-            <span className="text-slate-400 font-mono text-sm">SYNCING ALERT CHANNELS...</span>
+            <RefreshCw className="animate-spin text-[var(--accent)]" size={32} />
+            <span className="text-[var(--text-secondary)] font-mono text-sm">SYNCING ALERT CHANNELS...</span>
           </div>
         ) : error ? (
-          <div className="p-4 bg-red-950/20 border border-red-500/10 text-red-300 rounded-xl text-center text-xs">
+          <div className="p-4 bg-[var(--status-danger-bg)] border border-[var(--status-danger-border)] text-[var(--status-danger-text)] rounded-xl text-center text-xs">
             Failed to sync notification logs: {error.message}
           </div>
         ) : notifications.length === 0 ? (
-          <div className="quote-card py-20 text-center text-slate-500 text-sm">
-            <Bell size={48} className="mx-auto mb-4 opacity-10 text-slate-400" />
+          <div className="quote-card py-20 text-center text-[var(--text-primary)]0 text-sm">
+            <Bell size={48} className="mx-auto mb-4 opacity-10 text-[var(--text-secondary)]" />
             No alerts logged. System channel is healthy.
           </div>
         ) : (
@@ -171,8 +171,8 @@ export default function NotificationsCenterPage() {
                       <tr
                         key={n.id}
                         onClick={() => handleNotificationClick(n)}
-                        className={`cursor-pointer border-b border-slate-900/60 ${
-                          isUnread ? 'bg-slate-900/15 hover:bg-slate-900/35 font-semibold' : 'hover:bg-slate-900/15 opacity-75'
+                        className={`cursor-pointer border-b border-[var(--border)] ${
+                          isUnread ? 'bg-[var(--surface-hover)] hover:bg-[var(--surface-hover)] font-semibold' : 'hover:bg-[var(--surface-hover)] opacity-75'
                         }`}
                       >
                         <td className="py-4 text-center">
@@ -188,15 +188,15 @@ export default function NotificationsCenterPage() {
                           </div>
                         </td>
                         <td className="py-4">
-                          <div className={`text-xs ${isUnread ? 'text-slate-100 font-bold' : 'text-slate-300'}`}>
+                          <div className={`text-xs ${isUnread ? 'text-[var(--text-primary)] font-bold' : 'text-[var(--text-secondary)]'}`}>
                             {n.title}
                           </div>
-                          <div className="text-[10px] text-slate-500 mt-0.5 leading-normal max-w-2xl">{n.body}</div>
+                          <div className="text-[10px] text-[var(--text-primary)]0 mt-0.5 leading-normal max-w-2xl">{n.body}</div>
                         </td>
-                        <td className="py-4 text-[10px] font-mono text-slate-400">
+                        <td className="py-4 text-[10px] font-mono text-[var(--text-secondary)]">
                           {n.channel}
                         </td>
-                        <td className="py-4 font-mono text-[10px] text-slate-400">
+                        <td className="py-4 font-mono text-[10px] text-[var(--text-secondary)]">
                           <div className="flex items-center gap-1">
                             <Clock size={10} className="text-slate-650" />
                             {formatDate(n.created_at)} @ {formatTime(n.created_at)}
@@ -205,19 +205,19 @@ export default function NotificationsCenterPage() {
                         <td className="py-4">
                           <span className={`px-2 py-0.5 rounded text-[9px] font-mono font-bold border ${
                             n.status === 'READ' || n.status === 'ACTIONED'
-                              ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/15'
+                              ? 'bg-[var(--accent-glow)] text-[var(--accent)] border-[var(--accent)]'
                               : n.status === 'FAILED'
-                              ? 'bg-red-500/10 text-red-400 border-red-500/15'
-                              : 'bg-amber-500/10 text-amber-400 border-amber-500/15'
+                              ? 'bg-[var(--status-danger-bg)] text-[var(--status-danger-text)] border-[var(--status-danger-border)]'
+                              : 'bg-[var(--status-warning-bg)] text-[var(--status-warning-text)] border-[var(--status-warning-border)]'
                           }`}>
                             {n.status}
                           </span>
                         </td>
                         <td className="py-4 text-center">
                           {n.link ? (
-                            <ExternalLink size={12} className="text-slate-500 hover:text-emerald-400 transition-colors mx-auto" />
+                            <ExternalLink size={12} className="text-[var(--text-primary)]0 hover:text-[var(--accent)] transition-colors mx-auto" />
                           ) : (
-                            <Eye size={12} className="text-slate-600 mx-auto" />
+                            <Eye size={12} className="text-[var(--text-tertiary)] mx-auto" />
                           )}
                         </td>
                       </tr>
