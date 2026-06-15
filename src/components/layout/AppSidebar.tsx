@@ -93,6 +93,7 @@ const NAV_SECTIONS = [
       { href: '/tasks/team', label: 'Team Workload', icon: Users },
       { href: '/meetings', label: 'Meetings', icon: Calendar },
       { href: '/meetings/analytics', label: 'Meeting Analytics', icon: Calendar },
+      { href: '/workspace/calendar', label: 'Unified Calendar', icon: CalendarClock },
       { href: '/notifications', label: 'Alerts & Logs', icon: Bell },
       { href: '/notifications/analytics', label: 'Alerts Analytics', icon: Bell },
     ],

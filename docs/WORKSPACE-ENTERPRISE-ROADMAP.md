@@ -24,4 +24,5 @@ Recharts where useful, sidebar link, RBAC, and a roadmap update.
 - ✅ **Phase 2 — Team Workload** (`/tasks/team`): per-assignee open load, in-progress/blocked/overdue/high-urgent, KPIs (members loaded, open, avg load, unassigned), stacked workload-by-assignee chart, table. PDF/Excel.
 - ✅ **Phase 3 — Meeting Analytics & Action Items** (`/meetings/analytics`): KPIs (meetings, upcoming, minutes published vs completed, open + overdue actions), meetings-by-status + per-month charts, open-action-item table (assignee + meeting + due). PDF/Excel.
 - ✅ **Phase 4 — Notifications & Alerts Analytics** (`/notifications/analytics`): KPIs (total, unread, critical, read rate, actioned rate), by-severity pie, by-channel, 14-day volume trend, unread-critical/action-required table. PDF/Excel.
-- ⏭ Then: Unified Calendar → Activity Timeline → Hub.
+- ✅ **Phase 5 — Unified Calendar** (`/workspace/calendar`): month grid merging tasks (due), meetings, leave (spanning days) and PPM visits, colour-coded with a legend, prev/next month nav, today marker, click-through. No migration.
+- ⏭ Then: Activity Timeline → Hub.
