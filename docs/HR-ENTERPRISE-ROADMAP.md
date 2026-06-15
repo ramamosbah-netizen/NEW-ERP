@@ -23,4 +23,5 @@ Recharts where useful, sidebar link, RBAC (existing roles), and a roadmap update
 
 ## Status
 - ✅ **Module report** (`HR-MODULE-REPORT.md`) + this roadmap.
-- ⏭ Next: **HR & Workforce Dashboard**.
+- ✅ **Phase 1 — HR & Workforce Dashboard** (`/hr/dashboard`): headcount, departments, latest payroll cost, UAE doc-expiry alerts (expired / ≤30d / 31–90d across visa/labour-card/EID/passport/insurance/licence), leave + timesheet pending, headcount-by-department + by-employment-type charts, attention banner. PDF/Excel.
+- ⏭ Then: Compliance Tracker → Workforce → Payroll → Leave → Timesheets → Labour Cost → EOSB → Manpower → Hub/Polish.
