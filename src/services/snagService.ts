@@ -6,6 +6,30 @@ import { supabase } from '@/lib/supabase';
 import { Snag, SnagSeverity, SnagStatus, SnagSource } from '@/types/snag.types';
 import { eventService } from './eventService';
 
+// PostgREST embeds are unreliable in this setup (snags has no FK to profiles →
+// PGRST200). Enrich rows with project + assignee/closer/verifier/creator names
+// via batched separate keyed lookups instead.
+async function enrichSnags(rows: any[]): Promise<Snag[]> {
+  if (!rows.length) return [];
+  const projectIds = [...new Set(rows.map(r => r.project_id).filter(Boolean))];
+  const profileIds = [...new Set(rows.flatMap(r => [r.assigned_to, r.closed_by, r.verified_by, r.created_by]).filter(Boolean))];
+  const [projRes, profRes] = await Promise.all([
+    projectIds.length ? supabase.from('projects').select('id, name, project_number').in('id', projectIds) : Promise.resolve({ data: [] as any[] }),
+    profileIds.length ? supabase.from('profiles').select('id, full_name').in('id', profileIds) : Promise.resolve({ data: [] as any[] }),
+  ]);
+  const projMap = new Map((projRes.data || []).map((p: any) => [p.id, p]));
+  const profMap = new Map((profRes.data || []).map((p: any) => [p.id, p.full_name]));
+  return rows.map(r => ({
+    ...r,
+    project_name: projMap.get(r.project_id)?.name,
+    project_number: projMap.get(r.project_id)?.project_number,
+    assigned_to_name: r.assigned_to ? profMap.get(r.assigned_to) : undefined,
+    closed_by_name: r.closed_by ? profMap.get(r.closed_by) : undefined,
+    verified_by_name: r.verified_by ? profMap.get(r.verified_by) : undefined,
+    created_by_name: r.created_by ? profMap.get(r.created_by) : undefined,
+  })) as Snag[];
+}
+
 export const snagService = {
   /**
    * Retrieves all snags for a specific project.
@@ -13,28 +37,13 @@ export const snagService = {
   async getSnagsByProject(projectId: string): Promise<Snag[]> {
     const { data, error } = await supabase
       .from('snags')
-      .select(`
-        *,
-        project:projects(name, project_number),
-        assignee:profiles!snags_assigned_to_fkey(full_name),
-        closer:profiles!snags_closed_by_fkey(full_name),
-        verifier:profiles!snags_verified_by_fkey(full_name),
-        creator:profiles!snags_created_by_fkey(full_name)
-      `)
+      .select('*')
       .eq('project_id', projectId)
       .order('created_at', { ascending: false });
 
     if (error) throw error;
 
-    return (data || []).map(row => ({
-      ...row,
-      project_name: row.project?.name,
-      project_number: row.project?.project_number,
-      assigned_to_name: row.assignee?.full_name,
-      closed_by_name: row.closer?.full_name,
-      verified_by_name: row.verifier?.full_name,
-      created_by_name: row.creator?.full_name
-    })) as Snag[];
+    return enrichSnags(data || []);
   },
 
   /**
@@ -43,28 +52,13 @@ export const snagService = {
   async getSnagById(snagId: string): Promise<Snag> {
     const { data, error } = await supabase
       .from('snags')
-      .select(`
-        *,
-        project:projects(name, project_number),
-        assignee:profiles!snags_assigned_to_fkey(full_name),
-        closer:profiles!snags_closed_by_fkey(full_name),
-        verifier:profiles!snags_verified_by_fkey(full_name),
-        creator:profiles!snags_created_by_fkey(full_name)
-      `)
+      .select('*')
       .eq('id', snagId)
       .single();
 
     if (error) throw error;
 
-    return {
-      ...data,
-      project_name: data.project?.name,
-      project_number: data.project?.project_number,
-      assigned_to_name: data.assignee?.full_name,
-      closed_by_name: data.closer?.full_name,
-      verified_by_name: data.verifier?.full_name,
-      created_by_name: data.creator?.full_name
-    } as Snag;
+    return (await enrichSnags([data]))[0];
   },
 
   /**

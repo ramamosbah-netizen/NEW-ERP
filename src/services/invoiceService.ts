@@ -12,6 +12,70 @@ import { eventService } from './eventService';
 import { validateInvoiceCeiling } from './voContractImpactService';
 
 export const invoiceService = {
+  /** Completed (DONE) milestones for a project that can be billed now. */
+  async getBillableMilestones(projectId: string): Promise<{ id: string; title: string }[]> {
+    const { data } = await supabase
+      .from('project_milestones')
+      .select('id, title, status')
+      .eq('project_id', projectId)
+      .eq('status', 'DONE')
+      .order('created_at');
+    return (data || []).map((m: any) => ({ id: m.id, title: m.title }));
+  },
+
+  /**
+   * Generates a PROGRESS client invoice from completed project phases.
+   * Each line is a completed milestone with a claim amount; advance recovery
+   * and retention are auto-applied from the project's contract terms. The
+   * draft then flows through the configurable INV approval workflow.
+   */
+  async generateProgressFromMilestones(
+    projectId: string,
+    lines: Array<{ milestone_id: string; description: string; amount: number }>,
+  ): Promise<ClientInvoice> {
+    const billable = lines.filter(l => Number(l.amount) > 0);
+    if (billable.length === 0) throw new Error('Add at least one phase with a claim amount.');
+
+    const { data: project, error: projErr } = await supabase
+      .from('projects')
+      .select('client_id, advance_pct, retention_pct, payment_terms')
+      .eq('id', projectId)
+      .single();
+    if (projErr || !project) throw new Error('Project not found');
+
+    const gross = Math.round(billable.reduce((s, l) => s + Number(l.amount), 0) * 100) / 100;
+    const advanceRecovery = Math.round(gross * (Number(project.advance_pct) || 0) / 100 * 100) / 100;
+    const retentionHeld = Math.round(gross * (Number(project.retention_pct) || 0) / 100 * 100) / 100;
+
+    const today = new Date();
+    const due = new Date(today); due.setDate(due.getDate() + 30);
+    const iso = (d: Date) => d.toISOString().slice(0, 10);
+
+    return this.createInvoiceDraft(
+      {
+        project_id: projectId,
+        client_id: project.client_id,
+        invoice_type: 'PROGRESS',
+        invoice_date: iso(today),
+        supply_date: iso(today),
+        due_date: iso(due),
+        gross_claim: gross,
+        advance_recovery: advanceRecovery,
+        retention_held: retentionHeld,
+        notes: 'Generated from completed project phases.',
+      } as any,
+      billable.map((l, i) => ({
+        line_no: i + 1,
+        description: l.description,
+        milestone_id: l.milestone_id,
+        quantity: 1,
+        unit: 'LS',
+        unit_price: Number(l.amount),
+        vat_rate: 5.00,
+      })) as any,
+    );
+  },
+
   /**
    * Fetches all client invoices matching the filters.
    */

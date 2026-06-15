@@ -5,6 +5,7 @@
 import { supabase } from '@/lib/supabase';
 import { stockTransactionService } from './stockTransactionService';
 import { eventService } from './eventService';
+import { auditService } from './auditService';
 import type { MaterialRequisition, MRFItem, MRFStatus } from '@/types/stock.types';
 
 export const mrfService = {
@@ -66,6 +67,7 @@ export const mrfService = {
         );
       }
 
+      auditService.logEvent({ module: 'Warehouse', action: 'CREATE', entity_type: 'mrf', entity_id: newMrf.id, summary: `MRF ${newMrf.mrf_number} (${mrf.status || 'DRAFT'})` });
       return newMrf.id;
     } catch (err) {
       console.error('Error creating MRF:', err);
@@ -77,12 +79,12 @@ export const mrfService = {
    * Retrieves MRF lists.
    */
   async getMRFs(filters?: { project_id?: string; status?: MRFStatus }): Promise<MaterialRequisition[]> {
+    // material_requisitions has no FK to projects/profiles in this DB → those
+    // embeds PGRST200. Embed stock_locations; resolve the rest separately.
     let query = supabase
       .from('material_requisitions')
       .select(`
         *,
-        projects(project_number, name),
-        profiles:requested_by(full_name),
         stock_locations(name)
       `)
       .order('created_at', { ascending: false });
@@ -92,12 +94,22 @@ export const mrfService = {
 
     const { data, error } = await query;
     if (error) throw error;
+    const rows = data || [];
 
-    return (data || []).map(row => ({
+    const projectIds = [...new Set(rows.map((r: any) => r.project_id).filter(Boolean))];
+    const reqIds = [...new Set(rows.map((r: any) => r.requested_by).filter(Boolean))];
+    const [projRes, profRes] = await Promise.all([
+      projectIds.length ? supabase.from('projects').select('id, project_number, name').in('id', projectIds) : Promise.resolve({ data: [] as any[] }),
+      reqIds.length ? supabase.from('profiles').select('id, full_name').in('id', reqIds) : Promise.resolve({ data: [] as any[] }),
+    ]);
+    const projMap = new Map((projRes.data || []).map((p: any) => [p.id, p]));
+    const profMap = new Map((profRes.data || []).map((p: any) => [p.id, p.full_name]));
+
+    return rows.map((row: any) => ({
       ...row,
-      project_name: row.projects?.name,
-      project_number: row.projects?.project_number,
-      requester_name: row.profiles?.full_name,
+      project_name: projMap.get(row.project_id)?.name,
+      project_number: projMap.get(row.project_id)?.project_number,
+      requester_name: row.requested_by ? profMap.get(row.requested_by) : undefined,
       location_name: row.stock_locations?.name
     })) as MaterialRequisition[];
   },
@@ -106,18 +118,29 @@ export const mrfService = {
    * Retrieves details of a single MRF and its items.
    */
   async getMRFDetail(id: string): Promise<MaterialRequisition> {
+    // Embed stock_locations + mrf_items (safe). Resolve project (incl. boq_id,
+    // needed by issueMRF) and requester via separate keyed lookups.
     const { data: mrf, error: mrfErr } = await supabase
       .from('material_requisitions')
       .select(`
         *,
-        projects(project_number, name, boq_id),
-        profiles:requested_by(full_name),
         stock_locations(name)
       `)
       .eq('id', id)
       .single();
 
     if (mrfErr) throw mrfErr;
+
+    let projectRow: any = null;
+    if (mrf.project_id) {
+      const { data } = await supabase.from('projects').select('project_number, name, boq_id').eq('id', mrf.project_id).maybeSingle();
+      projectRow = data;
+    }
+    let requesterName: string | undefined;
+    if (mrf.requested_by) {
+      const { data } = await supabase.from('profiles').select('full_name').eq('id', mrf.requested_by).maybeSingle();
+      requesterName = data?.full_name;
+    }
 
     const { data: items, error: itemsErr } = await supabase
       .from('mrf_items')
@@ -140,9 +163,10 @@ export const mrfService = {
 
     return {
       ...mrf,
-      project_name: mrf.projects?.name,
-      project_number: mrf.projects?.project_number,
-      requester_name: mrf.profiles?.full_name,
+      projects: projectRow || undefined, // preserve shape used by issueMRF (boq_id, name, number)
+      project_name: projectRow?.name,
+      project_number: projectRow?.project_number,
+      requester_name: requesterName,
       location_name: mrf.stock_locations?.name,
       items: formattedItems
     } as MaterialRequisition;
@@ -208,6 +232,7 @@ export const mrfService = {
 
       if (statusErr) throw statusErr;
 
+      auditService.logEvent({ module: 'Warehouse', action: 'APPROVE', entity_type: 'mrf', entity_id: id, summary: 'Approved requisition (stock reserved)' });
     } catch (err) {
       console.error('Error approving MRF:', err);
       throw err;
@@ -358,6 +383,7 @@ export const mrfService = {
         .update({ status: nextStatus, updated_at: new Date().toISOString() })
         .eq('id', id);
 
+      auditService.logEvent({ module: 'Warehouse', action: 'ISSUE', entity_type: 'mrf', entity_id: id, summary: `Issued materials (${nextStatus})` });
     } catch (err) {
       console.error('Error issuing MRF:', err);
       throw err;

@@ -69,6 +69,13 @@ Auth is per-page (`supabase.auth.getUser()`), with RBAC via `roles` /
   accept with **client LPO/contract upload**, link to existing project.
 
 ### Procurement & Supply
+- **Requests for Quotation (RFQ)** — from any BOQ, draft a sourcing request:
+  items prefilled from the BOQ and **fully editable**, multi-select
+  suppliers/subcontractors, cover message + quote-by date. **Records to an RFQ
+  log**, **exports a PDF** (suppliers asked + item table with blank price
+  columns), and **opens a pre-filled email** (BCC) ready to send. Next step: an
+  AI agent reads supplier email replies against each RFQ and suggests prices,
+  feeding the comparison.
 - **Purchase Requests (PR)** — raise with/without a project (tools, IT,
   furniture, consumables, samples = overhead), category, **mode of payment**,
   item grid with estimated costs, lifecycle (Draft→Submit→Approve/Reject),
@@ -98,9 +105,16 @@ Auth is per-page (`supabase.auth.getUser()`), with RBAC via `roles` /
   fields** (type, trade, day rate), **historic performance scoring** from PO
   history, **scorecard** detail page with PO-by-PO history.
 - **Store** — stock items + balances across locations, valuation, **stock-risk**
-  (out / below reorder), register stock items, manage locations.
+  (out / below reorder), register stock items, manage locations. Grid shows
+  **category + system** with filters (and **location** filter); **Excel export**
+  of stock per location. **Per-item movement** action records issue-to-project/
+  site, return from site, return to supplier, damage/write-off, store-to-store
+  transfer, and adjustments — movements link to a **project for cost
+  allocation** and generate a **handover receipt** (storekeeper ↔ receiver).
 - **Goods Movements** — receipts, issues to project/ticket, returns, transfers,
-  adjustments, write-offs; **period filter (week/month/year)** + **CSV export**.
+  adjustments, write-offs; **period filter (week/month/year)**, **CSV + Excel
+  export** showing **from / to / received-by / issued-by** and the receipt no;
+  per-row **handover receipt PDF**.
 - **Pricing Catalogue** — master rate catalogue feeding BOQ/quotations;
   **price auto-update from supplier invoices** + price-history trail; freshness
   indicator showing when a rate was last refreshed.
@@ -120,7 +134,44 @@ Auth is per-page (`supabase.auth.getUser()`), with RBAC via `roles` /
 
 ### Finance
 - **AR** (client invoices, payments, aging, statements), **AP** (register,
-  schedule, 3-way match, aging), **Cash Flow** forecast, **VAT Compliance**.
+  schedule, 3-way match, aging), **Cash Flow** forecast, **VAT Compliance**,
+  **GRN-to-Expense** report.
+- **AP automation & draft→validate lifecycle** — an **approved LPO** creates a
+  **DRAFT payable** ("action to spend money") in AP, **auto-importing the
+  supplier proforma** if one is attached to the LPO. The accountant **validates**
+  it by uploading the supplier's actual invoice (number, amounts, attachment),
+  which registers the bill. The AP register lists **all states** — Draft,
+  Registered, Pending, Approved, Scheduled, Partially/Fully paid, Disputed,
+  Revised, Cancelled.
+- **Payroll → AP (per-project)** — approving a payroll run drops **DRAFT
+  "workforce" payables** into AP: each employee's net pay is **allocated across
+  projects by their timesheet hours** (one payable per project). Staff with no
+  timesheet hours fall back to their **assigned/home project** (set on the
+  employee), else an Office overhead payable. No supplier (staff salaries).
+- **Expenses & Payment Accounts** (`/finance/ap/expenses`) — capture every
+  payment (LPO / non-LPO purchase, car petrol, petty cash, office expense) as an
+  invoiced AP bill, **paid from a tracked card / bank / cash account** (running
+  balance), **bucketed** to Project (LPO), Petty cash (project-linked) or Office.
+  Every expense requires an invoice/receipt reference and can **attach a receipt
+  photo/PDF** (uploaded to the DMS). The AP register shows a **Received (LPO)**
+  column — delivered/received line count per PO-matched bill.
+- **Bill completed phases (AR)** — `/finance/ar/from-phases`: pick a project,
+  claim its **completed (DONE) milestones** at an amount each, and generate a
+  **PROGRESS** client invoice with **advance recovery + retention auto-applied**
+  from the contract terms; the draft then enters the approval workflow.
+- **Quick-validate (AP register)** — DRAFT bills have a one-click **Validate**
+  action right in the list: enter the supplier invoice no/date/amount, attach the
+  invoice, and register it without opening the bill.
+- **Bill source & justification (final documents)** — each AP bill page shows
+  its origin as downloadable output, not system pages, so the accounts team
+  needs no procurement/HR module access: **LPO → PDF**, **Purchase Request →
+  PDF**, **Payroll → XLSX sheet**, plus the **proforma** and **attached
+  invoice/receipt** (signed-URL view). Every payable is traceable to its
+  justification document.
+- **Configurable approval workflows** — both client invoices (`INV`) and
+  supplier bills (`SINV`) carry a `WorkflowPanel` driven by the Admin Center →
+  Workflows designer, so the **accountant → Financial Director → GM** approval
+  chain is configured in settings, not hard-coded.
 
 ### HR / Payroll / Fleet / Assets
 - **HR** (employees, compliance, approvals, calendar), **Payroll** (SIF, EOSB,
@@ -249,6 +300,12 @@ All idempotent. Apply any not yet run, then `NOTIFY pgrst, 'reload schema';`.
 | `20260613280000_payment_method_and_direct_purchase` | payment_method on LPO/PR, direct-purchase, PROCUREMENT settings category |
 | `20260613300000_pr_item_line_status` | Per-line PR status (receive/cancel) |
 | `20260614100000_grn_auto_store_receipt` | GRN auto-routes goods to store on receipt; skips non-catalogue lines safely |
+| `20260614120000_grn_store_robust` | **Supersedes above** — auto-creates a default store if none, and a catalogue item for non-catalogue lines, so every received line becomes stock |
+| `20260614140000_rfq` | RFQ (Request for Quotation) tables, numbering, RLS — sourcing requests from a BOQ |
+| `20260614160000_stock_rls_and_movements` | **Fixes 403s** — relaxes stock_* write RLS to collaborative (authenticated); adds RETURN_TO_SUPPLIER movement type |
+| `20260614180000_stock_movement_receipt` | Adds received_by_name to stock_transactions (storekeeper↔receiver handover receipt) |
+| `20260614200000_ap_accounts_expenses` | payment_accounts (cards/bank/cash + balance); supplier_invoices gains cost_bucket, payment_account_id, payee_name, nullable supplier_id, wider expense_category; supplier_payments gains payment_account_id |
+| `20260614220000_ap_draft_lifecycle` | supplier_invoices DRAFT/REVISED statuses, proforma_path/name (auto-import), WORKFORCE expense category |
 
 Verify: `node scripts/verify-platform.mjs`.
 

@@ -7,6 +7,28 @@ import { TCPackage, TCTestScript, TCDevice, TCTestResult, TCWitness, TCPackageSt
 import { snagService } from './snagService';
 import { eventService } from './eventService';
 
+// PostgREST embeds are unreliable in this setup (tc_packages has no FK to
+// profiles → PGRST200). Enrich rows with project/engineer/creator names via
+// batched separate keyed lookups instead.
+async function enrichPackages(rows: any[]): Promise<TCPackage[]> {
+  if (!rows.length) return [];
+  const projectIds = [...new Set(rows.map(r => r.project_id).filter(Boolean))];
+  const profileIds = [...new Set(rows.flatMap(r => [r.assigned_engineer_id, r.created_by]).filter(Boolean))];
+  const [projRes, profRes] = await Promise.all([
+    projectIds.length ? supabase.from('projects').select('id, name, project_number').in('id', projectIds) : Promise.resolve({ data: [] as any[] }),
+    profileIds.length ? supabase.from('profiles').select('id, full_name').in('id', profileIds) : Promise.resolve({ data: [] as any[] }),
+  ]);
+  const projMap = new Map((projRes.data || []).map((p: any) => [p.id, p]));
+  const profMap = new Map((profRes.data || []).map((p: any) => [p.id, p.full_name]));
+  return rows.map(r => ({
+    ...r,
+    project_name: projMap.get(r.project_id)?.name,
+    project_number: projMap.get(r.project_id)?.project_number,
+    assigned_engineer_name: r.assigned_engineer_id ? profMap.get(r.assigned_engineer_id) : undefined,
+    created_by_name: r.created_by ? profMap.get(r.created_by) : undefined,
+  })) as TCPackage[];
+}
+
 export const tcService = {
   /**
    * Retrieves all active T&C packages for a specific project.
@@ -14,25 +36,14 @@ export const tcService = {
   async getPackagesByProject(projectId: string): Promise<TCPackage[]> {
     const { data, error } = await supabase
       .from('tc_packages')
-      .select(`
-        *,
-        project:projects(name, project_number),
-        engineer:profiles!tc_packages_assigned_engineer_id_fkey(full_name),
-        creator:profiles!tc_packages_created_by_fkey(full_name)
-      `)
+      .select('*')
       .eq('project_id', projectId)
       .eq('is_active', true)
       .order('created_at', { ascending: false });
 
     if (error) throw error;
 
-    return (data || []).map(row => ({
-      ...row,
-      project_name: row.project?.name,
-      project_number: row.project?.project_number,
-      assigned_engineer_name: row.engineer?.full_name,
-      created_by_name: row.creator?.full_name
-    })) as TCPackage[];
+    return enrichPackages(data || []);
   },
 
   /**
@@ -41,24 +52,13 @@ export const tcService = {
   async getPackageById(packageId: string): Promise<TCPackage> {
     const { data, error } = await supabase
       .from('tc_packages')
-      .select(`
-        *,
-        project:projects(name, project_number),
-        engineer:profiles!tc_packages_assigned_engineer_id_fkey(full_name),
-        creator:profiles!tc_packages_created_by_fkey(full_name)
-      `)
+      .select('*')
       .eq('id', packageId)
       .single();
 
     if (error) throw error;
 
-    return {
-      ...data,
-      project_name: data.project?.name,
-      project_number: data.project?.project_number,
-      assigned_engineer_name: data.engineer?.full_name,
-      created_by_name: data.creator?.full_name
-    } as TCPackage;
+    return (await enrichPackages([data]))[0];
   },
 
   /**

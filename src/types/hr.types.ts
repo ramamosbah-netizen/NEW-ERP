@@ -22,6 +22,7 @@ export interface Employee {
   photo_path: string | null;
   designation: string;
   department: DepartmentType;
+  assigned_project_id?: string | null; // home project for payroll cost fallback
   employment_type: EmploymentType;
   join_date: string; // ISO date YYYY-MM-DD
   probation_end_date: string | null;

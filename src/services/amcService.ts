@@ -7,6 +7,7 @@ import { supabase } from '@/lib/supabase';
 import { amcBillingService } from './amcBillingService';
 import { ppmScheduleService } from './ppmScheduleService';
 import { eventService } from './eventService';
+import { auditService } from './auditService';
 import type { AMCContract, AMCEquipment } from '@/types/amc.types';
 
 export const amcService = {
@@ -182,6 +183,7 @@ export const amcService = {
       }
     );
 
+    auditService.logEvent({ module: 'AMC', action: 'ACTIVATE', entity_type: 'amc_contract', entity_id: id, summary: `Activated contract ${fullContract.contract_number} (${fullContract.client_name})` });
     return fullContract;
   },
 
@@ -393,6 +395,7 @@ export const amcService = {
       })
       .eq('id', oldContractId);
 
+    auditService.logEvent({ module: 'AMC', action: 'RENEW', entity_type: 'amc_contract', entity_id: newContract.id, summary: `Renewed ${oldContract.contract_number} → ${newContract.contract_number}` });
     return newContract as AMCContract;
   }
 };

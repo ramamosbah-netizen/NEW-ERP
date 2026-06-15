@@ -323,7 +323,8 @@ export const MODULE_CATALOG: ModuleCatalogEntry[] = [
   { key: 'SUPPLIER_EVAL', label: 'Supplier Evaluation', group: 'Procurement' },
   // Finance
   { key: 'QTN', label: 'Quotation', group: 'Finance' },
-  { key: 'INV', label: 'Invoice', group: 'Finance' },
+  { key: 'INV', label: 'Client Invoice (AR)', group: 'Finance' },
+  { key: 'SINV', label: 'Supplier Bill / AP Invoice', group: 'Finance' },
   { key: 'PROFORMA', label: 'Proforma Invoice', group: 'Finance' },
   { key: 'PAYMENT_REQ', label: 'Payment Request', group: 'Finance' },
   { key: 'EXP', label: 'Expense Claim', group: 'Finance' },

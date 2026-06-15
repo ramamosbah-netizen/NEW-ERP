@@ -414,28 +414,92 @@ export const payrollService = {
       console.error('Failed to lock timesheets during payroll approval:', lockErr.message);
     }
 
-    // Create DIRECT_EXPENSE record in supplier_invoices (matching Phase 4 financials)
-    // Category: SALARIES_PLACEHOLDER (which maps to payroll total)
-    const { error: expErr } = await supabase
-      .from('supplier_invoices')
-      .insert({
-        supplier_id: '88888888-8888-8888-8888-888888888888', // System/Virtual Payroll Supplier ID placeholder
-        supplier_invoice_number: `PAY-${y}-${m}`,
-        invoice_type: 'DIRECT_EXPENSE',
-        invoice_date: endDateStr,
-        received_date: endDateStr,
-        due_date: endDateStr,
-        taxable_amount: run.net_total,
-        vat_amount: 0.00,
-        total: run.net_total,
-        status: 'APPROVED',
-        expense_category: 'SALARIES_PLACEHOLDER',
-        notes: `Payroll disbursement for month ${y}-${m}`,
-        created_by: user.id
-      });
+    // Surface this payroll run in AP as DRAFT "workforce" payables (action to
+    // spend money). Labour cost is allocated per project from timesheet hours;
+    // anything not booked to a project falls to Office overhead. No supplier
+    // (staff salaries) so supplier_id is null. Idempotent per period.
+    try {
+      const { data: existingPay } = await supabase
+        .from('supplier_invoices').select('id').like('supplier_invoice_number', `PAY-${y}-${m}%`).limit(1);
 
-    if (expErr) {
-      console.error('Failed to log Direct Expense for payroll:', expErr);
+      if (!existingPay || existingPay.length === 0) {
+        // 1. Hours per (employee, project) from this month's timesheet entries
+        const { data: entries } = await supabase
+          .from('timesheet_entries').select('timesheet_id, project_id, hours')
+          .gte('work_date', startDateStr).lte('work_date', endDateStr);
+        const tsIds = Array.from(new Set((entries || []).map((e: any) => e.timesheet_id)));
+        const { data: ts } = tsIds.length
+          ? await supabase.from('timesheets').select('id, employee_id').in('id', tsIds)
+          : { data: [] as any[] };
+        const empByTs = new Map((ts || []).map((t: any) => [t.id, t.employee_id]));
+        const hoursByEmp = new Map<string, { total: number; byProject: Map<string, number> }>();
+        for (const e of entries || []) {
+          const emp = empByTs.get((e as any).timesheet_id);
+          const pid = (e as any).project_id; const h = Number((e as any).hours) || 0;
+          if (!emp || !pid || h <= 0) continue;
+          let rec = hoursByEmp.get(emp); if (!rec) { rec = { total: 0, byProject: new Map() }; hoursByEmp.set(emp, rec); }
+          rec.total += h; rec.byProject.set(pid, (rec.byProject.get(pid) || 0) + h);
+        }
+
+        // 2. Allocate each employee's net pay by their project-hours share
+        const { data: lines } = await supabase.from('payroll_lines').select('employee_id, net_pay').eq('run_id', runId);
+
+        // Fallback: employee's assigned/home project when they have no timesheet hours
+        const lineEmpIds = Array.from(new Set((lines || []).map((l: any) => l.employee_id)));
+        const assignedByEmp = new Map<string, string>();
+        if (lineEmpIds.length) {
+          try {
+            const { data: emps } = await supabase.from('employees').select('id, assigned_project_id').in('id', lineEmpIds);
+            for (const e of emps || []) if ((e as any).assigned_project_id) assignedByEmp.set((e as any).id, (e as any).assigned_project_id);
+          } catch { /* column may not exist yet — fall through to Office */ }
+        }
+
+        const byProject = new Map<string, number>();
+        let officeAmount = 0;
+        for (const ln of lines || []) {
+          const net = Number((ln as any).net_pay) || 0; if (net <= 0) continue;
+          const rec = hoursByEmp.get((ln as any).employee_id);
+          if (!rec || rec.total <= 0) {
+            const assigned = assignedByEmp.get((ln as any).employee_id);
+            if (assigned) byProject.set(assigned, (byProject.get(assigned) || 0) + net);
+            else officeAmount += net;
+            continue;
+          }
+          const projEntries = [...rec.byProject.entries()];
+          let allocated = 0;
+          projEntries.forEach(([pid, h], i) => {
+            const share = i === projEntries.length - 1
+              ? Math.round((net - allocated) * 100) / 100
+              : Math.round(net * (h / rec.total) * 100) / 100;
+            allocated += share;
+            byProject.set(pid, (byProject.get(pid) || 0) + share);
+          });
+        }
+
+        // 3. One DRAFT payable per project + an Office residual
+        const base = {
+          supplier_id: null as string | null, invoice_type: 'DIRECT_EXPENSE',
+          invoice_date: endDateStr, received_date: endDateStr, due_date: endDateStr,
+          vat_amount: 0.00, match_status: 'NA', status: 'DRAFT',
+          payee_name: 'Staff Payroll', expense_category: 'WORKFORCE', created_by: user.id,
+        };
+        const rows: any[] = [];
+        for (const [pid, amt] of byProject) {
+          if (amt <= 0) continue;
+          rows.push({ ...base, supplier_invoice_number: `PAY-${y}-${m}-${pid.slice(0, 8)}`, project_id: pid,
+            cost_bucket: 'PROJECT', taxable_amount: amt, total: amt,
+            notes: `Workforce payroll ${y}-${m} allocated to project (from timesheets).` });
+        }
+        if (officeAmount > 0 || rows.length === 0) {
+          rows.push({ ...base, supplier_invoice_number: `PAY-${y}-${m}`, project_id: null,
+            cost_bucket: 'OFFICE', taxable_amount: officeAmount || run.net_total, total: officeAmount || run.net_total,
+            notes: `Workforce payroll ${y}-${m} — office / unallocated labour.` });
+        }
+        const { error: expErr } = await supabase.from('supplier_invoices').insert(rows);
+        if (expErr) console.error('Failed to log payroll payables:', expErr.message);
+      }
+    } catch (payErr: any) {
+      console.error('Payroll → AP allocation failed:', payErr?.message || payErr);
     }
 
     // Emit event: payroll.approved

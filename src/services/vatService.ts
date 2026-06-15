@@ -86,10 +86,18 @@ export const vatService = {
     // 1. Fetch Client Invoices approved/sent in range (Outputs)
     const { data: clientInvoices } = await supabase
       .from('client_invoices')
-      .select('*, projects(emirate), clients(city)')
+      .select('*')
       .gte('invoice_date', start)
       .lte('invoice_date', end)
       .in('status', ['APPROVED', 'SENT', 'PARTIALLY_PAID', 'PAID']);
+
+    // Resolve emirate (project) / city (client) without PostgREST embeds
+    const ciProjIds = Array.from(new Set((clientInvoices || []).map((i: any) => i.project_id).filter(Boolean))) as string[];
+    const ciClientIds = Array.from(new Set((clientInvoices || []).map((i: any) => i.client_id).filter(Boolean))) as string[];
+    const projEmirate = new Map<string, string>();
+    const clientCity = new Map<string, string>();
+    if (ciProjIds.length) { try { const { data } = await supabase.from('projects').select('id, emirate').in('id', ciProjIds); for (const p of data || []) if ((p as any).emirate) projEmirate.set(p.id, (p as any).emirate); } catch { /* no emirate col */ } }
+    if (ciClientIds.length) { try { const { data } = await supabase.from('clients').select('id, city').in('id', ciClientIds); for (const c of data || []) if ((c as any).city) clientCity.set(c.id, (c as any).city); } catch { /* no city col */ } }
 
     // Initialize Emirate buckets
     const emirateOutputs: Record<string, { taxable_amount: number; vat_amount: number }> = {
@@ -108,10 +116,12 @@ export const vatService = {
     for (const inv of clientInvoices || []) {
       // Determine Emirate
       let emirate = 'DUBAI'; // Default to Dubai
-      if (inv.projects?.emirate) {
-        emirate = inv.projects.emirate;
-      } else if ((inv.clients as any)?.city) {
-        const cityUpper = (inv.clients as any).city.toUpperCase().replace(/\s+/g, '_');
+      const projE = inv.project_id ? projEmirate.get(inv.project_id) : null;
+      const cityV = inv.client_id ? clientCity.get(inv.client_id) : null;
+      if (projE) {
+        emirate = projE;
+      } else if (cityV) {
+        const cityUpper = cityV.toUpperCase().replace(/\s+/g, '_');
         const validEmirates = ['DUBAI', 'ABU_DHABI', 'SHARJAH', 'AJMAN', 'UMM_AL_QUWAIN', 'RAS_AL_KHAIMAH', 'FUJAIRAH'];
         if (validEmirates.includes(cityUpper)) {
           emirate = cityUpper;
@@ -139,10 +149,19 @@ export const vatService = {
     // 2. Fetch Supplier Invoices (Inputs)
     const { data: supplierInvoices } = await supabase
       .from('supplier_invoices')
-      .select('*, pricing_suppliers(trn_number)')
+      .select('*')
       .gte('invoice_date', start)
       .lte('invoice_date', end)
       .in('status', ['APPROVED', 'SCHEDULED', 'PARTIALLY_PAID', 'PAID']);
+
+    // Supplier TRN lives on the LPO (purchase_orders.supplier_trn), not the
+    // supplier registry — resolve it per PO to decide standard vs reverse-charge.
+    const poIds = Array.from(new Set((supplierInvoices || []).map((i: any) => i.po_id).filter(Boolean)));
+    const poTrn = new Map<string, string>();
+    if (poIds.length) {
+      const { data: pos } = await supabase.from('purchase_orders').select('id, supplier_trn').in('id', poIds);
+      for (const p of pos || []) poTrn.set((p as any).id, (p as any).supplier_trn || '');
+    }
 
     let box9Taxable = 0;
     let box9Vat = 0;
@@ -152,7 +171,7 @@ export const vatService = {
     for (const inv of supplierInvoices || []) {
       const taxable = Number(inv.taxable_amount || 0);
       const vat = Number(inv.vat_amount || 0);
-      const supplierTrn = inv.pricing_suppliers?.trn_number || '';
+      const supplierTrn = inv.po_id ? (poTrn.get(inv.po_id) || '') : '';
 
       // If supplier has no UAE TRN, treat it as import/RCM
       const isRcm = !supplierTrn || supplierTrn.trim() === '';

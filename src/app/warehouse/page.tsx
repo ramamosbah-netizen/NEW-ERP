@@ -7,9 +7,19 @@
 import React from 'react';
 import Link from 'next/link';
 import { PageHeader } from '@/components/ui/PageHeader';
-import { Users, Package, Truck, Calculator, ArrowRight } from 'lucide-react';
+import { Users, Package, Truck, Calculator, ArrowRight, LayoutDashboard, ClipboardCheck, ClipboardList, ShoppingCart, Hourglass, PackageX, ScanLine, HardHat, TrendingUp, Landmark } from 'lucide-react';
 
 const SECTIONS = [
+  { href: '/warehouse/dashboard', title: 'Inventory Dashboard', desc: 'Stock value, risk and movement health at a glance — value by category/system, dead stock and receipts vs issues.', icon: LayoutDashboard },
+  { href: '/warehouse/mrf', title: 'Material Requisitions (MRF)', desc: 'Request materials from a store for a project; approve quantities, reserve stock, then issue against the requisition.', icon: ClipboardList },
+  { href: '/warehouse/stock-count', title: 'Stock Count / Stock-take', desc: 'Freeze a location, count physical stock, review variances by value, and post adjustments to the ledger.', icon: ClipboardCheck },
+  { href: '/warehouse/replenishment', title: 'Replenishment Planning', desc: 'Items at or below reorder level with suggested order quantities, grouped by preferred supplier and ready to export to PR.', icon: ShoppingCart },
+  { href: '/warehouse/aging', title: 'Inventory Aging', desc: 'Stock value bucketed by time since last movement (0–30 / 31–90 / 91–180 / 180+ days) by location and category.', icon: Hourglass },
+  { href: '/warehouse/dead-stock', title: 'Dead Stock', desc: 'Items with no movement for 90/180/365 days and capital tied up — review by category and write off in one click.', icon: PackageX },
+  { href: '/warehouse/serials', title: 'Serial Number Tracking', desc: 'Per-serial lifecycle (in store / issued / installed / faulty), current location, project deployment and warranty expiry.', icon: ScanLine },
+  { href: '/warehouse/installed', title: 'Installed Assets Tracking', desc: 'Serialized assets deployed at project sites — what is installed where, by project, with warranty status feeding DLP.', icon: HardHat },
+  { href: '/warehouse/forecast', title: 'Material Forecasting', desc: 'Open requisition demand vs available stock — projected shortfalls to procure, top shortfalls by value, ready to export.', icon: TrendingUp },
+  { href: '/warehouse/gl', title: 'Inventory GL Integration', desc: 'Period journal of inventory, WIP and COGS postings from the movement ledger, with editable account mapping and export for accounting.', icon: Landmark },
   { href: '/warehouse/suppliers', title: 'Suppliers & Subcontractors', desc: 'Register and manage suppliers; performance scoring from order history. Suppliers created anywhere in the system appear here.', icon: Users },
   { href: '/warehouse/store', title: 'Store', desc: 'Registered goods and materials on hand, valuation, and stock-risk alerts (out of stock / below reorder level).', icon: Package },
   { href: '/warehouse/movements', title: 'Goods Movements', desc: 'Track materials across sites and projects — receipts, issues, returns, transfers, adjustments and write-offs.', icon: Truck },

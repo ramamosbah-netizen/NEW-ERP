@@ -5,6 +5,7 @@
 import { supabase } from '@/lib/supabase';
 import { eventService } from './eventService';
 import { supplierPerformanceService } from './supplierPerformanceService';
+import { supplierInvoiceService } from './supplierInvoiceService';
 import type { PurchaseOrder, POItem, POStatus } from '@/types/po.types';
 
 export const poService = {
@@ -306,6 +307,14 @@ export const poService = {
         .eq('id', poId);
 
       if (error) throw error;
+
+      // Auto-surface this purchase in Accounts Payable as an expected bill.
+      // Best-effort: never block the send if AP creation fails.
+      try {
+        await supplierInvoiceService.createExpectedFromPO(poId);
+      } catch (apErr) {
+        console.warn('Could not auto-create AP bill for sent LPO:', apErr);
+      }
 
       // Emit event
       await eventService.emitEvent(

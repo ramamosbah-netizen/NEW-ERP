@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { supplierInvoiceService } from '@/services/supplierInvoiceService';
 import { supabase } from '@/lib/supabase';
+import paymentAccountService from '@/services/paymentAccountService';
 import { ArrowLeft, Wallet, AlertTriangle, CheckCircle } from 'lucide-react';
 
 export default function DisbursementSchedulingPage() {
@@ -24,6 +25,8 @@ export default function DisbursementSchedulingPage() {
   const [paymentMethod, setPaymentMethod] = useState<string>('TRANSFER');
   const [reference, setReference] = useState<string>('');
   const [bankAccount, setBankAccount] = useState<string>('');
+  const [paymentAccountId, setPaymentAccountId] = useState<string>('');
+  const [accounts, setAccounts] = useState<any[]>([]);
   const [notes, setNotes] = useState<string>('');
   const [allocationAmounts, setAllocationAmounts] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState<boolean>(false);
@@ -39,6 +42,7 @@ export default function DisbursementSchedulingPage() {
       .then(({ data, error }) => {
         if (data) setSuppliers(data);
       });
+    paymentAccountService.list().then(setAccounts).catch(() => {});
   }, []);
 
   // Fetch unpaid invoices for selected supplier
@@ -129,6 +133,7 @@ export default function DisbursementSchedulingPage() {
         method: paymentMethod,
         reference,
         bank_account: bankAccount,
+        payment_account_id: paymentAccountId || null,
         notes
       }, allocationsArray);
 
@@ -303,6 +308,20 @@ export default function DisbursementSchedulingPage() {
                     placeholder="e.g. Emirates NBD Main Account"
                     className="w-full bg-[#0a0f26] border border-slate-900 rounded px-3 py-2 text-slate-100 font-sans focus:outline-none focus:border-emerald-500"
                   />
+                </div>
+
+                <div>
+                  <label className="text-slate-500 uppercase font-mono text-[9px] block mb-1">Paid from account (tracks balance)</label>
+                  <select
+                    value={paymentAccountId}
+                    onChange={(e) => setPaymentAccountId(e.target.value)}
+                    className="w-full bg-[#0a0f26] border border-slate-900 rounded px-3 py-2 text-slate-100 font-sans focus:outline-none focus:border-emerald-500"
+                  >
+                    <option value="">— Not tracked —</option>
+                    {accounts.map((a: any) => (
+                      <option key={a.id} value={a.id}>{a.name} ({new Intl.NumberFormat('en-AE', { maximumFractionDigits: 0 }).format(a.balance || 0)} AED)</option>
+                    ))}
+                  </select>
                 </div>
 
                 <div>

@@ -12,44 +12,67 @@ export const handoverService = {
    * Retrieves the handover package and checklist for a project.
    */
   async getHandoverPackage(projectId: string): Promise<HandoverPackage | null> {
-    const { data: pkg, error: pkgErr } = await supabase
+    // NOTE: PostgREST embeds are unreliable in this setup (handover_packages has
+    // no FK to profiles → PGRST200). Use separate keyed lookups instead.
+    // Also avoid .single() here: it returns HTTP 406 when a project has no
+    // package yet. Select a list + take the first row (clean 200 / []).
+    const { data: pkgRows, error: pkgErr } = await supabase
       .from('handover_packages')
-      .select(`
-        *,
-        project:projects(name, project_number),
-        creator:profiles!handover_packages_created_by_fkey(full_name)
-      `)
+      .select('*')
       .eq('project_id', projectId)
-      .single();
+      .limit(1);
 
-    if (pkgErr) {
-      if (pkgErr.code === 'PGRST116') return null; // not found
-      throw pkgErr;
-    }
+    if (pkgErr) throw pkgErr;
+    const pkg = pkgRows?.[0];
+    if (!pkg) return null; // no handover package yet
 
     const { data: items, error: itemsErr } = await supabase
       .from('handover_checklist_items')
-      .select(`
-        *,
-        waived_by_profile:profiles!handover_checklist_items_waived_by_fkey(full_name),
-        evidence_doc:documents!handover_checklist_items_evidence_document_id_fkey(title)
-      `)
+      .select('*')
       .eq('package_id', pkg.id)
       .order('sort', { ascending: true });
 
     if (itemsErr) throw itemsErr;
 
-    const checklistItems = (items || []).map(item => ({
+    // ---- separate lookups (replace embeds) ----
+    // project
+    let projectName: string | undefined, projectNumber: string | undefined;
+    if (pkg.project_id) {
+      const { data: proj } = await supabase
+        .from('projects').select('name, project_number').eq('id', pkg.project_id).maybeSingle();
+      projectName = proj?.name;
+      projectNumber = proj?.project_number;
+    }
+
+    // profiles (package creator + any waived_by), batched
+    const profileIds = [pkg.created_by, ...(items || []).map((i: any) => i.waived_by)].filter(Boolean) as string[];
+    const profileMap = new Map<string, string>();
+    if (profileIds.length) {
+      const { data: profs } = await supabase
+        .from('profiles').select('id, full_name').in('id', [...new Set(profileIds)]);
+      (profs || []).forEach((p: any) => profileMap.set(p.id, p.full_name));
+    }
+
+    // evidence documents, batched
+    const docIds = (items || []).map((i: any) => i.evidence_document_id).filter(Boolean) as string[];
+    const docMap = new Map<string, string>();
+    if (docIds.length) {
+      const { data: docs } = await supabase
+        .from('documents').select('id, title').in('id', [...new Set(docIds)]);
+      (docs || []).forEach((d: any) => docMap.set(d.id, d.title));
+    }
+
+    const checklistItems = (items || []).map((item: any) => ({
       ...item,
-      waived_by_name: item.waived_by_profile?.full_name,
-      evidence_document_name: item.evidence_doc?.title
+      waived_by_name: item.waived_by ? profileMap.get(item.waived_by) : undefined,
+      evidence_document_name: item.evidence_document_id ? docMap.get(item.evidence_document_id) : undefined
     })) as HandoverChecklistItem[];
 
     return {
       ...pkg,
-      project_name: pkg.project?.name,
-      project_number: pkg.project?.project_number,
-      created_by_name: pkg.creator?.full_name,
+      project_name: projectName,
+      project_number: projectNumber,
+      created_by_name: pkg.created_by ? profileMap.get(pkg.created_by) : undefined,
       checklist_items: checklistItems
     } as HandoverPackage;
   },

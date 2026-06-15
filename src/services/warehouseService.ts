@@ -55,6 +55,8 @@ export interface StockRow {
   item_code: string;
   description: string;
   unit: string;
+  category: string;
+  system: string;
   qty_on_hand: number;
   qty_available: number;
   qty_reserved: number;
@@ -75,6 +77,10 @@ export interface MovementRow {
   unit_cost: number;
   total_value: number;
   location_name: string;
+  from_name: string;
+  to_name: string;
+  received_by: string | null;
+  issued_by: string | null;
   project_number: string | null;
   reason: string | null;
   created_at: string;
@@ -235,17 +241,18 @@ export const warehouseService = {
   },
 
   // ---------- Store: stock items + balances + risk ----------
-  async getStock(): Promise<StockRow[]> {
+  // locationId filters balances to a single store (for per-location views/export).
+  async getStock(locationId?: string): Promise<StockRow[]> {
     const items = await safe<any[]>(
-      supabase.from('stock_items').select('id, reorder_level, pricing_item_id, pricing_items(item_code, description, unit)'),
+      supabase.from('stock_items').select('id, reorder_level, pricing_item_id, pricing_items(item_code, description, unit, category, system)'),
       []
     );
     if (items.length === 0) return [];
 
-    const balances = await safe<any[]>(
-      supabase.from('stock_balances').select('stock_item_id, qty_on_hand, qty_available, qty_reserved, avg_unit_cost, last_movement_at'),
-      []
-    );
+    let balQuery = supabase.from('stock_balances')
+      .select('stock_item_id, location_id, qty_on_hand, qty_available, qty_reserved, avg_unit_cost, last_movement_at');
+    if (locationId) balQuery = balQuery.eq('location_id', locationId);
+    const balances = await safe<any[]>(balQuery, []);
 
     const balByItem = new Map<string, any[]>();
     for (const b of balances) {
@@ -276,6 +283,8 @@ export const warehouseService = {
         item_code: it.pricing_items?.item_code || '—',
         description: it.pricing_items?.description || '—',
         unit: it.pricing_items?.unit || '',
+        category: it.pricing_items?.category || '—',
+        system: it.pricing_items?.system || '—',
         qty_on_hand: onHand,
         qty_available: available,
         qty_reserved: reserved,
@@ -307,6 +316,37 @@ export const warehouseService = {
       is_active: true,
     });
     if (error) throw error;
+  },
+
+  /** Per-location balances for one stock item — drives the movement source picker. */
+  async getItemBalances(stockItemId: string): Promise<
+    { location_id: string; location_name: string; qty_on_hand: number; qty_available: number; avg_unit_cost: number }[]
+  > {
+    const { data: bals } = await supabase
+      .from('stock_balances')
+      .select('location_id, qty_on_hand, qty_available, avg_unit_cost')
+      .eq('stock_item_id', stockItemId);
+    const locIds = Array.from(new Set((bals || []).map((b: any) => b.location_id)));
+    const { data: locs } = locIds.length
+      ? await supabase.from('stock_locations').select('id, name').in('id', locIds)
+      : { data: [] as any[] };
+    const nameById = new Map((locs || []).map((l: any) => [l.id, l.name]));
+    return (bals || []).map((b: any) => ({
+      location_id: b.location_id,
+      location_name: nameById.get(b.location_id) || 'Store',
+      qty_on_hand: Number(b.qty_on_hand) || 0,
+      qty_available: Number(b.qty_available) || 0,
+      avg_unit_cost: Number(b.avg_unit_cost) || 0,
+    }));
+  },
+
+  /** Active projects for linking a movement (cost charge). */
+  async getProjects(): Promise<{ id: string; project_number: string }[]> {
+    const { data } = await supabase
+      .from('projects')
+      .select('id, project_number')
+      .order('project_number', { ascending: false });
+    return data || [];
   },
 
   // ---------- Stock item registration ----------
@@ -362,6 +402,7 @@ export const warehouseService = {
     unit_cost: number;
     project_id?: string | null;
     reason?: string | null;
+    received_by_name?: string | null;
   }): Promise<string> {
     const INBOUND: StockTransactionType[] = ['GRN_RECEIPT', 'RETURN_FROM_SITE', 'TRANSFER_IN', 'ADJUSTMENT_IN'];
     const sign = INBOUND.includes(input.type) ? 1 : -1;
@@ -380,45 +421,82 @@ export const warehouseService = {
       project_id: input.project_id || null,
       counterparty_location_id: null,
       reason: input.reason || null,
+      received_by_name: input.received_by_name || null,
     } as any);
   },
 
   // ---------- Goods movements ----------
   async getMovements(limit = 200): Promise<MovementRow[]> {
-    const txns = await safe<any[]>(
-      supabase
-        .from('stock_transactions')
-        .select('id, transaction_number, type, qty, unit_cost, total_value, reason, created_at, project_id, stock_items(pricing_items(item_code, description)), stock_locations!location_id(name)')
-        .order('created_at', { ascending: false })
-        .limit(limit),
-      []
-    );
-
-    // Resolve project numbers separately (no reliable PostgREST embed path)
-    const projectIds = Array.from(new Set(txns.map((t: any) => t.project_id).filter(Boolean))) as string[];
-    let projectMap = new Map<string, string>();
-    if (projectIds.length > 0) {
-      const projects = await safe<any[]>(
-        supabase.from('projects').select('id, project_number').in('id', projectIds),
-        []
-      );
-      projectMap = new Map(projects.map((p: any) => [p.id, p.project_number]));
+    const baseCols = 'id, transaction_number, type, qty, unit_cost, total_value, reason, created_at, project_id, performed_by, counterparty_location_id, stock_items(pricing_items(item_code, description)), stock_locations!location_id(name)';
+    // Prefer the receiver column; fall back if the migration isn't applied yet.
+    const primary = await supabase
+      .from('stock_transactions')
+      .select(`${baseCols}, received_by_name`)
+      .order('created_at', { ascending: false })
+      .limit(limit);
+    let txnsData: any[] | null = primary.data;
+    if (primary.error) {
+      const fallback = await supabase
+        .from('stock_transactions').select(baseCols)
+        .order('created_at', { ascending: false }).limit(limit);
+      txnsData = fallback.data;
     }
+    const txns: any[] = txnsData || [];
 
-    return txns.map((t: any) => ({
-      id: t.id,
-      transaction_number: t.transaction_number,
-      type: t.type,
-      item_code: t.stock_items?.pricing_items?.item_code || '—',
-      description: t.stock_items?.pricing_items?.description || '—',
-      qty: Number(t.qty),
-      unit_cost: Number(t.unit_cost),
-      total_value: Number(t.total_value),
-      location_name: t.stock_locations?.name || '—',
-      project_number: t.project_id ? (projectMap.get(t.project_id) || null) : null,
-      reason: t.reason,
-      created_at: t.created_at,
-    }));
+    // Resolve project numbers, counterparty locations and performers separately
+    const projectIds = Array.from(new Set(txns.map((t: any) => t.project_id).filter(Boolean))) as string[];
+    const cpIds = Array.from(new Set(txns.map((t: any) => t.counterparty_location_id).filter(Boolean))) as string[];
+    const userIds = Array.from(new Set(txns.map((t: any) => t.performed_by).filter(Boolean))) as string[];
+
+    const [projects, cpLocs, performers] = await Promise.all([
+      projectIds.length ? safe<any[]>(supabase.from('projects').select('id, project_number').in('id', projectIds), []) : Promise.resolve([]),
+      cpIds.length ? safe<any[]>(supabase.from('stock_locations').select('id, name').in('id', cpIds), []) : Promise.resolve([]),
+      userIds.length ? safe<any[]>(supabase.from('profiles').select('id, full_name').in('id', userIds), []) : Promise.resolve([]),
+    ]);
+    const projectMap = new Map(projects.map((p: any) => [p.id, p.project_number]));
+    const cpMap = new Map(cpLocs.map((l: any) => [l.id, l.name]));
+    const userMap = new Map(performers.map((u: any) => [u.id, u.full_name]));
+
+    // Movements with a positive qty bring stock IN; negative take it OUT.
+    const INBOUND = new Set(['GRN_RECEIPT', 'TRANSFER_IN', 'RETURN_FROM_SITE', 'ADJUSTMENT_IN']);
+
+    return txns.map((t: any) => {
+      const loc = t.stock_locations?.name || '—';
+      const cp = t.counterparty_location_id ? (cpMap.get(t.counterparty_location_id) || '—') : null;
+      const proj = t.project_id ? (projectMap.get(t.project_id) || null) : null;
+      const inbound = INBOUND.has(t.type) || Number(t.qty) > 0;
+
+      // From/To resolved relative to our store
+      let from_name: string, to_name: string;
+      if (inbound) {
+        from_name = cp || (t.type === 'GRN_RECEIPT' ? 'Supplier' : t.type === 'RETURN_FROM_SITE' ? (proj || 'Site') : '—');
+        to_name = loc;
+      } else {
+        from_name = loc;
+        to_name = cp || proj ||
+          (t.type === 'ISSUE_TO_PROJECT' ? 'Project / site' : t.type === 'RETURN_TO_SUPPLIER' ? 'Supplier'
+            : t.type === 'WRITE_OFF' ? 'Write-off' : '—');
+      }
+
+      return {
+        id: t.id,
+        transaction_number: t.transaction_number,
+        type: t.type,
+        item_code: t.stock_items?.pricing_items?.item_code || '—',
+        description: t.stock_items?.pricing_items?.description || '—',
+        qty: Number(t.qty),
+        unit_cost: Number(t.unit_cost),
+        total_value: Number(t.total_value),
+        location_name: loc,
+        from_name,
+        to_name,
+        received_by: t.received_by_name || null,
+        issued_by: t.performed_by ? (userMap.get(t.performed_by) || null) : null,
+        project_number: proj,
+        reason: t.reason,
+        created_at: t.created_at,
+      };
+    });
   },
 };
 

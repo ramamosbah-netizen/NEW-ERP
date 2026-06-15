@@ -212,14 +212,15 @@ export const stockService = {
     date_from?: string;
     date_to?: string;
   }): Promise<StockTransaction[]> {
+    // NOTE: stock_transactions has no FK to projects/profiles in this DB →
+    // those embeds PGRST200. Embed only the safe relations; resolve
+    // project_number + performer_name via separate keyed lookups.
     let query = supabase
       .from('stock_transactions')
       .select(`
         *,
         stock_items(pricing_items(item_code, description, unit)),
-        stock_locations(name),
-        projects(project_number),
-        profiles:performed_by(full_name)
+        stock_locations(name)
       `)
       .order('created_at', { ascending: false });
 
@@ -232,15 +233,25 @@ export const stockService = {
 
     const { data, error } = await query;
     if (error) throw error;
+    const rows = data || [];
 
-    return (data || []).map(row => ({
+    const projectIds = [...new Set(rows.map((r: any) => r.project_id).filter(Boolean))];
+    const performerIds = [...new Set(rows.map((r: any) => r.performed_by).filter(Boolean))];
+    const [projRes, profRes] = await Promise.all([
+      projectIds.length ? supabase.from('projects').select('id, project_number').in('id', projectIds) : Promise.resolve({ data: [] as any[] }),
+      performerIds.length ? supabase.from('profiles').select('id, full_name').in('id', performerIds) : Promise.resolve({ data: [] as any[] }),
+    ]);
+    const projMap = new Map((projRes.data || []).map((p: any) => [p.id, p.project_number]));
+    const profMap = new Map((profRes.data || []).map((p: any) => [p.id, p.full_name]));
+
+    return rows.map((row: any) => ({
       ...row,
       item_code: row.stock_items?.pricing_items?.item_code,
       item_description: row.stock_items?.pricing_items?.description,
       unit: row.stock_items?.pricing_items?.unit,
       location_name: row.stock_locations?.name,
-      project_number: row.projects?.project_number,
-      performer_name: row.profiles?.full_name
+      project_number: row.project_id ? projMap.get(row.project_id) : undefined,
+      performer_name: row.performed_by ? profMap.get(row.performed_by) : undefined
     })) as StockTransaction[];
   },
 
@@ -252,12 +263,13 @@ export const stockService = {
     location_id?: string;
     status?: string;
   }): Promise<SerialUnit[]> {
+    // serial_units has no FK to projects in this DB → that embed PGRST200.
+    // Embed the safe location relation; resolve project_name separately.
     let query = supabase
       .from('serial_units')
       .select(`
         *,
-        stock_locations(name),
-        projects(name)
+        stock_locations(name)
       `);
 
     if (filters?.stock_item_id) query = query.eq('stock_item_id', filters.stock_item_id);
@@ -266,11 +278,19 @@ export const stockService = {
 
     const { data, error } = await query;
     if (error) throw error;
+    const rows = data || [];
 
-    return (data || []).map(row => ({
+    const projectIds = [...new Set(rows.map((r: any) => r.project_id).filter(Boolean))];
+    const projMap = new Map<string, string>();
+    if (projectIds.length) {
+      const { data: projs } = await supabase.from('projects').select('id, name').in('id', projectIds);
+      (projs || []).forEach((p: any) => projMap.set(p.id, p.name));
+    }
+
+    return rows.map((row: any) => ({
       ...row,
       location_name: row.stock_locations?.name,
-      project_name: row.projects?.name
+      project_name: row.project_id ? projMap.get(row.project_id) : undefined
     })) as SerialUnit[];
   },
 

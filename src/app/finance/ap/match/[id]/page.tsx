@@ -6,17 +6,25 @@
 
 'use client';
 
-import React, { useState, use } from 'react';
+import React, { useState, use, useEffect } from 'react';
 import Link from 'next/link';
 import { useSupplierInvoice } from '@/hooks/useSupplierInvoices';
-import { 
-  SUPPLIER_INVOICE_STATUS_LABELS, 
+import { supplierInvoiceService } from '@/services/supplierInvoiceService';
+import { runUploadPipeline } from '@/lib/document-upload-service';
+import { supabase } from '@/lib/supabase';
+import { poPDFService } from '@/services/poPDFService';
+import { prService } from '@/services/prService';
+import { prPDFService } from '@/lib/pr-pdf';
+import { exportPayrollSheetExcel } from '@/lib/payroll-export';
+import WorkflowPanel from '@/components/workflow/WorkflowPanel';
+import {
+  SUPPLIER_INVOICE_STATUS_LABELS,
   SUPPLIER_INVOICE_STATUS_COLORS,
   MATCH_STATUS_LABELS,
   MATCH_STATUS_COLORS,
   SUPPLIER_INVOICE_TYPE_LABELS
 } from '@/constants/finance.constants';
-import { ArrowLeft, CheckCircle, XCircle, AlertTriangle, ShieldCheck, ShieldAlert, FileText } from 'lucide-react';
+import { ArrowLeft, CheckCircle, XCircle, AlertTriangle, ShieldCheck, ShieldAlert, FileText, Package, ClipboardList, Users, Paperclip } from 'lucide-react';
 
 export function MatchReviewPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -24,6 +32,126 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
 
   const [overrideReason, setOverrideReason] = useState('');
   const [showOverrideModal, setShowOverrideModal] = useState(false);
+
+  // Source / justification links (LPO → PR, payroll, attached document)
+  const [src, setSrc] = useState<{
+    po?: { id: string; po_number: string };
+    pr?: { id: string; pr_number: string };
+    sourceDoc?: { path: string; name: string };
+  }>({});
+
+  useEffect(() => {
+    if (!invoice) return;
+    (async () => {
+      const next: typeof src = {};
+      if ((invoice as any).po_id) {
+        const { data: po } = await supabase.from('purchase_orders')
+          .select('id, po_number, pr_id').eq('id', (invoice as any).po_id).maybeSingle();
+        if (po) {
+          next.po = { id: po.id, po_number: po.po_number };
+          if (po.pr_id) {
+            const { data: pr } = await supabase.from('purchase_requests')
+              .select('id, pr_number').eq('id', po.pr_id).maybeSingle();
+            if (pr) next.pr = { id: pr.id, pr_number: pr.pr_number };
+          }
+        }
+      }
+      if ((invoice as any).source_document_id) {
+        const { data: doc } = await supabase.from('documents')
+          .select('storage_path, original_filename, title').eq('id', (invoice as any).source_document_id).maybeSingle();
+        if (doc) next.sourceDoc = { path: doc.storage_path, name: doc.original_filename || doc.title || 'Attached invoice' };
+      }
+      setSrc(next);
+    })();
+  }, [invoice]);
+
+  const isPayroll = (invoice?.supplier_invoice_number || '').startsWith('PAY-');
+
+  const viewSourceDoc = async () => {
+    if (!src.sourceDoc) return;
+    try {
+      const { data, error } = await supabase.storage
+        .from('documents').createSignedUrl(src.sourceDoc.path, 300, { download: src.sourceDoc.name });
+      if (error || !data?.signedUrl) throw error || new Error('No URL');
+      window.open(data.signedUrl, '_blank');
+    } catch { setValErr('Could not open the attached document.'); }
+  };
+
+  // Source documents open as the final PDF/Excel output (no system-page access needed)
+  const openLpoPdf = async () => {
+    if (!src.po) return;
+    try {
+      const [{ data: po }, { data: items }] = await Promise.all([
+        supabase.from('purchase_orders').select('*').eq('id', src.po.id).single(),
+        supabase.from('po_items').select('*').eq('po_id', src.po.id).order('line_no'),
+      ]);
+      const pdf = await poPDFService.generatePOPDF(po as any, (items || []) as any);
+      pdf.output('dataurlnewwindow');
+    } catch { setValErr('Could not generate the LPO PDF.'); }
+  };
+
+  const openPrPdf = async () => {
+    if (!src.pr) return;
+    try {
+      const pr = await prService.get(src.pr.id);
+      prPDFService.open(pr as any);
+    } catch { setValErr('Could not generate the PR PDF.'); }
+  };
+
+  const openPayrollSheet = async () => {
+    const m = /^PAY-(\d{4})-(\d{2})/.exec(invoice?.supplier_invoice_number || '');
+    if (!m) return;
+    try { await exportPayrollSheetExcel(`${m[1]}-${m[2]}`); }
+    catch (e: any) { setValErr(e.message || 'Could not export the payroll sheet.'); }
+  };
+
+  // DRAFT → validate (record the real supplier invoice)
+  const [val, setVal] = useState({ number: '', date: '', amount: '', vat_applicable: true });
+  const [valDoc, setValDoc] = useState<{ id: string; name: string } | null>(null);
+  const [valBusy, setValBusy] = useState(false);
+  const [valErr, setValErr] = useState<string | null>(null);
+
+  const validate = async () => {
+    const amt = Number(val.amount) || 0;
+    if (!val.number.trim()) { setValErr('Enter the supplier invoice number.'); return; }
+    if (!(amt > 0)) { setValErr('Enter the invoice amount.'); return; }
+    setValBusy(true); setValErr(null);
+    try {
+      const vatAmt = val.vat_applicable ? Math.round(amt * 0.05 * 100) / 100 : 0;
+      await supplierInvoiceService.validateExpected(id, {
+        supplier_invoice_number: val.number,
+        invoice_date: val.date || undefined,
+        taxable_amount: amt, vat_amount: vatAmt, total: Math.round((amt + vatAmt) * 100) / 100,
+        source_document_id: valDoc?.id || null,
+      });
+      window.location.reload();
+    } catch (e: any) { setValErr(e.message || 'Validation failed'); setValBusy(false); }
+  };
+
+  const uploadInvoiceDoc = async (file: File | undefined) => {
+    if (!file) return;
+    setValBusy(true); setValErr(null);
+    try {
+      const doc = await runUploadPipeline(file, 'SUPPLIER', undefined, ['supplier-invoice']);
+      setValDoc({ id: doc.id, name: file.name });
+    } catch (e: any) {
+      const m = /^DUPLICATE_FOUND:([^:]+):(.*)$/.exec(e?.message || '');
+      if (m) setValDoc({ id: m[1], name: m[2] || file.name });
+      else setValErr(e.message || 'Upload failed');
+    } finally { setValBusy(false); }
+  };
+
+  const viewProforma = async () => {
+    const path = (invoice as any)?.proforma_path;
+    if (!path) return;
+    try {
+      const { data, error } = await supabase.storage
+        .from('tender-documents')
+        .createSignedUrl(path, 300, { download: (invoice as any)?.proforma_name || true });
+      if (error || !data?.signedUrl) throw error || new Error('No URL');
+      window.open(data.signedUrl, '_blank');
+    } catch { setValErr('Could not open the proforma.'); }
+  };
 
   const formatAED = (v: number) => {
     return new Intl.NumberFormat('en-AE', { minimumFractionDigits: 2 }).format(v) + ' AED';
@@ -234,6 +362,111 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
             )}
           </div>
         )}
+
+        {/* Source & justification — why this bill exists */}
+        <div className="mb-6 bg-slate-950/60 border border-slate-900 rounded p-5">
+          <div className="flex items-center gap-2 text-[11px] font-mono text-slate-400 uppercase tracking-widest mb-3">
+            <FileText size={13} /> Source &amp; Justification
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {src.po && (
+              <button onClick={openLpoPdf}
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded border border-slate-800 bg-[#0a0f26] text-xs text-slate-200 hover:border-emerald-500/50 hover:text-emerald-300 transition-all cursor-pointer">
+                <Package size={13} /> LPO {src.po.po_number} <span className="opacity-50 text-[10px]">PDF</span>
+              </button>
+            )}
+            {src.pr && (
+              <button onClick={openPrPdf}
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded border border-slate-800 bg-[#0a0f26] text-xs text-slate-200 hover:border-emerald-500/50 hover:text-emerald-300 transition-all cursor-pointer">
+                <ClipboardList size={13} /> Purchase Request {src.pr.pr_number} <span className="opacity-50 text-[10px]">PDF</span>
+              </button>
+            )}
+            {isPayroll && (
+              <button onClick={openPayrollSheet}
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded border border-slate-800 bg-[#0a0f26] text-xs text-slate-200 hover:border-emerald-500/50 hover:text-emerald-300 transition-all cursor-pointer">
+                <Users size={13} /> Payroll sheet <span className="opacity-50 text-[10px]">XLSX</span>
+              </button>
+            )}
+            {(invoice as any).proforma_path && (
+              <button onClick={viewProforma}
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded border border-slate-800 bg-[#0a0f26] text-xs text-slate-200 hover:border-emerald-500/50 hover:text-emerald-300 transition-all cursor-pointer">
+                <FileText size={13} /> Proforma{(invoice as any).proforma_name ? ` — ${(invoice as any).proforma_name}` : ''}
+              </button>
+            )}
+            {src.sourceDoc && (
+              <button onClick={viewSourceDoc}
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded border border-slate-800 bg-[#0a0f26] text-xs text-slate-200 hover:border-emerald-500/50 hover:text-emerald-300 transition-all cursor-pointer">
+                <Paperclip size={13} /> Invoice / receipt — {src.sourceDoc.name}
+              </button>
+            )}
+            {!src.po && !isPayroll && !src.sourceDoc && !(invoice as any).proforma_path && (
+              <span className="text-xs text-slate-500">
+                {(invoice as any).cost_bucket ? `Direct expense · ${(invoice as any).cost_bucket}` : 'No linked source document.'}
+                {(invoice as any).expense_category ? ` · ${(invoice as any).expense_category}` : ''}
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* DRAFT payable → validate the supplier's actual invoice */}
+        {invoice.status === 'DRAFT' && (
+          <div className="mb-6 bg-slate-950/60 border border-slate-800 rounded p-5">
+            <div className="flex items-center gap-2 text-sm font-bold text-emerald-300 uppercase tracking-wider mb-1">
+              <FileText size={15} /> Validate supplier invoice
+            </div>
+            <p className="text-xs text-slate-500 mb-3">
+              This is a draft payable from the approved LPO. Record the supplier&apos;s actual invoice to register it.
+            </p>
+            {(invoice as any).proforma_path && (
+              <button onClick={viewProforma}
+                className="inline-flex items-center gap-1.5 mb-4 px-3 py-1.5 rounded border border-slate-700 text-[11px] text-emerald-300 hover:bg-emerald-400/10 cursor-pointer">
+                <FileText size={12} /> View imported proforma{(invoice as any).proforma_name ? ` — ${(invoice as any).proforma_name}` : ''}
+              </button>
+            )}
+            {valErr && <div className="text-xs text-red-400 mb-3">{valErr}</div>}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div>
+                <label className="text-[10px] text-slate-500 uppercase">Invoice no *</label>
+                <input value={val.number} onChange={e => setVal({ ...val, number: e.target.value })}
+                  className="w-full mt-1 bg-[#0a0f26] border border-slate-800 rounded py-2 px-3 text-xs text-slate-200" />
+              </div>
+              <div>
+                <label className="text-[10px] text-slate-500 uppercase">Invoice date</label>
+                <input type="date" value={val.date} onChange={e => setVal({ ...val, date: e.target.value })}
+                  className="w-full mt-1 bg-[#0a0f26] border border-slate-800 rounded py-2 px-3 text-xs text-slate-200" />
+              </div>
+              <div>
+                <label className="text-[10px] text-slate-500 uppercase">Amount (excl VAT)</label>
+                <input type="number" step="any" value={val.amount} onChange={e => setVal({ ...val, amount: e.target.value })}
+                  placeholder={String(invoice.taxable_amount || '')}
+                  className="w-full mt-1 bg-[#0a0f26] border border-slate-800 rounded py-2 px-3 text-xs text-slate-200 text-right" />
+              </div>
+              <label className="flex items-center gap-2 text-xs text-slate-400 mt-5 cursor-pointer">
+                <input type="checkbox" checked={val.vat_applicable} onChange={e => setVal({ ...val, vat_applicable: e.target.checked })} /> +5% VAT
+              </label>
+            </div>
+            <div className="flex items-center gap-3 mt-4">
+              <label className="flex items-center gap-2 px-3 py-2 rounded border border-dashed border-slate-700 text-xs text-slate-400 cursor-pointer hover:border-emerald-500/50">
+                {valDoc ? `✓ ${valDoc.name}` : (valBusy ? 'Uploading…' : 'Attach invoice (image/PDF)')}
+                <input type="file" accept="image/*,application/pdf" className="hidden" disabled={valBusy}
+                  onChange={e => uploadInvoiceDoc(e.target.files?.[0])} />
+              </label>
+              <button onClick={validate} disabled={valBusy}
+                className="ml-auto flex items-center gap-1.5 px-4 py-2 bg-emerald-400 text-slate-950 text-xs font-bold rounded hover:bg-emerald-300 disabled:opacity-50 uppercase tracking-wider">
+                <CheckCircle size={14} /> Validate & register
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Configurable approval workflow (Admin Center → Workflows, module "SINV").
+            Renders only once a supplier-bill workflow is configured. */}
+        <WorkflowPanel
+          moduleKey="SINV"
+          entityId={id}
+          context={{ status: invoice.status, total: Number(invoice.total) || 0, match_status: invoice.match_status }}
+          className="mb-6"
+        />
 
         {/* Bill Metadata & Items Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

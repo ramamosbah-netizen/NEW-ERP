@@ -9,6 +9,7 @@ interface PermissionsContextType {
   permissions: EffectivePermission[];
   userId: string | null;
   userDepartment: string | null;
+  role: string | null;
   loading: boolean;
   hasPermission: (
     permissionKey: string,
@@ -25,6 +26,7 @@ export const PermissionsProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const [permissions, setPermissions] = useState<EffectivePermission[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
   const [userDepartment, setUserDepartment] = useState<string | null>(null);
+  const [role, setRole] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [, startTransition] = useTransition();
 
@@ -35,11 +37,18 @@ export const PermissionsProvider: React.FC<{ children: React.ReactNode }> = ({ c
         setPermissions([]);
         setUserId(null);
         setUserDepartment(null);
+        setRole(null);
         setLoading(false);
         return;
       }
 
       setUserId(user.id);
+
+      // Load the user's role (for route-level access control)
+      try {
+        const { data: prof } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle();
+        setRole(prof?.role || null);
+      } catch { /* role optional */ }
 
       // Load effective permissions
       const effective = await permissionService.getUserEffectivePermissions(user.id);
@@ -86,6 +95,7 @@ export const PermissionsProvider: React.FC<{ children: React.ReactNode }> = ({ c
         setPermissions([]);
         setUserId(null);
         setUserDepartment(null);
+        setRole(null);
         setLoading(false);
       }
     });
@@ -143,7 +153,7 @@ export const PermissionsProvider: React.FC<{ children: React.ReactNode }> = ({ c
   };
 
   return (
-    <PermissionsContext.Provider value={{ permissions, userId, userDepartment, loading, hasPermission, refresh }}>
+    <PermissionsContext.Provider value={{ permissions, userId, userDepartment, role, loading, hasPermission, refresh }}>
       {children}
     </PermissionsContext.Provider>
   );

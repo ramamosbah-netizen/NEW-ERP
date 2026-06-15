@@ -53,7 +53,7 @@ export const supplierInvoiceService = {
   async fetchSupplierInvoiceById(id: string): Promise<(SupplierInvoice & { items: SupplierInvoiceItem[] }) | null> {
     const { data: invoice, error: invError } = await supabase
       .from('supplier_invoices')
-      .select('*, pricing_suppliers(name, trn_number)') // trn_number if exists
+      .select('*, pricing_suppliers(name)')
       .eq('id', id)
       .single();
 
@@ -74,6 +74,171 @@ export const supplierInvoiceService = {
       supplier_name: (invoice as any).pricing_suppliers?.name || 'Unknown Supplier',
       items: (items || []) as SupplierInvoiceItem[]
     };
+  },
+
+  /**
+   * Auto-creates an "expected" Accounts Payable bill the moment an LPO is
+   * emitted to a supplier, so every purchase surfaces in AP without waiting
+   * for the supplier's tax invoice. The accountant later completes it (real
+   * invoice number, amounts, PDF) and submits it through the approval workflow.
+   *
+   * Idempotent: skips if a bill already exists for this PO. Best-effort —
+   * callers should not let a failure block sending the LPO.
+   */
+  async createExpectedFromPO(poId: string): Promise<string | null> {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return null;
+
+    // Skip if a bill already exists for this PO
+    const { data: existing } = await supabase
+      .from('supplier_invoices')
+      .select('id')
+      .eq('po_id', poId)
+      .limit(1);
+    if (existing && existing.length > 0) return existing[0].id;
+
+    const { data: po } = await supabase
+      .from('purchase_orders')
+      .select('po_number, supplier_id, project_id, subtotal, discount_amount, vat_amount, total, payment_terms_days, proforma_invoice_path, proforma_invoice_name')
+      .eq('id', poId)
+      .single();
+    if (!po) return null;
+
+    const today = new Date();
+    const due = new Date(today);
+    due.setDate(due.getDate() + (Number(po.payment_terms_days) || 30));
+    const taxable = Math.round(((Number(po.subtotal) || 0) - (Number(po.discount_amount) || 0)) * 100) / 100;
+    const hasProforma = !!po.proforma_invoice_path;
+
+    // Best-effort: tolerate DBs where the DRAFT/proforma migration isn't applied
+    const payload: Record<string, any> = {
+      supplier_id: po.supplier_id,
+      supplier_invoice_number: `AWAITING-${po.po_number}`, // placeholder until the real invoice arrives
+      po_id: poId,
+      project_id: po.project_id || null,
+      invoice_type: 'PO_MATCHED',
+      invoice_date: today.toISOString().slice(0, 10),
+      received_date: today.toISOString().slice(0, 10),
+      due_date: due.toISOString().slice(0, 10),
+      taxable_amount: taxable,
+      vat_amount: Number(po.vat_amount) || 0,
+      total: Number(po.total) || 0,
+      match_status: 'NA',
+      status: 'DRAFT',
+      cost_bucket: po.project_id ? 'PROJECT' : 'OFFICE',
+      proforma_path: po.proforma_invoice_path || null,
+      proforma_name: po.proforma_invoice_name || null,
+      notes: `Action to spend: created from approved LPO ${po.po_number}.` +
+        (hasProforma ? ` Supplier proforma "${po.proforma_invoice_name}" auto-imported.` : '') +
+        ' Upload and validate the supplier tax invoice to register it.',
+      created_by: user.id,
+    };
+
+    let { data, error } = await supabase.from('supplier_invoices').insert(payload).select('id').single();
+    if (error && /(status|cost_bucket|proforma)/i.test(error.message || '')) {
+      // migration not yet applied — fall back to a registered bill without the new fields
+      const { proforma_path, proforma_name, cost_bucket, ...legacy } = payload;
+      legacy.status = 'REGISTERED';
+      ({ data, error } = await supabase.from('supplier_invoices').insert(legacy).select('id').single());
+    }
+    if (error) throw error;
+    return data?.id ?? null;
+  },
+
+  /**
+   * Validates a DRAFT payable into a registered bill: records the supplier's
+   * actual invoice number, amounts and attached document. The internal_ref
+   * (id) already exists; this confirms the real invoice against it.
+   */
+  async validateExpected(id: string, input: {
+    supplier_invoice_number: string;
+    invoice_date?: string;
+    taxable_amount: number;
+    vat_amount: number;
+    total: number;
+    source_document_id?: string | null;
+  }): Promise<void> {
+    if (!input.supplier_invoice_number?.trim()) throw new Error('Enter the supplier invoice number to validate.');
+    const patch: Record<string, any> = {
+      supplier_invoice_number: input.supplier_invoice_number.trim(),
+      taxable_amount: Number(input.taxable_amount) || 0,
+      vat_amount: Number(input.vat_amount) || 0,
+      total: Number(input.total) || 0,
+      status: 'REGISTERED',
+      updated_at: new Date().toISOString(),
+    };
+    if (input.invoice_date) patch.invoice_date = input.invoice_date;
+    if (input.source_document_id) patch.source_document_id = input.source_document_id;
+    const { error } = await supabase.from('supplier_invoices').update(patch).eq('id', id);
+    if (error) throw new Error(error.message);
+  },
+
+  /**
+   * Records a direct expense (non-LPO purchase, car petrol, petty cash, office
+   * expense) as an AP bill. Always carries an invoice/receipt reference and a
+   * cost bucket (PROJECT via LPO, PETTY_CASH project-linked, or OFFICE). If
+   * paid, it debits the chosen payment account (no separate supplier_payment,
+   * so payee-less expenses work — the bill itself holds amount_paid + account).
+   */
+  async recordExpense(input: {
+    cost_bucket: 'PROJECT' | 'PETTY_CASH' | 'OFFICE';
+    project_id?: string | null;
+    po_id?: string | null;
+    supplier_id?: string | null;
+    payee_name?: string | null;
+    expense_category: string;
+    supplier_invoice_number: string;   // the invoice / receipt reference (required)
+    invoice_date: string;
+    taxable_amount: number;
+    vat_amount: number;
+    total: number;
+    payment_account_id?: string | null;
+    source_document_id?: string | null;
+    mark_paid?: boolean;
+    notes?: string | null;
+  }): Promise<SupplierInvoice> {
+    const user = (await supabase.auth.getUser()).data.user;
+    if (!user) throw new Error('Authentication required');
+
+    if (!input.supplier_invoice_number?.trim()) throw new Error('An invoice / receipt reference is required for every expense.');
+    if (!(Number(input.total) > 0)) throw new Error('Enter an amount greater than zero.');
+    if ((input.cost_bucket === 'PROJECT' || input.cost_bucket === 'PETTY_CASH') && !input.project_id) {
+      throw new Error('Select the project this expense belongs to.');
+    }
+    if (input.mark_paid && !input.payment_account_id) {
+      throw new Error('Choose the card / account it was paid from.');
+    }
+
+    const today = new Date();
+    const due = new Date(input.invoice_date); due.setDate(due.getDate() + 30);
+
+    const payload: Record<string, any> = {
+      supplier_id: input.supplier_id || null,
+      supplier_invoice_number: input.supplier_invoice_number.trim(),
+      po_id: input.po_id || null,
+      project_id: (input.cost_bucket === 'OFFICE') ? null : (input.project_id || null),
+      invoice_type: input.po_id ? 'PO_MATCHED' : 'DIRECT_EXPENSE',
+      invoice_date: input.invoice_date,
+      received_date: today.toISOString().slice(0, 10),
+      due_date: due.toISOString().slice(0, 10),
+      taxable_amount: Number(input.taxable_amount) || 0,
+      vat_amount: Number(input.vat_amount) || 0,
+      total: Number(input.total),
+      match_status: 'NA',
+      status: input.mark_paid ? 'PAID' : 'REGISTERED',
+      amount_paid: input.mark_paid ? Number(input.total) : 0,
+      cost_bucket: input.cost_bucket,
+      payment_account_id: input.payment_account_id || null,
+      payee_name: input.payee_name?.trim() || null,
+      expense_category: input.expense_category || 'OTHER',
+      source_document_id: input.source_document_id || null,
+      notes: input.notes?.trim() || null,
+      created_by: user.id,
+    };
+
+    const { data, error } = await supabase.from('supplier_invoices').insert(payload).select('*').single();
+    if (error) throw new Error(error.message);
+    return data as unknown as SupplierInvoice;
   },
 
   /**
@@ -304,6 +469,7 @@ export const supplierInvoiceService = {
       method: string;
       reference?: string;
       bank_account?: string;
+      payment_account_id?: string | null;
       notes?: string;
     },
     allocations: Array<{ invoiceId: string; amount: number }>
@@ -311,21 +477,23 @@ export const supplierInvoiceService = {
     const user = (await supabase.auth.getUser()).data.user;
     if (!user) throw new Error('Authentication required');
 
-    // 1. Insert Supplier Payment
-    const { data: payment, error: payError } = await supabase
-      .from('supplier_payments')
-      .insert({
-        supplier_id: paymentData.supplier_id,
-        amount: Number(paymentData.amount),
-        payment_date: paymentData.payment_date,
-        method: paymentData.method,
-        reference: paymentData.reference || null,
-        bank_account: paymentData.bank_account || null,
-        notes: paymentData.notes || null,
-        created_by: user.id
-      })
-      .select()
-      .single();
+    // 1. Insert Supplier Payment (links to a payment account so balances stay accurate)
+    const payInsert: Record<string, any> = {
+      supplier_id: paymentData.supplier_id,
+      amount: Number(paymentData.amount),
+      payment_date: paymentData.payment_date,
+      method: paymentData.method,
+      reference: paymentData.reference || null,
+      bank_account: paymentData.bank_account || null,
+      payment_account_id: paymentData.payment_account_id || null,
+      notes: paymentData.notes || null,
+      created_by: user.id
+    };
+    let { data: payment, error: payError } = await supabase.from('supplier_payments').insert(payInsert).select().single();
+    if (payError && /payment_account_id/i.test(payError.message || '')) {
+      const { payment_account_id, ...legacy } = payInsert;
+      ({ data: payment, error: payError } = await supabase.from('supplier_payments').insert(legacy).select().single());
+    }
 
     if (payError) throw payError;
 

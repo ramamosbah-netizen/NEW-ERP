@@ -13,6 +13,8 @@ import AppSidebar, { NAV_SECTIONS } from './AppSidebar';
 import AppTopbar from './AppTopbar';
 import { CommandPalette } from '@/components/ui/CommandPalette';
 import settingsService from '@/services/settingsService';
+import { usePermissions } from '@/lib/permissions/usePermissions';
+import { isRouteAllowed } from '@/lib/permissions/routeAccess';
 import './layout.css';
 
 // Routes that should NOT show the shell (auth pages)
@@ -20,6 +22,7 @@ const NO_SHELL_ROUTES = ['/signin', '/signup'];
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const { role, loading: permsLoading } = usePermissions();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [enabledModules, setEnabledModules] = useState<Record<string, boolean>>({});
@@ -149,6 +152,37 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 className="mt-2 bg-gradient-to-r from-emerald-500 to-emerald-600 text-slate-950 font-bold px-5 py-2 rounded-lg text-xs hover:from-emerald-400 hover:to-emerald-500 transition-all shadow-lg shadow-emerald-500/10 active:scale-98 select-none"
               >
                 Back to Dashboard
+              </Link>
+            </div>
+          </main>
+        </div>
+        <CommandPalette />
+      </div>
+    );
+  }
+
+  // Role-based route fence: restricted roles (e.g. accountant) can only reach
+  // their allowed sections. Unrestricted roles & admin pass through unchanged.
+  if (!permsLoading && pathname && !isRouteAllowed(role, pathname)) {
+    return (
+      <div className="erp-shell">
+        <AppSidebar mobileOpen={mobileOpen} onMobileClose={() => setMobileOpen(false)} />
+        <div className={`erp-shell-main ${sidebarCollapsed ? 'sidebar-collapsed' : 'sidebar-expanded'}`}>
+          <AppTopbar onMobileMenuToggle={handleMobileToggle} />
+          <main className="erp-shell-content flex-1 flex flex-col items-center justify-center p-6 text-center text-slate-100 bg-slate-950 min-h-[calc(100vh-60px)]">
+            <div className="p-8 bg-slate-900/30 border border-slate-900/80 rounded-2xl flex flex-col items-center max-w-md gap-4 shadow-2xl backdrop-blur-md">
+              <div className="rounded-2xl bg-red-500/10 p-4 border border-red-500/20 shadow-inner">
+                <AlertTriangle className="text-red-400" size={36} />
+              </div>
+              <h2 className="text-lg font-bold tracking-tight text-slate-150">Access Restricted</h2>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Your role ({role}) doesn&apos;t have access to this section. Contact your administrator if you need it.
+              </p>
+              <Link
+                href="/finance"
+                className="mt-2 bg-gradient-to-r from-emerald-500 to-emerald-600 text-slate-950 font-bold px-5 py-2 rounded-lg text-xs hover:from-emerald-400 hover:to-emerald-500 transition-all shadow-lg shadow-emerald-500/10 active:scale-98 select-none"
+              >
+                Go to my workspace
               </Link>
             </div>
           </main>

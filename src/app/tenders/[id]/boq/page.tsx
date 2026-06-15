@@ -1188,6 +1188,16 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
       <Button variant="secondary" size="sm" onClick={handleExportExcel} className="flex items-center gap-1.5 font-bold uppercase tracking-wider text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/5">
         <FileSpreadsheet size={13} /> Excel
       </Button>
+      <Button
+        variant="secondary"
+        size="sm"
+        onClick={() => boqId && router.push(`/procurement/rfq/new/${boqId}`)}
+        disabled={!boqId}
+        title={boqId ? 'Draft a quotation request to suppliers from this BOQ' : 'Save the BOQ first'}
+        className="flex items-center gap-1.5 font-bold uppercase tracking-wider text-blue-400 border-blue-500/20 hover:bg-blue-500/5"
+      >
+        <Mail size={13} /> Request Quotation
+      </Button>
     </div>
   );
 

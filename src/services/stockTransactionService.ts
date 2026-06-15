@@ -123,24 +123,31 @@ export const stockTransactionService = {
 
       // 7. Insert Transaction (autonumber trigger fires)
       const totalValue = Math.abs(tx.qty) * tx.unit_cost;
-      const { data: insertedTx, error: insertErr } = await supabase
-        .from('stock_transactions')
-        .insert({
-          type: tx.type,
-          stock_item_id: tx.stock_item_id,
-          location_id: tx.location_id,
-          qty: tx.qty,
-          unit_cost: tx.unit_cost,
-          total_value: totalValue,
-          source_type: tx.source_type,
-          source_id: tx.source_id || null,
-          project_id: tx.project_id || null,
-          counterparty_location_id: tx.counterparty_location_id || null,
-          reason: tx.reason || options?.overrideReason || null,
-          performed_by: user.id
-        })
-        .select()
-        .single();
+      const basePayload: Record<string, any> = {
+        type: tx.type,
+        stock_item_id: tx.stock_item_id,
+        location_id: tx.location_id,
+        qty: tx.qty,
+        unit_cost: tx.unit_cost,
+        total_value: totalValue,
+        source_type: tx.source_type,
+        source_id: tx.source_id || null,
+        project_id: tx.project_id || null,
+        counterparty_location_id: tx.counterparty_location_id || null,
+        reason: tx.reason || options?.overrideReason || null,
+        received_by_name: (tx as any).received_by_name || null,
+        performed_by: user.id
+      };
+
+      let { data: insertedTx, error: insertErr } = await supabase
+        .from('stock_transactions').insert(basePayload).select().single();
+
+      // Tolerate a not-yet-applied received_by_name migration (PGRST204)
+      if (insertErr && /received_by_name/i.test(insertErr.message || '')) {
+        const { received_by_name, ...withoutReceiver } = basePayload;
+        ({ data: insertedTx, error: insertErr } = await supabase
+          .from('stock_transactions').insert(withoutReceiver).select().single());
+      }
 
       if (insertErr) throw insertErr;
 
