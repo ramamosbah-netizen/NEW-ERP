@@ -87,6 +87,7 @@ const NAV_SECTIONS = [
     items: [
       { href: '/sales/dashboard', label: 'Pre-Sales Dashboard', icon: LayoutDashboard },
       { href: '/tenders', label: 'Tenders', icon: Briefcase },
+      { href: '/sales/pipeline', label: 'Sales Pipeline', icon: Briefcase },
       { href: '/quotations', label: 'Quotations', icon: FileText },
       { href: '/projects', label: 'Projects', icon: FolderKanban },
       { href: '/projects/controls', label: 'Project Controls', icon: SlidersHorizontal },
