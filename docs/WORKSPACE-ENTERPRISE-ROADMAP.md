@@ -21,4 +21,5 @@ Recharts where useful, sidebar link, RBAC, and a roadmap update.
 ## Status
 - ✅ **Module report** (`WORKSPACE-MODULE-REPORT.md`) + this roadmap.
 - ✅ **Phase 1 — Task Analytics** (`/tasks/analytics`): KPIs (total, open, overdue, blocked, completion rate), by-status pie, open-by-priority, by-origin, created-vs-done throughput. PDF/Excel.
-- ⏭ Then: Team Workload → Meeting Analytics → Notifications Analytics → Unified Calendar → Activity Timeline → Hub.
+- ✅ **Phase 2 — Team Workload** (`/tasks/team`): per-assignee open load, in-progress/blocked/overdue/high-urgent, KPIs (members loaded, open, avg load, unassigned), stacked workload-by-assignee chart, table. PDF/Excel.
+- ⏭ Then: Meeting Analytics → Notifications Analytics → Unified Calendar → Activity Timeline → Hub.
