@@ -29,4 +29,5 @@ RBAC (existing roles), audit logging, and a roadmap update.
 - ✅ **Module report** (`WAREHOUSE-MODULE-REPORT.md`) + this roadmap.
 - ✅ **Phase 1 — Inventory Dashboard** (`/warehouse/dashboard`).
 - ✅ **Phase 2 — Stock Count / Stock-take** (`/warehouse/stock-count` + `/[id]`). Also hardened broken embeds in stockCountService + stockService (getMovementLedger, getSerialUnits).
-- ⏭ Then: MRF → Replenishment → Aging → Dead Stock → Serial → Installed Assets → Forecasting → GL → Polish.
+- ✅ **Phase 3 — Material Requisitions (MRF)** (`/warehouse/mrf` + `/[id]`): create (draft/submit) → approve (reserve) → issue (→ project cost). Hardened material_requisitions embeds in mrfService.
+- ⏭ Then: Replenishment → Aging → Dead Stock → Serial → Installed Assets → Forecasting → GL → Polish.
