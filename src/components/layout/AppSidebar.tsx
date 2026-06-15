@@ -82,7 +82,12 @@ import {
   Fuel,
   TrendingDown,
   Trash2,
-  LayoutGrid
+  LayoutGrid,
+  KeySquare,
+  FileCode2,
+  Hash,
+  ScrollText,
+  ShieldCheck
 } from 'lucide-react';
 
 // Navigation structure: grouped sections
@@ -293,10 +298,20 @@ const NAV_SECTIONS = [
     id: 'admin',
     label: 'Administration',
     items: [
+      { href: '/admin/hub', label: 'Administration Hub', icon: LayoutDashboard },
+      { href: '/admin/audit/analytics', label: 'Audit Analytics', icon: Activity },
+      { href: '/admin/access', label: 'Access & Roles', icon: Users },
+      { href: '/admin/permissions', label: 'Permissions Matrix', icon: KeySquare },
+      { href: '/admin/workflows/analytics', label: 'Workflow Analytics', icon: Activity },
+      { href: '/admin/configuration', label: 'Configuration Audit', icon: SlidersHorizontal },
+      { href: '/admin/settings', label: 'Users, Roles & Settings', icon: ShieldCheck },
+      { href: '/admin/workflows', label: 'Workflow Designer', icon: GitCompare },
+      { href: '/admin/forms', label: 'Form Builder', icon: FileCode2 },
+      { href: '/admin/templates', label: 'Document Templates', icon: FileText },
+      { href: '/admin/rules', label: 'Rules Engine', icon: SlidersHorizontal },
+      { href: '/admin/numbering', label: 'Numbering', icon: Hash },
+      { href: '/admin/audit', label: 'Audit Log', icon: ScrollText },
       { href: '/admin', label: 'Admin Center', icon: Layers },
-      { href: '/admin/workflows', label: 'Workflows', icon: GitCompare },
-      { href: '/admin/settings', label: 'Settings', icon: Settings },
-      { href: '/admin/audit', label: 'Audit Log', icon: AlertTriangle },
     ],
   },
 ];
