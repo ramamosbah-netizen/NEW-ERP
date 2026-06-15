@@ -90,16 +90,16 @@ export default function VORegistryPage() {
     : 0;
 
   return (
-    <div className="min-h-screen bg-[#060814] text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex flex-col font-sans">
 <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-8 flex flex-col gap-6">
         
         {/* Header Title Bar */}
         <div className="flex justify-between items-center">
           <div>
-            <div className="text-[10px] text-slate-500 font-mono uppercase tracking-widest">
+            <div className="text-[10px] text-[var(--text-primary)]0 font-mono uppercase tracking-widest">
               Commercial & Billing Operations
             </div>
-            <h1 className="font-heading font-extrabold text-2xl tracking-tight text-slate-100 uppercase mt-1">
+            <h1 className="font-heading font-extrabold text-2xl tracking-tight text-[var(--text-primary)] uppercase mt-1">
               Variation Orders Registry (VO)
             </h1>
           </div>
@@ -107,13 +107,13 @@ export default function VORegistryPage() {
           <div className="flex gap-2">
             <Link
               href="/vo/create"
-              className="px-3.5 py-2 bg-emerald-400 text-slate-950 font-bold font-mono text-[11px] rounded hover:bg-emerald-300 transition-all uppercase flex items-center gap-1.5 shadow-[0_0_15px_rgba(0,229,160,0.15)] cursor-pointer"
+              className="px-3.5 py-2 bg-[var(--accent)] text-[var(--text-primary)] font-bold font-mono text-[11px] rounded hover:bg-[var(--accent)] transition-all uppercase flex items-center gap-1.5 shadow-[0_0_15px_var(--accent-glow)] cursor-pointer"
             >
               <Plus size={13} /> Capture New VO
             </Link>
             <button
               onClick={() => refetch()}
-              className="text-slate-400 hover:text-slate-200 p-2 rounded hover:bg-slate-900 border border-slate-800 hover:border-slate-700 transition-all cursor-pointer"
+              className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] p-2 rounded hover:bg-[var(--surface-hover)] border border-[var(--border)] hover:border-[var(--border)] transition-all cursor-pointer"
               title="Refresh Registry"
             >
               <RefreshCw size={14} />
@@ -123,65 +123,65 @@ export default function VORegistryPage() {
 
         {/* Global KPI Summary Bar */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-slate-950/60 border border-slate-900 rounded p-4 flex flex-col justify-between">
+          <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4 flex flex-col justify-between">
             <div>
-              <span className="text-slate-500 block uppercase font-mono text-[9px]">Approved variations</span>
-              <span className="font-mono text-lg font-extrabold text-emerald-400 mt-1 block">
+              <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Approved variations</span>
+              <span className="font-mono text-lg font-extrabold text-[var(--accent)] mt-1 block">
                 +{formatAED(totalApprovedAmount)}
               </span>
             </div>
-            <span className="text-[10px] text-slate-400 font-mono mt-2 block">
+            <span className="text-[10px] text-[var(--text-secondary)] font-mono mt-2 block">
               {totalApprovedCount} signed client variations
             </span>
           </div>
 
-          <div className="bg-slate-950/60 border border-slate-900 rounded p-4 flex flex-col justify-between">
+          <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4 flex flex-col justify-between">
             <div>
-              <span className="text-slate-500 block uppercase font-mono text-[9px]">Pending client sign-off</span>
-              <span className="font-mono text-lg font-extrabold text-amber-500 mt-1 block">
+              <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Pending client sign-off</span>
+              <span className="font-mono text-lg font-extrabold text-[var(--status-warning-text)] mt-1 block">
                 {formatAED(totalPendingAmount)}
               </span>
             </div>
-            <span className="text-[10px] text-slate-400 font-mono mt-2 block">
+            <span className="text-[10px] text-[var(--text-secondary)] font-mono mt-2 block">
               {totalPendingCount} variations in review cycle
             </span>
           </div>
 
-          <div className="bg-slate-950/60 border border-slate-900 rounded p-4 flex flex-col justify-between">
+          <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4 flex flex-col justify-between">
             <div>
-              <span className="text-slate-500 block uppercase font-mono text-[9px]">Proceed At-Risk Exposure</span>
-              <span className="font-mono text-lg font-extrabold text-rose-500 mt-1 block">
+              <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Proceed At-Risk Exposure</span>
+              <span className="font-mono text-lg font-extrabold text-[var(--status-danger-text)] mt-1 block">
                 {formatAED(totalAtRiskExposure)}
               </span>
             </div>
-            <span className="text-[10px] text-rose-400/80 font-mono mt-2 block flex items-center gap-1 font-bold">
+            <span className="text-[10px] text-[var(--status-danger-text)] font-mono mt-2 block flex items-center gap-1 font-bold">
               <ShieldAlert size={10} className="animate-pulse" /> {totalAtRiskCount} variations executing at risk
             </span>
           </div>
 
-          <div className="bg-slate-950/60 border border-slate-900 rounded p-4 flex flex-col justify-between">
+          <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4 flex flex-col justify-between">
             <div>
-              <span className="text-slate-500 block uppercase font-mono text-[9px]">Average Gross Margin</span>
-              <span className="font-mono text-lg font-extrabold text-slate-100 mt-1 block">
+              <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Average Gross Margin</span>
+              <span className="font-mono text-lg font-extrabold text-[var(--text-primary)] mt-1 block">
                 {averageMargin.toFixed(1)}%
               </span>
             </div>
-            <span className="text-[10px] text-slate-400 font-mono mt-2 block">
+            <span className="text-[10px] text-[var(--text-secondary)] font-mono mt-2 block">
               Direct profitability ratio
             </span>
           </div>
         </div>
 
         {/* Filter Strip */}
-        <div className="bg-slate-950/40 border border-slate-900 rounded p-4 flex flex-col gap-4">
-          <div className="text-[10px] font-mono text-emerald-400 uppercase tracking-widest flex items-center gap-1.5">
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4 flex flex-col gap-4">
+          <div className="text-[10px] font-mono text-[var(--accent)] uppercase tracking-widest flex items-center gap-1.5">
             <Filter size={11} /> Filter & Search Engine
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3.5">
             {/* Search Box */}
             <div className="relative">
-              <span className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-500">
+              <span className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-[var(--text-primary)]0">
                 <Search size={12} />
               </span>
               <input
@@ -189,7 +189,7 @@ export default function VORegistryPage() {
                 placeholder="Search VO # or title..."
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                className="w-full bg-[#0a0f26] border border-slate-800 rounded py-1.5 pl-8 pr-3 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50 font-mono"
+                className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-1.5 pl-8 pr-3 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)] font-mono"
               />
             </div>
 
@@ -198,7 +198,7 @@ export default function VORegistryPage() {
               <select
                 value={selectedProjectId}
                 onChange={e => setSelectedProjectId(e.target.value)}
-                className="w-full bg-[#0a0f26] border border-slate-800 rounded py-1.5 px-3 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50 font-mono"
+                className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-1.5 px-3 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)] font-mono"
               >
                 <option value="">All Projects</option>
                 {projects.map(p => (
@@ -212,7 +212,7 @@ export default function VORegistryPage() {
               <select
                 value={selectedStatus}
                 onChange={e => setSelectedStatus(e.target.value as any)}
-                className="w-full bg-[#0a0f26] border border-slate-800 rounded py-1.5 px-3 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50 font-mono"
+                className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-1.5 px-3 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)] font-mono"
               >
                 <option value="">All Statuses</option>
                 <option value="DRAFT">Draft</option>
@@ -231,7 +231,7 @@ export default function VORegistryPage() {
               <select
                 value={selectedType}
                 onChange={e => setSelectedType(e.target.value as any)}
-                className="w-full bg-[#0a0f26] border border-slate-800 rounded py-1.5 px-3 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50 font-mono"
+                className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-1.5 px-3 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)] font-mono"
               >
                 <option value="">All VO Types</option>
                 <option value="ADDITION">Addition (New Scope)</option>
@@ -252,7 +252,7 @@ export default function VORegistryPage() {
                   if (val === 'ALL') setIsAtRisk('ALL');
                   else setIsAtRisk(val === 'true');
                 }}
-                className="w-full bg-[#0a0f26] border border-slate-800 rounded py-1.5 px-3 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50 font-mono"
+                className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-1.5 px-3 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)] font-mono"
               >
                 <option value="ALL">All Risk Levels</option>
                 <option value="true">⚠️ Proceed At-Risk Only</option>
@@ -263,26 +263,26 @@ export default function VORegistryPage() {
         </div>
 
         {/* Master Registry Table */}
-        <div className="bg-slate-950/40 border border-slate-900 rounded overflow-hidden">
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded overflow-hidden">
           {loading ? (
-            <div className="flex flex-col items-center justify-center py-16 text-slate-500 font-mono text-xs gap-3">
-              <div className="animate-spin rounded-full h-5 w-5 border border-slate-700 border-t-emerald-400"></div>
+            <div className="flex flex-col items-center justify-center py-16 text-[var(--text-primary)]0 font-mono text-xs gap-3">
+              <div className="animate-spin rounded-full h-5 w-5 border border-[var(--border)] border-t-emerald-400"></div>
               <span>Fetching Variations Ledger...</span>
             </div>
           ) : error ? (
-            <div className="p-8 text-center text-rose-400 font-mono text-xs">
+            <div className="p-8 text-center text-[var(--status-danger-text)] font-mono text-xs">
               Error fetching records: {error.message}
             </div>
           ) : vos.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 text-slate-500 font-mono text-xs gap-2">
-              <FileText size={28} className="text-slate-700" />
+            <div className="flex flex-col items-center justify-center py-16 text-[var(--text-primary)]0 font-mono text-xs gap-2">
+              <FileText size={28} className="text-[var(--text-tertiary)]" />
               <span>No Variation Orders found matching the criteria.</span>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-slate-900 text-slate-400 font-mono text-[10px] uppercase bg-slate-950/20">
+                  <tr className="border-b border-[var(--border)] text-[var(--text-secondary)] font-mono text-[10px] uppercase bg-[var(--bg-card)]">
                     <th className="py-3 px-4">Project</th>
                     <th className="py-3 px-4">VO #</th>
                     <th className="py-3 px-4">Title / Instruction Ref</th>
@@ -293,7 +293,7 @@ export default function VORegistryPage() {
                     <th className="py-3 px-4 text-center">Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-900 font-mono text-xs text-slate-300">
+                <tbody className="divide-y divide-[var(--border)] font-mono text-xs text-[var(--text-secondary)]">
                   {vos.map((vo) => {
                     const colors = VO_STATUS_COLORS[vo.status] || { bg: 'rgba(0,0,0,0.1)', text: '#fff', border: 'rgba(0,0,0,0.2)' };
                     const sell = Number(vo.sell_amount || 0);
@@ -301,30 +301,30 @@ export default function VORegistryPage() {
                     const marginPercent = sell !== 0 ? ((sell - cost) / sell) * 100 : 0;
 
                     return (
-                      <tr key={vo.id} className="hover:bg-slate-900/40 transition-colors">
+                      <tr key={vo.id} className="hover:bg-[var(--surface-hover)] transition-colors">
                         <td className="py-3 px-4 max-w-xs truncate" title={vo.project_name}>
-                          <div className="font-semibold text-slate-200">{vo.project_number}</div>
-                          <div className="text-[10px] text-slate-500 truncate">{vo.project_name}</div>
+                          <div className="font-semibold text-[var(--text-primary)]">{vo.project_number}</div>
+                          <div className="text-[10px] text-[var(--text-primary)]0 truncate">{vo.project_name}</div>
                         </td>
-                        <td className="py-3 px-4 font-bold text-slate-100">
+                        <td className="py-3 px-4 font-bold text-[var(--text-primary)]">
                           {vo.vo_number}
                           {vo.proceed_at_risk && vo.status !== 'CLIENT_APPROVED' && (
-                            <span className="ml-1.5 px-1.5 py-0.5 bg-rose-500/10 border border-rose-500/30 text-rose-400 text-[8px] rounded uppercase font-extrabold animate-pulse">
+                            <span className="ml-1.5 px-1.5 py-0.5 bg-[var(--status-danger-bg)] border border-[var(--status-danger-border)] text-[var(--status-danger-text)] text-[8px] rounded uppercase font-extrabold animate-pulse">
                               AT RISK
                             </span>
                           )}
                         </td>
                         <td className="py-3 px-4 max-w-xs truncate" title={vo.title}>
-                          <div className="font-semibold text-slate-200 truncate">{vo.title}</div>
-                          <div className="text-[10px] text-slate-500 truncate">Ref: {vo.instruction_reference}</div>
+                          <div className="font-semibold text-[var(--text-primary)] truncate">{vo.title}</div>
+                          <div className="text-[10px] text-[var(--text-primary)]0 truncate">Ref: {vo.instruction_reference}</div>
                         </td>
-                        <td className="py-3 px-4 text-[10px] text-slate-400">
+                        <td className="py-3 px-4 text-[10px] text-[var(--text-secondary)]">
                           {VO_TYPE_LABELS[vo.vo_type] || vo.vo_type}
                         </td>
-                        <td className={`py-3 px-4 text-right font-bold ${sell < 0 ? 'text-rose-400' : 'text-slate-200'}`}>
+                        <td className={`py-3 px-4 text-right font-bold ${sell < 0 ? 'text-[var(--status-danger-text)]' : 'text-[var(--text-primary)]'}`}>
                           {sell < 0 ? '-' : ''}{new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Math.abs(sell))} AED
                         </td>
-                        <td className={`py-3 px-4 text-center font-bold ${marginPercent < 20 ? 'text-rose-400' : 'text-emerald-400'}`}>
+                        <td className={`py-3 px-4 text-center font-bold ${marginPercent < 20 ? 'text-[var(--status-danger-text)]' : 'text-[var(--accent)]'}`}>
                           {marginPercent.toFixed(1)}%
                         </td>
                         <td className="py-3 px-4 text-center">
@@ -342,7 +342,7 @@ export default function VORegistryPage() {
                         <td className="py-3 px-4 text-center">
                           <Link
                             href={`/vo/${vo.id}`}
-                            className="text-emerald-400 hover:text-emerald-300 font-bold text-[10px] flex items-center justify-center gap-0.5 hover:underline cursor-pointer"
+                            className="text-[var(--accent)] hover:text-[var(--accent)] font-bold text-[10px] flex items-center justify-center gap-0.5 hover:underline cursor-pointer"
                           >
                             Manage <ArrowRight size={10} />
                           </Link>

@@ -269,9 +269,9 @@ export default function TenderDetail({ params }: { params: Promise<{ id: string 
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#060814] flex flex-col items-center justify-center text-center p-6">
-        <div className="h-10 w-10 border-2 border-emerald-450 border-t-transparent animate-spin rounded-full mb-3"></div>
-        <h2 className="text-sm font-bold font-mono text-slate-400 uppercase tracking-widest">Retrieving Tender Profile...</h2>
+      <div className="min-h-screen bg-[var(--bg-dark)] flex flex-col items-center justify-center text-center p-6">
+        <div className="h-10 w-10 border-2 border-[var(--accent)] border-t-transparent animate-spin rounded-full mb-3"></div>
+        <h2 className="text-sm font-bold font-mono text-[var(--text-secondary)] uppercase tracking-widest">Retrieving Tender Profile...</h2>
       </div>
     );
   }
@@ -279,13 +279,13 @@ export default function TenderDetail({ params }: { params: Promise<{ id: string 
   if (errorMsg || !tender) {
     return (
       <div className="flex flex-col gap-6">
-        <div className="border-b border-white/5 pb-4">
+        <div className="border-b border-[var(--border)] pb-4">
           <Link href="/tenders" className="inline-flex items-center gap-1.5 text-xs text-text-secondary hover:text-text-primary transition-colors mb-2 font-semibold">
             <ArrowLeft size={14} /> Back to Tenders Registry
           </Link>
         </div>
-        <div className="flex gap-3 bg-red-500/10 border border-red-500/20 rounded-lg p-4 text-red-200 text-xs items-start max-w-xl mx-auto mt-8">
-          <AlertCircle className="flex-shrink-0 text-red-400 mt-0.5" size={18} />
+        <div className="flex gap-3 bg-[var(--status-danger-bg)] border border-[var(--status-danger-border)] rounded-lg p-4 text-[var(--status-danger-text)] text-xs items-start max-w-xl mx-auto mt-8">
+          <AlertCircle className="flex-shrink-0 text-[var(--status-danger-text)] mt-0.5" size={18} />
           <div>
             <strong>Failed to Load Tender details</strong>
             <p className="mt-1 leading-relaxed">{errorMsg || 'Tender record not found or access permissions invalid.'}</p>
@@ -355,7 +355,7 @@ export default function TenderDetail({ params }: { params: Promise<{ id: string 
           
           {/* Project Info card */}
           <Card className="flex flex-col gap-4" borderAccent="none">
-            <h3 className="font-heading font-bold text-sm text-slate-200 uppercase tracking-wider flex items-center gap-2 border-b border-white/5 pb-2.5">
+            <h3 className="font-heading font-bold text-sm text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-2 border-b border-[var(--border)] pb-2.5">
               <Layers className="text-secondary shrink-0" size={16} />
               Project Parameters
             </h3>
@@ -406,7 +406,7 @@ export default function TenderDetail({ params }: { params: Promise<{ id: string 
 
           {/* Scope of work card */}
           <Card className="flex flex-col gap-4" borderAccent="none">
-            <h3 className="font-heading font-bold text-sm text-slate-200 uppercase tracking-wider flex items-center gap-2 border-b border-white/5 pb-2.5">
+            <h3 className="font-heading font-bold text-sm text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-2 border-b border-[var(--border)] pb-2.5">
               <FileText className="text-accent shrink-0" size={16} />
               Scope of Work Summary
             </h3>
@@ -417,7 +417,7 @@ export default function TenderDetail({ params }: { params: Promise<{ id: string 
 
           {/* Technical Specs card */}
           <Card className="flex flex-col gap-4" borderAccent="none">
-            <h3 className="font-heading font-bold text-sm text-slate-200 uppercase tracking-wider flex items-center gap-2 border-b border-white/5 pb-2.5">
+            <h3 className="font-heading font-bold text-sm text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-2 border-b border-[var(--border)] pb-2.5">
               <Settings className="text-primary shrink-0" size={16} />
               Technical Specifications & Compliance
             </h3>
@@ -454,7 +454,7 @@ export default function TenderDetail({ params }: { params: Promise<{ id: string 
 
           {/* Client requisitions */}
           <Card className="flex flex-col gap-4" borderAccent="none">
-            <h3 className="font-heading font-bold text-sm text-slate-200 uppercase tracking-wider flex items-center gap-2 border-b border-white/5 pb-2.5">
+            <h3 className="font-heading font-bold text-sm text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-2 border-b border-[var(--border)] pb-2.5">
               <User className="text-secondary shrink-0" size={16} />
               Client Specific Mandates
             </h3>
@@ -497,7 +497,7 @@ export default function TenderDetail({ params }: { params: Promise<{ id: string 
           
           {/* Bid Status & Deadline Card */}
           <Card className="flex flex-col gap-4" borderAccent="none">
-            <h3 className="font-heading font-bold text-sm text-slate-200 uppercase tracking-wider border-b border-white/5 pb-2.5">
+            <h3 className="font-heading font-bold text-sm text-[var(--text-primary)] uppercase tracking-wider border-b border-[var(--border)] pb-2.5">
               Bid Status & Deadline
             </h3>
             
@@ -517,7 +517,7 @@ export default function TenderDetail({ params }: { params: Promise<{ id: string 
             </div>
 
             {/* Status updates transition form */}
-            <div className="border-t border-white/5 pt-4 mt-2">
+            <div className="border-t border-[var(--border)] pt-4 mt-2">
               <form onSubmit={handleStatusChange} className="flex flex-col gap-3">
                 <div className="flex flex-col gap-1.5">
                   <label className="text-[10px] text-text-muted font-bold uppercase tracking-wider">Transition Stage</label>
@@ -562,7 +562,7 @@ export default function TenderDetail({ params }: { params: Promise<{ id: string 
 
           {/* BOQ Management Card */}
           <Card className="flex flex-col gap-4" borderAccent="none">
-            <h3 className="font-heading font-bold text-sm text-slate-200 uppercase tracking-wider border-b border-white/5 pb-2.5">
+            <h3 className="font-heading font-bold text-sm text-[var(--text-primary)] uppercase tracking-wider border-b border-[var(--border)] pb-2.5">
               Bill of Quantities (BOQ)
             </h3>
             
@@ -583,7 +583,7 @@ export default function TenderDetail({ params }: { params: Promise<{ id: string 
                   {boq ? (
                     <StatusChip status={boq.status} />
                   ) : (
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider border border-amber-500/25 bg-amber-500/10 text-amber-400">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider border border-[var(--status-warning-border)] bg-[var(--status-warning-bg)] text-[var(--status-warning-text)]">
                       Not Instantiated
                     </span>
                   )}
@@ -605,7 +605,7 @@ export default function TenderDetail({ params }: { params: Promise<{ id: string 
 
           {/* Documents Attachment Card */}
           <Card className="flex flex-col gap-4" borderAccent="none">
-            <h3 className="font-heading font-bold text-sm text-slate-200 uppercase tracking-wider border-b border-white/5 pb-2.5">
+            <h3 className="font-heading font-bold text-sm text-[var(--text-primary)] uppercase tracking-wider border-b border-[var(--border)] pb-2.5">
               Tender Specifications Files
             </h3>
 
@@ -653,7 +653,7 @@ export default function TenderDetail({ params }: { params: Promise<{ id: string 
 
           {/* Status History Timeline */}
           <Card className="flex flex-col gap-4" borderAccent="none">
-            <h3 className="font-heading font-bold text-sm text-slate-200 uppercase tracking-wider border-b border-white/5 pb-2.5 flex items-center gap-1.5">
+            <h3 className="font-heading font-bold text-sm text-[var(--text-primary)] uppercase tracking-wider border-b border-[var(--border)] pb-2.5 flex items-center gap-1.5">
               <History size={15} className="text-text-muted" />
               Audit & Transition Trail
             </h3>

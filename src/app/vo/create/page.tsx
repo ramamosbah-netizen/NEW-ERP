@@ -237,15 +237,15 @@ function VOCreatePageContent() {
   );
 
   return (
-    <div className="min-h-screen bg-[#060814] text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex flex-col font-sans">
 <main className="flex-1 max-w-6xl w-full mx-auto px-6 py-8 flex flex-col gap-6">
         
         {/* Breadcrumb & Title */}
         <div>
-          <div className="text-[10px] text-slate-500 font-mono uppercase tracking-widest flex items-center gap-1">
-            <Link href="/vo" className="hover:text-emerald-400 flex items-center gap-0.5"><ArrowLeft size={10} /> Registry</Link> &gt; <span>Capture Variation Order</span>
+          <div className="text-[10px] text-[var(--text-primary)]0 font-mono uppercase tracking-widest flex items-center gap-1">
+            <Link href="/vo" className="hover:text-[var(--accent)] flex items-center gap-0.5"><ArrowLeft size={10} /> Registry</Link> &gt; <span>Capture Variation Order</span>
           </div>
-          <h1 className="font-heading font-extrabold text-2xl tracking-tight text-slate-100 uppercase mt-1">
+          <h1 className="font-heading font-extrabold text-2xl tracking-tight text-[var(--text-primary)] uppercase mt-1">
             Capture Variation Order (VO)
           </h1>
         </div>
@@ -253,20 +253,20 @@ function VOCreatePageContent() {
         <form onSubmit={handleSubmit} className="flex flex-col lg:flex-row gap-6">
           
           {/* Main Form Fields */}
-          <div className="flex-1 bg-slate-950/40 border border-slate-900 rounded p-6 flex flex-col gap-5">
-            <h3 className="text-xs font-mono text-emerald-400 uppercase tracking-wider border-b border-slate-900 pb-2 flex justify-between items-center">
+          <div className="flex-1 bg-[var(--bg-card)] border border-[var(--border)] rounded p-6 flex flex-col gap-5">
+            <h3 className="text-xs font-mono text-[var(--accent)] uppercase tracking-wider border-b border-[var(--border)] pb-2 flex justify-between items-center">
               <span>VO Parameters & Reference Metadata</span>
-              {loadingBOQ && <span className="text-[10px] text-slate-500 animate-pulse font-normal">Loading project BOQ...</span>}
+              {loadingBOQ && <span className="text-[10px] text-[var(--text-primary)]0 animate-pulse font-normal">Loading project BOQ...</span>}
             </h3>
 
             {/* Project & Title */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-[10px] text-slate-400 font-mono uppercase mb-1.5">Project Target</label>
+                <label className="block text-[10px] text-[var(--text-secondary)] font-mono uppercase mb-1.5">Project Target</label>
                 <select
                   value={projectId}
                   onChange={e => setProjectId(e.target.value)}
-                  className="w-full bg-[#0a0f26] border border-slate-800 rounded py-2 px-3 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50 font-mono"
+                  className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)] font-mono"
                   required
                 >
                   <option value="">Select Project...</option>
@@ -277,13 +277,13 @@ function VOCreatePageContent() {
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-[10px] text-slate-400 font-mono uppercase mb-1.5">Variation Order Title</label>
+                <label className="block text-[10px] text-[var(--text-secondary)] font-mono uppercase mb-1.5">Variation Order Title</label>
                 <input
                   type="text"
                   placeholder="e.g. Additional CCTV cameras on ground floor lobby..."
                   value={title}
                   onChange={e => setTitle(e.target.value)}
-                  className="w-full bg-[#0a0f26] border border-slate-800 rounded py-2 px-3 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50"
+                  className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)]"
                   required
                 />
               </div>
@@ -292,11 +292,11 @@ function VOCreatePageContent() {
             {/* VO Type, Origin, Basis */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-[10px] text-slate-400 font-mono uppercase mb-1.5">Variation Type</label>
+                <label className="block text-[10px] text-[var(--text-secondary)] font-mono uppercase mb-1.5">Variation Type</label>
                 <select
                   value={voType}
                   onChange={e => setVoType(e.target.value as any)}
-                  className="w-full bg-[#0a0f26] border border-slate-800 rounded py-2 px-3 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50"
+                  className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)]"
                 >
                   {VO_TYPES.map(type => (
                     <option key={type} value={type}>{VO_TYPES.includes(type) ? type.replace(/_/g, ' ') : type}</option>
@@ -305,11 +305,11 @@ function VOCreatePageContent() {
               </div>
 
               <div>
-                <label className="block text-[10px] text-slate-400 font-mono uppercase mb-1.5">Origin / Cause</label>
+                <label className="block text-[10px] text-[var(--text-secondary)] font-mono uppercase mb-1.5">Origin / Cause</label>
                 <select
                   value={origin}
                   onChange={e => setOrigin(e.target.value as any)}
-                  className="w-full bg-[#0a0f26] border border-slate-800 rounded py-2 px-3 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50"
+                  className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)]"
                 >
                   {VO_ORIGINS.map(orig => (
                     <option key={orig} value={orig}>{VO_ORIGINS.includes(orig) ? orig.replace(/_/g, ' ') : orig}</option>
@@ -318,11 +318,11 @@ function VOCreatePageContent() {
               </div>
 
               <div>
-                <label className="block text-[10px] text-slate-400 font-mono uppercase mb-1.5">Pricing Basis</label>
+                <label className="block text-[10px] text-[var(--text-secondary)] font-mono uppercase mb-1.5">Pricing Basis</label>
                 <select
                   value={pricingBasis}
                   onChange={e => setPricingBasis(e.target.value as any)}
-                  className="w-full bg-[#0a0f26] border border-slate-800 rounded py-2 px-3 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50 font-mono"
+                  className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)] font-mono"
                 >
                   {VO_PRICING_BASIS.map(basis => (
                     <option key={basis} value={basis}>{basis.replace(/_/g, ' ')}</option>
@@ -334,34 +334,34 @@ function VOCreatePageContent() {
             {/* Instruction ref, date, document */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-[10px] text-slate-400 font-mono uppercase mb-1.5">Instruction Reference</label>
+                <label className="block text-[10px] text-[var(--text-secondary)] font-mono uppercase mb-1.5">Instruction Reference</label>
                 <input
                   type="text"
                   placeholder="e.g. CVI-901 / SITE-04"
                   value={instructionReference}
                   onChange={e => setInstructionReference(e.target.value)}
-                  className="w-full bg-[#0a0f26] border border-slate-800 rounded py-2 px-3 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50 font-mono"
+                  className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)] font-mono"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-[10px] text-slate-400 font-mono uppercase mb-1.5">Instruction Date</label>
+                <label className="block text-[10px] text-[var(--text-secondary)] font-mono uppercase mb-1.5">Instruction Date</label>
                 <input
                   type="date"
                   value={instructionDate}
                   onChange={e => setInstructionDate(e.target.value)}
-                  className="w-full bg-[#0a0f26] border border-slate-800 rounded py-2 px-3 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50 font-mono"
+                  className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)] font-mono"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-[10px] text-slate-400 font-mono uppercase mb-1.5">Link Written Directive (DMS)</label>
+                <label className="block text-[10px] text-[var(--text-secondary)] font-mono uppercase mb-1.5">Link Written Directive (DMS)</label>
                 <select
                   value={instructionDocId}
                   onChange={e => setInstructionDocId(e.target.value)}
-                  className="w-full bg-[#0a0f26] border border-slate-800 rounded py-2 px-3 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50"
+                  className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)]"
                 >
                   <option value="">Choose instruction PDF...</option>
                   {documents.map(doc => (
@@ -374,22 +374,22 @@ function VOCreatePageContent() {
             {/* Time impact and site status */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-[10px] text-slate-400 font-mono uppercase mb-1.5">EOT Time Impact (Days)</label>
+                <label className="block text-[10px] text-[var(--text-secondary)] font-mono uppercase mb-1.5">EOT Time Impact (Days)</label>
                 <input
                   type="number"
                   min="0"
                   value={timeImpactDays}
                   onChange={e => setTimeImpactDays(Number(e.target.value))}
-                  className="w-full bg-[#0a0f26] border border-slate-800 rounded py-2 px-3 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50 font-mono text-right"
+                  className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)] font-mono text-right"
                 />
               </div>
 
               <div>
-                <label className="block text-[10px] text-slate-400 font-mono uppercase mb-1.5">Physical Site Progress</label>
+                <label className="block text-[10px] text-[var(--text-secondary)] font-mono uppercase mb-1.5">Physical Site Progress</label>
                 <select
                   value={workStatus}
                   onChange={e => setWorkStatus(e.target.value as any)}
-                  className="w-full bg-[#0a0f26] border border-slate-800 rounded py-2 px-3 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50"
+                  className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)]"
                 >
                   {VO_WORK_STATUSES.map(stat => (
                     <option key={stat} value={stat}>{stat.replace(/_/g, ' ')}</option>
@@ -401,43 +401,43 @@ function VOCreatePageContent() {
             {/* Description & Justification */}
             <div className="grid grid-cols-1 gap-4">
               <div>
-                <label className="block text-[10px] text-slate-400 font-mono uppercase mb-1.5">Scope Description</label>
+                <label className="block text-[10px] text-[var(--text-secondary)] font-mono uppercase mb-1.5">Scope Description</label>
                 <textarea
                   rows={2}
                   placeholder="Detailed breakdown of the revised work scope..."
                   value={description}
                   onChange={e => setDescription(e.target.value)}
-                  className="w-full bg-[#0a0f26] border border-slate-800 rounded py-2 px-3 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50"
+                  className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)]"
                 />
               </div>
 
               <div>
-                <label className="block text-[10px] text-slate-400 font-mono uppercase mb-1.5">Justification</label>
+                <label className="block text-[10px] text-[var(--text-secondary)] font-mono uppercase mb-1.5">Justification</label>
                 <textarea
                   rows={2}
                   placeholder="Technical justification or explanation for why the change is required..."
                   value={justification}
                   onChange={e => setJustification(e.target.value)}
-                  className="w-full bg-[#0a0f26] border border-slate-800 rounded py-2 px-3 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50"
+                  className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)]"
                 />
               </div>
             </div>
 
             {/* Line Items Editor */}
             <div className="flex flex-col gap-3 mt-4">
-              <div className="flex justify-between items-center border-b border-slate-900 pb-2">
-                <span className="text-[10px] text-slate-400 font-mono uppercase">Variation Line Items (ex-VAT)</span>
+              <div className="flex justify-between items-center border-b border-[var(--border)] pb-2">
+                <span className="text-[10px] text-[var(--text-secondary)] font-mono uppercase">Variation Line Items (ex-VAT)</span>
                 <button
                   type="button"
                   onClick={addItemRow}
-                  className="px-2.5 py-1 bg-slate-900 border border-slate-800 text-[10px] text-emerald-400 font-mono rounded hover:bg-slate-800 uppercase"
+                  className="px-2.5 py-1 bg-[var(--surface-hover)] border border-[var(--border)] text-[10px] text-[var(--accent)] font-mono rounded hover:bg-[var(--surface-hover)] uppercase"
                 >
                   + Add Item Line
                 </button>
               </div>
 
               {items.map((item, idx) => (
-                <div key={idx} className="bg-[#0a0f26]/30 border border-slate-900/60 p-4 rounded flex flex-col gap-3">
+                <div key={idx} className="bg-[var(--bg-card)]/30 border border-[var(--border)] p-4 rounded flex flex-col gap-3">
                   
                   {/* Row 1: Action, Ref, Description */}
                   <div className="flex flex-col md:flex-row gap-3 items-center">
@@ -445,7 +445,7 @@ function VOCreatePageContent() {
                       <select
                         value={item.action}
                         onChange={e => handleActionChange(idx, e.target.value as any)}
-                        className="w-full bg-[#0a0f26] border border-slate-800 rounded py-1.5 px-2 text-xs font-mono font-bold text-slate-300 focus:outline-none"
+                        className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-1.5 px-2 text-xs font-mono font-bold text-[var(--text-secondary)] focus:outline-none"
                       >
                         <option value="ADD">ADD</option>
                         <option value="OMIT">OMIT</option>
@@ -459,11 +459,11 @@ function VOCreatePageContent() {
                         placeholder="Description of item..."
                         value={item.description}
                         onChange={e => handleItemChange(idx, 'description', e.target.value)}
-                        className="w-full bg-[#0a0f26] border border-slate-800 rounded py-1.5 px-3 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50"
+                        className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-1.5 px-3 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)]"
                         required
                       />
                       {item.boq_item_ref && (
-                        <div className="absolute right-2.5 top-2.5 text-[8px] text-emerald-400 font-mono uppercase border border-emerald-500/30 px-1 rounded bg-[#060a1e]">
+                        <div className="absolute right-2.5 top-2.5 text-[8px] text-[var(--accent)] font-mono uppercase border border-[var(--accent)] px-1 rounded bg-[#060a1e]">
                           BOQ: {item.boq_item_ref.toString().substring(0, 12)}
                         </div>
                       )}
@@ -477,7 +477,7 @@ function VOCreatePageContent() {
                           setPickerTargetIndex(idx);
                           setPickerOpen(true);
                         }}
-                        className="px-2 py-1.5 bg-slate-900 border border-slate-800 text-[10px] text-slate-300 font-mono rounded hover:bg-slate-800 flex items-center gap-1 shrink-0"
+                        className="px-2 py-1.5 bg-[var(--surface-hover)] border border-[var(--border)] text-[10px] text-[var(--text-secondary)] font-mono rounded hover:bg-[var(--surface-hover)] flex items-center gap-1 shrink-0"
                         title="Pick BOQ item"
                       >
                         <FolderOpen size={12} /> Select BOQ Item
@@ -489,64 +489,64 @@ function VOCreatePageContent() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-3 items-center">
                     
                     <div>
-                      <label className="block text-[8px] text-slate-500 font-mono uppercase mb-0.5">Qty</label>
+                      <label className="block text-[8px] text-[var(--text-primary)]0 font-mono uppercase mb-0.5">Qty</label>
                       <input
                         type="number"
                         step="any"
                         placeholder="Qty"
                         value={item.quantity || ''}
                         onChange={e => handleItemChange(idx, 'quantity', Number(e.target.value))}
-                        className={`w-full bg-slate-950 border border-slate-800 rounded py-1 px-2.5 text-xs focus:outline-none font-mono text-right ${
-                          item.quantity < 0 ? 'text-rose-400 font-bold' : 'text-slate-300'
+                        className={`w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-1 px-2.5 text-xs focus:outline-none font-mono text-right ${
+                          item.quantity < 0 ? 'text-[var(--status-danger-text)] font-bold' : 'text-[var(--text-secondary)]'
                         }`}
                         required
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[8px] text-slate-500 font-mono uppercase mb-0.5">Unit</label>
+                      <label className="block text-[8px] text-[var(--text-primary)]0 font-mono uppercase mb-0.5">Unit</label>
                       <input
                         type="text"
                         placeholder="Unit"
                         value={item.unit}
                         onChange={e => handleItemChange(idx, 'unit', e.target.value)}
-                        className="w-full bg-slate-950 border border-slate-800 rounded py-1 px-2 text-xs text-slate-300 focus:outline-none font-mono text-center"
+                        className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-1 px-2 text-xs text-[var(--text-secondary)] focus:outline-none font-mono text-center"
                         required
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[8px] text-slate-500 font-mono uppercase mb-0.5">Unit Cost (AED)</label>
+                      <label className="block text-[8px] text-[var(--text-primary)]0 font-mono uppercase mb-0.5">Unit Cost (AED)</label>
                       <input
                         type="number"
                         step="any"
                         placeholder="Cost"
                         value={item.unit_cost || ''}
                         onChange={e => handleItemChange(idx, 'unit_cost', Number(e.target.value))}
-                        className="w-full bg-slate-950 border border-slate-800 rounded py-1 px-2 text-xs text-slate-300 focus:outline-none font-mono text-right"
+                        className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-1 px-2 text-xs text-[var(--text-secondary)] focus:outline-none font-mono text-right"
                         required
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[8px] text-slate-500 font-mono uppercase mb-0.5">Unit Sell (AED)</label>
+                      <label className="block text-[8px] text-[var(--text-primary)]0 font-mono uppercase mb-0.5">Unit Sell (AED)</label>
                       <input
                         type="number"
                         step="any"
                         placeholder="Sell"
                         value={item.unit_sell || ''}
                         onChange={e => handleItemChange(idx, 'unit_sell', Number(e.target.value))}
-                        className="w-full bg-slate-950 border border-slate-800 rounded py-1 px-2 text-xs text-slate-300 focus:outline-none font-mono text-right"
+                        className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-1 px-2 text-xs text-[var(--text-secondary)] focus:outline-none font-mono text-right"
                         required
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[8px] text-slate-500 font-mono uppercase mb-0.5">Associated System</label>
+                      <label className="block text-[8px] text-[var(--text-primary)]0 font-mono uppercase mb-0.5">Associated System</label>
                       <select
                         value={item.system}
                         onChange={e => handleItemChange(idx, 'system', e.target.value)}
-                        className="w-full bg-slate-950 border border-slate-800 rounded py-1 px-1.5 text-xs text-slate-300 focus:outline-none"
+                        className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-1 px-1.5 text-xs text-[var(--text-secondary)] focus:outline-none"
                       >
                         <option value="CCTV">CCTV</option>
                         <option value="ACCESS_CONTROL">Access Control</option>
@@ -563,8 +563,8 @@ function VOCreatePageContent() {
 
                     <div className="text-right flex items-center justify-between pl-2 self-end">
                       <div className="flex flex-col text-right pr-2">
-                        <span className="text-[8px] text-slate-500 font-mono uppercase">Line Total</span>
-                        <span className={`font-mono text-xs font-bold ${item.quantity * item.unit_sell < 0 ? 'text-rose-400' : 'text-slate-200'}`}>
+                        <span className="text-[8px] text-[var(--text-primary)]0 font-mono uppercase">Line Total</span>
+                        <span className={`font-mono text-xs font-bold ${item.quantity * item.unit_sell < 0 ? 'text-[var(--status-danger-text)]' : 'text-[var(--text-primary)]'}`}>
                           {(item.quantity * item.unit_sell).toFixed(2)} AED
                         </span>
                       </div>
@@ -573,7 +573,7 @@ function VOCreatePageContent() {
                         <button
                           type="button"
                           onClick={() => removeItemRow(idx)}
-                          className="p-1 text-slate-600 hover:text-rose-400 transition-colors"
+                          className="p-1 text-[var(--text-tertiary)] hover:text-[var(--status-danger-text)] transition-colors"
                           title="Delete line"
                         >
                           <Trash2 size={13} />
@@ -587,35 +587,35 @@ function VOCreatePageContent() {
           </div>
 
           {/* Sidebar calculations & margins */}
-          <div className="w-full lg:w-80 bg-slate-950/60 border border-slate-900 rounded p-6 flex flex-col gap-5 h-fit">
-            <h3 className="text-xs font-mono text-emerald-400 uppercase tracking-wider border-b border-slate-900 pb-2">
+          <div className="w-full lg:w-80 bg-[var(--bg-card)] border border-[var(--border)] rounded p-6 flex flex-col gap-5 h-fit">
+            <h3 className="text-xs font-mono text-[var(--accent)] uppercase tracking-wider border-b border-[var(--border)] pb-2">
               Financial Summary (ex-VAT)
             </h3>
 
             <div className="flex flex-col gap-3.5 text-xs">
               <div className="flex justify-between">
-                <span className="text-slate-400">Total VO Cost:</span>
-                <span className="font-mono text-slate-200">{subtotalCost.toFixed(2)} AED</span>
+                <span className="text-[var(--text-secondary)]">Total VO Cost:</span>
+                <span className="font-mono text-[var(--text-primary)]">{subtotalCost.toFixed(2)} AED</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">Total VO Sell:</span>
-                <span className="font-mono text-slate-200">{subtotalSell.toFixed(2)} AED</span>
+                <span className="text-[var(--text-secondary)]">Total VO Sell:</span>
+                <span className="font-mono text-[var(--text-primary)]">{subtotalSell.toFixed(2)} AED</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">Estimated Margin:</span>
-                <span className={`font-mono font-bold ${marginPct < 20 ? 'text-rose-400' : 'text-emerald-400'}`}>
+                <span className="text-[var(--text-secondary)]">Estimated Margin:</span>
+                <span className={`font-mono font-bold ${marginPct < 20 ? 'text-[var(--status-danger-text)]' : 'text-[var(--accent)]'}`}>
                   {marginAmount.toFixed(2)} AED ({marginPct.toFixed(1)}%)
                 </span>
               </div>
               
-              <div className="flex justify-between border-t border-slate-900 pt-3">
-                <span className="text-slate-400 font-semibold">VAT (5.00%):</span>
-                <span className="font-mono text-slate-300">{vat.toFixed(2)} AED</span>
+              <div className="flex justify-between border-t border-[var(--border)] pt-3">
+                <span className="text-[var(--text-secondary)] font-semibold">VAT (5.00%):</span>
+                <span className="font-mono text-[var(--text-secondary)]">{vat.toFixed(2)} AED</span>
               </div>
 
-              <div className="flex justify-between bg-[#0a0f26] p-3 rounded border border-slate-900 mt-2">
-                <span className="font-bold text-slate-200">Total Value:</span>
-                <span className="font-mono font-bold text-emerald-400 text-sm">
+              <div className="flex justify-between bg-[var(--bg-card)] p-3 rounded border border-[var(--border)] mt-2">
+                <span className="font-bold text-[var(--text-primary)]">Total Value:</span>
+                <span className="font-mono font-bold text-[var(--accent)] text-sm">
                   {totalInclVat.toFixed(2)} AED
                 </span>
               </div>
@@ -623,14 +623,14 @@ function VOCreatePageContent() {
 
             {/* Warnings */}
             {marginPct < 20 && subtotalSell > 0 && (
-              <div className="bg-amber-500/10 border border-amber-500/30 text-amber-400 text-[10px] p-2.5 rounded font-sans leading-normal">
+              <div className="bg-[var(--status-warning-bg)] border border-[var(--status-warning-border)] text-[var(--status-warning-text)] text-[10px] p-2.5 rounded font-sans leading-normal">
                 <div className="font-bold flex items-center gap-1 mb-0.5"><AlertTriangle size={11} /> Margin Below 20%</div>
                 This Variation margin ratio is lower than company cost standards (20%). Internal approvals may request revision or justification.
               </div>
             )}
 
             {workStatus !== 'NOT_STARTED' && (
-              <div className="bg-rose-500/10 border border-rose-500/30 text-rose-400 text-[10px] p-2.5 rounded font-sans leading-normal">
+              <div className="bg-[var(--status-danger-bg)] border border-[var(--status-danger-border)] text-[var(--status-danger-text)] text-[10px] p-2.5 rounded font-sans leading-normal">
                 <div className="font-bold flex items-center gap-1 mb-0.5"><ShieldAlert size={11} className="animate-pulse" /> At-Risk Operation</div>
                 Work has already started on site prior to client signature. This VO will register as a "Proceed At-Risk" exposure.
               </div>
@@ -639,7 +639,7 @@ function VOCreatePageContent() {
             <button
               type="submit"
               disabled={loading || items.length === 0}
-              className="w-full py-2.5 bg-emerald-400 text-slate-950 font-bold rounded hover:bg-emerald-300 transition-all uppercase tracking-wider text-xs shadow-[0_0_15px_rgba(0,229,160,0.15)] disabled:opacity-40"
+              className="w-full py-2.5 bg-[var(--accent)] text-white font-bold rounded hover:bg-[var(--accent)] transition-all uppercase tracking-wider text-xs shadow-[0_0_15px_var(--accent-glow)] disabled:opacity-40"
             >
               {loading ? 'Saving Draft...' : 'Save VO Draft'}
             </button>
@@ -650,25 +650,25 @@ function VOCreatePageContent() {
       {/* BOQ Item Picker Drawer / Modal */}
       {pickerOpen && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-950 border border-slate-900 rounded max-w-2xl w-full flex flex-col max-h-[80vh]">
+          <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded max-w-2xl w-full flex flex-col max-h-[80vh]">
             
             {/* Modal Header */}
-            <div className="bg-slate-950 p-4 border-b border-slate-900 flex justify-between items-center">
-              <h4 className="text-xs font-mono text-emerald-400 uppercase tracking-widest font-bold">
+            <div className="bg-[var(--bg-card)] p-4 border-b border-[var(--border)] flex justify-between items-center">
+              <h4 className="text-xs font-mono text-[var(--accent)] uppercase tracking-widest font-bold">
                 Project BOQ Item Picker
               </h4>
               <button
                 type="button"
                 onClick={() => { setPickerOpen(false); setPickerTargetIndex(null); }}
-                className="text-slate-500 hover:text-slate-300 font-mono text-xs uppercase"
+                className="text-[var(--text-primary)]0 hover:text-[var(--text-secondary)] font-mono text-xs uppercase"
               >
                 Close
               </button>
             </div>
 
             {/* Search Input */}
-            <div className="p-4 border-b border-slate-900/60 relative">
-              <span className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none text-slate-500">
+            <div className="p-4 border-b border-[var(--border)] relative">
+              <span className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none text-[var(--text-primary)]0">
                 <Search size={12} />
               </span>
               <input
@@ -676,14 +676,14 @@ function VOCreatePageContent() {
                 placeholder="Search by BOQ item description or system..."
                 value={pickerSearch}
                 onChange={e => setPickerSearch(e.target.value)}
-                className="w-full bg-[#0a0f26] border border-slate-800 rounded py-1.5 pl-8 pr-3 text-xs text-slate-300 focus:outline-none font-mono"
+                className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-1.5 pl-8 pr-3 text-xs text-[var(--text-secondary)] focus:outline-none font-mono"
               />
             </div>
 
             {/* List */}
             <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-2 font-mono text-xs">
               {filteredBOQItems.length === 0 ? (
-                <div className="text-slate-500 text-center py-8">
+                <div className="text-[var(--text-primary)]0 text-center py-8">
                   {projectId ? 'No items found matching the search.' : 'Please select a Project first to load BOQ lines.'}
                 </div>
               ) : (
@@ -691,17 +691,17 @@ function VOCreatePageContent() {
                   <div
                     key={bi.id || i}
                     onClick={() => selectBOQItem(bi)}
-                    className="p-3 bg-[#0a0f26]/40 border border-slate-900 rounded hover:border-emerald-500/50 hover:bg-slate-900/20 transition-all cursor-pointer flex justify-between items-center"
+                    className="p-3 bg-[var(--bg-card)]/40 border border-[var(--border)] rounded hover:border-[var(--accent)] hover:bg-[var(--surface-hover)] transition-all cursor-pointer flex justify-between items-center"
                   >
                     <div className="flex-1 pr-4">
-                      <div className="font-semibold text-slate-200">{bi.name}</div>
-                      <div className="text-[10px] text-slate-500 flex gap-2.5 mt-1">
-                        <span>System: <strong className="text-slate-400">{bi.system || 'OTHER'}</strong></span>
-                        <span>Original Qty: <strong className="text-slate-400">{bi.quantity} {bi.unit}</strong></span>
-                        <span>Rate: <strong className="text-slate-400">{(bi.unit_price || bi.unit_sell || bi.material_unit_cost || 0).toFixed(2)} AED</strong></span>
+                      <div className="font-semibold text-[var(--text-primary)]">{bi.name}</div>
+                      <div className="text-[10px] text-[var(--text-primary)]0 flex gap-2.5 mt-1">
+                        <span>System: <strong className="text-[var(--text-secondary)]">{bi.system || 'OTHER'}</strong></span>
+                        <span>Original Qty: <strong className="text-[var(--text-secondary)]">{bi.quantity} {bi.unit}</strong></span>
+                        <span>Rate: <strong className="text-[var(--text-secondary)]">{(bi.unit_price || bi.unit_sell || bi.material_unit_cost || 0).toFixed(2)} AED</strong></span>
                       </div>
                     </div>
-                    <span className="text-[10px] text-emerald-400 font-bold uppercase hover:underline">Select</span>
+                    <span className="text-[10px] text-[var(--accent)] font-bold uppercase hover:underline">Select</span>
                   </div>
                 ))
               )}
@@ -716,7 +716,7 @@ function VOCreatePageContent() {
 
 export default function VOCreatePage() {
   return (
-    <React.Suspense fallback={<div className="min-h-screen bg-[#060814] text-slate-100 flex items-center justify-center font-mono text-xs text-emerald-400">Loading...</div>}>
+    <React.Suspense fallback={<div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex items-center justify-center font-mono text-xs text-[var(--accent)]">Loading...</div>}>
       <VOCreatePageContent />
     </React.Suspense>
   );

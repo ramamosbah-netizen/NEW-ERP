@@ -86,23 +86,23 @@ export default function VOApprovalQueuePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#060814] text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex flex-col font-sans">
 <main className="flex-1 max-w-6xl w-full mx-auto px-6 py-8 flex flex-col gap-6">
         
         {/* Title Block */}
         <div className="flex justify-between items-center">
           <div>
-            <div className="text-[10px] text-slate-500 font-mono uppercase tracking-widest">
+            <div className="text-[10px] text-[var(--text-primary)]0 font-mono uppercase tracking-widest">
               Commercial Sign-off & Audit
             </div>
-            <h1 className="font-heading font-extrabold text-2xl tracking-tight text-slate-100 uppercase mt-1">
+            <h1 className="font-heading font-extrabold text-2xl tracking-tight text-[var(--text-primary)] uppercase mt-1">
               Variation Approvals Console
             </h1>
           </div>
 
           <button
             onClick={() => refetch()}
-            className="text-slate-400 hover:text-slate-200 p-2 rounded hover:bg-slate-900 border border-slate-800 hover:border-slate-700 transition-all cursor-pointer"
+            className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] p-2 rounded hover:bg-[var(--surface-hover)] border border-[var(--border)] hover:border-[var(--border)] transition-all cursor-pointer"
             title="Refresh Approval Queue"
           >
             <RefreshCw size={14} />
@@ -113,34 +113,34 @@ export default function VOApprovalQueuePage() {
         <div className="bg-[#0b122c] border border-[#162754] rounded p-4 text-xs flex items-start gap-2.5">
           <Clock className="text-[#00E5A0] shrink-0 mt-0.5 animate-pulse" size={16} />
           <div>
-            <span className="font-mono text-slate-200 font-bold block">Internal Threshold Routing System</span>
-            <p className="text-slate-400 mt-1 leading-normal">
-              Variation Orders exceeding <strong className="text-emerald-400">50,000.00 AED</strong> require General Manager (GM) approval. Orders under this limit are routed to the Commercial Manager. Note: Self-approval check blocks creators from signing off their own variations.
+            <span className="font-mono text-[var(--text-primary)] font-bold block">Internal Threshold Routing System</span>
+            <p className="text-[var(--text-secondary)] mt-1 leading-normal">
+              Variation Orders exceeding <strong className="text-[var(--accent)]">50,000.00 AED</strong> require General Manager (GM) approval. Orders under this limit are routed to the Commercial Manager. Note: Self-approval check blocks creators from signing off their own variations.
             </p>
           </div>
         </div>
 
         {/* Queue table */}
-        <div className="bg-slate-950/40 border border-slate-900 rounded overflow-hidden">
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded overflow-hidden">
           {loading ? (
-            <div className="flex flex-col items-center justify-center py-16 text-slate-500 font-mono text-xs gap-3">
-              <div className="animate-spin rounded-full h-5 w-5 border border-slate-700 border-t-emerald-400"></div>
+            <div className="flex flex-col items-center justify-center py-16 text-[var(--text-primary)]0 font-mono text-xs gap-3">
+              <div className="animate-spin rounded-full h-5 w-5 border border-[var(--border)] border-t-emerald-400"></div>
               <span>Scanning review queues...</span>
             </div>
           ) : error ? (
-            <div className="p-8 text-center text-rose-450 font-mono text-xs">
+            <div className="p-8 text-center text-[var(--status-danger-text)] font-mono text-xs">
               Error fetching queue: {error.message}
             </div>
           ) : pendingApprovals.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 text-slate-500 font-mono text-xs gap-2.5">
-              <FileCheck size={28} className="text-slate-700 animate-bounce" />
+            <div className="flex flex-col items-center justify-center py-16 text-[var(--text-primary)]0 font-mono text-xs gap-2.5">
+              <FileCheck size={28} className="text-[var(--text-tertiary)] animate-bounce" />
               <span>Approval queue is completely clear! No variations pending review.</span>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-slate-900 text-slate-400 font-mono text-[10px] uppercase bg-slate-950/20">
+                  <tr className="border-b border-[var(--border)] text-[var(--text-secondary)] font-mono text-[10px] uppercase bg-[var(--bg-card)]">
                     <th className="py-3 px-4">Project</th>
                     <th className="py-3 px-4">VO Number</th>
                     <th className="py-3 px-4">Title / Instruction Reference</th>
@@ -149,32 +149,32 @@ export default function VOApprovalQueuePage() {
                     <th className="py-3 px-4 text-center">Action Console</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-900 font-mono text-xs text-slate-350">
+                <tbody className="divide-y divide-[var(--border)] font-mono text-xs text-slate-350">
                   {pendingApprovals.map((vo) => {
                     const isProcessing = processingId === vo.id;
                     return (
-                      <tr key={vo.id} className="hover:bg-slate-900/40 transition-colors">
+                      <tr key={vo.id} className="hover:bg-[var(--surface-hover)] transition-colors">
                         <td className="py-3.5 px-4">
-                          <div className="font-semibold text-slate-200">{vo.project_number}</div>
-                          <div className="text-[10px] text-slate-500 truncate max-w-[150px]" title={vo.project_name}>{vo.project_name}</div>
+                          <div className="font-semibold text-[var(--text-primary)]">{vo.project_number}</div>
+                          <div className="text-[10px] text-[var(--text-primary)]0 truncate max-w-[150px]" title={vo.project_name}>{vo.project_name}</div>
                         </td>
-                        <td className="py-3.5 px-4 font-bold text-slate-100">
+                        <td className="py-3.5 px-4 font-bold text-[var(--text-primary)]">
                           {vo.vo_number}
                           {vo.proceed_at_risk && (
-                            <span className="ml-1.5 px-1.5 py-0.5 bg-rose-500/10 border border-rose-500/30 text-rose-400 text-[8px] rounded uppercase font-extrabold animate-pulse">
+                            <span className="ml-1.5 px-1.5 py-0.5 bg-[var(--status-danger-bg)] border border-[var(--status-danger-border)] text-[var(--status-danger-text)] text-[8px] rounded uppercase font-extrabold animate-pulse">
                               AT RISK
                             </span>
                           )}
                         </td>
                         <td className="py-3.5 px-4 max-w-xs truncate" title={vo.title}>
-                          <div className="font-semibold text-slate-200 truncate">{vo.title}</div>
-                          <div className="text-[10px] text-slate-500 truncate">Ref: {vo.instruction_reference}</div>
+                          <div className="font-semibold text-[var(--text-primary)] truncate">{vo.title}</div>
+                          <div className="text-[10px] text-[var(--text-primary)]0 truncate">Ref: {vo.instruction_reference}</div>
                         </td>
-                        <td className="py-3.5 px-4 text-right font-extrabold text-slate-200">
+                        <td className="py-3.5 px-4 text-right font-extrabold text-[var(--text-primary)]">
                           {formatAED(vo.sell_amount)}
                         </td>
                         <td className="py-3.5 px-4 text-center">
-                          <span className={`text-[10px] ${vo.work_status === 'COMPLETED' ? 'text-emerald-400' : vo.work_status === 'IN_PROGRESS' ? 'text-amber-500' : 'text-slate-500'}`}>
+                          <span className={`text-[10px] ${vo.work_status === 'COMPLETED' ? 'text-[var(--accent)]' : vo.work_status === 'IN_PROGRESS' ? 'text-[var(--status-warning-text)]' : 'text-[var(--text-primary)]0'}`}>
                             {VO_WORK_STATUS_LABELS[vo.work_status] || vo.work_status}
                           </span>
                         </td>
@@ -182,7 +182,7 @@ export default function VOApprovalQueuePage() {
                           <div className="flex justify-center items-center gap-2.5">
                             <Link
                               href={`/vo/${vo.id}`}
-                              className="p-1 text-slate-400 hover:text-slate-200"
+                              className="p-1 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                               title="View full details"
                             >
                               <Eye size={14} />
@@ -191,7 +191,7 @@ export default function VOApprovalQueuePage() {
                             <button
                               onClick={() => handleApprove(vo)}
                               disabled={isProcessing}
-                              className="px-2 py-1 bg-emerald-400 hover:bg-emerald-350 text-slate-950 font-bold font-mono text-[9px] rounded uppercase disabled:opacity-40 cursor-pointer"
+                              className="px-2 py-1 bg-[var(--accent)] hover:bg-[var(--accent)] text-white font-bold font-mono text-[9px] rounded uppercase disabled:opacity-40 cursor-pointer"
                               title="Approve internally"
                             >
                               Approve
@@ -200,7 +200,7 @@ export default function VOApprovalQueuePage() {
                             <button
                               onClick={() => handleReject(vo.id)}
                               disabled={isProcessing}
-                              className="px-2 py-1 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/25 font-bold font-mono text-[9px] rounded uppercase disabled:opacity-40 cursor-pointer"
+                              className="px-2 py-1 bg-[var(--status-danger-bg)] hover:bg-[var(--status-danger-bg)] text-[var(--status-danger-text)] border border-[var(--status-danger-border)] font-bold font-mono text-[9px] rounded uppercase disabled:opacity-40 cursor-pointer"
                               title="Return / Reject"
                             >
                               Return

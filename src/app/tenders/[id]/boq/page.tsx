@@ -1182,10 +1182,10 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
         )
       )}
 
-      <Button variant="secondary" size="sm" onClick={handleExportPDF} className="flex items-center gap-1.5 font-bold uppercase tracking-wider text-red-400 border-red-500/20 hover:bg-red-500/5">
+      <Button variant="secondary" size="sm" onClick={handleExportPDF} className="flex items-center gap-1.5 font-bold uppercase tracking-wider text-[var(--status-danger-text)] border-[var(--status-danger-border)] hover:bg-[var(--status-danger-bg)]">
         <FileText size={13} /> PDF
       </Button>
-      <Button variant="secondary" size="sm" onClick={handleExportExcel} className="flex items-center gap-1.5 font-bold uppercase tracking-wider text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/5">
+      <Button variant="secondary" size="sm" onClick={handleExportExcel} className="flex items-center gap-1.5 font-bold uppercase tracking-wider text-[var(--accent)] border-[var(--accent)] hover:bg-[var(--accent-glow)]">
         <FileSpreadsheet size={13} /> Excel
       </Button>
       <Button
@@ -1194,7 +1194,7 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
         onClick={() => boqId && router.push(`/procurement/rfq/new/${boqId}`)}
         disabled={!boqId}
         title={boqId ? 'Draft a quotation request to suppliers from this BOQ' : 'Save the BOQ first'}
-        className="flex items-center gap-1.5 font-bold uppercase tracking-wider text-blue-400 border-blue-500/20 hover:bg-blue-500/5"
+        className="flex items-center gap-1.5 font-bold uppercase tracking-wider text-[var(--accent)] border-[var(--border)] hover:bg-[var(--surface-hover)]"
       >
         <Mail size={13} /> Request Quotation
       </Button>
@@ -1215,8 +1215,8 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
 
       {/* Messages */}
       {errorMsg && (
-        <div className="flex gap-3 bg-red-500/10 border border-red-500/20 rounded-lg p-4 text-red-200 text-xs items-start">
-          <AlertCircle className="flex-shrink-0 text-red-400 mt-0.5" size={18} />
+        <div className="flex gap-3 bg-[var(--status-danger-bg)] border border-[var(--status-danger-border)] rounded-lg p-4 text-[var(--status-danger-text)] text-xs items-start">
+          <AlertCircle className="flex-shrink-0 text-[var(--status-danger-text)] mt-0.5" size={18} />
           <div>
             <strong>Estimator Workspace Error</strong>
             <p className="mt-1 leading-relaxed">{errorMsg}</p>
@@ -1224,8 +1224,8 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
         </div>
       )}
       {successMsg && (
-        <div className="flex gap-3 bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-4 text-emerald-250 text-xs items-start">
-          <CheckCircle className="flex-shrink-0 text-emerald-400 mt-0.5" size={18} />
+        <div className="flex gap-3 bg-[var(--accent-glow)] border border-[var(--accent)] rounded-lg p-4 text-[var(--accent)] text-xs items-start">
+          <CheckCircle className="flex-shrink-0 text-[var(--accent)] mt-0.5" size={18} />
           <div>
             <strong>Action Complete</strong>
             <p className="mt-1 leading-relaxed">{successMsg}</p>
@@ -1235,14 +1235,14 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
 
       {/* Read-only banner if locked */}
       {!isEditable && (
-        <div className="flex gap-3 bg-amber-500/10 border border-amber-500/20 rounded-lg p-4 text-amber-200 text-xs items-start">
-          <Lock className="flex-shrink-0 text-amber-400 mt-0.5" size={18} />
+        <div className="flex gap-3 bg-[var(--status-warning-bg)] border border-[var(--status-warning-border)] rounded-lg p-4 text-[var(--status-warning-text)] text-xs items-start">
+          <Lock className="flex-shrink-0 text-[var(--status-warning-text)] mt-0.5" size={18} />
           <div>
             <strong>BOQ Workspace Locked</strong>
             <p className="mt-1 leading-relaxed">
-              This worksheet estimation is finalized and read-only in the <strong className="text-white">{BOQ_STATUS_LABELS[boqStatus]}</strong> stage.
+              This worksheet estimation is finalized and read-only in the <strong className="text-[var(--text-primary)]">{BOQ_STATUS_LABELS[boqStatus]}</strong> stage.
               {boqStatus === 'finalized' && activeQuotation && (
-                <span> Linked Active Quotation: <strong className="text-white">{activeQuotation.quotation_number} ({activeQuotation.status})</strong></span>
+                <span> Linked Active Quotation: <strong className="text-[var(--text-primary)]">{activeQuotation.quotation_number} ({activeQuotation.status})</strong></span>
               )}
               {'. Instantiate a new revision to unlock line adjustments.'}
             </p>
@@ -1251,9 +1251,9 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
       )}
 
       {/* Workflow Progress Bar */}
-      <div className="bg-[#0b0f2a] border border-white/5 rounded-xl p-4">
+      <div className="bg-[#0b0f2a] border border-[var(--border)] rounded-xl p-4">
         <div className="relative flex justify-between items-center w-full">
-          <div className="absolute top-[14px] left-[20px] right-[20px] h-[2px] bg-white/5 z-0" />
+          <div className="absolute top-[14px] left-[20px] right-[20px] h-[2px] bg-[var(--surface-hover)] z-0" />
           <div className="absolute top-[14px] left-[20px] h-[2px] bg-gradient-to-r from-secondary to-primary z-10 transition-all duration-500" style={{ width: progressWidth }} />
           {BOQ_STATUSES.map((status, idx) => (
             <div
@@ -1264,8 +1264,8 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
                 idx < currentStepIndex 
                   ? 'bg-secondary border-secondary text-bg-dark shadow-[0_0_12px_var(--secondary-glow)]' 
                   : idx === currentStepIndex
-                  ? 'bg-bg-card border-primary text-primary shadow-[0_0_12px_rgba(0,229,160,0.3)]'
-                  : 'bg-bg-card border-white/10 text-text-muted'
+                  ? 'bg-bg-card border-primary text-primary shadow-[0_0_12px_var(--accent-glow)]'
+                  : 'bg-bg-card border-[var(--border)] text-text-muted'
               }`}>
                 {idx < currentStepIndex ? <Check size={14} /> : idx + 1}
               </div>
@@ -1287,8 +1287,8 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
           
           {/* Estimator Sheet Card */}
           <Card className="flex flex-col gap-4 p-4 overflow-hidden" borderAccent="none">
-            <div className="flex justify-between items-center border-b border-white/5 pb-2.5">
-              <h3 className="font-heading font-bold text-sm text-slate-200 uppercase tracking-wider flex items-center gap-2">
+            <div className="flex justify-between items-center border-b border-[var(--border)] pb-2.5">
+              <h3 className="font-heading font-bold text-sm text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-2">
                 <FileText size={16} className="text-secondary" />
                 Line Items Estimator Sheet
               </h3>
@@ -1316,13 +1316,13 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
 
             {/* Bulk actions bar */}
             {isEditable && (
-              <div className="flex flex-wrap justify-between items-center bg-[#0b0f2a] border border-white/5 rounded-lg p-3 gap-3">
+              <div className="flex flex-wrap justify-between items-center bg-[#0b0f2a] border border-[var(--border)] rounded-lg p-3 gap-3">
                 <span className="text-xs font-bold text-primary font-heading">{selectedIds.size} lines selected</span>
                 <div className="flex flex-wrap gap-2 items-center">
                   <Button onClick={handleBulkDuplicate} disabled={selectedIds.size === 0} size="sm" variant="secondary" className="text-[10px] py-1 px-2.5 h-8 flex items-center gap-1 font-bold">
                     <Copy size={11} /> Duplicate
                   </Button>
-                  <Button onClick={handleBulkDelete} disabled={selectedIds.size === 0} size="sm" variant="secondary" className="text-[10px] py-1 px-2.5 h-8 flex items-center gap-1 font-bold text-red-400 border-red-500/20 hover:bg-red-500/5">
+                  <Button onClick={handleBulkDelete} disabled={selectedIds.size === 0} size="sm" variant="secondary" className="text-[10px] py-1 px-2.5 h-8 flex items-center gap-1 font-bold text-[var(--status-danger-text)] border-[var(--status-danger-border)] hover:bg-[var(--status-danger-bg)]">
                     <Trash2 size={11} /> Delete
                   </Button>
                   <Button onClick={() => handleBulkOverride(true)} disabled={selectedIds.size === 0} size="sm" variant="secondary" className="text-[10px] py-1 px-2.5 h-8 font-bold">
@@ -1332,19 +1332,19 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
                     Inherit Globals
                   </Button>
                   
-                  <div className="flex items-center ml-2 border border-white/5 rounded-lg overflow-hidden h-8 bg-bg-dark">
+                  <div className="flex items-center ml-2 border border-[var(--border)] rounded-lg overflow-hidden h-8 bg-bg-dark">
                     <input 
                       type="number" 
                       placeholder="Qty" 
                       value={bulkQty} 
                       onChange={e => setBulkQty(e.target.value !== '' ? Number(e.target.value) : '')}
                       disabled={selectedIds.size === 0}
-                      className="w-[50px] bg-transparent text-right text-xs outline-none text-white px-2"
+                      className="w-[50px] bg-transparent text-right text-xs outline-none text-[var(--text-primary)] px-2"
                     />
                     <button 
                       onClick={handleBulkUpdateQty} 
                       disabled={selectedIds.size === 0 || bulkQty === ''} 
-                      className="bg-primary/10 border-l border-white/5 hover:bg-primary/20 text-primary px-3 text-[10px] font-bold h-full cursor-pointer transition-colors"
+                      className="bg-primary/10 border-l border-[var(--border)] hover:bg-primary/20 text-primary px-3 text-[10px] font-bold h-full cursor-pointer transition-colors"
                     >
                       Apply
                     </button>
@@ -1925,7 +1925,7 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
 
           {/* Global Cost Settings Panel */}
           <Card className="flex flex-col gap-4 p-4" borderAccent="none">
-            <h3 className="font-heading font-bold text-sm text-slate-200 uppercase tracking-wider flex items-center gap-2 border-b border-white/5 pb-2.5">
+            <h3 className="font-heading font-bold text-sm text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-2 border-b border-[var(--border)] pb-2.5">
               <Calculator size={16} className="text-accent" />
               Global Estimating Settings Panel
             </h3>
@@ -2056,13 +2056,13 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
           
           {/* Approval Actions */}
           <Card className="flex flex-col gap-4" borderAccent="none">
-            <h3 className="font-heading font-bold text-sm text-slate-200 uppercase tracking-wider flex items-center gap-2 border-b border-white/5 pb-2.5">
+            <h3 className="font-heading font-bold text-sm text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-2 border-b border-[var(--border)] pb-2.5">
               <Shield size={16} className="text-primary shrink-0" />
               Workflow Actions
             </h3>
 
             {profile && (
-              <div className="text-[10px] text-text-muted font-mono leading-relaxed bg-[#0b0f2a] border border-white/5 p-2 rounded-lg">
+              <div className="text-[10px] text-text-muted font-mono leading-relaxed bg-[#0b0f2a] border border-[var(--border)] p-2 rounded-lg">
                 User: <span className="text-text-primary font-semibold">{profile.full_name}</span><br />
                 Role: <span className="text-primary font-bold uppercase">{profile.role}</span>
               </div>
@@ -2092,7 +2092,7 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
                   onClick={handleApprove} 
                   disabled={saving}
                   variant="primary"
-                  className="w-full flex items-center justify-center gap-1.5 font-bold uppercase tracking-wider text-xs bg-emerald-500/10 border-emerald-500/20 text-emerald-450 hover:bg-emerald-500/20"
+                  className="w-full flex items-center justify-center gap-1.5 font-bold uppercase tracking-wider text-xs bg-[var(--accent-glow)] border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent-glow)]"
                 >
                   <CheckCircle size={12} /> Approve ({BOQ_STATUS_LABELS[getNextApprovalStatus(profile.role, boqStatus) || boqStatus]})
                 </Button>
@@ -2103,7 +2103,7 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
                   onClick={handleReject} 
                   disabled={saving}
                   variant="secondary"
-                  className="w-full flex items-center justify-center gap-1.5 font-bold uppercase tracking-wider text-xs text-red-400 border-red-500/20 hover:bg-red-500/5"
+                  className="w-full flex items-center justify-center gap-1.5 font-bold uppercase tracking-wider text-xs text-[var(--status-danger-text)] border-[var(--status-danger-border)] hover:bg-[var(--status-danger-bg)]"
                 >
                   <XCircle size={12} /> Reject to Draft
                 </Button>
@@ -2125,7 +2125,7 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
           {/* Approval History Log */}
           {approvalHistory.length > 0 && (
             <Card className="flex flex-col gap-4" borderAccent="none">
-              <h3 className="font-heading font-bold text-sm text-slate-200 uppercase tracking-wider flex items-center gap-2 border-b border-white/5 pb-2.5">
+              <h3 className="font-heading font-bold text-sm text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-2 border-b border-[var(--border)] pb-2.5">
                 <Clock size={16} className="text-secondary shrink-0" />
                 Workflow History Log
               </h3>
@@ -2171,7 +2171,7 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
           {/* Version History Log */}
           {versions.length > 0 && (
             <Card className="flex flex-col gap-4" borderAccent="none">
-              <h3 className="font-heading font-bold text-sm text-slate-200 uppercase tracking-wider flex items-center gap-2 border-b border-white/5 pb-2.5">
+              <h3 className="font-heading font-bold text-sm text-[var(--text-primary)] uppercase tracking-wider flex items-center gap-2 border-b border-[var(--border)] pb-2.5">
                 <GitBranch size={16} className="text-accent shrink-0" />
                 Snapshot Version Log
               </h3>
@@ -2235,9 +2235,9 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
                 key={index} 
                 className={`flex flex-col items-start px-3 py-1.5 rounded-lg transition-all hover:-translate-y-0.5 whitespace-nowrap min-w-[110px] ${
                   isGrandTotal 
-                    ? 'bg-primary/10 border border-primary/20 shadow-[0_0_12px_rgba(0,229,160,0.1)] px-4' 
+                    ? 'bg-primary/10 border border-primary/20 shadow-[0_0_12px_var(--accent-glow)] px-4' 
                     : isTotalCost
-                    ? 'bg-amber-500/10 border border-amber-500/20 px-3'
+                    ? 'bg-[var(--status-warning-bg)] border border-[var(--status-warning-border)] px-3'
                     : 'bg-bg-card border border-border-color/30'
                 } ${item.isBorder ? 'border-r-2 border-r-border-color/20 pr-4' : ''}`}
               >

@@ -222,8 +222,8 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 text-slate-500 font-mono text-xs gap-3">
-        <div className="animate-spin rounded-full h-5 w-5 border border-slate-700 border-t-emerald-400"></div>
+      <div className="flex flex-col items-center justify-center py-16 text-[var(--text-primary)]0 font-mono text-xs gap-3">
+        <div className="animate-spin rounded-full h-5 w-5 border border-[var(--border)] border-t-emerald-400"></div>
         <span>Collecting unified project dossier (Tender through Invoices)...</span>
       </div>
     );
@@ -231,11 +231,11 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
 
   if (error) {
     return (
-      <div className="bg-rose-500/10 border border-rose-500/30 text-rose-400 p-4 rounded text-xs font-mono flex items-start gap-2">
+      <div className="bg-[var(--status-danger-bg)] border border-[var(--status-danger-border)] text-[var(--status-danger-text)] p-4 rounded text-xs font-mono flex items-start gap-2">
         <ShieldAlert size={16} className="shrink-0" />
         <div>
           <span>Failed to compile project records: {error}</span>
-          <button onClick={() => loadProjectFile()} className="block mt-2 text-emerald-400 hover:underline flex items-center gap-1">
+          <button onClick={() => loadProjectFile()} className="block mt-2 text-[var(--accent)] hover:underline flex items-center gap-1">
             <RefreshCw size={10} /> Retry Aggregation
           </button>
         </div>
@@ -247,15 +247,15 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
   const renderFolderSection = (key: string, title: string, count: number, children: React.ReactNode) => {
     const isExpanded = expandedCats[key];
     return (
-      <div className="border border-slate-900 rounded bg-slate-950/20 overflow-hidden">
+      <div className="border border-[var(--border)] rounded bg-[var(--bg-card)] overflow-hidden">
         <button
           onClick={() => toggleCat(key)}
-          className="w-full flex justify-between items-center bg-slate-950 px-4 py-2.5 border-b border-slate-900 text-xs font-mono text-slate-300 font-bold hover:bg-slate-900/60 transition-all text-left"
+          className="w-full flex justify-between items-center bg-[var(--bg-card)] px-4 py-2.5 border-b border-[var(--border)] text-xs font-mono text-[var(--text-secondary)] font-bold hover:bg-[var(--surface-hover)] transition-all text-left"
         >
           <div className="flex items-center gap-2">
-            <Folder size={14} className="text-amber-500 fill-amber-500/10" />
+            <Folder size={14} className="text-[var(--status-warning-text)] fill-amber-500/10" />
             <span>{title}</span>
-            <span className="text-[10px] bg-slate-900 text-slate-500 px-1.5 py-0.5 rounded font-normal">
+            <span className="text-[10px] bg-[var(--surface-hover)] text-[var(--text-primary)]0 px-1.5 py-0.5 rounded font-normal">
               {count} items
             </span>
           </div>
@@ -264,9 +264,9 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
           </div>
         </button>
         {isExpanded && (
-          <div className="p-4 flex flex-col gap-3.5 bg-slate-950/5">
+          <div className="p-4 flex flex-col gap-3.5 bg-[var(--bg-card)]">
             {count === 0 ? (
-              <span className="text-slate-500 text-[11px] italic font-mono pl-4">No records registered in this stage.</span>
+              <span className="text-[var(--text-primary)]0 text-[11px] italic font-mono pl-4">No records registered in this stage.</span>
             ) : children}
           </div>
         )}
@@ -280,16 +280,16 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
       {/* Title Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h3 className="text-xs font-mono text-emerald-400 uppercase tracking-wider font-bold flex items-center gap-2">
+          <h3 className="text-xs font-mono text-[var(--accent)] uppercase tracking-wider font-bold flex items-center gap-2">
             <Briefcase size={16} /> Unified Project Dossier File
           </h3>
-          <span className="text-[10px] text-slate-500 font-mono mt-0.5 block">
-            Single-source aggregation for master reference: <strong className="text-slate-300">{projectNumber}</strong>
+          <span className="text-[10px] text-[var(--text-primary)]0 font-mono mt-0.5 block">
+            Single-source aggregation for master reference: <strong className="text-[var(--text-secondary)]">{projectNumber}</strong>
           </span>
         </div>
         <button
           onClick={loadProjectFile}
-          className="text-slate-400 hover:text-slate-200 p-1.5 rounded hover:bg-slate-900 border border-slate-800 hover:border-slate-700 transition-all cursor-pointer text-xs flex items-center gap-1 font-mono"
+          className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] p-1.5 rounded hover:bg-[var(--surface-hover)] border border-[var(--border)] hover:border-[var(--border)] transition-all cursor-pointer text-xs flex items-center gap-1 font-mono"
         >
           <RefreshCw size={12} /> Reload Dossier
         </button>
@@ -301,36 +301,36 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
         {renderFolderSection('TENDERING', '1. Tendering & Estimating', (tender ? 1 : 0) + (boq ? 1 : 0), (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {tender && (
-              <div className="border border-slate-900 bg-slate-950/60 p-3.5 rounded flex flex-col justify-between gap-3 text-xs font-mono">
+              <div className="border border-[var(--border)] bg-[var(--bg-card)] p-3.5 rounded flex flex-col justify-between gap-3 text-xs font-mono">
                 <div>
-                  <div className="flex items-center gap-1.5 text-slate-400 font-bold uppercase text-[10px]">
+                  <div className="flex items-center gap-1.5 text-[var(--text-secondary)] font-bold uppercase text-[10px]">
                     <Building2 size={12} className="text-purple-400" />
                     <span>Opportunity Tender</span>
                   </div>
-                  <h4 className="text-slate-200 font-bold mt-1 text-[13px]">{tender.title}</h4>
-                  <div className="text-slate-500 text-[10px] mt-1">
+                  <h4 className="text-[var(--text-primary)] font-bold mt-1 text-[13px]">{tender.title}</h4>
+                  <div className="text-[var(--text-primary)]0 text-[10px] mt-1">
                     Client: {tender.client_name} • Deadline: {new Date(tender.deadline_date).toLocaleDateString('en-GB')}
                   </div>
                 </div>
-                <Link href={`/tenders/${tender.id}`} className="text-emerald-400 hover:text-emerald-300 font-bold text-[10px] flex items-center gap-1 self-start">
+                <Link href={`/tenders/${tender.id}`} className="text-[var(--accent)] hover:text-[var(--accent)] font-bold text-[10px] flex items-center gap-1 self-start">
                   Open Tender Dashboard <ArrowRight size={10} />
                 </Link>
               </div>
             )}
 
             {boq && (
-              <div className="border border-slate-900 bg-slate-950/60 p-3.5 rounded flex flex-col justify-between gap-3 text-xs font-mono">
+              <div className="border border-[var(--border)] bg-[var(--bg-card)] p-3.5 rounded flex flex-col justify-between gap-3 text-xs font-mono">
                 <div>
-                  <div className="flex items-center gap-1.5 text-slate-400 font-bold uppercase text-[10px]">
+                  <div className="flex items-center gap-1.5 text-[var(--text-secondary)] font-bold uppercase text-[10px]">
                     <Layers size={12} className="text-purple-400" />
                     <span>Bill of Quantities (BOQ)</span>
                   </div>
-                  <h4 className="text-slate-200 font-bold mt-1 text-[13px]">BOQ Final Version {boq.version}</h4>
-                  <div className="text-slate-500 text-[10px] mt-1">
-                    Status: <span className="text-emerald-400 font-bold uppercase">{boq.status}</span> • Created: {new Date(boq.created_at).toLocaleDateString('en-GB')}
+                  <h4 className="text-[var(--text-primary)] font-bold mt-1 text-[13px]">BOQ Final Version {boq.version}</h4>
+                  <div className="text-[var(--text-primary)]0 text-[10px] mt-1">
+                    Status: <span className="text-[var(--accent)] font-bold uppercase">{boq.status}</span> • Created: {new Date(boq.created_at).toLocaleDateString('en-GB')}
                   </div>
                 </div>
-                <Link href={`/pricing`} className="text-emerald-400 hover:text-emerald-300 font-bold text-[10px] flex items-center gap-1 self-start">
+                <Link href={`/pricing`} className="text-[var(--accent)] hover:text-[var(--accent)] font-bold text-[10px] flex items-center gap-1 self-start">
                   Open Estimating BOQ Catalog <ArrowRight size={10} />
                 </Link>
               </div>
@@ -344,11 +344,11 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
             {/* Quotations List */}
             {quotations.length > 0 && (
               <div>
-                <span className="text-[10px] text-slate-500 uppercase font-bold block mb-2">Proposal Revisions Chain</span>
-                <div className="border border-slate-900 rounded overflow-hidden">
-                  <table className="w-full text-left bg-slate-950/20 text-[11px]">
+                <span className="text-[10px] text-[var(--text-primary)]0 uppercase font-bold block mb-2">Proposal Revisions Chain</span>
+                <div className="border border-[var(--border)] rounded overflow-hidden">
+                  <table className="w-full text-left bg-[var(--bg-card)] text-[11px]">
                     <thead>
-                      <tr className="bg-slate-950 text-slate-400 border-b border-slate-900 text-[9px] uppercase font-bold">
+                      <tr className="bg-[var(--bg-card)] text-[var(--text-secondary)] border-b border-[var(--border)] text-[9px] uppercase font-bold">
                         <th className="px-4 py-2">Quote Number</th>
                         <th className="px-4 py-2">Revision</th>
                         <th className="px-4 py-2">Date</th>
@@ -357,23 +357,23 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
                         <th className="px-4 py-2 text-center">Action</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-900/60">
+                    <tbody className="divide-y divide-[var(--border)]">
                       {quotations.map((q) => (
-                        <tr key={q.id} className="hover:bg-slate-900/20">
-                          <td className="px-4 py-2.5 font-bold text-slate-300">{q.quotation_number}</td>
-                          <td className="px-4 py-2.5 text-slate-400">{q.revision_label}</td>
-                          <td className="px-4 py-2.5 text-slate-500">{new Date(q.quotation_date).toLocaleDateString('en-GB')}</td>
-                          <td className="px-4 py-2.5 text-right text-slate-200">{fmtAED(q.grand_total_with_vat)}</td>
+                        <tr key={q.id} className="hover:bg-[var(--surface-hover)]">
+                          <td className="px-4 py-2.5 font-bold text-[var(--text-secondary)]">{q.quotation_number}</td>
+                          <td className="px-4 py-2.5 text-[var(--text-secondary)]">{q.revision_label}</td>
+                          <td className="px-4 py-2.5 text-[var(--text-primary)]0">{new Date(q.quotation_date).toLocaleDateString('en-GB')}</td>
+                          <td className="px-4 py-2.5 text-right text-[var(--text-primary)]">{fmtAED(q.grand_total_with_vat)}</td>
                           <td className="px-4 py-2.5">
                             <span className={`px-2 py-0.5 rounded text-[9px] font-bold ${
-                              q.status === 'ACCEPTED' ? 'bg-emerald-500/10 text-emerald-400' :
-                              q.status === 'REJECTED' ? 'bg-rose-500/10 text-rose-400' :
-                              q.status === 'SENT_TO_CLIENT' ? 'bg-cyan-500/10 text-cyan-400' :
-                              'bg-slate-800 text-slate-400'
+                              q.status === 'ACCEPTED' ? 'bg-[var(--accent-glow)] text-[var(--accent)]' :
+                              q.status === 'REJECTED' ? 'bg-[var(--status-danger-bg)] text-[var(--status-danger-text)]' :
+                              q.status === 'SENT_TO_CLIENT' ? 'bg-[var(--surface-hover)] text-[var(--accent)]' :
+                              'bg-[var(--surface-hover)] text-[var(--text-secondary)]'
                             }`}>{q.status}</span>
                           </td>
                           <td className="px-4 py-2.5 text-center">
-                            <Link href={`/quotations/${q.id}`} className="text-emerald-400 hover:underline text-[10px]">
+                            <Link href={`/quotations/${q.id}`} className="text-[var(--accent)] hover:underline text-[10px]">
                               View Bid Detail &rarr;
                             </Link>
                           </td>
@@ -388,11 +388,11 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
             {/* Variation Orders List */}
             {variationOrders.length > 0 && (
               <div>
-                <span className="text-[10px] text-slate-500 uppercase font-bold block mb-2">Approved Variation Orders (VOs)</span>
-                <div className="border border-slate-900 rounded overflow-hidden">
-                  <table className="w-full text-left bg-slate-950/20 text-[11px]">
+                <span className="text-[10px] text-[var(--text-primary)]0 uppercase font-bold block mb-2">Approved Variation Orders (VOs)</span>
+                <div className="border border-[var(--border)] rounded overflow-hidden">
+                  <table className="w-full text-left bg-[var(--bg-card)] text-[11px]">
                     <thead>
-                      <tr className="bg-slate-950 text-slate-400 border-b border-slate-900 text-[9px] uppercase font-bold">
+                      <tr className="bg-[var(--bg-card)] text-[var(--text-secondary)] border-b border-[var(--border)] text-[9px] uppercase font-bold">
                         <th className="px-4 py-2">VO Reference</th>
                         <th className="px-4 py-2">Approval Date</th>
                         <th className="px-4 py-2 text-right">Selling Cost Impact</th>
@@ -400,20 +400,20 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
                         <th className="px-4 py-2 text-center">Action</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-900/60">
+                    <tbody className="divide-y divide-[var(--border)]">
                       {variationOrders.map((v) => (
-                        <tr key={v.id} className="hover:bg-slate-900/20">
-                          <td className="px-4 py-2.5 font-bold text-slate-300">{v.vo_number}</td>
-                          <td className="px-4 py-2.5 text-slate-500">{v.approval_date ? new Date(v.approval_date).toLocaleDateString('en-GB') : 'PENDING'}</td>
-                          <td className="px-4 py-2.5 text-right text-slate-200">{fmtAED(v.total_cost_impact_sell)}</td>
+                        <tr key={v.id} className="hover:bg-[var(--surface-hover)]">
+                          <td className="px-4 py-2.5 font-bold text-[var(--text-secondary)]">{v.vo_number}</td>
+                          <td className="px-4 py-2.5 text-[var(--text-primary)]0">{v.approval_date ? new Date(v.approval_date).toLocaleDateString('en-GB') : 'PENDING'}</td>
+                          <td className="px-4 py-2.5 text-right text-[var(--text-primary)]">{fmtAED(v.total_cost_impact_sell)}</td>
                           <td className="px-4 py-2.5">
                             <span className={`px-2 py-0.5 rounded text-[9px] font-bold ${
-                              v.status === 'CLIENT_APPROVED' ? 'bg-emerald-500/10 text-emerald-400' :
-                              'bg-slate-800 text-slate-400'
+                              v.status === 'CLIENT_APPROVED' ? 'bg-[var(--accent-glow)] text-[var(--accent)]' :
+                              'bg-[var(--surface-hover)] text-[var(--text-secondary)]'
                             }`}>{v.status}</span>
                           </td>
                           <td className="px-4 py-2.5 text-center">
-                            <Link href={`/vo`} className="text-emerald-400 hover:underline text-[10px]">
+                            <Link href={`/vo`} className="text-[var(--accent)] hover:underline text-[10px]">
                               Open VO Registry &rarr;
                             </Link>
                           </td>
@@ -433,11 +433,11 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
             {/* Comparisons List */}
             {comparisons.length > 0 && (
               <div>
-                <span className="text-[10px] text-slate-500 uppercase font-bold block mb-2">Supplier Bid Comparisons</span>
-                <div className="border border-slate-900 rounded overflow-hidden">
-                  <table className="w-full text-left bg-slate-950/20 text-[11px]">
+                <span className="text-[10px] text-[var(--text-primary)]0 uppercase font-bold block mb-2">Supplier Bid Comparisons</span>
+                <div className="border border-[var(--border)] rounded overflow-hidden">
+                  <table className="w-full text-left bg-[var(--bg-card)] text-[11px]">
                     <thead>
-                      <tr className="bg-slate-950 text-slate-400 border-b border-slate-900 text-[9px] uppercase font-bold">
+                      <tr className="bg-[var(--bg-card)] text-[var(--text-secondary)] border-b border-[var(--border)] text-[9px] uppercase font-bold">
                         <th className="px-4 py-2">Sheet Reference</th>
                         <th className="px-4 py-2">Creation Date</th>
                         <th className="px-4 py-2 text-right">Selected Supplier Cost</th>
@@ -446,21 +446,21 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
                         <th className="px-4 py-2 text-center">Action</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-900/60">
+                    <tbody className="divide-y divide-[var(--border)]">
                       {comparisons.map((c) => (
-                        <tr key={c.id} className="hover:bg-slate-900/20">
-                          <td className="px-4 py-2.5 font-bold text-slate-300">{c.comparison_number} (Rev.{c.revision})</td>
-                          <td className="px-4 py-2.5 text-slate-500">{new Date(c.comparison_date).toLocaleDateString('en-GB')}</td>
-                          <td className="px-4 py-2.5 text-right text-slate-200">{fmtAED(c.total_selected_supplier_cost)}</td>
-                          <td className="px-4 py-2.5 text-right text-emerald-400">{c.overall_margin_pct}%</td>
+                        <tr key={c.id} className="hover:bg-[var(--surface-hover)]">
+                          <td className="px-4 py-2.5 font-bold text-[var(--text-secondary)]">{c.comparison_number} (Rev.{c.revision})</td>
+                          <td className="px-4 py-2.5 text-[var(--text-primary)]0">{new Date(c.comparison_date).toLocaleDateString('en-GB')}</td>
+                          <td className="px-4 py-2.5 text-right text-[var(--text-primary)]">{fmtAED(c.total_selected_supplier_cost)}</td>
+                          <td className="px-4 py-2.5 text-right text-[var(--accent)]">{c.overall_margin_pct}%</td>
                           <td className="px-4 py-2.5">
                             <span className={`px-2 py-0.5 rounded text-[9px] font-bold ${
-                              c.status === 'APPROVED' ? 'bg-emerald-500/10 text-emerald-400' :
-                              'bg-slate-800 text-slate-400'
+                              c.status === 'APPROVED' ? 'bg-[var(--accent-glow)] text-[var(--accent)]' :
+                              'bg-[var(--surface-hover)] text-[var(--text-secondary)]'
                             }`}>{c.status}</span>
                           </td>
                           <td className="px-4 py-2.5 text-center">
-                            <Link href={`/procurement/comparisons/${c.id}`} className="text-emerald-400 hover:underline text-[10px]">
+                            <Link href={`/procurement/comparisons/${c.id}`} className="text-[var(--accent)] hover:underline text-[10px]">
                               Open Comparison Sheet &rarr;
                             </Link>
                           </td>
@@ -475,11 +475,11 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
             {/* Purchase Orders List */}
             {purchaseOrders.length > 0 && (
               <div>
-                <span className="text-[10px] text-slate-500 uppercase font-bold block mb-2">Committed Local Purchase Orders (LPOs)</span>
-                <div className="border border-slate-900 rounded overflow-hidden">
-                  <table className="w-full text-left bg-slate-950/20 text-[11px]">
+                <span className="text-[10px] text-[var(--text-primary)]0 uppercase font-bold block mb-2">Committed Local Purchase Orders (LPOs)</span>
+                <div className="border border-[var(--border)] rounded overflow-hidden">
+                  <table className="w-full text-left bg-[var(--bg-card)] text-[11px]">
                     <thead>
-                      <tr className="bg-slate-950 text-slate-400 border-b border-slate-900 text-[9px] uppercase font-bold">
+                      <tr className="bg-[var(--bg-card)] text-[var(--text-secondary)] border-b border-[var(--border)] text-[9px] uppercase font-bold">
                         <th className="px-4 py-2">PO / LPO Number</th>
                         <th className="px-4 py-2">Supplier Target</th>
                         <th className="px-4 py-2 text-right">Commitment Cost</th>
@@ -487,21 +487,21 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
                         <th className="px-4 py-2 text-center">Action</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-900/60">
+                    <tbody className="divide-y divide-[var(--border)]">
                       {purchaseOrders.map((p) => (
-                        <tr key={p.id} className="hover:bg-slate-900/20">
-                          <td className="px-4 py-2.5 font-bold text-slate-300">{p.po_number}</td>
-                          <td className="px-4 py-2.5 text-slate-400 truncate max-w-[160px]">{p.supplier_name}</td>
-                          <td className="px-4 py-2.5 text-right text-slate-200">{fmtAED(p.total)}</td>
+                        <tr key={p.id} className="hover:bg-[var(--surface-hover)]">
+                          <td className="px-4 py-2.5 font-bold text-[var(--text-secondary)]">{p.po_number}</td>
+                          <td className="px-4 py-2.5 text-[var(--text-secondary)] truncate max-w-[160px]">{p.supplier_name}</td>
+                          <td className="px-4 py-2.5 text-right text-[var(--text-primary)]">{fmtAED(p.total)}</td>
                           <td className="px-4 py-2.5">
                             <span className={`px-2 py-0.5 rounded text-[9px] font-bold ${
-                              p.status === 'APPROVED' || p.status === 'SENT' ? 'bg-emerald-500/10 text-emerald-400' :
-                              p.status === 'DELIVERED' || p.status === 'PARTIALLY_DELIVERED' ? 'bg-cyan-500/10 text-cyan-400' :
-                              'bg-slate-800 text-slate-400'
+                              p.status === 'APPROVED' || p.status === 'SENT' ? 'bg-[var(--accent-glow)] text-[var(--accent)]' :
+                              p.status === 'DELIVERED' || p.status === 'PARTIALLY_DELIVERED' ? 'bg-[var(--surface-hover)] text-[var(--accent)]' :
+                              'bg-[var(--surface-hover)] text-[var(--text-secondary)]'
                             }`}>{p.status}</span>
                           </td>
                           <td className="px-4 py-2.5 text-center">
-                            <Link href={`/procurement/po/${p.id}`} className="text-emerald-400 hover:underline text-[10px]">
+                            <Link href={`/procurement/po/${p.id}`} className="text-[var(--accent)] hover:underline text-[10px]">
                               View LPO Detail &rarr;
                             </Link>
                           </td>
@@ -516,11 +516,11 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
             {/* GRNs List */}
             {grns.length > 0 && (
               <div>
-                <span className="text-[10px] text-slate-500 uppercase font-bold block mb-2">Material Goods Receipt Notes (GRNs)</span>
-                <div className="border border-slate-900 rounded overflow-hidden">
-                  <table className="w-full text-left bg-slate-950/20 text-[11px]">
+                <span className="text-[10px] text-[var(--text-primary)]0 uppercase font-bold block mb-2">Material Goods Receipt Notes (GRNs)</span>
+                <div className="border border-[var(--border)] rounded overflow-hidden">
+                  <table className="w-full text-left bg-[var(--bg-card)] text-[11px]">
                     <thead>
-                      <tr className="bg-slate-950 text-slate-400 border-b border-slate-900 text-[9px] uppercase font-bold">
+                      <tr className="bg-[var(--bg-card)] text-[var(--text-secondary)] border-b border-[var(--border)] text-[9px] uppercase font-bold">
                         <th className="px-4 py-2">GRN Number</th>
                         <th className="px-4 py-2">Delivery Note Reference</th>
                         <th className="px-4 py-2">Receipt Date</th>
@@ -528,17 +528,17 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
                         <th className="px-4 py-2 text-center">Action</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-900/60">
+                    <tbody className="divide-y divide-[var(--border)]">
                       {grns.map((g) => (
-                        <tr key={g.id} className="hover:bg-slate-900/20">
-                          <td className="px-4 py-2.5 font-bold text-slate-300">{g.grn_number}</td>
-                          <td className="px-4 py-2.5 text-slate-400">{g.delivery_note_ref}</td>
-                          <td className="px-4 py-2.5 text-slate-500">{new Date(g.received_at).toLocaleDateString('en-GB')}</td>
+                        <tr key={g.id} className="hover:bg-[var(--surface-hover)]">
+                          <td className="px-4 py-2.5 font-bold text-[var(--text-secondary)]">{g.grn_number}</td>
+                          <td className="px-4 py-2.5 text-[var(--text-secondary)]">{g.delivery_note_ref}</td>
+                          <td className="px-4 py-2.5 text-[var(--text-primary)]0">{new Date(g.received_at).toLocaleDateString('en-GB')}</td>
                           <td className="px-4 py-2.5">
-                            <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-emerald-500/10 text-emerald-400">{g.status}</span>
+                            <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-[var(--accent-glow)] text-[var(--accent)]">{g.status}</span>
                           </td>
                           <td className="px-4 py-2.5 text-center">
-                            <Link href={`/procurement/grn/${g.id}`} className="text-emerald-400 hover:underline text-[10px]">
+                            <Link href={`/procurement/grn/${g.id}`} className="text-[var(--accent)] hover:underline text-[10px]">
                               Open Receipt &rarr;
                             </Link>
                           </td>
@@ -558,26 +558,26 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
             {/* Client Invoices & Receipts */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* AR Invoices */}
-              <div className="border border-slate-900 rounded bg-slate-950/40 p-4">
-                <span className="text-[10px] text-slate-500 uppercase font-bold block mb-2 flex items-center gap-1">
-                  <FileCheck size={12} className="text-emerald-400" />
+              <div className="border border-[var(--border)] rounded bg-[var(--bg-card)] p-4">
+                <span className="text-[10px] text-[var(--text-primary)]0 uppercase font-bold block mb-2 flex items-center gap-1">
+                  <FileCheck size={12} className="text-[var(--accent)]" />
                   Accounts Receivable (Client Invoices)
                 </span>
                 {clientInvoices.length === 0 ? (
-                  <span className="text-slate-600 text-[10px] italic">No client progress claims raised.</span>
+                  <span className="text-[var(--text-tertiary)] text-[10px] italic">No client progress claims raised.</span>
                 ) : (
                   <div className="flex flex-col gap-2 max-h-[200px] overflow-y-auto pr-1">
                     {clientInvoices.map(i => (
-                      <div key={i.id} className="flex justify-between items-center bg-slate-950 p-2 border border-slate-900/60 rounded text-[11px]">
+                      <div key={i.id} className="flex justify-between items-center bg-[var(--bg-card)] p-2 border border-[var(--border)] rounded text-[11px]">
                         <div>
-                          <Link href={`/finance/ar/${i.id}`} className="font-bold text-slate-200 hover:underline">
+                          <Link href={`/finance/ar/${i.id}`} className="font-bold text-[var(--text-primary)] hover:underline">
                             {i.invoice_number}
                           </Link>
-                          <div className="text-[9px] text-slate-500">{new Date(i.invoice_date).toLocaleDateString('en-GB')}</div>
+                          <div className="text-[9px] text-[var(--text-primary)]0">{new Date(i.invoice_date).toLocaleDateString('en-GB')}</div>
                         </div>
                         <div className="text-right">
-                          <div className="text-slate-300 font-semibold">{fmtAED(i.total_incl_vat)}</div>
-                          <div className="text-[9px] font-bold text-emerald-400 uppercase">{i.status}</div>
+                          <div className="text-[var(--text-secondary)] font-semibold">{fmtAED(i.total_incl_vat)}</div>
+                          <div className="text-[9px] font-bold text-[var(--accent)] uppercase">{i.status}</div>
                         </div>
                       </div>
                     ))}
@@ -586,26 +586,26 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
               </div>
 
               {/* Client Payments */}
-              <div className="border border-slate-900 rounded bg-slate-950/40 p-4">
-                <span className="text-[10px] text-slate-500 uppercase font-bold block mb-2 flex items-center gap-1">
-                  <DollarSign size={12} className="text-emerald-400" />
+              <div className="border border-[var(--border)] rounded bg-[var(--bg-card)] p-4">
+                <span className="text-[10px] text-[var(--text-primary)]0 uppercase font-bold block mb-2 flex items-center gap-1">
+                  <DollarSign size={12} className="text-[var(--accent)]" />
                   Received Cash Receipts (Payments)
                 </span>
                 {clientPayments.length === 0 ? (
-                  <span className="text-slate-600 text-[10px] italic">No payment receipts allocated.</span>
+                  <span className="text-[var(--text-tertiary)] text-[10px] italic">No payment receipts allocated.</span>
                 ) : (
                   <div className="flex flex-col gap-2 max-h-[200px] overflow-y-auto pr-1">
                     {clientPayments.map((p, idx) => (
-                      <div key={idx} className="flex justify-between items-center bg-slate-950 p-2 border border-slate-900/60 rounded text-[11px]">
+                      <div key={idx} className="flex justify-between items-center bg-[var(--bg-card)] p-2 border border-[var(--border)] rounded text-[11px]">
                         <div>
-                          <span className="font-bold text-slate-200">{p.payment_number}</span>
-                          <div className="text-[9px] text-slate-500">
+                          <span className="font-bold text-[var(--text-primary)]">{p.payment_number}</span>
+                          <div className="text-[9px] text-[var(--text-primary)]0">
                             {new Date(p.payment_date).toLocaleDateString('en-GB')} • {p.method}
                           </div>
                         </div>
                         <div className="text-right">
-                          <div className="text-emerald-400 font-bold">+{fmtAED(p.allocated)}</div>
-                          <div className="text-[9px] text-slate-500">Allocated amount</div>
+                          <div className="text-[var(--accent)] font-bold">+{fmtAED(p.allocated)}</div>
+                          <div className="text-[9px] text-[var(--text-primary)]0">Allocated amount</div>
                         </div>
                       </div>
                     ))}
@@ -617,26 +617,26 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
             {/* Supplier Bills & Disbursements */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* AP Invoices */}
-              <div className="border border-slate-900 rounded bg-slate-950/40 p-4">
-                <span className="text-[10px] text-slate-500 uppercase font-bold block mb-2 flex items-center gap-1">
-                  <FileCheck2 size={12} className="text-amber-500" />
+              <div className="border border-[var(--border)] rounded bg-[var(--bg-card)] p-4">
+                <span className="text-[10px] text-[var(--text-primary)]0 uppercase font-bold block mb-2 flex items-center gap-1">
+                  <FileCheck2 size={12} className="text-[var(--status-warning-text)]" />
                   Accounts Payable (Supplier Bills)
                 </span>
                 {supplierInvoices.length === 0 ? (
-                  <span className="text-slate-600 text-[10px] italic">No supplier bills registered.</span>
+                  <span className="text-[var(--text-tertiary)] text-[10px] italic">No supplier bills registered.</span>
                 ) : (
                   <div className="flex flex-col gap-2 max-h-[200px] overflow-y-auto pr-1">
                     {supplierInvoices.map(s => (
-                      <div key={s.id} className="flex justify-between items-center bg-slate-950 p-2 border border-slate-900/60 rounded text-[11px]">
+                      <div key={s.id} className="flex justify-between items-center bg-[var(--bg-card)] p-2 border border-[var(--border)] rounded text-[11px]">
                         <div>
-                          <Link href={`/finance/ap/match/${s.id}`} className="font-bold text-slate-200 hover:underline text-[11px]">
+                          <Link href={`/finance/ap/match/${s.id}`} className="font-bold text-[var(--text-primary)] hover:underline text-[11px]">
                             {s.internal_ref}
                           </Link>
-                          <div className="text-[9px] text-slate-500">Invoice: {s.supplier_invoice_number}</div>
+                          <div className="text-[9px] text-[var(--text-primary)]0">Invoice: {s.supplier_invoice_number}</div>
                         </div>
                         <div className="text-right">
-                          <div className="text-slate-300 font-semibold">{fmtAED(s.total)}</div>
-                          <div className="text-[9px] font-bold text-amber-500 uppercase">{s.status}</div>
+                          <div className="text-[var(--text-secondary)] font-semibold">{fmtAED(s.total)}</div>
+                          <div className="text-[9px] font-bold text-[var(--status-warning-text)] uppercase">{s.status}</div>
                         </div>
                       </div>
                     ))}
@@ -645,26 +645,26 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
               </div>
 
               {/* Supplier Payments */}
-              <div className="border border-slate-900 rounded bg-slate-950/40 p-4">
-                <span className="text-[10px] text-slate-500 uppercase font-bold block mb-2 flex items-center gap-1">
-                  <DollarSign size={12} className="text-amber-500" />
+              <div className="border border-[var(--border)] rounded bg-[var(--bg-card)] p-4">
+                <span className="text-[10px] text-[var(--text-primary)]0 uppercase font-bold block mb-2 flex items-center gap-1">
+                  <DollarSign size={12} className="text-[var(--status-warning-text)]" />
                   Disbursed Cash Payments
                 </span>
                 {supplierPayments.length === 0 ? (
-                  <span className="text-slate-600 text-[10px] italic">No vendor payments recorded.</span>
+                  <span className="text-[var(--text-tertiary)] text-[10px] italic">No vendor payments recorded.</span>
                 ) : (
                   <div className="flex flex-col gap-2 max-h-[200px] overflow-y-auto pr-1">
                     {supplierPayments.map((p, idx) => (
-                      <div key={idx} className="flex justify-between items-center bg-slate-950 p-2 border border-slate-900/60 rounded text-[11px]">
+                      <div key={idx} className="flex justify-between items-center bg-[var(--bg-card)] p-2 border border-[var(--border)] rounded text-[11px]">
                         <div>
-                          <span className="font-bold text-slate-200">{p.payment_number}</span>
-                          <div className="text-[9px] text-slate-500">
+                          <span className="font-bold text-[var(--text-primary)]">{p.payment_number}</span>
+                          <div className="text-[9px] text-[var(--text-primary)]0">
                             {new Date(p.payment_date).toLocaleDateString('en-GB')} • {p.method}
                           </div>
                         </div>
                         <div className="text-right">
-                          <div className="text-rose-400 font-bold">-{fmtAED(p.allocated)}</div>
-                          <div className="text-[9px] text-slate-500">Allocated payment</div>
+                          <div className="text-[var(--status-danger-text)] font-bold">-{fmtAED(p.allocated)}</div>
+                          <div className="text-[9px] text-[var(--text-primary)]0">Allocated payment</div>
                         </div>
                       </div>
                     ))}
@@ -677,13 +677,13 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
 
         {/* 5. DMS Document Tree */}
         {renderFolderSection('DMS', '5. Document Management System (DMS)', documents.length, (
-          <div className="border border-slate-900 rounded overflow-hidden font-mono text-xs">
-            <div className="bg-slate-950 px-4 py-2.5 border-b border-slate-900 text-[10px] text-slate-500 font-bold uppercase tracking-wide">
+          <div className="border border-[var(--border)] rounded overflow-hidden font-mono text-xs">
+            <div className="bg-[var(--bg-card)] px-4 py-2.5 border-b border-[var(--border)] text-[10px] text-[var(--text-primary)]0 font-bold uppercase tracking-wide">
               Folder Structure Tree
             </div>
-            <div className="p-4 bg-slate-950/20 flex flex-col gap-3">
+            <div className="p-4 bg-[var(--bg-card)] flex flex-col gap-3">
               {documents.length === 0 ? (
-                <span className="text-slate-500 italic text-[11px] pl-4">No documents filed in project directory.</span>
+                <span className="text-[var(--text-primary)]0 italic text-[11px] pl-4">No documents filed in project directory.</span>
               ) : (
                 // Group by Category and Subcategory
                 Object.entries(
@@ -698,34 +698,34 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
                 ).map(([cat, subcats]: [string, any]) => (
                   <div key={cat} className="flex flex-col gap-2">
                     {/* Category Folder */}
-                    <div className="flex items-center gap-1.5 text-slate-300 font-bold font-sans text-[11px] uppercase">
-                      <Folder size={12} className="text-amber-500 fill-amber-500/10" />
+                    <div className="flex items-center gap-1.5 text-[var(--text-secondary)] font-bold font-sans text-[11px] uppercase">
+                      <Folder size={12} className="text-[var(--status-warning-text)] fill-amber-500/10" />
                       <span>{cat.replace('_', ' ')}</span>
                     </div>
 
-                    <div className="pl-4 border-l border-slate-900/80 flex flex-col gap-2.5">
+                    <div className="pl-4 border-l border-[var(--border)] flex flex-col gap-2.5">
                       {Object.entries(subcats).map(([subcat, docs]: [string, any]) => (
                         <div key={subcat} className="flex flex-col gap-1.5">
                           {/* Subcategory Folder */}
-                          <div className="flex items-center gap-1.5 text-slate-400 font-bold font-sans text-[10px] uppercase">
-                            <Folder size={11} className="text-amber-500/80 fill-amber-500/5" />
+                          <div className="flex items-center gap-1.5 text-[var(--text-secondary)] font-bold font-sans text-[10px] uppercase">
+                            <Folder size={11} className="text-[var(--status-warning-text)] fill-amber-500/5" />
                             <span>{subcat.replace('_', ' ')}</span>
                           </div>
 
                           {/* Files */}
-                          <div className="pl-4 border-l border-slate-900/60 flex flex-col gap-1.5">
+                          <div className="pl-4 border-l border-[var(--border)] flex flex-col gap-1.5">
                             {docs.map((doc: any) => (
-                              <div key={doc.id} className="flex justify-between items-center py-1 hover:bg-slate-900/10 rounded px-1 transition-all">
+                              <div key={doc.id} className="flex justify-between items-center py-1 hover:bg-[var(--surface-hover)] rounded px-1 transition-all">
                                 <div className="flex items-center gap-1.5 text-[11px]">
-                                  <FileText size={12} className="text-emerald-400" />
-                                  <span className="text-slate-200 font-semibold">{doc.title}</span>
-                                  <span className="text-[9px] text-slate-500 font-mono">({doc.original_filename})</span>
+                                  <FileText size={12} className="text-[var(--accent)]" />
+                                  <span className="text-[var(--text-primary)] font-semibold">{doc.title}</span>
+                                  <span className="text-[9px] text-[var(--text-primary)]0 font-mono">({doc.original_filename})</span>
                                 </div>
                                 <div className="flex items-center gap-3 text-[10px]">
-                                  <span className="text-slate-500">{(doc.file_size_bytes / 1024).toFixed(0)} KB</span>
+                                  <span className="text-[var(--text-primary)]0">{(doc.file_size_bytes / 1024).toFixed(0)} KB</span>
                                   <span className={`px-1 rounded text-[8px] font-bold ${
-                                    doc.status === 'VERIFIED' ? 'bg-emerald-500/10 text-emerald-400' :
-                                    'bg-cyan-500/10 text-cyan-400'
+                                    doc.status === 'VERIFIED' ? 'bg-[var(--accent-glow)] text-[var(--accent)]' :
+                                    'bg-[var(--surface-hover)] text-[var(--accent)]'
                                   }`}>{doc.status}</span>
                                 </div>
                               </div>

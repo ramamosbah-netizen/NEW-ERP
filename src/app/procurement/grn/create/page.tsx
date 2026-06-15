@@ -570,7 +570,7 @@ function GRNFormContent() {
       )}
 
       {draftRestored && (
-        <div className="quote-card" style={{ borderLeft: '4px solid var(--primary)', background: 'rgba(0, 229, 160, 0.05)', padding: '0.8rem', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="quote-card" style={{ borderLeft: '4px solid var(--primary)', background: 'var(--accent-glow)', padding: '0.8rem', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Smartphone size={16} style={{ color: 'var(--primary)' }} />
             <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
@@ -580,7 +580,7 @@ function GRNFormContent() {
           <button 
             onClick={clearDraft} 
             className="quote-btn quote-btn-secondary" 
-            style={{ padding: '0.2rem 0.6rem', fontSize: '0.72rem', borderColor: 'rgba(255,255,255,0.1)' }}
+            style={{ padding: '0.2rem 0.6rem', fontSize: '0.72rem', borderColor: 'var(--border)' }}
           >
             Clear Draft
           </button>
@@ -706,7 +706,7 @@ function GRNFormContent() {
               </div>
 
               {/* Stock Routing Options */}
-              <div className="mt-2 border-t border-white/5 pt-4">
+              <div className="mt-2 border-t border-[var(--border)] pt-4">
                 <label style={{ cursor: 'pointer', fontWeight: 600, color: 'var(--primary)' }} className="flex items-center gap-2 text-sm">
                   <input 
                     type="checkbox"
@@ -721,7 +721,7 @@ function GRNFormContent() {
                   />
                   Route to Store Inventory (Stock Item)
                 </label>
-                <p className="text-xs text-slate-400 ml-7 mt-1">
+                <p className="text-xs text-[var(--text-secondary)] ml-7 mt-1">
                   Goods received to <strong>Store</strong> are registered in inventory automatically. Tick this to force inventory routing even when offloading on site.
                 </p>
 
@@ -741,7 +741,7 @@ function GRNFormContent() {
                         </option>
                       ))}
                     </select>
-                    <p className="text-xs text-slate-400 mt-1">
+                    <p className="text-xs text-[var(--text-secondary)] mt-1">
                       Leave as default and the receipt posts to the primary store automatically.
                     </p>
                   </div>
@@ -792,17 +792,17 @@ function GRNFormContent() {
                       border: '2px dashed var(--border-color)',
                       borderRadius: '8px',
                       cursor: 'pointer',
-                      background: 'rgba(255, 255, 255, 0.01)',
+                      background: 'var(--border)',
                       color: 'var(--text-secondary)',
                       fontSize: '0.85rem',
                       padding: '1rem',
                       transition: 'var(--transition-fast)'
                     }}
-                    className="dn-upload-label hover:border-emerald-400 hover:bg-white/[0.02]"
+                    className="dn-upload-label hover:border-[var(--accent)] hover:bg-white/[0.02]"
                   >
                     <Upload size={24} style={{ marginBottom: '0.4rem', color: 'var(--text-muted)' }} />
                     {deliveryNoteFile ? (
-                      <span className="text-emerald-400 font-semibold text-center word-break-all">
+                      <span className="text-[var(--accent)] font-semibold text-center word-break-all">
                         {deliveryNoteFile.name}
                       </span>
                     ) : (
@@ -942,7 +942,7 @@ function GRNFormContent() {
                               <button 
                                 type="button" 
                                 className="quote-btn quote-btn-secondary" 
-                                style={{ padding: '0.2rem 0.5rem', width: '100%', fontSize: '0.75rem', borderColor: 'rgba(255,255,255,0.06)' }}
+                                style={{ padding: '0.2rem 0.5rem', width: '100%', fontSize: '0.75rem', borderColor: 'var(--border)' }}
                                 onClick={() => receiveItemOutstanding(idx)}
                               >
                                 Receive {outstanding}
@@ -1026,7 +1026,7 @@ function GRNFormContent() {
                                       {/* Image Previews */}
                                       <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                                         {it.rejection_photos.map((p, pIdx) => (
-                                          <div key={pIdx} style={{ position: 'relative', width: '50px', height: '50px', borderRadius: '4px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
+                                          <div key={pIdx} style={{ position: 'relative', width: '50px', height: '50px', borderRadius: '4px', overflow: 'hidden', border: '1px solid var(--border)' }}>
                                             <img src={p.previewUrl} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Preview" />
                                             <button 
                                               type="button" 
@@ -1066,7 +1066,7 @@ function GRNFormContent() {
                         margin: 0, 
                         padding: '1.2rem', 
                         borderLeft: showsRejectionOptions ? '4px solid var(--error)' : '4px solid var(--primary)',
-                        background: showsRejectionOptions ? 'rgba(239, 68, 68, 0.01)' : 'rgba(255, 255, 255, 0.01)'
+                        background: showsRejectionOptions ? 'rgba(239, 68, 68, 0.01)' : 'var(--border)'
                       }}
                     >
                       {/* Material Spec & Brand */}
@@ -1100,7 +1100,7 @@ function GRNFormContent() {
                           <button 
                             type="button" 
                             onClick={() => handleItemValueChange(idx, 'qty_received', Math.max(0, Number(it.qty_received) - 1))}
-                            style={{ width: '46px', height: '46px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--border-color)', borderRadius: '6px', background: 'rgba(255,255,255,0.02)', color: '#fff', cursor: 'pointer' }}
+                            style={{ width: '46px', height: '46px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--border-color)', borderRadius: '6px', background: 'var(--border)', color: '#fff', cursor: 'pointer' }}
                           >
                             <Minus size={16} />
                           </button>
@@ -1114,7 +1114,7 @@ function GRNFormContent() {
                           <button 
                             type="button" 
                             onClick={() => handleItemValueChange(idx, 'qty_received', Number(it.qty_received) + 1)}
-                            style={{ width: '46px', height: '46px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--border-color)', borderRadius: '6px', background: 'rgba(255,255,255,0.02)', color: '#fff', cursor: 'pointer' }}
+                            style={{ width: '46px', height: '46px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--border-color)', borderRadius: '6px', background: 'var(--border)', color: '#fff', cursor: 'pointer' }}
                           >
                             <Plus size={16} />
                           </button>
@@ -1128,7 +1128,7 @@ function GRNFormContent() {
                           <button 
                             type="button" 
                             onClick={() => handleItemValueChange(idx, 'qty_rejected', Math.max(0, Number(it.qty_rejected) - 1))}
-                            style={{ width: '46px', height: '46px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--border-color)', borderRadius: '6px', background: 'rgba(255,255,255,0.02)', color: '#fff', cursor: 'pointer' }}
+                            style={{ width: '46px', height: '46px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--border-color)', borderRadius: '6px', background: 'var(--border)', color: '#fff', cursor: 'pointer' }}
                           >
                             <Minus size={16} />
                           </button>
@@ -1142,7 +1142,7 @@ function GRNFormContent() {
                           <button 
                             type="button" 
                             onClick={() => handleItemValueChange(idx, 'qty_rejected', Number(it.qty_rejected) + 1)}
-                            style={{ width: '46px', height: '46px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--border-color)', borderRadius: '6px', background: 'rgba(255,255,255,0.02)', color: '#fff', cursor: 'pointer' }}
+                            style={{ width: '46px', height: '46px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--border-color)', borderRadius: '6px', background: 'var(--border)', color: '#fff', cursor: 'pointer' }}
                           >
                             <Plus size={16} />
                           </button>
@@ -1225,7 +1225,7 @@ function GRNFormContent() {
                             {it.rejection_photos.length > 0 && (
                               <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.6rem' }}>
                                 {it.rejection_photos.map((p, pIdx) => (
-                                  <div key={pIdx} style={{ position: 'relative', width: '56px', height: '56px', borderRadius: '6px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)' }}>
+                                  <div key={pIdx} style={{ position: 'relative', width: '56px', height: '56px', borderRadius: '6px', overflow: 'hidden', border: '1px solid var(--border)' }}>
                                     <img src={p.previewUrl} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Preview" />
                                     <button 
                                       type="button" 
