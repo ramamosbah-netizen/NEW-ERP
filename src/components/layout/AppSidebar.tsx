@@ -198,6 +198,7 @@ const NAV_SECTIONS = [
     items: [
       { href: '/hr/dashboard', label: 'HR Dashboard', icon: LayoutDashboard },
       { href: '/hr', label: 'Employees', icon: Users },
+      { href: '/hr/compliance-tracker', label: 'Doc Compliance', icon: Shield },
       { href: '/payroll', label: 'Payroll', icon: Wallet },
       { href: '/timesheets', label: 'Timesheets', icon: Clock },
     ],
