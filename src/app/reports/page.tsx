@@ -100,72 +100,72 @@ export default function ReportsHub() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-[var(--bg-card)] text-[var(--text-primary)] flex flex-col font-sans">
 <div className="flex-1 flex flex-col lg:flex-row gap-6 p-6 max-w-7xl w-full mx-auto">
         {/* Left column: BI Dashboard charts & figures */}
         <div className="flex-1 flex flex-col gap-6">
           <header>
             <h1 className="text-2xl font-bold font-heading tracking-tight flex items-center gap-2">
-              <PieChart className="text-emerald-400" size={22} /> Executive BI & Reports
+              <PieChart className="text-[var(--accent)]" size={22} /> Executive BI & Reports
             </h1>
-            <p className="text-xs text-slate-400 font-mono mt-1">
+            <p className="text-xs text-[var(--text-secondary)] font-mono mt-1">
               REAL-TIME ENTERPRISE PERFORMANCE DASHBOARD
             </p>
           </header>
 
           {loading ? (
             <div className="flex-1 flex flex-col items-center justify-center py-12">
-              <div className="h-8 w-8 rounded-full border-2 border-emerald-500 border-t-transparent animate-spin mb-3"></div>
-              <p className="text-xs text-slate-500 font-mono">Aggregating transactional registers...</p>
+              <div className="h-8 w-8 rounded-full border-2 border-[var(--accent)] border-t-transparent animate-spin mb-3"></div>
+              <p className="text-xs text-[var(--text-primary)]0 font-mono">Aggregating transactional registers...</p>
             </div>
           ) : (
             <div className="flex flex-col gap-6">
               {/* Primary KPI Grid */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="bg-slate-900/40 border border-slate-900 rounded-lg p-4 flex flex-col gap-1">
-                  <div className="text-[10px] font-mono text-slate-500 uppercase font-bold flex items-center gap-1">
-                    <DollarSign size={12} className="text-emerald-400" /> Accounts Receivable
+                <div className="bg-[var(--surface-hover)] border border-[var(--border)] rounded-lg p-4 flex flex-col gap-1">
+                  <div className="text-[10px] font-mono text-[var(--text-primary)]0 uppercase font-bold flex items-center gap-1">
+                    <DollarSign size={12} className="text-[var(--accent)]" /> Accounts Receivable
                   </div>
-                  <div className="text-lg font-bold font-mono text-slate-100 mt-2">
+                  <div className="text-lg font-bold font-mono text-[var(--text-primary)] mt-2">
                     {fmtAED(financials?.receivables || 0)}
                   </div>
-                  <div className="text-[10px] text-slate-500 flex items-center gap-0.5 mt-1 font-mono">
-                    <ArrowUpRight size={12} className="text-emerald-400" /> Client invoices balance
+                  <div className="text-[10px] text-[var(--text-primary)]0 flex items-center gap-0.5 mt-1 font-mono">
+                    <ArrowUpRight size={12} className="text-[var(--accent)]" /> Client invoices balance
                   </div>
                 </div>
 
-                <div className="bg-slate-900/40 border border-slate-900 rounded-lg p-4 flex flex-col gap-1">
-                  <div className="text-[10px] font-mono text-slate-500 uppercase font-bold flex items-center gap-1">
-                    <DollarSign size={12} className="text-red-400" /> Accounts Payable
+                <div className="bg-[var(--surface-hover)] border border-[var(--border)] rounded-lg p-4 flex flex-col gap-1">
+                  <div className="text-[10px] font-mono text-[var(--text-primary)]0 uppercase font-bold flex items-center gap-1">
+                    <DollarSign size={12} className="text-[var(--status-danger-text)]" /> Accounts Payable
                   </div>
-                  <div className="text-lg font-bold font-mono text-slate-100 mt-2">
+                  <div className="text-lg font-bold font-mono text-[var(--text-primary)] mt-2">
                     {fmtAED(financials?.payables || 0)}
                   </div>
-                  <div className="text-[10px] text-slate-500 flex items-center gap-0.5 mt-1 font-mono">
-                    <ArrowDownRight size={12} className="text-red-400" /> Supplier commitments
+                  <div className="text-[10px] text-[var(--text-primary)]0 flex items-center gap-0.5 mt-1 font-mono">
+                    <ArrowDownRight size={12} className="text-[var(--status-danger-text)]" /> Supplier commitments
                   </div>
                 </div>
 
-                <div className="bg-slate-900/40 border border-slate-900 rounded-lg p-4 flex flex-col gap-1">
-                  <div className="text-[10px] font-mono text-slate-500 uppercase font-bold flex items-center gap-1">
-                    <TrendingUp size={12} className="text-emerald-400" /> Avg Profit Margin
+                <div className="bg-[var(--surface-hover)] border border-[var(--border)] rounded-lg p-4 flex flex-col gap-1">
+                  <div className="text-[10px] font-mono text-[var(--text-primary)]0 uppercase font-bold flex items-center gap-1">
+                    <TrendingUp size={12} className="text-[var(--accent)]" /> Avg Profit Margin
                   </div>
-                  <div className="text-lg font-bold font-mono text-slate-100 mt-2">
+                  <div className="text-lg font-bold font-mono text-[var(--text-primary)] mt-2">
                     {financials?.marginAverage || 0}%
                   </div>
-                  <div className="text-[10px] text-slate-500 flex items-center gap-0.5 mt-1 font-mono">
+                  <div className="text-[10px] text-[var(--text-primary)]0 flex items-center gap-0.5 mt-1 font-mono">
                     Target gross margin: 20%
                   </div>
                 </div>
 
-                <div className="bg-slate-900/40 border border-slate-900 rounded-lg p-4 flex flex-col gap-1">
-                  <div className="text-[10px] font-mono text-slate-500 uppercase font-bold flex items-center gap-1">
-                    <Clock size={12} className="text-emerald-400" /> Ticket SLA compliance
+                <div className="bg-[var(--surface-hover)] border border-[var(--border)] rounded-lg p-4 flex flex-col gap-1">
+                  <div className="text-[10px] font-mono text-[var(--text-primary)]0 uppercase font-bold flex items-center gap-1">
+                    <Clock size={12} className="text-[var(--accent)]" /> Ticket SLA compliance
                   </div>
-                  <div className="text-lg font-bold font-mono text-emerald-400 mt-2">
+                  <div className="text-lg font-bold font-mono text-[var(--accent)] mt-2">
                     {slaStats?.sla_compliance_rate || 0}%
                   </div>
-                  <div className="text-[10px] text-slate-500 flex items-center gap-0.5 mt-1 font-mono">
+                  <div className="text-[10px] text-[var(--text-primary)]0 flex items-center gap-0.5 mt-1 font-mono">
                     On-time resolved service orders
                   </div>
                 </div>
@@ -173,29 +173,29 @@ export default function ReportsHub() {
 
               {/* AR & AP Aging Buckets Side-by-Side */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-slate-900/10 border border-slate-900 rounded-lg p-4">
-                  <h3 className="text-xs font-bold font-heading tracking-wider uppercase text-slate-400 mb-3 flex items-center gap-1.5">
-                    <DollarSign size={13} className="text-emerald-400" /> Accounts Receivable Aging
+                <div className="bg-[var(--surface-hover)] border border-[var(--border)] rounded-lg p-4">
+                  <h3 className="text-xs font-bold font-heading tracking-wider uppercase text-[var(--text-secondary)] mb-3 flex items-center gap-1.5">
+                    <DollarSign size={13} className="text-[var(--accent)]" /> Accounts Receivable Aging
                   </h3>
                   <div className="flex flex-col gap-2">
                     {arAging.map(b => (
-                      <div key={b.bucket} className="flex items-center justify-between p-2 rounded bg-slate-950/60 border border-slate-900 font-mono text-xs">
-                        <span className="text-slate-400 font-semibold">{b.bucket} Days</span>
-                        <span className="font-bold text-slate-200">{fmtAED(b.amount)}</span>
+                      <div key={b.bucket} className="flex items-center justify-between p-2 rounded bg-[var(--bg-card)] border border-[var(--border)] font-mono text-xs">
+                        <span className="text-[var(--text-secondary)] font-semibold">{b.bucket} Days</span>
+                        <span className="font-bold text-[var(--text-primary)]">{fmtAED(b.amount)}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <div className="bg-slate-900/10 border border-slate-900 rounded-lg p-4">
-                  <h3 className="text-xs font-bold font-heading tracking-wider uppercase text-slate-400 mb-3 flex items-center gap-1.5">
-                    <DollarSign size={13} className="text-red-400" /> Accounts Payable Aging
+                <div className="bg-[var(--surface-hover)] border border-[var(--border)] rounded-lg p-4">
+                  <h3 className="text-xs font-bold font-heading tracking-wider uppercase text-[var(--text-secondary)] mb-3 flex items-center gap-1.5">
+                    <DollarSign size={13} className="text-[var(--status-danger-text)]" /> Accounts Payable Aging
                   </h3>
                   <div className="flex flex-col gap-2">
                     {apAging.map(b => (
-                      <div key={b.bucket} className="flex items-center justify-between p-2 rounded bg-slate-950/60 border border-slate-900 font-mono text-xs">
-                        <span className="text-slate-400 font-semibold">{b.bucket} Days</span>
-                        <span className="font-bold text-slate-200">{fmtAED(b.amount)}</span>
+                      <div key={b.bucket} className="flex items-center justify-between p-2 rounded bg-[var(--bg-card)] border border-[var(--border)] font-mono text-xs">
+                        <span className="text-[var(--text-secondary)] font-semibold">{b.bucket} Days</span>
+                        <span className="font-bold text-[var(--text-primary)]">{fmtAED(b.amount)}</span>
                       </div>
                     ))}
                   </div>
@@ -203,14 +203,14 @@ export default function ReportsHub() {
               </div>
 
               {/* Project Margins Ledger */}
-              <div className="bg-slate-900/10 border border-slate-900 rounded-lg p-4">
-                <h3 className="text-xs font-bold font-heading tracking-wider uppercase text-slate-400 mb-3 flex items-center gap-1.5">
-                  <Briefcase size={13} className="text-emerald-400" /> Active Projects Margin Analysis
+              <div className="bg-[var(--surface-hover)] border border-[var(--border)] rounded-lg p-4">
+                <h3 className="text-xs font-bold font-heading tracking-wider uppercase text-[var(--text-secondary)] mb-3 flex items-center gap-1.5">
+                  <Briefcase size={13} className="text-[var(--accent)]" /> Active Projects Margin Analysis
                 </h3>
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="bg-slate-900/40 border-b border-slate-900 text-[10px] font-mono text-slate-500 uppercase font-bold tracking-wider">
+                      <tr className="bg-[var(--surface-hover)] border-b border-[var(--border)] text-[10px] font-mono text-[var(--text-primary)]0 uppercase font-bold tracking-wider">
                         <th className="py-2.5 px-3">Project Ref</th>
                         <th className="py-2.5 px-3 text-right">BOQ Value</th>
                         <th className="py-2.5 px-3 text-right">Committed</th>
@@ -219,22 +219,22 @@ export default function ReportsHub() {
                         <th className="py-2.5 px-3 text-right">Margin %</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-900 font-mono text-xs">
+                    <tbody className="divide-y divide-[var(--border)] font-mono text-xs">
                       {projectKPIs.map(p => {
                         const hasErosion = p.margin_percentage < 15;
                         return (
-                          <tr key={p.project_id} className="hover:bg-slate-900/30">
-                            <td className="py-2.5 px-3 font-sans font-semibold text-slate-300">
+                          <tr key={p.project_id} className="hover:bg-[var(--surface-hover)]">
+                            <td className="py-2.5 px-3 font-sans font-semibold text-[var(--text-secondary)]">
                               <div>{p.project_name}</div>
-                              <div className="text-[10px] text-slate-500 font-mono">{p.project_number}</div>
+                              <div className="text-[10px] text-[var(--text-primary)]0 font-mono">{p.project_number}</div>
                             </td>
-                            <td className="py-2.5 px-3 text-right text-slate-300">{fmtAED(p.budget_cost)}</td>
-                            <td className="py-2.5 px-3 text-right text-slate-400">{fmtAED(p.committed_cost)}</td>
-                            <td className="py-2.5 px-3 text-right text-slate-300">{fmtAED(p.actual_cost)}</td>
-                            <td className="py-2.5 px-3 text-right text-slate-400">{fmtAED(p.variance)}</td>
-                            <td className={`py-2.5 px-3 text-right font-bold ${hasErosion ? 'text-red-400' : 'text-emerald-400'}`}>
+                            <td className="py-2.5 px-3 text-right text-[var(--text-secondary)]">{fmtAED(p.budget_cost)}</td>
+                            <td className="py-2.5 px-3 text-right text-[var(--text-secondary)]">{fmtAED(p.committed_cost)}</td>
+                            <td className="py-2.5 px-3 text-right text-[var(--text-secondary)]">{fmtAED(p.actual_cost)}</td>
+                            <td className="py-2.5 px-3 text-right text-[var(--text-secondary)]">{fmtAED(p.variance)}</td>
+                            <td className={`py-2.5 px-3 text-right font-bold ${hasErosion ? 'text-[var(--status-danger-text)]' : 'text-[var(--accent)]'}`}>
                               <div className="flex items-center justify-end gap-1.5">
-                                {hasErosion && <AlertTriangle size={12} className="text-red-400 shrink-0" />}
+                                {hasErosion && <AlertTriangle size={12} className="text-[var(--status-danger-text)] shrink-0" />}
                                 {p.margin_percentage}%
                               </div>
                             </td>
@@ -251,12 +251,12 @@ export default function ReportsHub() {
         </div>
 
         {/* Right column: Gemini Assistant Panel */}
-        <div className="w-full lg:w-96 flex flex-col gap-6 lg:border-l lg:border-slate-900 lg:pl-6">
-          <div className="sticky top-24 bg-slate-900/40 border border-slate-900 rounded-lg p-4 flex flex-col gap-4">
-            <h3 className="text-sm font-bold tracking-wider uppercase text-slate-400 flex items-center gap-1.5 font-heading">
-              <Sparkles className="text-emerald-400 animate-pulse" size={15} /> Gemini AI Analyst
+        <div className="w-full lg:w-96 flex flex-col gap-6 lg:border-l lg:border-[var(--border)] lg:pl-6">
+          <div className="sticky top-24 bg-[var(--surface-hover)] border border-[var(--border)] rounded-lg p-4 flex flex-col gap-4">
+            <h3 className="text-sm font-bold tracking-wider uppercase text-[var(--text-secondary)] flex items-center gap-1.5 font-heading">
+              <Sparkles className="text-[var(--accent)] animate-pulse" size={15} /> Gemini AI Analyst
             </h3>
-            <p className="text-xs text-slate-500 leading-relaxed font-sans">
+            <p className="text-xs text-[var(--text-primary)]0 leading-relaxed font-sans">
               Enter queries in natural language to analyze cash flows, cost variances, or project margin bottlenecks.
             </p>
 
@@ -266,32 +266,32 @@ export default function ReportsHub() {
                 value={geminiQuery}
                 onChange={(e) => setGeminiQuery(e.target.value)}
                 placeholder="Ask Gemini: 'Show margin risks'..."
-                className="flex-1 bg-slate-950 border border-slate-900 rounded px-2.5 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50 font-medium"
+                className="flex-1 bg-[var(--bg-card)] border border-[var(--border)] rounded px-2.5 py-1.5 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)] font-medium"
               />
               <button
                 type="submit"
                 disabled={geminiLoading || !geminiQuery.trim()}
-                className="bg-slate-950 hover:bg-slate-900 border border-slate-800 p-2 rounded text-slate-400 hover:text-emerald-400 transition-all shrink-0"
+                className="bg-[var(--bg-card)] hover:bg-[var(--surface-hover)] border border-[var(--border)] p-2 rounded text-[var(--text-secondary)] hover:text-[var(--accent)] transition-all shrink-0"
               >
                 <CornerDownLeft size={14} />
               </button>
             </form>
 
-            <div className="border-t border-slate-900 pt-4 flex flex-col gap-3 min-h-[200px] justify-center">
+            <div className="border-t border-[var(--border)] pt-4 flex flex-col gap-3 min-h-[200px] justify-center">
               {geminiLoading ? (
                 <div className="flex flex-col items-center justify-center py-8">
-                  <div className="h-5 w-5 rounded-full border-2 border-emerald-500 border-t-transparent animate-spin mb-2"></div>
-                  <p className="text-[10px] text-slate-500 font-mono">Analyzing database schemas...</p>
+                  <div className="h-5 w-5 rounded-full border-2 border-[var(--accent)] border-t-transparent animate-spin mb-2"></div>
+                  <p className="text-[10px] text-[var(--text-primary)]0 font-mono">Analyzing database schemas...</p>
                 </div>
               ) : geminiResponse ? (
-                <div className="p-3.5 bg-slate-950 border border-slate-900 rounded font-sans text-xs leading-relaxed text-slate-300 flex flex-col gap-2">
-                  <div className="flex items-center gap-1.5 text-[9px] font-mono uppercase font-bold text-emerald-400/80">
+                <div className="p-3.5 bg-[var(--bg-card)] border border-[var(--border)] rounded font-sans text-xs leading-relaxed text-[var(--text-secondary)] flex flex-col gap-2">
+                  <div className="flex items-center gap-1.5 text-[9px] font-mono uppercase font-bold text-[var(--accent)]">
                     <MessageSquare size={10} /> Query Result
                   </div>
                   <p className="whitespace-pre-wrap">{geminiResponse}</p>
                 </div>
               ) : (
-                <div className="text-center py-10 border border-dashed border-slate-900 rounded bg-slate-950/20 text-slate-600">
+                <div className="text-center py-10 border border-dashed border-[var(--border)] rounded bg-[var(--bg-card)] text-[var(--text-tertiary)]">
                   <MessageSquare size={20} className="mx-auto opacity-10 mb-2" />
                   <p className="text-[10px] font-mono">No queries analyzed yet.</p>
                 </div>
@@ -300,7 +300,7 @@ export default function ReportsHub() {
 
             {/* Quick Prompts Suggestions */}
             <div>
-              <div className="text-[10px] font-mono text-slate-500 uppercase font-bold mb-2">Suggested Queries</div>
+              <div className="text-[10px] font-mono text-[var(--text-primary)]0 uppercase font-bold mb-2">Suggested Queries</div>
               <div className="flex flex-col gap-1.5">
                 {[
                   'Show me margin erosion risks',
@@ -312,7 +312,7 @@ export default function ReportsHub() {
                     onClick={() => {
                       setGeminiQuery(prompt);
                     }}
-                    className="w-full text-left p-2 rounded bg-slate-950 border border-slate-900/60 text-[10px] font-semibold text-slate-400 hover:text-emerald-400 hover:border-emerald-500/20 transition-all truncate"
+                    className="w-full text-left p-2 rounded bg-[var(--bg-card)] border border-[var(--border)] text-[10px] font-semibold text-[var(--text-secondary)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-all truncate"
                   >
                     "{prompt}"
                   </button>

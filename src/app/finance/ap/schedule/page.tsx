@@ -152,14 +152,14 @@ export default function DisbursementSchedulingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#060814] text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex flex-col font-sans">
 <main className="flex-1 max-w-5xl w-full mx-auto px-6 py-8 flex flex-col gap-6">
         {/* Header */}
         <div>
-          <div className="text-[10px] text-slate-500 font-mono uppercase tracking-widest flex items-center gap-1">
-            <Link href="/finance/ap" className="hover:text-emerald-400 flex items-center gap-0.5"><ArrowLeft size={10} /> AP Registry</Link> &gt; <span className="text-slate-300">Schedule Payment</span>
+          <div className="text-[10px] text-[var(--text-primary)]0 font-mono uppercase tracking-widest flex items-center gap-1">
+            <Link href="/finance/ap" className="hover:text-[var(--accent)] flex items-center gap-0.5"><ArrowLeft size={10} /> AP Registry</Link> &gt; <span className="text-[var(--text-secondary)]">Schedule Payment</span>
           </div>
-          <h1 className="font-heading font-extrabold text-2xl tracking-tight text-slate-100 uppercase mt-1">
+          <h1 className="font-heading font-extrabold text-2xl tracking-tight text-[var(--text-primary)] uppercase mt-1">
             AP Disbursement Scheduler
           </h1>
         </div>
@@ -169,14 +169,14 @@ export default function DisbursementSchedulingPage() {
           <div className="md:col-span-2 flex flex-col gap-6">
             
             {/* Step 1: Select Supplier */}
-            <div className="bg-slate-950/60 border border-slate-900 rounded p-6">
-              <label className="text-xs font-mono text-emerald-400 uppercase tracking-wider block mb-2">
+            <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-6">
+              <label className="text-xs font-mono text-[var(--accent)] uppercase tracking-wider block mb-2">
                 1. Select Pricing Supplier
               </label>
               <select
                 value={selectedSupplierId}
                 onChange={(e) => setSelectedSupplierId(e.target.value)}
-                className="w-full bg-[#0a0f26] border border-slate-900 rounded px-4 py-2 text-sm text-slate-100 focus:outline-none focus:border-emerald-500 font-sans"
+                className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded px-4 py-2 text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] font-sans"
                 required
               >
                 <option value="">-- Choose Supplier --</option>
@@ -188,16 +188,16 @@ export default function DisbursementSchedulingPage() {
 
             {/* Step 2: Unpaid Invoices & Allocations */}
             {selectedSupplierId && (
-              <div className="bg-slate-950/60 border border-slate-900 rounded p-6">
-                <label className="text-xs font-mono text-emerald-400 uppercase tracking-wider block mb-4">
+              <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-6">
+                <label className="text-xs font-mono text-[var(--accent)] uppercase tracking-wider block mb-4">
                   2. Allocate Outstanding Balances
                 </label>
 
                 {loading ? (
-                  <p className="text-xs font-mono text-slate-500">Querying supplier ledger records...</p>
+                  <p className="text-xs font-mono text-[var(--text-primary)]0">Querying supplier ledger records...</p>
                 ) : unpaidInvoices.length === 0 ? (
-                  <div className="text-center py-6 text-slate-500 flex flex-col items-center gap-2">
-                    <CheckCircle size={24} className="text-emerald-400" />
+                  <div className="text-center py-6 text-[var(--text-primary)]0 flex flex-col items-center gap-2">
+                    <CheckCircle size={24} className="text-[var(--accent)]" />
                     <p className="text-xs font-mono">No outstanding invoices found. Supplier ledger is fully paid.</p>
                   </div>
                 ) : (
@@ -206,18 +206,18 @@ export default function DisbursementSchedulingPage() {
                       const outstanding = Number(inv.total) - Number(inv.amount_paid);
                       const currentAlloc = allocationAmounts[inv.id] || 0;
                       return (
-                        <div key={inv.id} className="bg-[#0a0f26]/40 p-4 rounded border border-slate-900/60 flex flex-col gap-3">
+                        <div key={inv.id} className="bg-[var(--bg-card)]/40 p-4 rounded border border-[var(--border)] flex flex-col gap-3">
                           <div className="flex justify-between items-start text-xs">
                             <div>
-                              <span className="font-mono text-emerald-400 font-bold block">{inv.supplier_invoice_number}</span>
-                              <span className="text-[10px] text-slate-500 block">Due Date: {new Date(inv.due_date).toLocaleDateString('en-GB')} ({inv.status})</span>
+                              <span className="font-mono text-[var(--accent)] font-bold block">{inv.supplier_invoice_number}</span>
+                              <span className="text-[10px] text-[var(--text-primary)]0 block">Due Date: {new Date(inv.due_date).toLocaleDateString('en-GB')} ({inv.status})</span>
                               {inv.projects?.name && (
-                                <span className="text-[9px] text-slate-400 block mt-0.5">Project: {inv.projects.name}</span>
+                                <span className="text-[9px] text-[var(--text-secondary)] block mt-0.5">Project: {inv.projects.name}</span>
                               )}
                             </div>
                             <div className="text-right">
-                              <span className="text-[10px] text-slate-500 block">Outstanding Balance</span>
-                              <span className="font-mono font-bold block text-slate-200">{formatAED(outstanding)}</span>
+                              <span className="text-[10px] text-[var(--text-primary)]0 block">Outstanding Balance</span>
+                              <span className="font-mono font-bold block text-[var(--text-primary)]">{formatAED(outstanding)}</span>
                             </div>
                           </div>
 
@@ -228,12 +228,12 @@ export default function DisbursementSchedulingPage() {
                               value={currentAlloc || ''}
                               onChange={(e) => handleAllocationChange(inv.id, Number(e.target.value), outstanding)}
                               placeholder="0.00"
-                              className="bg-slate-950 border border-slate-900 rounded px-3 py-1.5 text-xs text-slate-200 font-mono w-full focus:outline-none focus:border-emerald-500"
+                              className="bg-[var(--bg-card)] border border-[var(--border)] rounded px-3 py-1.5 text-xs text-[var(--text-primary)] font-mono w-full focus:outline-none focus:border-[var(--accent)]"
                             />
                             <button
                               type="button"
                               onClick={() => handleApplyFullAmount(inv.id, outstanding)}
-                              className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500 hover:text-slate-950 font-mono text-[10px] uppercase font-bold px-3 py-1.5 rounded transition-all shrink-0"
+                              className="bg-[var(--accent-glow)] text-[var(--accent)] border border-[var(--accent)] hover:bg-[var(--accent)] hover:text-white font-mono text-[10px] uppercase font-bold px-3 py-1.5 rounded transition-all shrink-0"
                             >
                               Apply Max
                             </button>
@@ -249,36 +249,36 @@ export default function DisbursementSchedulingPage() {
 
           {/* Right sidebar: Payment details */}
           <div className="flex flex-col gap-6">
-            <div className="bg-slate-950/60 border border-slate-900 rounded p-6 sticky top-24">
-              <h3 className="text-xs font-mono text-emerald-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+            <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-6 sticky top-24">
+              <h3 className="text-xs font-mono text-[var(--accent)] uppercase tracking-wider mb-4 flex items-center gap-2">
                 <Wallet size={16} /> Disbursement Info
               </h3>
 
               <div className="flex flex-col gap-4 text-xs">
                 <div>
-                  <label className="text-slate-500 uppercase font-mono text-[9px] block mb-1">Total Payment Amount</label>
-                  <div className="font-mono text-xl font-extrabold text-slate-100 bg-slate-900 border border-slate-800 rounded p-3 text-center">
+                  <label className="text-[var(--text-primary)]0 uppercase font-mono text-[9px] block mb-1">Total Payment Amount</label>
+                  <div className="font-mono text-xl font-extrabold text-[var(--text-primary)] bg-[var(--surface-hover)] border border-[var(--border)] rounded p-3 text-center">
                     {formatAED(getTotalAllocated())}
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-slate-500 uppercase font-mono text-[9px] block mb-1">Disbursement Date</label>
+                  <label className="text-[var(--text-primary)]0 uppercase font-mono text-[9px] block mb-1">Disbursement Date</label>
                   <input
                     type="date"
                     value={paymentDate}
                     onChange={(e) => setPaymentDate(e.target.value)}
-                    className="w-full bg-[#0a0f26] border border-slate-900 rounded px-3 py-2 text-slate-100 font-sans focus:outline-none focus:border-emerald-500"
+                    className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded px-3 py-2 text-[var(--text-primary)] font-sans focus:outline-none focus:border-[var(--accent)]"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="text-slate-500 uppercase font-mono text-[9px] block mb-1">Payment Method</label>
+                  <label className="text-[var(--text-primary)]0 uppercase font-mono text-[9px] block mb-1">Payment Method</label>
                   <select
                     value={paymentMethod}
                     onChange={(e) => setPaymentMethod(e.target.value)}
-                    className="w-full bg-[#0a0f26] border border-slate-900 rounded px-3 py-2 text-slate-100 font-sans focus:outline-none focus:border-emerald-500"
+                    className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded px-3 py-2 text-[var(--text-primary)] font-sans focus:outline-none focus:border-[var(--accent)]"
                     required
                   >
                     <option value="TRANSFER">Bank Wire Transfer</option>
@@ -289,33 +289,33 @@ export default function DisbursementSchedulingPage() {
                 </div>
 
                 <div>
-                  <label className="text-slate-500 uppercase font-mono text-[9px] block mb-1">Reference / Cheque Number</label>
+                  <label className="text-[var(--text-primary)]0 uppercase font-mono text-[9px] block mb-1">Reference / Cheque Number</label>
                   <input
                     type="text"
                     value={reference}
                     onChange={(e) => setReference(e.target.value)}
                     placeholder="e.g. TXN-19284 / CHQ-0029"
-                    className="w-full bg-[#0a0f26] border border-slate-900 rounded px-3 py-2 text-slate-100 font-sans focus:outline-none focus:border-emerald-500"
+                    className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded px-3 py-2 text-[var(--text-primary)] font-sans focus:outline-none focus:border-[var(--accent)]"
                   />
                 </div>
 
                 <div>
-                  <label className="text-slate-500 uppercase font-mono text-[9px] block mb-1">Debit Bank Account</label>
+                  <label className="text-[var(--text-primary)]0 uppercase font-mono text-[9px] block mb-1">Debit Bank Account</label>
                   <input
                     type="text"
                     value={bankAccount}
                     onChange={(e) => setBankAccount(e.target.value)}
                     placeholder="e.g. Emirates NBD Main Account"
-                    className="w-full bg-[#0a0f26] border border-slate-900 rounded px-3 py-2 text-slate-100 font-sans focus:outline-none focus:border-emerald-500"
+                    className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded px-3 py-2 text-[var(--text-primary)] font-sans focus:outline-none focus:border-[var(--accent)]"
                   />
                 </div>
 
                 <div>
-                  <label className="text-slate-500 uppercase font-mono text-[9px] block mb-1">Paid from account (tracks balance)</label>
+                  <label className="text-[var(--text-primary)]0 uppercase font-mono text-[9px] block mb-1">Paid from account (tracks balance)</label>
                   <select
                     value={paymentAccountId}
                     onChange={(e) => setPaymentAccountId(e.target.value)}
-                    className="w-full bg-[#0a0f26] border border-slate-900 rounded px-3 py-2 text-slate-100 font-sans focus:outline-none focus:border-emerald-500"
+                    className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded px-3 py-2 text-[var(--text-primary)] font-sans focus:outline-none focus:border-[var(--accent)]"
                   >
                     <option value="">— Not tracked —</option>
                     {accounts.map((a: any) => (
@@ -325,18 +325,18 @@ export default function DisbursementSchedulingPage() {
                 </div>
 
                 <div>
-                  <label className="text-slate-500 uppercase font-mono text-[9px] block mb-1">Disbursement Notes</label>
+                  <label className="text-[var(--text-primary)]0 uppercase font-mono text-[9px] block mb-1">Disbursement Notes</label>
                   <textarea
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                     rows={3}
                     placeholder="Provide optional transaction notes..."
-                    className="w-full bg-[#0a0f26] border border-slate-900 rounded px-3 py-2 text-slate-100 font-sans focus:outline-none focus:border-emerald-500 resize-none"
+                    className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded px-3 py-2 text-[var(--text-primary)] font-sans focus:outline-none focus:border-[var(--accent)] resize-none"
                   />
                 </div>
 
                 {error && (
-                  <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-3 rounded flex gap-2 items-start">
+                  <div className="bg-[var(--status-danger-bg)] border border-[var(--status-danger-border)] text-[var(--status-danger-text)] p-3 rounded flex gap-2 items-start">
                     <AlertTriangle size={16} className="shrink-0 mt-0.5" />
                     <span className="text-[10px] font-mono leading-relaxed">{error}</span>
                   </div>
@@ -345,7 +345,7 @@ export default function DisbursementSchedulingPage() {
                 <button
                   type="submit"
                   disabled={saving || !selectedSupplierId || getTotalAllocated() === 0}
-                  className="w-full bg-emerald-500 hover:bg-emerald-400 disabled:bg-slate-800 disabled:text-slate-500 disabled:border-transparent text-slate-950 font-bold uppercase font-mono py-2.5 rounded transition-all shadow-[0_0_15px_rgba(0,229,160,0.1)] text-center cursor-pointer"
+                  className="w-full bg-[var(--accent)] hover:bg-[var(--accent)] disabled:bg-[var(--surface-hover)] disabled:text-[var(--text-primary)]0 disabled:border-transparent text-white font-bold uppercase font-mono py-2.5 rounded transition-all shadow-[0_0_15px_var(--accent-glow)] text-center cursor-pointer"
                 >
                   {saving ? 'Recording Disbursement...' : 'Execute Payment'}
                 </button>

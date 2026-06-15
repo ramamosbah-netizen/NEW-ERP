@@ -66,25 +66,25 @@ export default function FinanceDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#060814] flex flex-col items-center justify-center text-center p-6">
-        <div className="h-12 w-12 border-2 border-emerald-400 border-t-transparent animate-spin rounded-full mb-4"></div>
-        <h2 className="text-xl font-bold font-heading text-white">JEET ERP</h2>
-        <p className="text-slate-400 text-xs mt-1">Aggregating financial ledger data...</p>
+      <div className="min-h-screen bg-[var(--bg-dark)] flex flex-col items-center justify-center text-center p-6">
+        <div className="h-12 w-12 border-2 border-[var(--accent)] border-t-transparent animate-spin rounded-full mb-4"></div>
+        <h2 className="text-xl font-bold font-heading text-[var(--text-primary)]">JEET ERP</h2>
+        <p className="text-[var(--text-secondary)] text-xs mt-1">Aggregating financial ledger data...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#060814] text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex flex-col font-sans">
       <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-8 flex flex-col gap-6">
         
         {/* Page Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-white/5 pb-4">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-[var(--border)] pb-4">
           <div>
-            <h1 className="font-heading font-extrabold text-2xl tracking-tight text-slate-100 uppercase">
+            <h1 className="font-heading font-extrabold text-2xl tracking-tight text-[var(--text-primary)] uppercase">
               Financial Operations Command
             </h1>
-            <p className="text-[10px] text-emerald-400 font-mono tracking-widest uppercase mt-0.5">
+            <p className="text-[10px] text-[var(--accent)] font-mono tracking-widest uppercase mt-0.5">
               Client billing · supplier aging · quarterly vat compliance · rolling forecast
             </p>
           </div>
@@ -94,18 +94,18 @@ export default function FinanceDashboard() {
               size="sm"
               onClick={loadFinanceData}
               disabled={refreshing}
-              className="text-slate-300 border-white/10 hover:bg-white/5 flex items-center gap-1.5"
+              className="text-[var(--text-secondary)] border-[var(--border)] hover:bg-[var(--surface-hover)] flex items-center gap-1.5"
             >
               <RefreshCw size={14} className={refreshing ? 'animate-spin' : ''} />
               {refreshing ? 'Refreshing...' : 'Refresh'}
             </Button>
             <Link href="/finance/ar/create" className="no-underline">
-              <Button size="sm" className="bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-bold">
+              <Button size="sm" className="bg-[var(--accent)] hover:bg-[var(--accent)] text-[var(--text-primary)] font-bold">
                 + Create Client Invoice
               </Button>
             </Link>
             <Link href="/finance/ap/register" className="no-underline">
-              <Button size="sm" variant="secondary" className="text-slate-200 border-white/10 hover:bg-white/5 font-bold">
+              <Button size="sm" variant="secondary" className="text-[var(--text-primary)] border-[var(--border)] hover:bg-[var(--surface-hover)] font-bold">
                 + Register Supplier Bill
               </Button>
             </Link>
@@ -145,7 +145,7 @@ export default function FinanceDashboard() {
               borderAccent="danger"
               icon={ArrowDownLeft}
               sparklineData={kpis?.agingAP.map(b => b.amount) || [0, 0, 0, 0]}
-              className="group-hover:border-red-500/55 transition-all"
+              className="group-hover:border-[var(--status-danger-border)] transition-all"
             />
           </Link>
 
@@ -160,7 +160,7 @@ export default function FinanceDashboard() {
               borderAccent="success"
               icon={DollarSign}
               sparklineData={[500000, 520000, kpis?.cashPosition ?? 500000]}
-              className="group-hover:border-emerald-400/55 transition-all"
+              className="group-hover:border-[var(--accent)] transition-all"
             />
           </Link>
 
@@ -177,7 +177,7 @@ export default function FinanceDashboard() {
               borderAccent="accent"
               icon={ArrowRightLeft}
               sparklineData={forecast.slice(0, 4).map(w => w.netFlow) || [0, 0, 0, 0]}
-              className="group-hover:border-cyan-400/55 transition-all"
+              className="group-hover:border-[var(--border)] transition-all"
             />
           </Link>
 
@@ -192,7 +192,7 @@ export default function FinanceDashboard() {
               borderAccent="warning"
               icon={Percent}
               sparklineData={[kpis?.vatLiability ? kpis.vatLiability * 0.9 : 0, kpis?.vatLiability ?? 0]}
-              className="group-hover:border-amber-400/55 transition-all"
+              className="group-hover:border-[var(--status-warning-border)] transition-all"
             />
           </Link>
 
@@ -206,7 +206,7 @@ export default function FinanceDashboard() {
                 style={{
                   background: a.level === 'danger' ? 'rgba(239,68,68,0.08)' : 'rgba(245,158,11,0.08)',
                   borderColor: a.level === 'danger' ? 'rgba(239,68,68,0.25)' : 'rgba(245,158,11,0.25)',
-                  color: a.level === 'danger' ? '#f87171' : '#fbbf24',
+                  color: a.level === 'danger' ? 'var(--status-danger-text)' : 'var(--status-warning-text)',
                 }}>
                 {a.level === 'danger' ? <AlertOctagon size={14} className="mt-0.5 shrink-0" /> : <AlertTriangle size={14} className="mt-0.5 shrink-0" />}
                 <div><div className="font-semibold">{a.title}</div><div className="opacity-90">{a.detail}</div></div>
@@ -224,9 +224,9 @@ export default function FinanceDashboard() {
               { label: 'Total commitments', value: exec.kpis.totalCommitments },
               { label: 'Projects at risk', value: exec.kpis.projectsAtRisk, count: true, warn: exec.kpis.projectsAtRisk > 0 },
             ].map(k => (
-              <div key={k.label} className="bg-slate-950/40 border border-white/5 rounded-lg p-3.5">
-                <div className="text-[10px] text-slate-500 font-mono uppercase tracking-wider">{k.label}</div>
-                <div className="text-lg font-bold tabular-nums mt-1" style={{ color: k.warn ? '#f87171' : '#e2e8f0' }}>
+              <div key={k.label} className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-3.5">
+                <div className="text-[10px] text-[var(--text-primary)]0 font-mono uppercase tracking-wider">{k.label}</div>
+                <div className="text-lg font-bold tabular-nums mt-1" style={{ color: k.warn ? 'var(--status-danger-text)' : 'var(--text-primary)' }}>
                   {k.count ? k.value : formatAED(k.value)}
                 </div>
               </div>
@@ -238,28 +238,28 @@ export default function FinanceDashboard() {
         {exec && (
           <div className="grid lg:grid-cols-3 gap-6">
             <Card className="flex flex-col gap-3 min-w-0">
-              <h3 className="font-heading font-bold text-sm text-slate-200 uppercase tracking-wider">Revenue Trend</h3>
+              <h3 className="font-heading font-bold text-sm text-[var(--text-primary)] uppercase tracking-wider">Revenue Trend</h3>
               <div className="h-[220px] w-full">
                 <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                   <BarChart data={exec.revenueTrend} margin={{ top: 8, right: 8, left: -10, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.03)" />
-                    <XAxis dataKey="month" stroke="#475569" fontSize={10} />
-                    <YAxis stroke="#475569" fontSize={10} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
-                    <Tooltip contentStyle={{ backgroundColor: '#090e24', borderColor: 'rgba(255,255,255,0.1)', fontSize: 11 }} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+                    <XAxis dataKey="month" stroke="var(--text-tertiary)" fontSize={10} />
+                    <YAxis stroke="var(--text-tertiary)" fontSize={10} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
+                    <Tooltip contentStyle={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border)', fontSize: 11 }} />
                     <Bar dataKey="revenue" fill="#22c55e" radius={[3, 3, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
             </Card>
             <Card className="flex flex-col gap-3 min-w-0">
-              <h3 className="font-heading font-bold text-sm text-slate-200 uppercase tracking-wider">Receivables vs Payables Aging</h3>
+              <h3 className="font-heading font-bold text-sm text-[var(--text-primary)] uppercase tracking-wider">Receivables vs Payables Aging</h3>
               <div className="h-[220px] w-full">
                 <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                   <BarChart data={exec.arAging.map((a, i) => ({ bucket: a.bucket, AR: a.amount, AP: exec.apAging[i]?.amount || 0 }))} margin={{ top: 8, right: 8, left: -10, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.03)" />
-                    <XAxis dataKey="bucket" stroke="#475569" fontSize={9} />
-                    <YAxis stroke="#475569" fontSize={10} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
-                    <Tooltip contentStyle={{ backgroundColor: '#090e24', borderColor: 'rgba(255,255,255,0.1)', fontSize: 11 }} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+                    <XAxis dataKey="bucket" stroke="var(--text-tertiary)" fontSize={9} />
+                    <YAxis stroke="var(--text-tertiary)" fontSize={10} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
+                    <Tooltip contentStyle={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border)', fontSize: 11 }} />
                     <Bar dataKey="AR" fill="#2563eb" radius={[3, 3, 0, 0]} />
                     <Bar dataKey="AP" fill="#f59e0b" radius={[3, 3, 0, 0]} />
                   </BarChart>
@@ -267,14 +267,14 @@ export default function FinanceDashboard() {
               </div>
             </Card>
             <Card className="flex flex-col gap-3 min-w-0">
-              <h3 className="font-heading font-bold text-sm text-slate-200 uppercase tracking-wider">Project Margin (lowest first)</h3>
+              <h3 className="font-heading font-bold text-sm text-[var(--text-primary)] uppercase tracking-wider">Project Margin (lowest first)</h3>
               <div className="h-[220px] w-full">
                 <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                   <BarChart data={exec.topProjects} layout="vertical" margin={{ top: 4, right: 8, left: 8, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.03)" />
-                    <XAxis type="number" stroke="#475569" fontSize={9} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
-                    <YAxis type="category" dataKey="project_number" stroke="#475569" fontSize={9} width={70} />
-                    <Tooltip contentStyle={{ backgroundColor: '#090e24', borderColor: 'rgba(255,255,255,0.1)', fontSize: 11 }} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+                    <XAxis type="number" stroke="var(--text-tertiary)" fontSize={9} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
+                    <YAxis type="category" dataKey="project_number" stroke="var(--text-tertiary)" fontSize={9} width={70} />
+                    <Tooltip contentStyle={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border)', fontSize: 11 }} />
                     <Bar dataKey="margin" radius={[0, 3, 3, 0]}>{exec.topProjects.map((p, i) => <Cell key={i} fill={p.margin < 0 ? '#ef4444' : '#22c55e'} />)}</Bar>
                   </BarChart>
                 </ResponsiveContainer>
@@ -286,21 +286,21 @@ export default function FinanceDashboard() {
         {/* Rolling cash flow forecast chart */}
         <Card className="flex flex-col gap-4 min-w-0">
           <div>
-            <h3 className="font-heading font-bold text-sm text-slate-200 uppercase tracking-wider">
+            <h3 className="font-heading font-bold text-sm text-[var(--text-primary)] uppercase tracking-wider">
               13-Week Cash Flow Forecast Trend
             </h3>
-            <p className="text-[10px] text-slate-500 font-mono mt-0.5">
+            <p className="text-[10px] text-[var(--text-primary)]0 font-mono mt-0.5">
               Projected rolling cumulative balance & weekly net flows
             </p>
           </div>
 
           <div className="h-[300px] w-full">
             {cfLoading ? (
-              <div className="h-full flex items-center justify-center text-slate-500 text-xs font-mono">
+              <div className="h-full flex items-center justify-center text-[var(--text-primary)]0 text-xs font-mono">
                 Calculating cash flow trajectory...
               </div>
             ) : forecast.length === 0 ? (
-              <div className="h-full flex items-center justify-center text-slate-500 text-xs font-mono">
+              <div className="h-full flex items-center justify-center text-[var(--text-primary)]0 text-xs font-mono">
                 No cash flow forecast data available
               </div>
             ) : (
@@ -312,12 +312,12 @@ export default function FinanceDashboard() {
                       <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.03)" />
-                  <XAxis dataKey="startDate" stroke="#475569" fontSize={10} className="font-mono" />
-                  <YAxis stroke="#475569" fontSize={10} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+                  <XAxis dataKey="startDate" stroke="var(--text-tertiary)" fontSize={10} className="font-mono" />
+                  <YAxis stroke="var(--text-tertiary)" fontSize={10} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
                   <Tooltip 
-                    contentStyle={{ backgroundColor: '#090e24', borderColor: 'rgba(255,255,255,0.1)' }}
-                    labelStyle={{ color: '#fff', fontSize: '11px', fontFamily: 'monospace' }}
+                    contentStyle={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border)' }}
+                    labelStyle={{ color: 'var(--text-primary)', fontSize: '11px', fontFamily: 'monospace' }}
                     itemStyle={{ fontSize: '11px' }}
                   />
                   <Area 
@@ -340,36 +340,36 @@ export default function FinanceDashboard() {
           
           {/* AR Section */}
           <Card className="flex flex-col gap-3.5">
-            <div className="flex items-center gap-3 border-b border-white/5 pb-2.5">
-              <div className="h-8 w-8 bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 rounded">
+            <div className="flex items-center gap-3 border-b border-[var(--border)] pb-2.5">
+              <div className="h-8 w-8 bg-[var(--accent-glow)] border border-[var(--accent)] flex items-center justify-center text-[var(--accent)] rounded">
                 <ArrowUpRight size={18} />
               </div>
               <div>
-                <h3 className="font-heading font-bold text-sm uppercase text-slate-200">Accounts Receivable (AR)</h3>
-                <p className="text-[9px] text-slate-500 font-mono uppercase mt-0.5">Billing claims & aging collections</p>
+                <h3 className="font-heading font-bold text-sm uppercase text-[var(--text-primary)]">Accounts Receivable (AR)</h3>
+                <p className="text-[9px] text-[var(--text-primary)]0 font-mono uppercase mt-0.5">Billing claims & aging collections</p>
               </div>
             </div>
-            <p className="text-xs text-slate-400 leading-relaxed flex-1">
+            <p className="text-xs text-[var(--text-secondary)] leading-relaxed flex-1">
               Track client progress claim certifications, advance recoveries, and retention ledgers. Compile compliant Tax Invoices and record cash receipts with allocations.
             </p>
             <div className="flex flex-wrap gap-2 mt-auto">
               <Link href="/finance/ar" className="no-underline">
-                <Button size="sm" variant="secondary" className="text-xs font-mono text-slate-300 border-white/10 hover:bg-white/5">
+                <Button size="sm" variant="secondary" className="text-xs font-mono text-[var(--text-secondary)] border-[var(--border)] hover:bg-[var(--surface-hover)]">
                   Invoice Registry
                 </Button>
               </Link>
               <Link href="/finance/ar/payment" className="no-underline">
-                <Button size="sm" variant="secondary" className="text-xs font-mono text-slate-300 border-white/10 hover:bg-white/5">
+                <Button size="sm" variant="secondary" className="text-xs font-mono text-[var(--text-secondary)] border-[var(--border)] hover:bg-[var(--surface-hover)]">
                   Record Receipt
                 </Button>
               </Link>
               <Link href="/finance/ar/aging" className="no-underline">
-                <Button size="sm" variant="secondary" className="text-xs font-mono text-slate-300 border-white/10 hover:bg-white/5">
+                <Button size="sm" variant="secondary" className="text-xs font-mono text-[var(--text-secondary)] border-[var(--border)] hover:bg-[var(--surface-hover)]">
                   Receivables Aging
                 </Button>
               </Link>
               <Link href="/finance/ar/statement" className="no-underline">
-                <Button size="sm" variant="secondary" className="text-xs font-mono text-slate-300 border-white/10 hover:bg-white/5">
+                <Button size="sm" variant="secondary" className="text-xs font-mono text-[var(--text-secondary)] border-[var(--border)] hover:bg-[var(--surface-hover)]">
                   Customer Statements
                 </Button>
               </Link>
@@ -378,41 +378,41 @@ export default function FinanceDashboard() {
 
           {/* AP Section */}
           <Card className="flex flex-col gap-3.5">
-            <div className="flex items-center gap-3 border-b border-white/5 pb-2.5">
-              <div className="h-8 w-8 bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400 rounded">
+            <div className="flex items-center gap-3 border-b border-[var(--border)] pb-2.5">
+              <div className="h-8 w-8 bg-[var(--status-danger-bg)] border border-[var(--status-danger-border)] flex items-center justify-center text-[var(--status-danger-text)] rounded">
                 <ArrowDownLeft size={18} />
               </div>
               <div>
-                <h3 className="font-heading font-bold text-sm uppercase text-slate-200">Accounts Payable (AP)</h3>
-                <p className="text-[9px] text-slate-500 font-mono uppercase mt-0.5">Supplier matching & disbursements</p>
+                <h3 className="font-heading font-bold text-sm uppercase text-[var(--text-primary)]">Accounts Payable (AP)</h3>
+                <p className="text-[9px] text-[var(--text-primary)]0 font-mono uppercase mt-0.5">Supplier matching & disbursements</p>
               </div>
             </div>
-            <p className="text-xs text-slate-400 leading-relaxed flex-1">
+            <p className="text-xs text-[var(--text-secondary)] leading-relaxed flex-1">
               Verify incoming supplier invoices against Local Purchase Orders (LPO) and Goods Receipt Notes (GRN). Review match exceptions and approve scheduled disbursements.
             </p>
             <div className="flex flex-wrap gap-2 mt-auto">
               <Link href="/finance/ap" className="no-underline">
-                <Button size="sm" variant="secondary" className="text-xs font-mono text-slate-300 border-white/10 hover:bg-white/5">
+                <Button size="sm" variant="secondary" className="text-xs font-mono text-[var(--text-secondary)] border-[var(--border)] hover:bg-[var(--surface-hover)]">
                   Bill Registry
                 </Button>
               </Link>
               <Link href="/finance/ap/register" className="no-underline">
-                <Button size="sm" variant="secondary" className="text-xs font-mono text-slate-300 border-white/10 hover:bg-white/5">
+                <Button size="sm" variant="secondary" className="text-xs font-mono text-[var(--text-secondary)] border-[var(--border)] hover:bg-[var(--surface-hover)]">
                   Register Invoice
                 </Button>
               </Link>
               <Link href="/finance/ap/aging" className="no-underline">
-                <Button size="sm" variant="secondary" className="text-xs font-mono text-slate-300 border-white/10 hover:bg-white/5">
+                <Button size="sm" variant="secondary" className="text-xs font-mono text-[var(--text-secondary)] border-[var(--border)] hover:bg-[var(--surface-hover)]">
                   Payables Aging
                 </Button>
               </Link>
               <Link href="/finance/ap/schedule" className="no-underline">
-                <Button size="sm" variant="secondary" className="text-xs font-mono text-slate-300 border-white/10 hover:bg-white/5">
+                <Button size="sm" variant="secondary" className="text-xs font-mono text-[var(--text-secondary)] border-[var(--border)] hover:bg-[var(--surface-hover)]">
                   Disbursements
                 </Button>
               </Link>
               <Link href="/finance/grn-expense" className="no-underline">
-                <Button size="sm" variant="secondary" className="text-xs font-mono text-slate-300 border-white/10 hover:bg-white/5">
+                <Button size="sm" variant="secondary" className="text-xs font-mono text-[var(--text-secondary)] border-[var(--border)] hover:bg-[var(--surface-hover)]">
                   GRN-to-Expense
                 </Button>
               </Link>

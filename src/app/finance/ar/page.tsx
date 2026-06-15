@@ -33,28 +33,28 @@ export default function ClientInvoicesListPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#060814] text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex flex-col font-sans">
 <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-8 flex flex-col gap-6">
         {/* Breadcrumb & Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <div className="text-[10px] text-slate-500 font-mono uppercase tracking-widest">
-              <Link href="/finance" className="hover:text-emerald-400">Finance</Link> &gt; <span className="text-slate-300">Receivables</span>
+            <div className="text-[10px] text-[var(--text-primary)]0 font-mono uppercase tracking-widest">
+              <Link href="/finance" className="hover:text-[var(--accent)]">Finance</Link> &gt; <span className="text-[var(--text-secondary)]">Receivables</span>
             </div>
-            <h1 className="font-heading font-extrabold text-2xl tracking-tight text-slate-100 uppercase mt-1">
+            <h1 className="font-heading font-extrabold text-2xl tracking-tight text-[var(--text-primary)] uppercase mt-1">
               Client Invoice Registry (AR)
             </h1>
           </div>
           <div className="flex items-center gap-2">
             <Link
               href="/finance/ar/from-phases"
-              className="flex items-center gap-1.5 px-4 py-2 border border-emerald-400/40 text-emerald-300 text-xs font-bold rounded hover:bg-emerald-400/10 transition-all uppercase tracking-wider"
+              className="flex items-center gap-1.5 px-4 py-2 border border-[var(--accent)] text-[var(--accent)] text-xs font-bold rounded hover:bg-[var(--accent-glow)] transition-all uppercase tracking-wider"
             >
               <CheckSquare size={14} /> Bill Completed Phases
             </Link>
             <Link
               href="/finance/ar/create"
-              className="flex items-center gap-1.5 px-4 py-2 bg-emerald-400 text-slate-950 text-xs font-bold rounded hover:bg-emerald-300 transition-all uppercase tracking-wider"
+              className="flex items-center gap-1.5 px-4 py-2 bg-[var(--accent)] text-[var(--text-primary)] text-xs font-bold rounded hover:bg-[var(--accent)] transition-all uppercase tracking-wider"
             >
               <Plus size={14} /> New Invoice Draft
             </Link>
@@ -62,16 +62,16 @@ export default function ClientInvoicesListPage() {
         </div>
 
         {/* Filters Panel */}
-        <div className="bg-slate-950/60 border border-slate-900 rounded p-4 flex flex-col md:flex-row gap-4 items-center">
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4 flex flex-col md:flex-row gap-4 items-center">
           {/* Search bar */}
           <div className="relative flex-1 w-full">
-            <Search className="absolute left-3 top-2.5 text-slate-500" size={14} />
+            <Search className="absolute left-3 top-2.5 text-[var(--text-primary)]0" size={14} />
             <input
               type="text"
               placeholder="Search by Invoice # or Client Name..."
               value={filters.search}
               onChange={handleSearchChange}
-              className="w-full bg-[#0a0f26] border border-slate-800 rounded py-2 pl-9 pr-4 text-xs text-slate-300 placeholder-slate-600 focus:outline-none focus:border-emerald-500/50"
+              className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 pl-9 pr-4 text-xs text-[var(--text-secondary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:border-[var(--accent)]"
             />
           </div>
 
@@ -80,7 +80,7 @@ export default function ClientInvoicesListPage() {
             <select
               value={filters.status}
               onChange={handleStatusChange}
-              className="w-full bg-[#0a0f26] border border-slate-800 rounded py-2 px-3 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50"
+              className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)]"
             >
               <option value="">All Statuses</option>
               {Object.entries(INVOICE_STATUS_LABELS).map(([k, v]) => (
@@ -91,11 +91,11 @@ export default function ClientInvoicesListPage() {
         </div>
 
         {/* Table List */}
-        <div className="bg-slate-950/40 border border-slate-900 rounded overflow-hidden">
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-left text-xs">
               <thead>
-                <tr className="bg-slate-950 border-b border-slate-900 text-slate-400 font-mono uppercase tracking-wider text-[10px]">
+                <tr className="bg-[var(--bg-card)] border-b border-[var(--border)] text-[var(--text-secondary)] font-mono uppercase tracking-wider text-[10px]">
                   <th className="py-3.5 px-4">Invoice Number</th>
                   <th className="py-3.5 px-4">Client Name</th>
                   <th className="py-3.5 px-4">Billing Date</th>
@@ -109,41 +109,41 @@ export default function ClientInvoicesListPage() {
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan={8} className="py-8 text-center text-slate-500 font-mono">
+                    <td colSpan={8} className="py-8 text-center text-[var(--text-primary)]0 font-mono">
                       Querying invoices...
                     </td>
                   </tr>
                 ) : invoices.length === 0 ? (
                   <tr>
-                    <td colSpan={8} className="py-8 text-center text-slate-500 font-mono">
+                    <td colSpan={8} className="py-8 text-center text-[var(--text-primary)]0 font-mono">
                       No invoices registered.
                     </td>
                   </tr>
                 ) : (
                   invoices.map(inv => {
-                    const statusColor = INVOICE_STATUS_COLORS[inv.status] || { bg: 'rgba(100,116,139,0.1)', text: '#fff', border: 'transparent' };
+                    const statusColor = INVOICE_STATUS_COLORS[inv.status] || { bg: 'var(--surface-hover)', text: '#fff', border: 'transparent' };
                     return (
                       <tr 
                         key={inv.id} 
-                        className="border-b border-slate-900 hover:bg-emerald-500/5 transition-all cursor-pointer"
+                        className="border-b border-[var(--border)] hover:bg-[var(--accent-glow)] transition-all cursor-pointer"
                         onClick={() => window.location.href = `/finance/ar/${inv.id}`}
                       >
-                        <td className="py-4 px-4 font-mono font-bold text-slate-200">
+                        <td className="py-4 px-4 font-mono font-bold text-[var(--text-primary)]">
                           {inv.invoice_number}
                         </td>
-                        <td className="py-4 px-4 font-semibold text-slate-300">
+                        <td className="py-4 px-4 font-semibold text-[var(--text-secondary)]">
                           {inv.client_name}
                         </td>
-                        <td className="py-4 px-4 text-slate-400">
+                        <td className="py-4 px-4 text-[var(--text-secondary)]">
                           {new Date(inv.invoice_date).toLocaleDateString('en-GB')}
                         </td>
-                        <td className="py-4 px-4 text-slate-400">
+                        <td className="py-4 px-4 text-[var(--text-secondary)]">
                           {INVOICE_TYPE_LABELS[inv.invoice_type]}
                         </td>
-                        <td className="py-4 px-4 text-right font-mono font-bold text-slate-100">
+                        <td className="py-4 px-4 text-right font-mono font-bold text-[var(--text-primary)]">
                           {formatAED(inv.net_due)}
                         </td>
-                        <td className="py-4 px-4 text-right font-mono text-slate-400">
+                        <td className="py-4 px-4 text-right font-mono text-[var(--text-secondary)]">
                           {formatAED(inv.amount_paid)}
                         </td>
                         <td className="py-4 px-4 text-center">
@@ -155,7 +155,7 @@ export default function ClientInvoicesListPage() {
                           </span>
                         </td>
                         <td className="py-4 px-4 text-right">
-                          <Link href={`/finance/ar/${inv.id}`} className="text-emerald-400 hover:text-emerald-300">
+                          <Link href={`/finance/ar/${inv.id}`} className="text-[var(--accent)] hover:text-[var(--accent)]">
                             <ArrowRight size={14} />
                           </Link>
                         </td>

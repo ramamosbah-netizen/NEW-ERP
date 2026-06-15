@@ -159,8 +159,8 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#060814] text-slate-100 flex flex-col font-sans">
-<div className="flex-1 flex items-center justify-center font-mono text-slate-500">
+      <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex flex-col font-sans">
+<div className="flex-1 flex items-center justify-center font-mono text-[var(--text-primary)]0">
           Loading matching audit details...
         </div>
       </div>
@@ -169,16 +169,16 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
 
   if (!invoice) {
     return (
-      <div className="min-h-screen bg-[#060814] text-slate-100 flex flex-col font-sans">
-<div className="flex-1 flex items-center justify-center font-mono text-slate-500">
+      <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex flex-col font-sans">
+<div className="flex-1 flex items-center justify-center font-mono text-[var(--text-primary)]0">
           Supplier bill not found.
         </div>
       </div>
     );
   }
 
-  const statusColor = SUPPLIER_INVOICE_STATUS_COLORS[invoice.status] || { bg: 'rgba(100,116,139,0.1)', text: '#fff', border: 'transparent' };
-  const matchColor = MATCH_STATUS_COLORS[invoice.match_status] || { bg: 'rgba(100,116,139,0.1)', text: '#fff' };
+  const statusColor = SUPPLIER_INVOICE_STATUS_COLORS[invoice.status] || { bg: 'var(--surface-hover)', text: '#fff', border: 'transparent' };
+  const matchColor = MATCH_STATUS_COLORS[invoice.match_status] || { bg: 'var(--surface-hover)', text: '#fff' };
 
   const priceExceptions = invoice.match_results?.priceExceptions || [];
   const qtyExceptions = invoice.match_results?.qtyExceptions || [];
@@ -188,15 +188,15 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
   const hasExceptions = priceExceptions.length > 0 || qtyExceptions.length > 0 || !trnValid;
 
   return (
-    <div className="min-h-screen bg-[#060814] text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex flex-col font-sans">
 <main className="flex-1 max-w-5xl w-full mx-auto px-6 py-8 flex flex-col gap-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <div className="text-[10px] text-slate-500 font-mono uppercase tracking-widest flex items-center gap-1">
-              <Link href="/finance/ap" className="hover:text-emerald-400 flex items-center gap-0.5"><ArrowLeft size={10} /> Registry</Link> &gt; <span className="text-slate-300">{invoice.internal_ref}</span>
+            <div className="text-[10px] text-[var(--text-primary)]0 font-mono uppercase tracking-widest flex items-center gap-1">
+              <Link href="/finance/ap" className="hover:text-[var(--accent)] flex items-center gap-0.5"><ArrowLeft size={10} /> Registry</Link> &gt; <span className="text-[var(--text-secondary)]">{invoice.internal_ref}</span>
             </div>
-            <h1 className="font-heading font-extrabold text-2xl tracking-tight text-slate-100 uppercase mt-1">
+            <h1 className="font-heading font-extrabold text-2xl tracking-tight text-[var(--text-primary)] uppercase mt-1">
               3-Way Match Audit Review
             </h1>
           </div>
@@ -208,14 +208,14 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
                 {!hasExceptions ? (
                   <button
                     onClick={async () => { if (confirm('Approve this matched invoice for scheduling?')) await approve(); }}
-                    className="px-4 py-2 bg-emerald-400 text-slate-950 text-xs font-bold rounded hover:bg-emerald-300 transition-all uppercase tracking-wider flex items-center gap-1"
+                    className="px-4 py-2 bg-[var(--accent)] text-white text-xs font-bold rounded hover:bg-[var(--accent)] transition-all uppercase tracking-wider flex items-center gap-1"
                   >
                     <CheckCircle size={14} /> Approve matched bill
                   </button>
                 ) : (
                   <button
                     onClick={() => setShowOverrideModal(true)}
-                    className="px-4 py-2 bg-amber-400 text-slate-950 text-xs font-bold rounded hover:bg-amber-300 transition-all uppercase tracking-wider flex items-center gap-1"
+                    className="px-4 py-2 bg-[var(--status-warning-bg)] text-white text-xs font-bold rounded hover:bg-[var(--status-warning-bg)] transition-all uppercase tracking-wider flex items-center gap-1"
                   >
                     <AlertTriangle size={14} /> Override Match Exception
                   </button>
@@ -226,7 +226,7 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
             {invoice.status === 'APPROVED' && (
               <Link
                 href={`/finance/ap/schedule?invoice_id=${invoice.id}&supplier_id=${invoice.supplier_id}`}
-                className="px-4 py-2 bg-emerald-400 text-slate-950 text-xs font-bold rounded hover:bg-emerald-300 transition-all uppercase tracking-wider flex items-center gap-1"
+                className="px-4 py-2 bg-[var(--accent)] text-white text-xs font-bold rounded hover:bg-[var(--accent)] transition-all uppercase tracking-wider flex items-center gap-1"
               >
                 Schedule disbursement
               </Link>
@@ -236,23 +236,23 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
 
         {/* Audit Status Card */}
         <div className={`p-5 rounded border ${
-          invoice.match_status === 'MATCHED' ? 'bg-emerald-500/5 border-emerald-500/20' : invoice.match_status === 'EXCEPTION' ? 'bg-rose-500/5 border-rose-500/20' : 'bg-slate-950/60 border-slate-900'
+          invoice.match_status === 'MATCHED' ? 'bg-[var(--accent-glow)] border-[var(--accent)]' : invoice.match_status === 'EXCEPTION' ? 'bg-[var(--status-danger-bg)] border-[var(--status-danger-border)]' : 'bg-[var(--bg-card)] border-[var(--border)]'
         } flex flex-col md:flex-row gap-4 items-center justify-between`}>
           <div className="flex items-center gap-3">
             {invoice.match_status === 'MATCHED' ? (
-              <div className="h-10 w-10 bg-emerald-500/10 text-emerald-400 flex items-center justify-center rounded-full">
+              <div className="h-10 w-10 bg-[var(--accent-glow)] text-[var(--accent)] flex items-center justify-center rounded-full">
                 <ShieldCheck size={24} />
               </div>
             ) : (
-              <div className="h-10 w-10 bg-rose-500/10 text-rose-400 flex items-center justify-center rounded-full">
+              <div className="h-10 w-10 bg-[var(--status-danger-bg)] text-[var(--status-danger-text)] flex items-center justify-center rounded-full">
                 <ShieldAlert size={24} />
               </div>
             )}
             <div>
-              <h3 className="font-heading font-bold text-sm text-slate-200">
+              <h3 className="font-heading font-bold text-sm text-[var(--text-primary)]">
                 Match Audit Result: <span className="font-mono uppercase" style={{ color: matchColor.text }}>{MATCH_STATUS_LABELS[invoice.match_status]}</span>
               </h3>
-              <p className="text-[11px] text-slate-400 mt-1">
+              <p className="text-[11px] text-[var(--text-secondary)] mt-1">
                 {invoice.match_status === 'MATCHED' 
                   ? 'All invoiced line items match purchase order pricing and received quantities.' 
                   : invoice.match_status === 'EXCEPTION'
@@ -263,15 +263,15 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
           </div>
 
           <div className="flex gap-4 text-xs font-mono">
-            <div className="text-center bg-[#060814] px-4 py-2 border border-slate-900 rounded">
-              <span className="text-slate-500 text-[10px] block">LPO Qty Mismatches</span>
-              <span className={`font-bold mt-0.5 block ${qtyExceptions.length > 0 ? 'text-rose-500' : 'text-slate-400'}`}>
+            <div className="text-center bg-[var(--bg-dark)] px-4 py-2 border border-[var(--border)] rounded">
+              <span className="text-[var(--text-primary)]0 text-[10px] block">LPO Qty Mismatches</span>
+              <span className={`font-bold mt-0.5 block ${qtyExceptions.length > 0 ? 'text-[var(--status-danger-text)]' : 'text-[var(--text-secondary)]'}`}>
                 {qtyExceptions.length}
               </span>
             </div>
-            <div className="text-center bg-[#060814] px-4 py-2 border border-slate-900 rounded">
-              <span className="text-slate-500 text-[10px] block">LPO Price Deltas</span>
-              <span className={`font-bold mt-0.5 block ${priceExceptions.length > 0 ? 'text-amber-500' : 'text-slate-400'}`}>
+            <div className="text-center bg-[var(--bg-dark)] px-4 py-2 border border-[var(--border)] rounded">
+              <span className="text-[var(--text-primary)]0 text-[10px] block">LPO Price Deltas</span>
+              <span className={`font-bold mt-0.5 block ${priceExceptions.length > 0 ? 'text-[var(--status-warning-text)]' : 'text-[var(--text-secondary)]'}`}>
                 {priceExceptions.length}
               </span>
             </div>
@@ -280,14 +280,14 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
 
         {/* Audit Details Breakdown */}
         {hasExceptions && (
-          <div className="bg-slate-950/40 border border-slate-900 rounded p-6 flex flex-col gap-4">
-            <h4 className="text-xs font-mono text-rose-400 uppercase tracking-widest border-b border-slate-900 pb-2 flex items-center gap-1.5">
+          <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-6 flex flex-col gap-4">
+            <h4 className="text-xs font-mono text-[var(--status-danger-text)] uppercase tracking-widest border-b border-[var(--border)] pb-2 flex items-center gap-1.5">
               <AlertTriangle size={14} /> Exception breakdown
             </h4>
 
             {/* TRN exceptions */}
             {!trnValid && (
-              <div className="bg-rose-500/10 border border-rose-500/20 rounded p-4 text-xs flex gap-2 text-rose-300">
+              <div className="bg-[var(--status-danger-bg)] border border-[var(--status-danger-border)] rounded p-4 text-xs flex gap-2 text-[var(--status-danger-text)]">
                 <AlertTriangle size={16} className="shrink-0" />
                 <div>
                   <strong>Tax Registration Credentials Audit Failed:</strong>
@@ -299,11 +299,11 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
             {/* Qty Exceptions list */}
             {qtyExceptions.length > 0 && (
               <div>
-                <h5 className="text-[10px] text-slate-400 font-mono uppercase tracking-wider mb-2">Quantity exceptions (qty invoiced &gt; outstanding GRN)</h5>
-                <div className="border border-slate-900 rounded overflow-hidden">
+                <h5 className="text-[10px] text-[var(--text-secondary)] font-mono uppercase tracking-wider mb-2">Quantity exceptions (qty invoiced &gt; outstanding GRN)</h5>
+                <div className="border border-[var(--border)] rounded overflow-hidden">
                   <table className="w-full text-left text-xs border-collapse">
                     <thead>
-                      <tr className="bg-slate-950 border-b border-slate-900 text-slate-500 font-mono text-[9px] uppercase tracking-wider">
+                      <tr className="bg-[var(--bg-card)] border-b border-[var(--border)] text-[var(--text-primary)]0 font-mono text-[9px] uppercase tracking-wider">
                         <th className="py-2.5 px-3">Description</th>
                         <th className="py-2.5 px-3 text-right">GRN Received</th>
                         <th className="py-2.5 px-3 text-right">Prev Invoiced</th>
@@ -315,12 +315,12 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
                       {qtyExceptions.map((ex: any, idx: number) => {
                         const exceeded = ex.invQty - (ex.grnQty - ex.prevInvoiced);
                         return (
-                          <tr key={idx} className="border-b border-slate-900/40 text-slate-300 bg-rose-500/5">
+                          <tr key={idx} className="border-b border-[var(--border)] text-[var(--text-secondary)] bg-[var(--status-danger-bg)]">
                             <td className="py-3 px-3 font-semibold">{ex.description}</td>
                             <td className="py-3 px-3 text-right font-mono">{ex.grnQty}</td>
-                            <td className="py-3 px-3 text-right font-mono text-slate-400">{ex.prevInvoiced}</td>
-                            <td className="py-3 px-3 text-right font-mono font-bold text-rose-400">{ex.invQty}</td>
-                            <td className="py-3 px-3 text-right font-mono font-bold text-rose-500">+{exceeded.toFixed(3)}</td>
+                            <td className="py-3 px-3 text-right font-mono text-[var(--text-secondary)]">{ex.prevInvoiced}</td>
+                            <td className="py-3 px-3 text-right font-mono font-bold text-[var(--status-danger-text)]">{ex.invQty}</td>
+                            <td className="py-3 px-3 text-right font-mono font-bold text-[var(--status-danger-text)]">+{exceeded.toFixed(3)}</td>
                           </tr>
                         );
                       })}
@@ -333,11 +333,11 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
             {/* Price Exceptions list */}
             {priceExceptions.length > 0 && (
               <div>
-                <h5 className="text-[10px] text-slate-400 font-mono uppercase tracking-wider mb-2">Price exceptions (invoiced price differs from PO price)</h5>
-                <div className="border border-slate-900 rounded overflow-hidden">
+                <h5 className="text-[10px] text-[var(--text-secondary)] font-mono uppercase tracking-wider mb-2">Price exceptions (invoiced price differs from PO price)</h5>
+                <div className="border border-[var(--border)] rounded overflow-hidden">
                   <table className="w-full text-left text-xs border-collapse">
                     <thead>
-                      <tr className="bg-slate-950 border-b border-slate-900 text-slate-500 font-mono text-[9px] uppercase tracking-wider">
+                      <tr className="bg-[var(--bg-card)] border-b border-[var(--border)] text-[var(--text-primary)]0 font-mono text-[9px] uppercase tracking-wider">
                         <th className="py-2.5 px-3">Description</th>
                         <th className="py-2.5 px-3 text-right">PO Price</th>
                         <th className="py-2.5 px-3 text-right">Invoiced Price</th>
@@ -346,11 +346,11 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
                     </thead>
                     <tbody>
                       {priceExceptions.map((ex: any, idx: number) => (
-                        <tr key={idx} className="border-b border-slate-900/40 text-slate-300 bg-amber-500/5">
+                        <tr key={idx} className="border-b border-[var(--border)] text-[var(--text-secondary)] bg-[var(--status-warning-bg)]">
                           <td className="py-3 px-3 font-semibold">{ex.description}</td>
                           <td className="py-3 px-3 text-right font-mono">{ex.poPrice.toFixed(2)}</td>
-                          <td className="py-3 px-3 text-right font-mono font-bold text-amber-400">{ex.invPrice.toFixed(2)}</td>
-                          <td className={`py-3 px-3 text-right font-mono font-bold ${ex.diffPercent > 0 ? 'text-amber-500' : 'text-emerald-400'}`}>
+                          <td className="py-3 px-3 text-right font-mono font-bold text-[var(--status-warning-text)]">{ex.invPrice.toFixed(2)}</td>
+                          <td className={`py-3 px-3 text-right font-mono font-bold ${ex.diffPercent > 0 ? 'text-[var(--status-warning-text)]' : 'text-[var(--accent)]'}`}>
                             {ex.diffPercent > 0 ? `+${ex.diffPercent}%` : `${ex.diffPercent}%`}
                           </td>
                         </tr>
@@ -364,43 +364,43 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
         )}
 
         {/* Source & justification — why this bill exists */}
-        <div className="mb-6 bg-slate-950/60 border border-slate-900 rounded p-5">
-          <div className="flex items-center gap-2 text-[11px] font-mono text-slate-400 uppercase tracking-widest mb-3">
+        <div className="mb-6 bg-[var(--bg-card)] border border-[var(--border)] rounded p-5">
+          <div className="flex items-center gap-2 text-[11px] font-mono text-[var(--text-secondary)] uppercase tracking-widest mb-3">
             <FileText size={13} /> Source &amp; Justification
           </div>
           <div className="flex flex-wrap gap-2">
             {src.po && (
               <button onClick={openLpoPdf}
-                className="inline-flex items-center gap-1.5 px-3 py-2 rounded border border-slate-800 bg-[#0a0f26] text-xs text-slate-200 hover:border-emerald-500/50 hover:text-emerald-300 transition-all cursor-pointer">
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded border border-[var(--border)] bg-[var(--bg-card)] text-xs text-[var(--text-primary)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-all cursor-pointer">
                 <Package size={13} /> LPO {src.po.po_number} <span className="opacity-50 text-[10px]">PDF</span>
               </button>
             )}
             {src.pr && (
               <button onClick={openPrPdf}
-                className="inline-flex items-center gap-1.5 px-3 py-2 rounded border border-slate-800 bg-[#0a0f26] text-xs text-slate-200 hover:border-emerald-500/50 hover:text-emerald-300 transition-all cursor-pointer">
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded border border-[var(--border)] bg-[var(--bg-card)] text-xs text-[var(--text-primary)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-all cursor-pointer">
                 <ClipboardList size={13} /> Purchase Request {src.pr.pr_number} <span className="opacity-50 text-[10px]">PDF</span>
               </button>
             )}
             {isPayroll && (
               <button onClick={openPayrollSheet}
-                className="inline-flex items-center gap-1.5 px-3 py-2 rounded border border-slate-800 bg-[#0a0f26] text-xs text-slate-200 hover:border-emerald-500/50 hover:text-emerald-300 transition-all cursor-pointer">
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded border border-[var(--border)] bg-[var(--bg-card)] text-xs text-[var(--text-primary)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-all cursor-pointer">
                 <Users size={13} /> Payroll sheet <span className="opacity-50 text-[10px]">XLSX</span>
               </button>
             )}
             {(invoice as any).proforma_path && (
               <button onClick={viewProforma}
-                className="inline-flex items-center gap-1.5 px-3 py-2 rounded border border-slate-800 bg-[#0a0f26] text-xs text-slate-200 hover:border-emerald-500/50 hover:text-emerald-300 transition-all cursor-pointer">
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded border border-[var(--border)] bg-[var(--bg-card)] text-xs text-[var(--text-primary)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-all cursor-pointer">
                 <FileText size={13} /> Proforma{(invoice as any).proforma_name ? ` — ${(invoice as any).proforma_name}` : ''}
               </button>
             )}
             {src.sourceDoc && (
               <button onClick={viewSourceDoc}
-                className="inline-flex items-center gap-1.5 px-3 py-2 rounded border border-slate-800 bg-[#0a0f26] text-xs text-slate-200 hover:border-emerald-500/50 hover:text-emerald-300 transition-all cursor-pointer">
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded border border-[var(--border)] bg-[var(--bg-card)] text-xs text-[var(--text-primary)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-all cursor-pointer">
                 <Paperclip size={13} /> Invoice / receipt — {src.sourceDoc.name}
               </button>
             )}
             {!src.po && !isPayroll && !src.sourceDoc && !(invoice as any).proforma_path && (
-              <span className="text-xs text-slate-500">
+              <span className="text-xs text-[var(--text-primary)]0">
                 {(invoice as any).cost_bucket ? `Direct expense · ${(invoice as any).cost_bucket}` : 'No linked source document.'}
                 {(invoice as any).expense_category ? ` · ${(invoice as any).expense_category}` : ''}
               </span>
@@ -410,49 +410,49 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
 
         {/* DRAFT payable → validate the supplier's actual invoice */}
         {invoice.status === 'DRAFT' && (
-          <div className="mb-6 bg-slate-950/60 border border-slate-800 rounded p-5">
-            <div className="flex items-center gap-2 text-sm font-bold text-emerald-300 uppercase tracking-wider mb-1">
+          <div className="mb-6 bg-[var(--bg-card)] border border-[var(--border)] rounded p-5">
+            <div className="flex items-center gap-2 text-sm font-bold text-[var(--accent)] uppercase tracking-wider mb-1">
               <FileText size={15} /> Validate supplier invoice
             </div>
-            <p className="text-xs text-slate-500 mb-3">
+            <p className="text-xs text-[var(--text-primary)]0 mb-3">
               This is a draft payable from the approved LPO. Record the supplier&apos;s actual invoice to register it.
             </p>
             {(invoice as any).proforma_path && (
               <button onClick={viewProforma}
-                className="inline-flex items-center gap-1.5 mb-4 px-3 py-1.5 rounded border border-slate-700 text-[11px] text-emerald-300 hover:bg-emerald-400/10 cursor-pointer">
+                className="inline-flex items-center gap-1.5 mb-4 px-3 py-1.5 rounded border border-[var(--border)] text-[11px] text-[var(--accent)] hover:bg-[var(--accent-glow)] cursor-pointer">
                 <FileText size={12} /> View imported proforma{(invoice as any).proforma_name ? ` — ${(invoice as any).proforma_name}` : ''}
               </button>
             )}
-            {valErr && <div className="text-xs text-red-400 mb-3">{valErr}</div>}
+            {valErr && <div className="text-xs text-[var(--status-danger-text)] mb-3">{valErr}</div>}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               <div>
-                <label className="text-[10px] text-slate-500 uppercase">Invoice no *</label>
+                <label className="text-[10px] text-[var(--text-primary)]0 uppercase">Invoice no *</label>
                 <input value={val.number} onChange={e => setVal({ ...val, number: e.target.value })}
-                  className="w-full mt-1 bg-[#0a0f26] border border-slate-800 rounded py-2 px-3 text-xs text-slate-200" />
+                  className="w-full mt-1 bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-[var(--text-primary)]" />
               </div>
               <div>
-                <label className="text-[10px] text-slate-500 uppercase">Invoice date</label>
+                <label className="text-[10px] text-[var(--text-primary)]0 uppercase">Invoice date</label>
                 <input type="date" value={val.date} onChange={e => setVal({ ...val, date: e.target.value })}
-                  className="w-full mt-1 bg-[#0a0f26] border border-slate-800 rounded py-2 px-3 text-xs text-slate-200" />
+                  className="w-full mt-1 bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-[var(--text-primary)]" />
               </div>
               <div>
-                <label className="text-[10px] text-slate-500 uppercase">Amount (excl VAT)</label>
+                <label className="text-[10px] text-[var(--text-primary)]0 uppercase">Amount (excl VAT)</label>
                 <input type="number" step="any" value={val.amount} onChange={e => setVal({ ...val, amount: e.target.value })}
                   placeholder={String(invoice.taxable_amount || '')}
-                  className="w-full mt-1 bg-[#0a0f26] border border-slate-800 rounded py-2 px-3 text-xs text-slate-200 text-right" />
+                  className="w-full mt-1 bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-[var(--text-primary)] text-right" />
               </div>
-              <label className="flex items-center gap-2 text-xs text-slate-400 mt-5 cursor-pointer">
+              <label className="flex items-center gap-2 text-xs text-[var(--text-secondary)] mt-5 cursor-pointer">
                 <input type="checkbox" checked={val.vat_applicable} onChange={e => setVal({ ...val, vat_applicable: e.target.checked })} /> +5% VAT
               </label>
             </div>
             <div className="flex items-center gap-3 mt-4">
-              <label className="flex items-center gap-2 px-3 py-2 rounded border border-dashed border-slate-700 text-xs text-slate-400 cursor-pointer hover:border-emerald-500/50">
+              <label className="flex items-center gap-2 px-3 py-2 rounded border border-dashed border-[var(--border)] text-xs text-[var(--text-secondary)] cursor-pointer hover:border-[var(--accent)]">
                 {valDoc ? `✓ ${valDoc.name}` : (valBusy ? 'Uploading…' : 'Attach invoice (image/PDF)')}
                 <input type="file" accept="image/*,application/pdf" className="hidden" disabled={valBusy}
                   onChange={e => uploadInvoiceDoc(e.target.files?.[0])} />
               </label>
               <button onClick={validate} disabled={valBusy}
-                className="ml-auto flex items-center gap-1.5 px-4 py-2 bg-emerald-400 text-slate-950 text-xs font-bold rounded hover:bg-emerald-300 disabled:opacity-50 uppercase tracking-wider">
+                className="ml-auto flex items-center gap-1.5 px-4 py-2 bg-[var(--accent)] text-white text-xs font-bold rounded hover:bg-[var(--accent)] disabled:opacity-50 uppercase tracking-wider">
                 <CheckCircle size={14} /> Validate & register
               </button>
             </div>
@@ -471,11 +471,11 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
         {/* Bill Metadata & Items Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Items */}
-          <div className="md:col-span-2 bg-slate-950/40 border border-slate-900 rounded p-6 flex flex-col gap-6">
-            <div className="flex justify-between items-start border-b border-slate-900 pb-4">
+          <div className="md:col-span-2 bg-[var(--bg-card)] border border-[var(--border)] rounded p-6 flex flex-col gap-6">
+            <div className="flex justify-between items-start border-b border-[var(--border)] pb-4">
               <div>
-                <h3 className="text-xl font-mono font-bold text-slate-100">{invoice.supplier_invoice_number}</h3>
-                <p className="text-xs text-slate-400 mt-1">Vendor: {invoice.supplier_name}</p>
+                <h3 className="text-xl font-mono font-bold text-[var(--text-primary)]">{invoice.supplier_invoice_number}</h3>
+                <p className="text-xs text-[var(--text-secondary)] mt-1">Vendor: {invoice.supplier_name}</p>
               </div>
               <span
                 className="px-3 py-1 rounded text-xs font-bold uppercase tracking-wider border"
@@ -485,31 +485,31 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
               </span>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs border-b border-slate-900/60 pb-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs border-b border-[var(--border)] pb-4">
               <div>
-                <span className="text-slate-500 block">Bill Date</span>
-                <span className="font-mono text-slate-200 mt-0.5 block">{new Date(invoice.invoice_date).toLocaleDateString('en-GB')}</span>
+                <span className="text-[var(--text-primary)]0 block">Bill Date</span>
+                <span className="font-mono text-[var(--text-primary)] mt-0.5 block">{new Date(invoice.invoice_date).toLocaleDateString('en-GB')}</span>
               </div>
               <div>
-                <span className="text-slate-500 block">Received Date</span>
-                <span className="font-mono text-slate-200 mt-0.5 block">{new Date(invoice.received_date).toLocaleDateString('en-GB')}</span>
+                <span className="text-[var(--text-primary)]0 block">Received Date</span>
+                <span className="font-mono text-[var(--text-primary)] mt-0.5 block">{new Date(invoice.received_date).toLocaleDateString('en-GB')}</span>
               </div>
               <div>
-                <span className="text-slate-500 block">Due Date</span>
-                <span className="font-mono text-slate-200 mt-0.5 block">{new Date(invoice.due_date).toLocaleDateString('en-GB')}</span>
+                <span className="text-[var(--text-primary)]0 block">Due Date</span>
+                <span className="font-mono text-[var(--text-primary)] mt-0.5 block">{new Date(invoice.due_date).toLocaleDateString('en-GB')}</span>
               </div>
               <div>
-                <span className="text-slate-500 block">Register Type</span>
-                <span className="text-slate-200 mt-0.5 block">{SUPPLIER_INVOICE_TYPE_LABELS[invoice.invoice_type]}</span>
+                <span className="text-[var(--text-primary)]0 block">Register Type</span>
+                <span className="text-[var(--text-primary)] mt-0.5 block">{SUPPLIER_INVOICE_TYPE_LABELS[invoice.invoice_type]}</span>
               </div>
             </div>
 
             <div>
-              <h4 className="text-[10px] text-slate-400 font-mono uppercase tracking-wider mb-2">Invoice line details</h4>
-              <div className="border border-slate-900 rounded overflow-hidden">
+              <h4 className="text-[10px] text-[var(--text-secondary)] font-mono uppercase tracking-wider mb-2">Invoice line details</h4>
+              <div className="border border-[var(--border)] rounded overflow-hidden">
                 <table className="w-full text-left text-xs border-collapse">
                   <thead>
-                    <tr className="bg-slate-950 border-b border-slate-900 text-slate-500 font-mono text-[9px] uppercase tracking-wider">
+                    <tr className="bg-[var(--bg-card)] border-b border-[var(--border)] text-[var(--text-primary)]0 font-mono text-[9px] uppercase tracking-wider">
                       <th className="py-2.5 px-3">No</th>
                       <th className="py-2.5 px-3">Description</th>
                       <th className="py-2.5 px-3 text-right">Quantity</th>
@@ -519,12 +519,12 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
                   </thead>
                   <tbody>
                     {invoice.items.map((item, idx) => (
-                      <tr key={item.id} className="border-b border-slate-900/40 text-slate-300">
+                      <tr key={item.id} className="border-b border-[var(--border)] text-[var(--text-secondary)]">
                         <td className="py-3 px-3 font-mono">{idx + 1}</td>
                         <td className="py-3 px-3">{item.description}</td>
                         <td className="py-3 px-3 text-right font-mono">{item.quantity}</td>
                         <td className="py-3 px-3 text-right font-mono">{Number(item.unit_price).toFixed(2)}</td>
-                        <td className="py-3 px-3 text-right font-mono font-bold text-slate-200">{formatAED(item.taxable_amount)}</td>
+                        <td className="py-3 px-3 text-right font-mono font-bold text-[var(--text-primary)]">{formatAED(item.taxable_amount)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -533,43 +533,43 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
             </div>
 
             {invoice.override_reason && (
-              <div className="bg-amber-500/10 border border-amber-500/20 p-4 rounded text-xs">
-                <div className="font-mono text-amber-400 uppercase tracking-widest text-[9px] mb-1">Match Exception Override justification:</div>
-                <p className="text-slate-300">{invoice.override_reason}</p>
+              <div className="bg-[var(--status-warning-bg)] border border-[var(--status-warning-border)] p-4 rounded text-xs">
+                <div className="font-mono text-[var(--status-warning-text)] uppercase tracking-widest text-[9px] mb-1">Match Exception Override justification:</div>
+                <p className="text-[var(--text-secondary)]">{invoice.override_reason}</p>
               </div>
             )}
           </div>
 
           {/* Sidebar totals */}
-          <div className="bg-slate-950/60 border border-slate-900 rounded p-6 flex flex-col gap-6 h-fit">
-            <h3 className="text-xs font-mono text-emerald-400 uppercase tracking-wider border-b border-slate-900 pb-2">
+          <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-6 flex flex-col gap-6 h-fit">
+            <h3 className="text-xs font-mono text-[var(--accent)] uppercase tracking-wider border-b border-[var(--border)] pb-2">
               Financial ledger
             </h3>
 
             <div className="flex flex-col gap-4 text-xs font-mono">
-              <div className="flex justify-between text-slate-400">
+              <div className="flex justify-between text-[var(--text-secondary)]">
                 <span>Taxable Subtotal:</span>
-                <span className="text-slate-200">{formatAED(invoice.taxable_amount)}</span>
+                <span className="text-[var(--text-primary)]">{formatAED(invoice.taxable_amount)}</span>
               </div>
-              <div className="flex justify-between border-b border-slate-900 pb-3 text-slate-400">
+              <div className="flex justify-between border-b border-[var(--border)] pb-3 text-[var(--text-secondary)]">
                 <span>VAT (5.00%):</span>
-                <span className="text-slate-200">{formatAED(invoice.vat_amount)}</span>
+                <span className="text-[var(--text-primary)]">{formatAED(invoice.vat_amount)}</span>
               </div>
-              <div className="flex justify-between bg-[#0a0f26] p-3 rounded border border-slate-900">
-                <span className="font-bold text-slate-200">Total Billed:</span>
-                <span className="font-bold text-emerald-400">
+              <div className="flex justify-between bg-[var(--bg-card)] p-3 rounded border border-[var(--border)]">
+                <span className="font-bold text-[var(--text-primary)]">Total Billed:</span>
+                <span className="font-bold text-[var(--accent)]">
                   {formatAED(invoice.total)}
                 </span>
               </div>
 
-              <div className="flex justify-between text-slate-400 pt-2 border-t border-slate-900/60">
+              <div className="flex justify-between text-[var(--text-secondary)] pt-2 border-t border-[var(--border)]">
                 <span>Amount Paid:</span>
-                <span className="text-slate-200">{formatAED(invoice.amount_paid)}</span>
+                <span className="text-[var(--text-primary)]">{formatAED(invoice.amount_paid)}</span>
               </div>
 
-              <div className="flex justify-between font-bold border-b border-slate-900 pb-3">
-                <span className="text-slate-500">Balance due:</span>
-                <span className="text-emerald-300">
+              <div className="flex justify-between font-bold border-b border-[var(--border)] pb-3">
+                <span className="text-[var(--text-primary)]0">Balance due:</span>
+                <span className="text-[var(--accent)]">
                   {formatAED(Math.max(0, invoice.total - invoice.amount_paid))}
                 </span>
               </div>
@@ -577,15 +577,15 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
 
             {/* DMS Scan preview */}
             {invoice.source_document_id && (
-              <div className="bg-[#0a0f26] border border-slate-900 p-4 rounded flex flex-col gap-2">
-                <div className="flex items-center gap-2 text-emerald-400">
+              <div className="bg-[var(--bg-card)] border border-[var(--border)] p-4 rounded flex flex-col gap-2">
+                <div className="flex items-center gap-2 text-[var(--accent)]">
                   <FileText size={16} />
                   <span className="text-xs font-mono font-bold uppercase tracking-wider">Supplier bill scan</span>
                 </div>
-                <p className="text-[10px] text-slate-400">Linked audit record scan is stored in DMS.</p>
+                <p className="text-[10px] text-[var(--text-secondary)]">Linked audit record scan is stored in DMS.</p>
                 <Link
                   href={`/documents`} // DMS router preview
-                  className="w-full mt-1 py-1.5 bg-slate-900 border border-slate-800 text-[10px] text-slate-200 font-mono rounded hover:bg-slate-800 uppercase text-center transition-all"
+                  className="w-full mt-1 py-1.5 bg-[var(--surface-hover)] border border-[var(--border)] text-[10px] text-[var(--text-primary)] font-mono rounded hover:bg-[var(--surface-hover)] uppercase text-center transition-all"
                 >
                   Open in Document Center
                 </Link>
@@ -598,23 +598,23 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
       {/* Override exception modal */}
       {showOverrideModal && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-          <div className="bg-slate-950 border border-slate-900 w-full max-w-md p-6 rounded flex flex-col gap-4">
-            <h3 className="font-heading font-extrabold text-sm text-slate-200 uppercase tracking-widest">
+          <div className="bg-[var(--bg-card)] border border-[var(--border)] w-full max-w-md p-6 rounded flex flex-col gap-4">
+            <h3 className="font-heading font-extrabold text-sm text-[var(--text-primary)] uppercase tracking-widest">
               Override Match Exceptions
             </h3>
-            <p className="text-xs text-slate-400">Provide the business justification reason to override the quantity or price mismatch and approve this invoice for payment scheduling.</p>
+            <p className="text-xs text-[var(--text-secondary)]">Provide the business justification reason to override the quantity or price mismatch and approve this invoice for payment scheduling.</p>
             <textarea
               rows={3}
               value={overrideReason}
               onChange={e => setOverrideReason(e.target.value)}
-              className="bg-[#0a0f26] border border-slate-800 rounded py-2 px-3 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50 w-full"
+              className="bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)] w-full"
               placeholder="e.g. Unit price increase approved by PM due to urgent delivery, extra delivery cost included..."
               required
             />
             <div className="flex justify-end gap-2 mt-2">
               <button
                 onClick={() => setShowOverrideModal(false)}
-                className="px-3.5 py-1.5 bg-slate-900 border border-slate-800 text-[11px] font-semibold text-slate-300 rounded uppercase"
+                className="px-3.5 py-1.5 bg-[var(--surface-hover)] border border-[var(--border)] text-[11px] font-semibold text-[var(--text-secondary)] rounded uppercase"
               >
                 Cancel
               </button>
@@ -624,7 +624,7 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
                   await overrideException(overrideReason);
                   setShowOverrideModal(false);
                 }}
-                className="px-3.5 py-1.5 bg-emerald-400 text-slate-950 text-[11px] font-bold rounded uppercase hover:bg-emerald-300 transition-all shadow-[0_0_15px_rgba(0,229,160,0.15)]"
+                className="px-3.5 py-1.5 bg-[var(--accent)] text-white text-[11px] font-bold rounded uppercase hover:bg-[var(--accent)] transition-all shadow-[0_0_15px_var(--accent-glow)]"
               >
                 Approve with override
               </button>

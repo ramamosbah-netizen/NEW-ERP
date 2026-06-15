@@ -138,14 +138,14 @@ function PaymentRecordPageContent() {
   };
 
   return (
-    <div className="min-h-screen bg-[#060814] text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex flex-col font-sans">
 <main className="flex-1 max-w-4xl w-full mx-auto px-6 py-8 flex flex-col gap-6">
         {/* Header */}
         <div>
-          <div className="text-[10px] text-slate-500 font-mono uppercase tracking-widest flex items-center gap-1">
-            <Link href="/finance/ar" className="hover:text-emerald-400 flex items-center gap-0.5"><ArrowLeft size={10} /> Registry</Link> &gt; <span className="text-slate-300">Record Payment</span>
+          <div className="text-[10px] text-[var(--text-primary)]0 font-mono uppercase tracking-widest flex items-center gap-1">
+            <Link href="/finance/ar" className="hover:text-[var(--accent)] flex items-center gap-0.5"><ArrowLeft size={10} /> Registry</Link> &gt; <span className="text-[var(--text-secondary)]">Record Payment</span>
           </div>
-          <h1 className="font-heading font-extrabold text-2xl tracking-tight text-slate-100 uppercase mt-1">
+          <h1 className="font-heading font-extrabold text-2xl tracking-tight text-[var(--text-primary)] uppercase mt-1">
             Record Client Payment (Receipt)
           </h1>
         </div>
@@ -153,7 +153,7 @@ function PaymentRecordPageContent() {
         <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-6">
           {/* Inputs */}
           <div className="quote-card flex-1 flex flex-col gap-5">
-            <h3 className="quote-card-title text-xs font-mono text-emerald-400 uppercase tracking-wider border-b border-slate-900 pb-2">
+            <h3 className="quote-card-title text-xs font-mono text-[var(--accent)] uppercase tracking-wider border-b border-[var(--border)] pb-2">
               Receipt parameters
             </h3>
 
@@ -251,22 +251,22 @@ function PaymentRecordPageContent() {
 
           {/* Allocation Sidebar Panel */}
           <div className="quote-card w-full md:w-96 flex flex-col gap-5">
-            <h3 className="quote-card-title text-xs font-mono text-emerald-400 uppercase tracking-wider border-b border-slate-900 pb-2">
+            <h3 className="quote-card-title text-xs font-mono text-[var(--accent)] uppercase tracking-wider border-b border-[var(--border)] pb-2">
               Invoice allocations
             </h3>
 
             {unpaidInvoices.length === 0 ? (
-              <p className="text-xs text-slate-500 font-mono py-4 text-center">No outstanding client invoices found for this customer.</p>
+              <p className="text-xs text-[var(--text-primary)]0 font-mono py-4 text-center">No outstanding client invoices found for this customer.</p>
             ) : (
               <div className="flex flex-col gap-4 max-h-72 overflow-y-auto pr-1">
                 {unpaidInvoices.map(inv => (
-                  <div key={inv.id} className="bg-[#0a0f26]/30 border border-slate-900 p-3 rounded flex flex-col gap-2">
+                  <div key={inv.id} className="bg-[var(--bg-card)]/30 border border-[var(--border)] p-3 rounded flex flex-col gap-2">
                     <div className="flex justify-between items-center text-xs">
-                      <span className="font-mono font-bold text-slate-200">{inv.invoice_number}</span>
-                      <span className="text-[10px] text-slate-500 font-mono">Due: {inv.outstanding.toFixed(2)} AED</span>
+                      <span className="font-mono font-bold text-[var(--text-primary)]">{inv.invoice_number}</span>
+                      <span className="text-[10px] text-[var(--text-primary)]0 font-mono">Due: {inv.outstanding.toFixed(2)} AED</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] text-slate-500 font-mono uppercase">Allocate:</span>
+                      <span className="text-[10px] text-[var(--text-primary)]0 font-mono uppercase">Allocate:</span>
                       <input
                         type="number"
                         step="0.01"
@@ -281,18 +281,18 @@ function PaymentRecordPageContent() {
               </div>
             )}
 
-            <div className="border-t border-slate-900 pt-4 flex flex-col gap-2.5 text-xs font-mono">
-              <div className="flex justify-between text-slate-500">
+            <div className="border-t border-[var(--border)] pt-4 flex flex-col gap-2.5 text-xs font-mono">
+              <div className="flex justify-between text-[var(--text-primary)]0">
                 <span>Total Payment:</span>
                 <span>{amount.toFixed(2)} AED</span>
               </div>
-              <div className="flex justify-between text-slate-500">
+              <div className="flex justify-between text-[var(--text-primary)]0">
                 <span>Total Allocated:</span>
                 <span>{allocatedSum.toFixed(2)} AED</span>
               </div>
-              <div className="flex justify-between border-t border-slate-900 pt-2.5 font-bold">
+              <div className="flex justify-between border-t border-[var(--border)] pt-2.5 font-bold">
                 <span>Unallocated Remaining:</span>
-                <span className={Math.abs(amount - allocatedSum) < 0.01 ? 'text-emerald-400' : 'text-amber-500'}>
+                <span className={Math.abs(amount - allocatedSum) < 0.01 ? 'text-[var(--accent)]' : 'text-[var(--status-warning-text)]'}>
                   {Math.max(0, amount - allocatedSum).toFixed(2)} AED
                 </span>
               </div>
@@ -315,7 +315,7 @@ function PaymentRecordPageContent() {
 
 export default function PaymentRecordPage() {
   return (
-    <React.Suspense fallback={<div className="min-h-screen bg-[#060814] text-slate-100 flex items-center justify-center font-mono text-xs text-emerald-400">Loading...</div>}>
+    <React.Suspense fallback={<div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex items-center justify-center font-mono text-xs text-[var(--accent)]">Loading...</div>}>
       <PaymentRecordPageContent />
     </React.Suspense>
   );

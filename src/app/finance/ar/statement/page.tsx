@@ -108,15 +108,15 @@ function ClientStatementPageContent() {
   const selectedClientName = clients.find(c => c.id === selectedClientId)?.name || 'Select Client';
 
   return (
-    <div className="min-h-screen bg-[#060814] text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex flex-col font-sans">
 <main className="flex-1 max-w-5xl w-full mx-auto px-6 py-8 flex flex-col gap-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <div className="text-[10px] text-slate-500 font-mono uppercase tracking-widest flex items-center gap-1">
-              <Link href="/finance/ar" className="hover:text-emerald-400 flex items-center gap-0.5"><ArrowLeft size={10} /> Registry</Link> &gt; <span className="text-slate-300">Customer Statement</span>
+            <div className="text-[10px] text-[var(--text-primary)]0 font-mono uppercase tracking-widest flex items-center gap-1">
+              <Link href="/finance/ar" className="hover:text-[var(--accent)] flex items-center gap-0.5"><ArrowLeft size={10} /> Registry</Link> &gt; <span className="text-[var(--text-secondary)]">Customer Statement</span>
             </div>
-            <h1 className="font-heading font-extrabold text-2xl tracking-tight text-slate-100 uppercase mt-1">
+            <h1 className="font-heading font-extrabold text-2xl tracking-tight text-[var(--text-primary)] uppercase mt-1">
               Customer Statement Ledger
             </h1>
           </div>
@@ -132,7 +132,7 @@ function ClientStatementPageContent() {
         {/* Client Selection Row */}
         <div className="quote-card flex flex-col md:flex-row gap-4 items-center justify-between">
           <div className="flex items-center gap-2.5 w-full md:w-fit">
-            <span className="text-xs text-slate-400 font-mono uppercase">Select Customer:</span>
+            <span className="text-xs text-[var(--text-secondary)] font-mono uppercase">Select Customer:</span>
             <select
               value={selectedClientId}
               onChange={e => setSelectedClientId(e.target.value)}
@@ -145,9 +145,9 @@ function ClientStatementPageContent() {
             </select>
           </div>
 
-          <div className="text-right text-xs bg-[#0a0f26] border border-slate-900 p-3 rounded font-mono">
-            <span className="text-slate-500 uppercase mr-2 text-[10px]">Current Balance:</span>
-            <span className="text-emerald-400 font-bold text-sm">
+          <div className="text-right text-xs bg-[var(--bg-card)] border border-[var(--border)] p-3 rounded font-mono">
+            <span className="text-[var(--text-primary)]0 uppercase mr-2 text-[10px]">Current Balance:</span>
+            <span className="text-[var(--accent)] font-bold text-sm">
               {ledgerEntries.length > 0 ? formatAED(ledgerEntries[ledgerEntries.length - 1].runningBalance) : '0.00 AED'}
             </span>
           </div>
@@ -157,7 +157,7 @@ function ClientStatementPageContent() {
         <div className="quote-table-wrap">
           <table className="quote-table">
               <thead>
-                <tr className="bg-slate-950 border-b border-slate-900 text-slate-400 font-mono uppercase tracking-wider text-[10px]">
+                <tr className="bg-[var(--bg-card)] border-b border-[var(--border)] text-[var(--text-secondary)] font-mono uppercase tracking-wider text-[10px]">
                   <th className="py-3.5 px-4">Date</th>
                   <th className="py-3.5 px-4">Document Ref</th>
                   <th className="py-3.5 px-4">Description</th>
@@ -169,35 +169,35 @@ function ClientStatementPageContent() {
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan={6} className="py-8 text-center text-slate-500 font-mono">
+                    <td colSpan={6} className="py-8 text-center text-[var(--text-primary)]0 font-mono">
                       Querying customer transaction ledger...
                     </td>
                   </tr>
                 ) : ledgerEntries.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="py-8 text-center text-slate-500 font-mono">
+                    <td colSpan={6} className="py-8 text-center text-[var(--text-primary)]0 font-mono">
                       No matching records in the statement.
                     </td>
                   </tr>
                 ) : (
                   ledgerEntries.map((entry, idx) => (
-                    <tr key={idx} className="border-b border-slate-900/40 text-slate-300">
-                      <td className="py-3.5 px-4 font-mono text-slate-400">
+                    <tr key={idx} className="border-b border-[var(--border)] text-[var(--text-secondary)]">
+                      <td className="py-3.5 px-4 font-mono text-[var(--text-secondary)]">
                         {entry.date.toLocaleDateString('en-GB')}
                       </td>
-                      <td className="py-3.5 px-4 font-mono font-bold text-slate-200">
+                      <td className="py-3.5 px-4 font-mono font-bold text-[var(--text-primary)]">
                         {entry.ref}
                       </td>
-                      <td className="py-3.5 px-4 text-slate-400">
+                      <td className="py-3.5 px-4 text-[var(--text-secondary)]">
                         {entry.description}
                       </td>
-                      <td className="py-3.5 px-4 text-right font-mono text-rose-400">
+                      <td className="py-3.5 px-4 text-right font-mono text-[var(--status-danger-text)]">
                         {entry.debit > 0 ? formatAED(entry.debit) : '—'}
                       </td>
-                      <td className="py-3.5 px-4 text-right font-mono text-emerald-400">
+                      <td className="py-3.5 px-4 text-right font-mono text-[var(--accent)]">
                         {entry.credit > 0 ? formatAED(entry.credit) : '—'}
                       </td>
-                      <td className="py-3.5 px-4 text-right font-mono font-bold text-slate-100 bg-[#0a0f26]/10">
+                      <td className="py-3.5 px-4 text-right font-mono font-bold text-[var(--text-primary)] bg-[var(--bg-card)]/10">
                         {formatAED(entry.runningBalance)}
                       </td>
                     </tr>
@@ -213,7 +213,7 @@ function ClientStatementPageContent() {
 
 export default function ClientStatementPage() {
   return (
-    <React.Suspense fallback={<div className="min-h-screen bg-[#060814] text-slate-100 flex items-center justify-center font-mono text-xs text-emerald-400">Loading...</div>}>
+    <React.Suspense fallback={<div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex items-center justify-center font-mono text-xs text-[var(--accent)]">Loading...</div>}>
       <ClientStatementPageContent />
     </React.Suspense>
   );

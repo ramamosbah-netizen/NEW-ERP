@@ -181,33 +181,33 @@ export function SupplierInvoiceRegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#060814] text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex flex-col font-sans">
 <main className="flex-1 max-w-6xl w-full mx-auto px-6 py-8 flex flex-col gap-6">
         {/* Header */}
         <div>
-          <div className="text-[10px] text-slate-500 font-mono uppercase tracking-widest flex items-center gap-1">
-            <Link href="/finance/ap" className="hover:text-emerald-400 flex items-center gap-0.5"><ArrowLeft size={10} /> Registry</Link> &gt; <span>Register Supplier Bill</span>
+          <div className="text-[10px] text-[var(--text-primary)]0 font-mono uppercase tracking-widest flex items-center gap-1">
+            <Link href="/finance/ap" className="hover:text-[var(--accent)] flex items-center gap-0.5"><ArrowLeft size={10} /> Registry</Link> &gt; <span>Register Supplier Bill</span>
           </div>
-          <h1 className="font-heading font-extrabold text-2xl tracking-tight text-slate-100 uppercase mt-1">
+          <h1 className="font-heading font-extrabold text-2xl tracking-tight text-[var(--text-primary)] uppercase mt-1">
             Register Supplier Invoice (AP)
           </h1>
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col lg:flex-row gap-6">
           {/* Form */}
-          <div className="flex-1 bg-slate-950/40 border border-slate-900 rounded p-6 flex flex-col gap-5">
-            <h3 className="text-xs font-mono text-emerald-400 uppercase tracking-wider border-b border-slate-900 pb-2">
+          <div className="flex-1 bg-[var(--bg-card)] border border-[var(--border)] rounded p-6 flex flex-col gap-5">
+            <h3 className="text-xs font-mono text-[var(--accent)] uppercase tracking-wider border-b border-[var(--border)] pb-2">
               Bill metadata
             </h3>
 
             {/* Selection Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-[10px] text-slate-400 font-mono uppercase mb-1.5">Supplier / Vendor</label>
+                <label className="block text-[10px] text-[var(--text-secondary)] font-mono uppercase mb-1.5">Supplier / Vendor</label>
                 <select
                   value={supplierId}
                   onChange={e => { setSupplierId(e.target.value); setPoId(''); }}
-                  className="w-full bg-[#0a0f26] border border-slate-800 rounded py-2 px-3 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50"
+                  className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)]"
                   required
                 >
                   <option value="">Choose Supplier...</option>
@@ -218,11 +218,11 @@ export function SupplierInvoiceRegisterPage() {
               </div>
 
               <div>
-                <label className="block text-[10px] text-slate-400 font-mono uppercase mb-1.5">Registration Type</label>
+                <label className="block text-[10px] text-[var(--text-secondary)] font-mono uppercase mb-1.5">Registration Type</label>
                 <select
                   value={invoiceType}
                   onChange={e => setInvoiceType(e.target.value as any)}
-                  className="w-full bg-[#0a0f26] border border-slate-800 rounded py-2 px-3 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50"
+                  className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)]"
                 >
                   <option value="PO_MATCHED">LPO-GRN Matched Purchase</option>
                   <option value="DIRECT_EXPENSE">Direct Administrative Expense</option>
@@ -234,11 +234,11 @@ export function SupplierInvoiceRegisterPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {invoiceType === 'PO_MATCHED' ? (
                 <div>
-                  <label className="block text-[10px] text-slate-400 font-mono uppercase mb-1.5">Select Purchase Order (LPO)</label>
+                  <label className="block text-[10px] text-[var(--text-secondary)] font-mono uppercase mb-1.5">Select Purchase Order (LPO)</label>
                   <select
                     value={poId}
                     onChange={e => setPoId(e.target.value)}
-                    className="w-full bg-[#0a0f26] border border-slate-800 rounded py-2 px-3 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50 font-mono"
+                    className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)] font-mono"
                     required={invoiceType === 'PO_MATCHED'}
                   >
                     <option value="">Choose LPO Reference...</option>
@@ -249,11 +249,11 @@ export function SupplierInvoiceRegisterPage() {
                 </div>
               ) : (
                 <div>
-                  <label className="block text-[10px] text-slate-400 font-mono uppercase mb-1.5">Administrative Expense Category</label>
+                  <label className="block text-[10px] text-[var(--text-secondary)] font-mono uppercase mb-1.5">Administrative Expense Category</label>
                   <select
                     value={expenseCategory}
                     onChange={e => setExpenseCategory(e.target.value)}
-                    className="w-full bg-[#0a0f26] border border-slate-800 rounded py-2 px-3 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50"
+                    className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)]"
                     required={invoiceType === 'DIRECT_EXPENSE'}
                   >
                     <option value="">Choose Category...</option>
@@ -267,11 +267,11 @@ export function SupplierInvoiceRegisterPage() {
               )}
 
               <div>
-                <label className="block text-[10px] text-slate-400 font-mono uppercase mb-1.5">Associated Project</label>
+                <label className="block text-[10px] text-[var(--text-secondary)] font-mono uppercase mb-1.5">Associated Project</label>
                 <select
                   value={projectId}
                   onChange={e => setProjectId(e.target.value)}
-                  className="w-full bg-[#0a0f26] border border-slate-800 rounded py-2 px-3 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50 font-mono"
+                  className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)] font-mono"
                 >
                   <option value="">Company Overhead / No Project</option>
                   {projects.map(p => (
@@ -284,35 +284,35 @@ export function SupplierInvoiceRegisterPage() {
             {/* Invoice properties */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="md:col-span-2">
-                <label className="block text-[10px] text-slate-400 font-mono uppercase mb-1.5">Supplier Invoice Number</label>
+                <label className="block text-[10px] text-[var(--text-secondary)] font-mono uppercase mb-1.5">Supplier Invoice Number</label>
                 <input
                   type="text"
                   placeholder="e.g. INV-9042..."
                   value={supplierInvoiceNumber}
                   onChange={e => setSupplierInvoiceNumber(e.target.value)}
-                  className="w-full bg-[#0a0f26] border border-slate-800 rounded py-2 px-3 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50 font-mono"
+                  className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)] font-mono"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-[10px] text-slate-400 font-mono uppercase mb-1.5">Invoice Date</label>
+                <label className="block text-[10px] text-[var(--text-secondary)] font-mono uppercase mb-1.5">Invoice Date</label>
                 <input
                   type="date"
                   value={invoiceDate}
                   onChange={e => setInvoiceDate(e.target.value)}
-                  className="w-full bg-[#0a0f26] border border-slate-800 rounded py-2 px-3 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50 font-mono"
+                  className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)] font-mono"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-[10px] text-slate-400 font-mono uppercase mb-1.5">Due Date</label>
+                <label className="block text-[10px] text-[var(--text-secondary)] font-mono uppercase mb-1.5">Due Date</label>
                 <input
                   type="date"
                   value={dueDate}
                   onChange={e => setDueDate(e.target.value)}
-                  className="w-full bg-[#0a0f26] border border-slate-800 rounded py-2 px-3 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50 font-mono"
+                  className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)] font-mono"
                   required
                 />
               </div>
@@ -321,22 +321,22 @@ export function SupplierInvoiceRegisterPage() {
             {/* Document link & TRN */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-[10px] text-slate-400 font-mono uppercase mb-1.5">Supplier TRN (on Invoice)</label>
+                <label className="block text-[10px] text-[var(--text-secondary)] font-mono uppercase mb-1.5">Supplier TRN (on Invoice)</label>
                 <input
                   type="text"
                   placeholder="15-digit Tax Registration Number"
                   value={invoiceSupplierTrn}
                   onChange={e => setInvoiceSupplierTrn(e.target.value)}
-                  className="w-full bg-[#0a0f26] border border-slate-800 rounded py-2 px-3 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50 font-mono"
+                  className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)] font-mono"
                 />
               </div>
 
               <div>
-                <label className="block text-[10px] text-slate-400 font-mono uppercase mb-1.5">Link Invoice PDF (from DMS)</label>
+                <label className="block text-[10px] text-[var(--text-secondary)] font-mono uppercase mb-1.5">Link Invoice PDF (from DMS)</label>
                 <select
                   value={sourceDocumentId}
                   onChange={e => setSourceDocumentId(e.target.value)}
-                  className="w-full bg-[#0a0f26] border border-slate-800 rounded py-2 px-3 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50"
+                  className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)]"
                   required
                 >
                   <option value="">Select scanned PDF document...</option>
@@ -349,13 +349,13 @@ export function SupplierInvoiceRegisterPage() {
 
             {/* Items Grid for matching */}
             <div className="flex flex-col gap-3 mt-4">
-              <div className="flex justify-between items-center border-b border-slate-900 pb-2">
-                <span className="text-[10px] text-slate-400 font-mono uppercase">Invoiced Line items</span>
+              <div className="flex justify-between items-center border-b border-[var(--border)] pb-2">
+                <span className="text-[10px] text-[var(--text-secondary)] font-mono uppercase">Invoiced Line items</span>
                 {invoiceType === 'DIRECT_EXPENSE' && (
                   <button
                     type="button"
                     onClick={handleAddDirectExpenseRow}
-                    className="px-2.5 py-1 bg-slate-900 border border-slate-800 text-[10px] text-emerald-400 font-mono rounded hover:bg-slate-800 uppercase"
+                    className="px-2.5 py-1 bg-[var(--surface-hover)] border border-[var(--border)] text-[10px] text-[var(--accent)] font-mono rounded hover:bg-[var(--surface-hover)] uppercase"
                   >
                     + Add Expense Row
                   </button>
@@ -363,7 +363,7 @@ export function SupplierInvoiceRegisterPage() {
               </div>
 
               {invoiceType === 'PO_MATCHED' && items.length === 0 && (
-                <p className="text-xs text-slate-500 font-mono py-4 text-center">Select a Purchase Order to load items for matching.</p>
+                <p className="text-xs text-[var(--text-primary)]0 font-mono py-4 text-center">Select a Purchase Order to load items for matching.</p>
               )}
 
               {/* Matrix list */}
@@ -376,18 +376,18 @@ export function SupplierInvoiceRegisterPage() {
                 return (
                   <div 
                     key={idx} 
-                    className={`flex flex-col gap-3 bg-[#0a0f26]/30 p-4 rounded border ${
-                      isQtyExceeds ? 'border-rose-500/40 bg-rose-500/5' : isPriceMismatch ? 'border-amber-500/40 bg-amber-500/5' : 'border-slate-900/60'
+                    className={`flex flex-col gap-3 bg-[var(--bg-card)]/30 p-4 rounded border ${
+                      isQtyExceeds ? 'border-[var(--status-danger-border)] bg-[var(--status-danger-bg)]' : isPriceMismatch ? 'border-[var(--status-warning-border)] bg-[var(--status-warning-bg)]' : 'border-[var(--border)]'
                     }`}
                   >
-                    <div className="text-[10px] font-mono flex flex-wrap justify-between gap-2 text-slate-400">
-                      <span className="font-semibold text-slate-200">{item.description}</span>
+                    <div className="text-[10px] font-mono flex flex-wrap justify-between gap-2 text-[var(--text-secondary)]">
+                      <span className="font-semibold text-[var(--text-primary)]">{item.description}</span>
                       {poMatch && (
-                        <div className="flex gap-3 text-slate-500">
-                          <span>PO Ordered Qty: <strong className="text-slate-400">{poMatch.poQty}</strong></span>
-                          <span>GRN Received Qty: <strong className="text-slate-400">{poMatch.qtyReceived}</strong></span>
-                          <span>Outstanding to Bill: <strong className="text-emerald-400">{poMatch.qtyOutstandingToInvoice}</strong></span>
-                          <span>PO Price: <strong className="text-slate-400">{poMatch.poUnitPrice.toFixed(2)} AED</strong></span>
+                        <div className="flex gap-3 text-[var(--text-primary)]0">
+                          <span>PO Ordered Qty: <strong className="text-[var(--text-secondary)]">{poMatch.poQty}</strong></span>
+                          <span>GRN Received Qty: <strong className="text-[var(--text-secondary)]">{poMatch.qtyReceived}</strong></span>
+                          <span>Outstanding to Bill: <strong className="text-[var(--accent)]">{poMatch.qtyOutstandingToInvoice}</strong></span>
+                          <span>PO Price: <strong className="text-[var(--text-secondary)]">{poMatch.poUnitPrice.toFixed(2)} AED</strong></span>
                         </div>
                       )}
                     </div>
@@ -400,37 +400,37 @@ export function SupplierInvoiceRegisterPage() {
                             placeholder="Expense description..."
                             value={item.description}
                             onChange={e => handleItemValChange(idx, 'description', e.target.value)}
-                            className="w-full bg-[#0a0f26] border border-slate-800 rounded py-1 px-2.5 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50"
+                            className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-1 px-2.5 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)]"
                             required
                           />
                         </div>
                       )}
                       
                       <div className="w-full md:w-32 flex items-center gap-2">
-                        <span className="text-[9px] text-slate-500 font-mono uppercase">Invoiced Qty:</span>
+                        <span className="text-[9px] text-[var(--text-primary)]0 font-mono uppercase">Invoiced Qty:</span>
                         <input
                           type="number"
                           step="any"
                           value={item.quantity || ''}
                           onChange={e => handleItemValChange(idx, 'quantity', Number(e.target.value))}
-                          className="flex-1 bg-slate-950 border border-slate-800 rounded py-1 px-2 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50 font-mono text-right"
+                          className="flex-1 bg-[var(--bg-card)] border border-[var(--border)] rounded py-1 px-2 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)] font-mono text-right"
                           required
                         />
                       </div>
 
                       <div className="w-full md:w-44 flex items-center gap-2">
-                        <span className="text-[9px] text-slate-500 font-mono uppercase">Invoiced Price:</span>
+                        <span className="text-[9px] text-[var(--text-primary)]0 font-mono uppercase">Invoiced Price:</span>
                         <input
                           type="number"
                           step="0.0001"
                           value={item.unit_price || ''}
                           onChange={e => handleItemValChange(idx, 'unit_price', Number(e.target.value))}
-                          className="flex-1 bg-slate-950 border border-slate-800 rounded py-1 px-2 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50 font-mono text-right"
+                          className="flex-1 bg-[var(--bg-card)] border border-[var(--border)] rounded py-1 px-2 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)] font-mono text-right"
                           required
                         />
                       </div>
 
-                      <div className="flex-1 text-right font-mono font-bold text-slate-300 pr-2">
+                      <div className="flex-1 text-right font-mono font-bold text-[var(--text-secondary)] pr-2">
                         {formatAED(item.quantity * item.unit_price)}
                       </div>
 
@@ -438,7 +438,7 @@ export function SupplierInvoiceRegisterPage() {
                         <button
                           type="button"
                           onClick={() => handleRemoveDirectExpenseRow(idx)}
-                          className="text-slate-600 hover:text-red-400 p-1"
+                          className="text-[var(--text-tertiary)] hover:text-[var(--status-danger-text)] p-1"
                         >
                           Remove
                         </button>
@@ -449,12 +449,12 @@ export function SupplierInvoiceRegisterPage() {
                     {poMatch && (
                       <div className="flex flex-col gap-1 text-[10px] font-mono mt-1">
                         {isQtyExceeds && (
-                          <div className="text-rose-400 flex items-center gap-1.5">
+                          <div className="text-[var(--status-danger-text)] flex items-center gap-1.5">
                             <ShieldAlert size={12} /> WARNING: Invoiced quantity ({item.quantity}) exceeds outstanding received quantity ({poMatch.qtyOutstandingToInvoice})
                           </div>
                         )}
                         {isPriceMismatch && (
-                          <div className="text-amber-400 flex items-center gap-1.5">
+                          <div className="text-[var(--status-warning-text)] flex items-center gap-1.5">
                             <AlertTriangle size={12} /> NOTICE: Invoiced unit price ({item.unit_price.toFixed(2)}) differs from PO price ({poMatch.poUnitPrice.toFixed(2)})
                           </div>
                         )}
@@ -466,35 +466,35 @@ export function SupplierInvoiceRegisterPage() {
             </div>
 
             <div>
-              <label className="block text-[10px] text-slate-400 font-mono uppercase mb-1.5">Internal Notes</label>
+              <label className="block text-[10px] text-[var(--text-secondary)] font-mono uppercase mb-1.5">Internal Notes</label>
               <textarea
                 rows={2}
                 placeholder="Dispute remarks, payment scheduling requests..."
                 value={notes}
                 onChange={e => setNotes(e.target.value)}
-                className="w-full bg-[#0a0f26] border border-slate-800 rounded py-2 px-3 text-xs text-slate-300 focus:outline-none focus:border-emerald-500/50"
+                className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)]"
               />
             </div>
           </div>
 
           {/* Sidebar Summary */}
-          <div className="w-full lg:w-80 bg-slate-950/60 border border-slate-900 rounded p-6 flex flex-col gap-5 h-fit">
-            <h3 className="text-xs font-mono text-emerald-400 uppercase tracking-wider border-b border-slate-900 pb-2">
+          <div className="w-full lg:w-80 bg-[var(--bg-card)] border border-[var(--border)] rounded p-6 flex flex-col gap-5 h-fit">
+            <h3 className="text-xs font-mono text-[var(--accent)] uppercase tracking-wider border-b border-[var(--border)] pb-2">
               Invoice Totals
             </h3>
 
             <div className="flex flex-col gap-3.5 text-xs">
               <div className="flex justify-between">
-                <span className="text-slate-400">Taxable amount:</span>
-                <span className="font-mono text-slate-200">{subtotal.toFixed(2)}</span>
+                <span className="text-[var(--text-secondary)]">Taxable amount:</span>
+                <span className="font-mono text-[var(--text-primary)]">{subtotal.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between border-b border-slate-900 pb-3">
-                <span className="text-slate-400">VAT (5.00%):</span>
-                <span className="font-mono text-slate-200">{vat.toFixed(2)}</span>
+              <div className="flex justify-between border-b border-[var(--border)] pb-3">
+                <span className="text-[var(--text-secondary)]">VAT (5.00%):</span>
+                <span className="font-mono text-[var(--text-primary)]">{vat.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between bg-[#0a0f26] p-3 rounded border border-slate-900 mt-2">
-                <span className="font-bold text-slate-200">Total Value:</span>
-                <span className="font-mono font-bold text-emerald-400 text-sm">
+              <div className="flex justify-between bg-[var(--bg-card)] p-3 rounded border border-[var(--border)] mt-2">
+                <span className="font-bold text-[var(--text-primary)]">Total Value:</span>
+                <span className="font-mono font-bold text-[var(--accent)] text-sm">
                   {total.toFixed(2)} AED
                 </span>
               </div>
@@ -503,7 +503,7 @@ export function SupplierInvoiceRegisterPage() {
             <button
               type="submit"
               disabled={loading || items.length === 0}
-              className="w-full py-2.5 bg-emerald-400 text-slate-950 font-bold rounded hover:bg-emerald-300 transition-all uppercase tracking-wider text-xs shadow-[0_0_15px_rgba(0,229,160,0.15)] disabled:opacity-40"
+              className="w-full py-2.5 bg-[var(--accent)] text-white font-bold rounded hover:bg-[var(--accent)] transition-all uppercase tracking-wider text-xs shadow-[0_0_15px_var(--accent-glow)] disabled:opacity-40"
             >
               {loading ? 'Registering...' : 'Register Invoice'}
             </button>
