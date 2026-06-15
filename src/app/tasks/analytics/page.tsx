@@ -24,20 +24,24 @@ const PIE = ['var(--status-danger-text)', 'var(--status-warning-text)', 'var(--s
 interface Tk { status: string; priority: string; origin: string; due_date: string | null; completed_at: string | null; created_at: string; assignee_id: string | null; }
 
 export default function TaskAnalyticsPage() {
-  const [tasks, setTasks] = useState<Tk[]>([]);
+  const [allTasks, setAllTasks] = useState<Tk[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [scope, setScope] = useState<'mine' | 'all'>('mine');
 
   useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id || null));
     supabase.from('tasks').select('status, priority, origin, due_date, completed_at, created_at, assignee_id').eq('is_active', true)
-      .then(({ data }) => setTasks((data || []) as Tk[])).then(() => setLoading(false), () => setLoading(false));
+      .then(({ data }) => setAllTasks((data || []) as Tk[])).then(() => setLoading(false), () => setLoading(false));
   }, []);
 
+  const tasks = useMemo(() => scope === 'mine' && userId ? allTasks.filter(t => t.assignee_id === userId) : allTasks, [allTasks, scope, userId]);
   const now = Date.now();
   const open = tasks.filter(t => OPEN.includes(t.status));
   const done = tasks.filter(t => DONE.includes(t.status));
   const overdue = open.filter(t => t.due_date && new Date(t.due_date).getTime() < now);
   const blocked = tasks.filter(t => t.status === 'BLOCKED');
-  const completionRate = tasks.length ? Math.round(done.length / tasks.filter(t => t.status !== 'CANCELLED').length * 100) : 0;
+  const completionRate = tasks.length ? Math.round(done.length / Math.max(1, tasks.filter(t => t.status !== 'CANCELLED').length) * 100) : 0;
 
   const byStatus = useMemo(() => [...new Set(tasks.map(t => t.status))].map(s => ({ name: s.replace(/_/g, ' '), value: tasks.filter(t => t.status === s).length })), [tasks]);
   const byPriority = useMemo(() => PRIORITIES.map(p => ({ name: p, value: open.filter(t => t.priority === p).length })).filter(d => d.value > 0), [open]);
@@ -65,10 +69,19 @@ export default function TaskAnalyticsPage() {
         ) : undefined}
       />
 
+      <Card className="p-3 flex items-center gap-2">
+        <span className="text-xs text-[var(--text-secondary)]">View:</span>
+        <div className="inline-flex rounded-md border border-[var(--border)] overflow-hidden">
+          {(['mine', 'all'] as const).map(s => (
+            <button key={s} onClick={() => setScope(s)} className="px-3 h-8 text-xs font-medium" style={{ background: scope === s ? 'var(--accent)' : 'var(--surface)', color: scope === s ? '#fff' : 'var(--text-secondary)' }}>{s === 'mine' ? 'My tasks' : 'Everyone'}</button>
+          ))}
+        </div>
+      </Card>
+
       {loading ? (
         <Card><div className="p-8 text-center text-sm text-[var(--text-tertiary)]">Loading…</div></Card>
       ) : tasks.length === 0 ? (
-        <Card><EmptyState icon={CheckSquare} title="No tasks" description="Tasks will be analysed here." /></Card>
+        <Card><EmptyState icon={CheckSquare} title="No tasks" description={scope === 'mine' ? 'You have no tasks.' : 'Tasks will be analysed here.'} /></Card>
       ) : (
         <>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3">

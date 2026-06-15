@@ -43,6 +43,22 @@ All linked in the sidebar **Core** group; `/workspace` is the hub.
 - **RBAC:** routes under `/tasks/*`, `/meetings/*`, `/notifications/*`, `/workspace/*`; restricted roles remain scoped by the `routeAccess` allowlist; operational roles keep full access.
 - The hub's attention strip is **personal** (current user's open/overdue tasks + unread alerts + today's meetings).
 
+## 5. Per-user scoping (add-on)
+
+The workspace is **personal for each user** via a **Mine / Everyone** toggle
+(defaults to *Mine*) on each page, filtering by the user-owning column:
+
+| Page | "Mine" filter |
+|------|---------------|
+| Task Analytics | `tasks.assignee_id` = me |
+| Meeting Analytics | `meetings.organizer_id` = me + action items assigned to me |
+| Notifications Analytics | `notifications.user_id` = me |
+| Unified Calendar | my tasks (assignee) + my meetings (organizer); leave/PPM stay as context |
+| Activity Timeline | `audit_log.actor_user_id` = me |
+| **Approvals** | **role-aware** — approver roles see everything pending to approve; everyone else sees their own submissions (created_by / requested_by / prepared_by = me, or leave/timesheet for their employee record) |
+
+`APPROVER_ROLES` = admin / administrator / manager / GM / commercial / project / accountant / HR / finance. Managers can flip any page to *Everyone*.
+
 ---
 
 ## 4. Verification

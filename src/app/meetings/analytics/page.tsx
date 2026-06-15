@@ -19,33 +19,40 @@ import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGri
 
 const DONE = ['DONE', 'COMPLETED', 'CLOSED'];
 
-interface Mt { id: string; title: string; status: string; starts_at: string | null; minutes_published_at: string | null; }
+interface Mt { id: string; title: string; status: string; starts_at: string | null; minutes_published_at: string | null; organizer_id: string | null; }
 interface Ai { id: string; meeting_id: string | null; description: string; assignee_id: string | null; due_date: string | null; status: string; }
 
 export default function MeetingAnalyticsPage() {
   const router = useRouter();
-  const [meetings, setMeetings] = useState<Mt[]>([]);
-  const [actions, setActions] = useState<Ai[]>([]);
+  const [allMeetings, setAllMeetings] = useState<Mt[]>([]);
+  const [allActions, setAllActions] = useState<Ai[]>([]);
   const [nameMap, setNameMap] = useState<Map<string, string>>(new Map());
   const [meetingTitle, setMeetingTitle] = useState<Map<string, string>>(new Map());
   const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [scope, setScope] = useState<'mine' | 'all'>('mine');
 
   useEffect(() => {
     (async () => {
       try {
+        const { data: { user } } = await supabase.auth.getUser(); setUserId(user?.id || null);
         const [mt, ai] = await Promise.all([
-          supabase.from('meetings').select('id, title, status, starts_at, minutes_published_at').order('starts_at', { ascending: false }),
+          supabase.from('meetings').select('id, title, status, starts_at, minutes_published_at, organizer_id').order('starts_at', { ascending: false }),
           supabase.from('meeting_action_items').select('*'),
         ]);
         const mtRows = (mt.data || []) as Mt[];
         const aiRows = (ai.data || []) as Ai[];
-        setMeetings(mtRows); setActions(aiRows);
+        setAllMeetings(mtRows); setAllActions(aiRows);
         setMeetingTitle(new Map(mtRows.map(m => [m.id, m.title])));
         const ids = [...new Set(aiRows.map(a => a.assignee_id).filter(Boolean))] as string[];
         if (ids.length) { const { data: p } = await supabase.from('profiles').select('id, full_name').in('id', ids); setNameMap(new Map((p || []).map((x: any) => [x.id, x.full_name]))); }
       } finally { setLoading(false); }
     })();
   }, []);
+
+  const meetings = useMemo(() => scope === 'mine' && userId ? allMeetings.filter(m => m.organizer_id === userId) : allMeetings, [allMeetings, scope, userId]);
+  const myMeetingIds = useMemo(() => new Set(meetings.map(m => m.id)), [meetings]);
+  const actions = useMemo(() => scope === 'mine' && userId ? allActions.filter(a => a.assignee_id === userId || (a.meeting_id && myMeetingIds.has(a.meeting_id))) : allActions, [allActions, scope, userId, myMeetingIds]);
 
   const now = Date.now();
   const completed = meetings.filter(m => m.status === 'COMPLETED').length;
@@ -74,10 +81,19 @@ export default function MeetingAnalyticsPage() {
         ) : undefined}
       />
 
+      <Card className="p-3 flex items-center gap-2">
+        <span className="text-xs text-[var(--text-secondary)]">View:</span>
+        <div className="inline-flex rounded-md border border-[var(--border)] overflow-hidden">
+          {(['mine', 'all'] as const).map(s => (
+            <button key={s} onClick={() => setScope(s)} className="px-3 h-8 text-xs font-medium" style={{ background: scope === s ? 'var(--accent)' : 'var(--surface)', color: scope === s ? '#fff' : 'var(--text-secondary)' }}>{s === 'mine' ? 'My meetings' : 'Everyone'}</button>
+          ))}
+        </div>
+      </Card>
+
       {loading ? (
         <Card><div className="p-8 text-center text-sm text-[var(--text-tertiary)]">Loading…</div></Card>
       ) : meetings.length === 0 ? (
-        <Card><EmptyState icon={Calendar} title="No meetings" description="Meetings and their action items will be analysed here." /></Card>
+        <Card><EmptyState icon={Calendar} title="No meetings" description={scope === 'mine' ? 'You are not organising any meetings.' : 'Meetings and their action items will be analysed here.'} /></Card>
       ) : (
         <>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3">

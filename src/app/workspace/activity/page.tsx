@@ -21,22 +21,27 @@ interface Ev { id: string; occurred_at: string; actor_user_id: string | null; ac
 const actionColor = (a: string) => /DELETE|REMOVE|CANCEL|REJECT/.test(a) ? 'var(--status-danger-text)' : /CREATE|ADD|APPROVE|CHECK_IN/.test(a) ? 'var(--status-success-text)' : /UPDATE|EDIT|ISSUE|POST/.test(a) ? 'var(--status-info-text)' : 'var(--accent)';
 
 export default function ActivityTimelinePage() {
-  const [rows, setRows] = useState<Ev[]>([]);
+  const [allRows, setAllRows] = useState<Ev[]>([]);
   const [nameMap, setNameMap] = useState<Map<string, string>>(new Map());
   const [loading, setLoading] = useState(true);
   const [moduleFilter, setModuleFilter] = useState('');
+  const [userId, setUserId] = useState<string | null>(null);
+  const [scope, setScope] = useState<'mine' | 'all'>('mine');
 
   useEffect(() => {
     (async () => {
       try {
-        const { data } = await supabase.from('audit_log').select('id, occurred_at, actor_user_id, actor_role, action, entity_type, entity_label, summary, module').order('occurred_at', { ascending: false }).limit(300);
+        const { data: { user } } = await supabase.auth.getUser(); setUserId(user?.id || null);
+        const { data } = await supabase.from('audit_log').select('id, occurred_at, actor_user_id, actor_role, action, entity_type, entity_label, summary, module').order('occurred_at', { ascending: false }).limit(500);
         const evs = (data || []) as Ev[];
-        setRows(evs);
+        setAllRows(evs);
         const ids = [...new Set(evs.map(e => e.actor_user_id).filter(Boolean))] as string[];
         if (ids.length) { const { data: p } = await supabase.from('profiles').select('id, full_name').in('id', ids); setNameMap(new Map((p || []).map((x: any) => [x.id, x.full_name]))); }
       } finally { setLoading(false); }
     })();
   }, []);
+
+  const rows = useMemo(() => scope === 'mine' && userId ? allRows.filter(r => r.actor_user_id === userId) : allRows, [allRows, scope, userId]);
 
   const now = Date.now();
   const today = rows.filter(r => r.occurred_at && now - new Date(r.occurred_at).getTime() <= DAY).length;
@@ -74,10 +79,19 @@ export default function ActivityTimelinePage() {
         ) : undefined}
       />
 
+      <Card className="p-3 flex items-center gap-2">
+        <span className="text-xs text-[var(--text-secondary)]">View:</span>
+        <div className="inline-flex rounded-md border border-[var(--border)] overflow-hidden">
+          {(['mine', 'all'] as const).map(s => (
+            <button key={s} onClick={() => setScope(s)} className="px-3 h-8 text-xs font-medium" style={{ background: scope === s ? 'var(--accent)' : 'var(--surface)', color: scope === s ? '#fff' : 'var(--text-secondary)' }}>{s === 'mine' ? 'My activity' : 'Everyone'}</button>
+          ))}
+        </div>
+      </Card>
+
       {loading ? (
         <Card><div className="p-8 text-center text-sm text-[var(--text-tertiary)]">Loading…</div></Card>
       ) : rows.length === 0 ? (
-        <Card><EmptyState icon={Activity} title="No activity" description="System activity from the audit log appears here." /></Card>
+        <Card><EmptyState icon={Activity} title="No activity" description={scope === 'mine' ? 'You have no recent activity.' : 'System activity from the audit log appears here.'} /></Card>
       ) : (
         <>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

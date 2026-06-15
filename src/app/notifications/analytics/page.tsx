@@ -20,16 +20,21 @@ const DAY = 86400000;
 const sevColor: Record<string, string> = { CRITICAL: 'var(--status-danger-text)', ACTION_REQUIRED: 'var(--status-warning-text)', INFO: 'var(--status-info-text)' };
 const PIE = ['var(--status-danger-text)', 'var(--status-warning-text)', 'var(--status-info-text)', 'var(--accent)'];
 
-interface Nt { severity: string; channel: string; status: string; read_at: string | null; actioned_at: string | null; created_at: string; title: string; }
+interface Nt { severity: string; channel: string; status: string; read_at: string | null; actioned_at: string | null; created_at: string; title: string; user_id: string | null; }
 
 export default function NotificationAnalyticsPage() {
-  const [rows, setRows] = useState<Nt[]>([]);
+  const [allRows, setAllRows] = useState<Nt[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [scope, setScope] = useState<'mine' | 'all'>('mine');
 
   useEffect(() => {
-    supabase.from('notifications').select('severity, channel, status, read_at, actioned_at, created_at, title').order('created_at', { ascending: false })
-      .then(({ data }) => setRows((data || []) as Nt[])).then(() => setLoading(false), () => setLoading(false));
+    supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id || null));
+    supabase.from('notifications').select('severity, channel, status, read_at, actioned_at, created_at, title, user_id').order('created_at', { ascending: false })
+      .then(({ data }) => setAllRows((data || []) as Nt[])).then(() => setLoading(false), () => setLoading(false));
   }, []);
+
+  const rows = useMemo(() => scope === 'mine' && userId ? allRows.filter(r => r.user_id === userId) : allRows, [allRows, scope, userId]);
 
   const unread = rows.filter(r => r.status === 'PENDING').length;
   const critical = rows.filter(r => r.severity === 'CRITICAL').length;
@@ -65,10 +70,19 @@ export default function NotificationAnalyticsPage() {
         ) : undefined}
       />
 
+      <Card className="p-3 flex items-center gap-2">
+        <span className="text-xs text-[var(--text-secondary)]">View:</span>
+        <div className="inline-flex rounded-md border border-[var(--border)] overflow-hidden">
+          {(['mine', 'all'] as const).map(s => (
+            <button key={s} onClick={() => setScope(s)} className="px-3 h-8 text-xs font-medium" style={{ background: scope === s ? 'var(--accent)' : 'var(--surface)', color: scope === s ? '#fff' : 'var(--text-secondary)' }}>{s === 'mine' ? 'My alerts' : 'Everyone'}</button>
+          ))}
+        </div>
+      </Card>
+
       {loading ? (
         <Card><div className="p-8 text-center text-sm text-[var(--text-tertiary)]">Loading…</div></Card>
       ) : rows.length === 0 ? (
-        <Card><EmptyState icon={Bell} title="No alerts" description="Notifications will be analysed here." /></Card>
+        <Card><EmptyState icon={Bell} title="No alerts" description={scope === 'mine' ? 'You have no alerts.' : 'Notifications will be analysed here.'} /></Card>
       ) : (
         <>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3">

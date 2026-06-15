@@ -30,6 +30,10 @@ export default function UnifiedCalendarPage() {
   const [cursor, setCursor] = useState(() => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), 1); });
   const [events, setEvents] = useState<Ev[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [scope, setScope] = useState<'mine' | 'all'>('mine');
+
+  useEffect(() => { supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id || null)); }, []);
 
   const monthStart = useMemo(() => new Date(cursor.getFullYear(), cursor.getMonth(), 1), [cursor]);
   const monthEnd = useMemo(() => new Date(cursor.getFullYear(), cursor.getMonth() + 1, 0), [cursor]);
@@ -38,15 +42,16 @@ export default function UnifiedCalendarPage() {
     setLoading(true);
     try {
       const s = iso(monthStart), e = iso(monthEnd), eEnd = e + 'T23:59:59';
+      const mine = scope === 'mine' && userId;
       const [tk, mt, lv, pv] = await Promise.all([
-        supabase.from('tasks').select('id, title, due_date, status').gte('due_date', s).lte('due_date', eEnd).eq('is_active', true),
-        supabase.from('meetings').select('id, title, starts_at').gte('starts_at', s).lte('starts_at', eEnd),
+        supabase.from('tasks').select('id, title, due_date, status, assignee_id').gte('due_date', s).lte('due_date', eEnd).eq('is_active', true),
+        supabase.from('meetings').select('id, title, starts_at, organizer_id').gte('starts_at', s).lte('starts_at', eEnd),
         supabase.from('leave_requests').select('id, employee_id, leave_type, from_date, to_date').lte('from_date', e).gte('to_date', s),
         supabase.from('ppm_visits').select('id, visit_number, scheduled_date, target_month').or(`scheduled_date.gte.${s},target_month.gte.${s}`),
       ]);
       const evs: Ev[] = [];
-      (tk.data || []).forEach((t: any) => { if (t.status === 'DONE' || t.status === 'DONE_AUTO' || t.status === 'CANCELLED') return; evs.push({ date: t.due_date.slice(0, 10), type: 'TASK', label: t.title, href: `/tasks` }); });
-      (mt.data || []).forEach((m: any) => evs.push({ date: m.starts_at.slice(0, 10), type: 'MEETING', label: m.title, href: `/meetings` }));
+      (tk.data || []).forEach((t: any) => { if (t.status === 'DONE' || t.status === 'DONE_AUTO' || t.status === 'CANCELLED') return; if (mine && t.assignee_id !== userId) return; evs.push({ date: t.due_date.slice(0, 10), type: 'TASK', label: t.title, href: `/tasks` }); });
+      (mt.data || []).forEach((m: any) => { if (mine && m.organizer_id !== userId) return; evs.push({ date: m.starts_at.slice(0, 10), type: 'MEETING', label: m.title, href: `/meetings` }); });
       // leave names
       const leaveRows = (lv.data || []);
       const eids = [...new Set(leaveRows.map((l: any) => l.employee_id).filter(Boolean))] as string[];
@@ -61,7 +66,7 @@ export default function UnifiedCalendarPage() {
       (pv.data || []).forEach((p: any) => { const dt = (p.scheduled_date || p.target_month || '').slice(0, 10); if (dt >= s && dt <= e) evs.push({ date: dt, type: 'PPM', label: p.visit_number || 'PPM', href: `/ppm/execute/${p.id}` }); });
       setEvents(evs);
     } finally { setLoading(false); }
-  }, [monthStart, monthEnd]);
+  }, [monthStart, monthEnd, scope, userId]);
   useEffect(() => { load(); }, [load]);
 
   const byDate = useMemo(() => { const m = new Map<string, Ev[]>(); events.forEach(e => { if (!m.has(e.date)) m.set(e.date, []); m.get(e.date)!.push(e); }); return m; }, [events]);
@@ -89,9 +94,14 @@ export default function UnifiedCalendarPage() {
         }
       />
 
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-wrap items-center gap-3">
         {(Object.keys(TYPE_META) as EvType[]).map(t => <span key={t} className="inline-flex items-center gap-1 text-xs text-[var(--text-secondary)]"><span className="w-2.5 h-2.5 rounded-full" style={{ background: TYPE_META[t].color }} />{TYPE_META[t].label}</span>)}
         {loading && <span className="text-xs text-[var(--text-tertiary)]">Loading…</span>}
+        <div className="inline-flex rounded-md border border-[var(--border)] overflow-hidden ml-auto">
+          {(['mine', 'all'] as const).map(s => (
+            <button key={s} onClick={() => setScope(s)} className="px-3 h-7 text-xs font-medium" style={{ background: scope === s ? 'var(--accent)' : 'var(--surface)', color: scope === s ? '#fff' : 'var(--text-secondary)' }}>{s === 'mine' ? 'My tasks & meetings' : 'Everyone'}</button>
+          ))}
+        </div>
       </div>
 
       <Card className="p-2 overflow-x-auto">
