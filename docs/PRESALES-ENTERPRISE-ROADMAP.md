@@ -28,4 +28,5 @@ audit logging where it writes, and a roadmap update.
 - ✅ **Phase 1 — Pre-Sales Dashboard** (`/sales/dashboard`): funnel (tenders→BOQs→quotations→won), pipeline value, win rate, conversion, pending quotes, deadline/validity alerts, value-by-status + value-trend charts. PDF/Excel.
 - ✅ **Phase 2 — Sales Pipeline (Opportunities)** (`/sales/pipeline`): tenders by stage (count + value strip), value-by-stage + value-by-discipline charts, search/stage filters, table with deadline highlighting and drill-through. PDF/Excel.
 - ✅ **Phase 3 — Quotation Analytics** (`/sales/quotations`): KPIs (count, value, won value, win rate, revised/avg revision), count-by-status pie, issued-value trend, value-by-status, pending-quote aging buckets. PDF/Excel.
-- ⏭ Then: Win/Loss → Margin → Client CRM → Deadlines → Follow-ups → Performance → Hub/Polish.
+- ✅ **Phase 4 — Win / Loss Analysis** (`/sales/win-loss`): won vs lost counts + value, win rate by count and by value, reasons-for-loss chart, won-vs-lost-by-client chart, lost-quotations table. PDF/Excel.
+- ⏭ Then: Margin → Client CRM → Deadlines → Follow-ups → Performance → Hub/Polish.
