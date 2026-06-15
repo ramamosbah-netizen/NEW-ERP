@@ -198,7 +198,7 @@ export default function NotificationsCenterPage() {
                         </td>
                         <td className="py-4 font-mono text-[10px] text-[var(--text-secondary)]">
                           <div className="flex items-center gap-1">
-                            <Clock size={10} className="text-slate-650" />
+                            <Clock size={10} className="text-[var(--text-tertiary)]" />
                             {formatDate(n.created_at)} @ {formatTime(n.created_at)}
                           </div>
                         </td>

@@ -255,7 +255,7 @@ export default function FleetDashboardPage() {
                 <span>Workshop: {workshopCount}</span>
               </div>
               <div className="flex items-center gap-1">
-                <span className="h-1.5 w-1.5 bg-slate-500 rounded-full"></span>
+                <span className="h-1.5 w-1.5 bg-[var(--bg-card)] rounded-full"></span>
                 <span>Off Road: {offRoadCount}</span>
               </div>
             </div>

@@ -277,7 +277,7 @@ export default function TemplatesPage() {
               <iframe
                 title="template-preview"
                 srcDoc={previewHtml}
-                className="w-full bg-white rounded-b-lg"
+                className="w-full bg-[var(--bg-card)] rounded-b-lg"
                 style={{ height: 760, border: 'none' }}
               />
             </Card>

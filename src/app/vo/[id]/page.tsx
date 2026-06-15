@@ -316,7 +316,7 @@ export default function VODetailPage({ params }: VODetailPageProps) {
                             {item.action}
                           </span>
                         </td>
-                        <td className="py-2.5 px-4 font-semibold text-slate-150">
+                        <td className="py-2.5 px-4 font-semibold text-[var(--text-primary)]">
                           {item.description}
                           {item.boq_item_ref && (
                             <div className="text-[9px] text-[var(--text-primary)]0 font-normal">BOQ Line Ref: {item.boq_item_ref}</div>
@@ -471,7 +471,7 @@ export default function VODetailPage({ params }: VODetailPageProps) {
                   value={vo.work_status}
                   onChange={e => handleAction(() => actions.updateWorkStatus(e.target.value as any), 'Work status updated.')}
                   disabled={processing}
-                  className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-1.5 px-3 text-xs text-slate-350 focus:outline-none"
+                  className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-1.5 px-3 text-xs text-[var(--text-secondary)] focus:outline-none"
                 >
                   <option value="NOT_STARTED">Not Started on Site</option>
                   <option value="IN_PROGRESS">WIP (Work In Progress)</option>
@@ -534,7 +534,7 @@ export default function VODetailPage({ params }: VODetailPageProps) {
                   placeholder="e.g. CVO-LTR-09 or Project instruction 42"
                   value={approvalRef}
                   onChange={e => setApprovalRef(e.target.value)}
-                  className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-slate-350 focus:outline-none focus:border-[var(--accent)]"
+                  className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)]"
                   required
                 />
               </div>
@@ -545,7 +545,7 @@ export default function VODetailPage({ params }: VODetailPageProps) {
                   type="date"
                   value={approvalDate}
                   onChange={e => setApprovalDate(e.target.value)}
-                  className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-slate-350 focus:outline-none focus:border-[var(--accent)] font-mono"
+                  className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)] font-mono"
                   required
                 />
               </div>
@@ -613,7 +613,7 @@ export default function VODetailPage({ params }: VODetailPageProps) {
                   placeholder="Enter specific comments or reasons provided by the client..."
                   value={rejectionReason}
                   onChange={e => setRejectionReason(e.target.value)}
-                  className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-slate-350 focus:outline-none"
+                  className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-[var(--text-secondary)] focus:outline-none"
                   required
                 />
               </div>
@@ -666,7 +666,7 @@ export default function VODetailPage({ params }: VODetailPageProps) {
                   placeholder="Specify details..."
                   value={cancelReason}
                   onChange={e => setCancelReason(e.target.value)}
-                  className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-slate-355 focus:outline-none"
+                  className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-[var(--text-secondary)] focus:outline-none"
                   required
                 />
               </div>

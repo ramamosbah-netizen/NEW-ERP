@@ -86,7 +86,7 @@ export default function TasksPage() {
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
             <h1 className="quote-header-title flex items-center gap-2">
-              <CheckSquare className="text-emerald-400" size={26} />
+              <CheckSquare className="text-[var(--accent)]" size={26} />
               Task Master Board
             </h1>
             <p className="quote-header-subtitle">List and Kanban views matching event actions and auto-routing rules.</p>
@@ -181,16 +181,16 @@ export default function TasksPage() {
         {/* Board Main Area */}
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 gap-3">
-            <RefreshCw className="animate-spin text-emerald-400" size={32} />
-            <span className="text-slate-400 font-mono text-sm">RETRIEVING MASTER TASKS...</span>
+            <RefreshCw className="animate-spin text-[var(--accent)]" size={32} />
+            <span className="text-[var(--text-secondary)] font-mono text-sm">RETRIEVING MASTER TASKS...</span>
           </div>
         ) : error ? (
           <div className="p-4 bg-red-950/20 border border-red-500/10 text-red-300 rounded-xl text-center text-xs">
             Failed to load tasks database. Sync caches or re-try: {error.message}
           </div>
         ) : tasks.length === 0 ? (
-          <div className="quote-card py-20 text-center text-slate-500 text-sm">
-            <CheckSquare size={48} className="mx-auto mb-4 opacity-10 text-slate-400" />
+          <div className="quote-card py-20 text-center text-[var(--text-tertiary)] text-sm">
+            <CheckSquare size={48} className="mx-auto mb-4 opacity-10 text-[var(--text-secondary)]" />
             No tasks found matching current filters.
           </div>
         ) : viewMode === 'kanban' ? (

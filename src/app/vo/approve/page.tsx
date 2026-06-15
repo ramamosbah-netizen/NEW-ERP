@@ -149,7 +149,7 @@ export default function VOApprovalQueuePage() {
                     <th className="py-3 px-4 text-center">Action Console</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[var(--border)] font-mono text-xs text-slate-350">
+                <tbody className="divide-y divide-[var(--border)] font-mono text-xs text-[var(--text-secondary)]">
                   {pendingApprovals.map((vo) => {
                     const isProcessing = processingId === vo.id;
                     return (

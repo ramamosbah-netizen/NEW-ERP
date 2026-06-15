@@ -143,7 +143,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               <div className="rounded-2xl bg-[var(--status-warning-bg)] p-4 border border-[var(--status-warning-border)] shadow-inner">
                 <AlertTriangle className="text-[var(--status-warning-text)] animate-pulse" size={36} />
               </div>
-              <h2 className="text-lg font-bold tracking-tight text-slate-150">Module Temporarily Disabled</h2>
+              <h2 className="text-lg font-bold tracking-tight text-[var(--text-primary)]">Module Temporarily Disabled</h2>
               <p className="text-xs text-[var(--text-primary)]0 leading-relaxed">
                 This feature module has been globally deactivated by the system administrator. If you require access, please contact your administration desk.
               </p>
@@ -174,7 +174,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               <div className="rounded-2xl bg-[var(--status-danger-bg)] p-4 border border-[var(--status-danger-border)] shadow-inner">
                 <AlertTriangle className="text-[var(--status-danger-text)]" size={36} />
               </div>
-              <h2 className="text-lg font-bold tracking-tight text-slate-150">Access Restricted</h2>
+              <h2 className="text-lg font-bold tracking-tight text-[var(--text-primary)]">Access Restricted</h2>
               <p className="text-xs text-[var(--text-primary)]0 leading-relaxed">
                 Your role ({role}) doesn&apos;t have access to this section. Contact your administrator if you need it.
               </p>

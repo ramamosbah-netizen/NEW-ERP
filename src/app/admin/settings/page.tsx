@@ -1627,7 +1627,7 @@ export default function SettingsHubPage() {
                                       const isDashboardOrSettings = item.href === '/dashboard' || item.href === '/admin/settings';
                                       const isEnabled = enabledModules[item.href] !== false;
                                       return (
-                                        <div key={item.href} className="flex items-start justify-between p-3.5 bg-slate-955/40 border border-border-color/60 rounded-xl hover:border-border-color transition-all duration-200 group/item">
+                                        <div key={item.href} className="flex items-start justify-between p-3.5 bg-[var(--bg-card)] border border-border-color/60 rounded-xl hover:border-border-color transition-all duration-200 group/item">
                                           <div className="flex items-start gap-3">
                                             <span className={`p-2 rounded-xl bg-[var(--surface-hover)] border border-border-color/65 shrink-0 transition-colors duration-300 ${isEnabled ? 'text-primary border-primary/25' : 'text-text-muted'}`}>
                                               <item.icon size={15} />
@@ -1655,7 +1655,7 @@ export default function SettingsHubPage() {
                                             }}
                                             className={`w-10 h-6 rounded-full p-1 transition-all duration-300 focus:outline-none relative flex items-center shrink-0 ${
                                               isDashboardOrSettings ? 'bg-primary/20 opacity-55 cursor-not-allowed border border-transparent' :
-                                              isEnabled ? 'bg-primary shadow-[0_0_12px_var(--primary-glow)]' : 'bg-slate-850 border border-border-color'
+                                              isEnabled ? 'bg-primary shadow-[0_0_12px_var(--primary-glow)]' : 'bg-[var(--bg-card)] border border-border-color'
                                             }`}
                                           >
                                             <div className={`w-4 h-4 rounded-full shadow transform transition-transform duration-300 ${
@@ -2099,7 +2099,7 @@ export default function SettingsHubPage() {
                             <button
                               type="submit"
                               disabled={saving}
-                              className="bg-[var(--surface-hover)] border border-border-color hover:bg-slate-850 hover:border-text-muted/50 text-text-secondary px-4 py-2 rounded-xl text-xs font-bold transition-all active:scale-98 select-none self-end mt-1"
+                              className="bg-[var(--surface-hover)] border border-border-color hover:bg-[var(--bg-card)] hover:border-text-muted/50 text-text-secondary px-4 py-2 rounded-xl text-xs font-bold transition-all active:scale-98 select-none self-end mt-1"
                             >
                               + Register Role
                             </button>
@@ -2143,7 +2143,7 @@ export default function SettingsHubPage() {
                             <button
                               type="submit"
                               disabled={saving}
-                              className="bg-[var(--surface-hover)] border border-border-color hover:bg-slate-850 hover:border-text-muted/50 text-text-secondary px-4.5 rounded-xl text-[11px] font-bold transition-all active:scale-98 select-none self-end mt-1"
+                              className="bg-[var(--surface-hover)] border border-border-color hover:bg-[var(--bg-card)] hover:border-text-muted/50 text-text-secondary px-4.5 rounded-xl text-[11px] font-bold transition-all active:scale-98 select-none self-end mt-1"
                             >
                               + Catalog Entry
                             </button>
@@ -2313,7 +2313,7 @@ export default function SettingsHubPage() {
                                   step="0.01"
                                   value={vatRate}
                                   onChange={(e) => setVatRate(Number(e.target.value))}
-                                  className="w-full bg-slate-955 border border-border-color rounded-xl pl-4 pr-10 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-4 pr-10 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
                                 />
                                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-mono font-bold text-text-muted">%</span>
                               </div>
@@ -2325,7 +2325,7 @@ export default function SettingsHubPage() {
                                   type="number" 
                                   value={vatPeriodMonths}
                                   onChange={(e) => setVatPeriodMonths(Number(e.target.value))}
-                                  className="w-full bg-slate-955 border border-border-color rounded-xl pl-4 pr-16 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-4 pr-16 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
                                 />
                                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-mono font-bold text-text-muted uppercase">Months</span>
                               </div>
@@ -2345,7 +2345,7 @@ export default function SettingsHubPage() {
                                   type="number" 
                                   value={thresholdQuote}
                                   onChange={(e) => setThresholdQuote(Number(e.target.value))}
-                                  className="w-full bg-slate-955 border border-border-color rounded-xl pl-12 pr-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-12 pr-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
                                 />
                               </div>
                             </div>
@@ -2355,7 +2355,7 @@ export default function SettingsHubPage() {
                                 type="text" 
                                 value={currency}
                                 onChange={(e) => setCurrency(e.target.value)}
-                                className="w-full bg-slate-955 border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold uppercase"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold uppercase"
                               />
                             </div>
                           </div>
@@ -2396,7 +2396,7 @@ export default function SettingsHubPage() {
                                 type="number"
                                 value={thresholdPO}
                                 onChange={(e) => setThresholdPO(Number(e.target.value))}
-                                className="w-full bg-slate-955 border border-border-color rounded-xl pl-12 pr-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-12 pr-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
                               />
                             </div>
                             <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5 mt-4">Direct Purchase Limit (PR without LPO)</label>
@@ -2406,7 +2406,7 @@ export default function SettingsHubPage() {
                                 type="number"
                                 value={directPurchaseThreshold}
                                 onChange={(e) => setDirectPurchaseThreshold(Number(e.target.value))}
-                                className="w-full bg-slate-955 border border-border-color rounded-xl pl-12 pr-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-12 pr-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
                               />
                             </div>
                             <p className="text-[10px] text-text-muted mt-1.5 leading-relaxed">PRs at or below this value can be purchased directly without raising an LPO; larger ones must convert to an LPO.</p>
@@ -2424,7 +2424,7 @@ export default function SettingsHubPage() {
                             <button
                               onClick={() => setAutoRank(!autoRank)}
                               className={`w-10 h-6 rounded-full p-1 transition-all duration-300 focus:outline-none relative flex items-center shrink-0 self-center ${
-                                autoRank ? 'bg-primary shadow-[0_0_12px_var(--primary-glow)]' : 'bg-slate-850 border border-border-color'
+                                autoRank ? 'bg-primary shadow-[0_0_12px_var(--primary-glow)]' : 'bg-[var(--bg-card)] border border-border-color'
                               }`}
                             >
                               <div className={`w-4 h-4 rounded-full shadow transform transition-transform duration-300 ${
@@ -2468,7 +2468,7 @@ export default function SettingsHubPage() {
                           <button
                             onClick={() => setMrfApprovalRequired(!mrfApprovalRequired)}
                             className={`w-10 h-6 rounded-full p-1 transition-all duration-300 focus:outline-none relative flex items-center shrink-0 self-center ${
-                              mrfApprovalRequired ? 'bg-primary shadow-[0_0_12px_var(--primary-glow)]' : 'bg-slate-850 border border-border-color'
+                              mrfApprovalRequired ? 'bg-primary shadow-[0_0_12px_var(--primary-glow)]' : 'bg-[var(--bg-card)] border border-border-color'
                             }`}
                           >
                             <div className={`w-4 h-4 rounded-full shadow transform transition-transform duration-300 ${
@@ -2487,7 +2487,7 @@ export default function SettingsHubPage() {
                                 type="number" 
                                 value={lowStockThreshold}
                                 onChange={(e) => setLowStockThreshold(Number(e.target.value))}
-                                className="w-full bg-slate-955 border border-border-color rounded-xl pl-4 pr-14 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-4 pr-14 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
                               />
                               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-mono font-bold text-text-muted uppercase">Items</span>
                             </div>
@@ -2544,7 +2544,7 @@ export default function SettingsHubPage() {
                       {/* Project Stages Management */}
                       <div className="p-5 bg-bg-card/35 border border-border-color rounded-2xl flex flex-col gap-4 shadow-lg">
                         <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono border-b border-border-color/60 pb-2">Default Project Execution Stages</h4>
-                        <div className="flex flex-wrap gap-2.5 p-4.5 bg-slate-955/40 border border-border-color/60 rounded-xl min-h-[60px] items-center">
+                        <div className="flex flex-wrap gap-2.5 p-4.5 bg-[var(--bg-card)] border border-border-color/60 rounded-xl min-h-[60px] items-center">
                           {defaultStages.map((stage, idx) => (
                             <div key={stage} className="flex items-center gap-2">
                               <span className="bg-[var(--bg-card)] text-text-secondary text-[10px] font-semibold px-2.5 py-1.5 rounded-xl border border-border-color/80 flex items-center gap-2 font-mono tracking-wide">
@@ -2577,7 +2577,7 @@ export default function SettingsHubPage() {
                           />
                           <button 
                             onClick={addProjectStage}
-                            className="bg-[var(--surface-hover)] border border-border-color hover:bg-slate-850 hover:border-text-muted text-text-secondary px-4.5 rounded-xl text-[11px] font-bold transition-all active:scale-98 select-none"
+                            className="bg-[var(--surface-hover)] border border-border-color hover:bg-[var(--bg-card)] hover:border-text-muted text-text-secondary px-4.5 rounded-xl text-[11px] font-bold transition-all active:scale-98 select-none"
                           >
                             + Add Stage
                           </button>
@@ -2595,7 +2595,7 @@ export default function SettingsHubPage() {
                                 type="number" 
                                 value={voThreshold}
                                 onChange={(e) => setVoThreshold(Number(e.target.value))}
-                                className="w-full bg-slate-955 border border-border-color rounded-xl pl-12 pr-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-12 pr-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
                               />
                             </div>
                           </div>
@@ -2627,7 +2627,7 @@ export default function SettingsHubPage() {
                       {/* PPM Timeslot Manager */}
                       <div className="p-5 bg-bg-card/35 border border-border-color rounded-2xl flex flex-col gap-4 shadow-lg">
                         <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono border-b border-border-color/60 pb-2">PPM Visits Timings Slots</h4>
-                        <div className="flex flex-wrap gap-2.5 p-4.5 bg-slate-955/40 border border-border-color/60 rounded-xl min-h-[60px] items-center">
+                        <div className="flex flex-wrap gap-2.5 p-4.5 bg-[var(--bg-card)] border border-border-color/60 rounded-xl min-h-[60px] items-center">
                           {maintenanceSlots.map(slot => (
                             <span key={slot} className="bg-[var(--bg-card)] text-text-secondary text-[10px] font-semibold px-2.5 py-1.5 rounded-xl border border-border-color/80 flex items-center gap-2 font-mono">
                               <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
@@ -2652,7 +2652,7 @@ export default function SettingsHubPage() {
                           />
                           <button 
                             onClick={addMaintSlot}
-                            className="bg-[var(--surface-hover)] border border-border-color hover:bg-slate-850 hover:border-text-muted text-text-secondary px-4.5 rounded-xl text-[11px] font-bold transition-all active:scale-98 select-none"
+                            className="bg-[var(--surface-hover)] border border-border-color hover:bg-[var(--bg-card)] hover:border-text-muted text-text-secondary px-4.5 rounded-xl text-[11px] font-bold transition-all active:scale-98 select-none"
                           >
                             + Add Slot
                           </button>
@@ -2727,7 +2727,7 @@ export default function SettingsHubPage() {
                               type="time" 
                               value={businessHours.start}
                               onChange={(e) => setBusinessHours({ ...businessHours, start: e.target.value })}
-                              className="w-full bg-slate-955 border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50"
                             />
                           </div>
                           <div>
@@ -2736,7 +2736,7 @@ export default function SettingsHubPage() {
                               type="time" 
                               value={businessHours.end}
                               onChange={(e) => setBusinessHours({ ...businessHours, end: e.target.value })}
-                              className="w-full bg-slate-955 border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50"
                             />
                           </div>
                         </div>
@@ -2822,7 +2822,7 @@ export default function SettingsHubPage() {
                                   ...gratuityEntitlement,
                                   above5yr: Number(e.target.value)
                                 })}
-                                className="w-full bg-slate-955 border border-border-color rounded-xl pl-3.5 pr-14 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-3.5 pr-14 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50"
                               />
                               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[8px] font-mono font-bold text-text-muted uppercase">Days</span>
                             </div>
@@ -2863,7 +2863,7 @@ export default function SettingsHubPage() {
                               type="button"
                               onClick={() => setNotifications({ ...notifications, [channel]: !active })}
                               className={`w-10 h-6 rounded-full p-1 transition-all duration-300 focus:outline-none relative flex items-center shrink-0 ${
-                                active ? 'bg-primary shadow-[0_0_12px_var(--primary-glow)]' : 'bg-slate-850 border border-border-color'
+                                active ? 'bg-primary shadow-[0_0_12px_var(--primary-glow)]' : 'bg-[var(--bg-card)] border border-border-color'
                               }`}
                             >
                               <div className={`w-4 h-4 rounded-full shadow transform transition-transform duration-300 ${
@@ -2893,7 +2893,7 @@ export default function SettingsHubPage() {
                               rows={2.5}
                               value={notifTemplates.quotation_sent}
                               onChange={(e) => setNotifTemplates({ ...notifTemplates, quotation_sent: e.target.value })}
-                              className="w-full bg-slate-955 border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-sans font-semibold leading-relaxed"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-sans font-semibold leading-relaxed"
                             />
                           </div>
                           <div>
@@ -2902,7 +2902,7 @@ export default function SettingsHubPage() {
                               rows={2.5}
                               value={notifTemplates.po_approved}
                               onChange={(e) => setNotifTemplates({ ...notifTemplates, po_approved: e.target.value })}
-                              className="w-full bg-slate-955 border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-sans font-semibold leading-relaxed"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-sans font-semibold leading-relaxed"
                             />
                           </div>
                           <div>
@@ -2911,7 +2911,7 @@ export default function SettingsHubPage() {
                               rows={2.5}
                               value={notifTemplates.ticket_assigned}
                               onChange={(e) => setNotifTemplates({ ...notifTemplates, ticket_assigned: e.target.value })}
-                              className="w-full bg-slate-955 border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-sans font-semibold leading-relaxed"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-sans font-semibold leading-relaxed"
                             />
                           </div>
                         </div>
@@ -2949,7 +2949,7 @@ export default function SettingsHubPage() {
                                 type="text" 
                                 value={docTemplates.header_title}
                                 onChange={(e) => setDocTemplates({ ...docTemplates, header_title: e.target.value })}
-                                className="w-full bg-slate-955 border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
                               />
                             </div>
                             <div>
@@ -2958,7 +2958,7 @@ export default function SettingsHubPage() {
                                 type="text" 
                                 value={docTemplates.header_subtitle}
                                 onChange={(e) => setDocTemplates({ ...docTemplates, header_subtitle: e.target.value })}
-                                className="w-full bg-slate-955 border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
                               />
                             </div>
                           </div>
@@ -2970,7 +2970,7 @@ export default function SettingsHubPage() {
                             <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-2.5">Document Theme Accent Palette</label>
                             <div className="flex flex-wrap items-center gap-2.5">
                               {[
-                                { id: 'slate', name: 'Slate Dark', bg: 'bg-slate-500', text: 'text-[var(--text-secondary)]' },
+                                { id: 'slate', name: 'Slate Dark', bg: 'bg-[var(--bg-card)]', text: 'text-[var(--text-secondary)]' },
                                 { id: 'mint', name: 'Electric Mint', bg: 'bg-[#10b981]', text: 'text-primary' },
                                 { id: 'gold', name: 'Metallic Gold', bg: 'bg-[#f59e0b]', text: 'text-[var(--status-warning-text)]' },
                                 { id: 'red', name: 'Crimson Red', bg: 'bg-[#ef4444]', text: 'text-[var(--status-danger-text)]' },
@@ -2984,7 +2984,7 @@ export default function SettingsHubPage() {
                                     className={`flex items-center gap-2 px-3.5 py-2 rounded-xl border transition-all text-xs font-bold active:scale-95 ${
                                       isSelected
                                         ? 'bg-primary/10 border-primary/45 text-primary shadow-[0_0_12px_var(--primary-glow)] font-bold'
-                                        : 'bg-slate-955 border-border-color text-text-muted hover:border-text-muted/50 hover:text-text-secondary'
+                                        : 'bg-[var(--bg-card)] border-border-color text-text-muted hover:border-text-muted/50 hover:text-text-secondary'
                                     }`}
                                   >
                                     <span className={`h-3 w-3 rounded-full ${color.bg} shadow-md`} />
@@ -3004,7 +3004,7 @@ export default function SettingsHubPage() {
                             <div className={`absolute right-0 top-0 w-48 h-48 blur-[80px] rounded-full opacity-10 transition-all duration-500 ${
                               docTemplates.accent_color === 'mint' ? 'bg-[#10b981]' :
                               docTemplates.accent_color === 'gold' ? 'bg-[#f59e0b]' :
-                              docTemplates.accent_color === 'red' ? 'bg-[#ef4444]' : 'bg-slate-400'
+                              docTemplates.accent_color === 'red' ? 'bg-[#ef4444]' : 'bg-[var(--surface-hover)]'
                             }`} />
                             
                             <div className="flex flex-col gap-1 relative z-10">
@@ -3038,7 +3038,7 @@ export default function SettingsHubPage() {
                               rows={2.5}
                               value={docTemplates.invoice_disclaimer}
                               onChange={(e) => setDocTemplates({ ...docTemplates, invoice_disclaimer: e.target.value })}
-                              className="w-full bg-slate-955 border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono leading-relaxed"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono leading-relaxed"
                             />
                           </div>
                           <div>
@@ -3047,7 +3047,7 @@ export default function SettingsHubPage() {
                               rows={2.5}
                               value={docTemplates.handover_disclaimer}
                               onChange={(e) => setDocTemplates({ ...docTemplates, handover_disclaimer: e.target.value })}
-                              className="w-full bg-slate-955 border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono leading-relaxed"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono leading-relaxed"
                             />
                           </div>
                           <div>
@@ -3056,7 +3056,7 @@ export default function SettingsHubPage() {
                               rows={2.5}
                               value={docTemplates.ppm_disclaimer}
                               onChange={(e) => setDocTemplates({ ...docTemplates, ppm_disclaimer: e.target.value })}
-                              className="w-full bg-slate-955 border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono leading-relaxed"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono leading-relaxed"
                             />
                           </div>
                           <div>
@@ -3065,7 +3065,7 @@ export default function SettingsHubPage() {
                               rows={2.5}
                               value={docTemplates.vo_disclaimer}
                               onChange={(e) => setDocTemplates({ ...docTemplates, vo_disclaimer: e.target.value })}
-                              className="w-full bg-slate-955 border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono leading-relaxed"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono leading-relaxed"
                             />
                           </div>
                         </div>
@@ -3112,7 +3112,7 @@ export default function SettingsHubPage() {
                                 type="text" 
                                 value={smtpConfig.host}
                                 onChange={(e) => setSmtpConfig({ ...smtpConfig, host: e.target.value })}
-                                className="w-full bg-slate-955 border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
                               />
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
@@ -3122,7 +3122,7 @@ export default function SettingsHubPage() {
                                   type="number" 
                                   value={smtpConfig.port}
                                   onChange={(e) => setSmtpConfig({ ...smtpConfig, port: Number(e.target.value) })}
-                                  className="w-full bg-slate-955 border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono font-semibold"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono font-semibold"
                                 />
                               </div>
                               <div>
@@ -3131,7 +3131,7 @@ export default function SettingsHubPage() {
                                   type="text" 
                                   value={smtpConfig.user}
                                   onChange={(e) => setSmtpConfig({ ...smtpConfig, user: e.target.value })}
-                                  className="w-full bg-slate-955 border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
                                 />
                               </div>
                             </div>
@@ -3156,7 +3156,7 @@ export default function SettingsHubPage() {
                                 type="text" 
                                 value={whatsappGateway.url}
                                 onChange={(e) => setWhatsappGateway({ ...whatsappGateway, url: e.target.value })}
-                                className="w-full bg-slate-955 border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono font-semibold"
                               />
                             </div>
                             <div>
@@ -3166,7 +3166,7 @@ export default function SettingsHubPage() {
                                   type={showWAToken ? "text" : "password"} 
                                   value={whatsappGateway.token}
                                   onChange={(e) => setWhatsappGateway({ ...whatsappGateway, token: e.target.value })}
-                                  className="w-full bg-slate-955 border border-border-color rounded-xl pl-4 pr-16 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono font-semibold"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-4 pr-16 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono font-semibold"
                                 />
                                 <button
                                   type="button"
@@ -3298,7 +3298,7 @@ export default function SettingsHubPage() {
                                     className={`p-4 rounded-xl border text-left flex flex-col gap-0.5 transition-all active:scale-98 ${
                                       isSelected
                                         ? 'bg-primary/10 border-primary/45 text-primary font-bold shadow-[0_0_12px_var(--primary-glow)]'
-                                        : 'bg-slate-955/40 border-border-color text-text-muted hover:border-text-muted/50 hover:text-text-secondary'
+                                        : 'bg-[var(--bg-card)] border-border-color text-text-muted hover:border-text-muted/50 hover:text-text-secondary'
                                     }`}
                                   >
                                     <span className="text-[10px] font-mono font-bold">{item.name}</span>
@@ -3342,7 +3342,7 @@ export default function SettingsHubPage() {
                                 type="number" 
                                 value={passwordRules.min_length}
                                 onChange={(e) => setPasswordRules({ ...passwordRules, min_length: Number(e.target.value) })}
-                                className="w-full bg-slate-955 border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono font-semibold"
                               />
                               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-mono font-bold text-text-muted uppercase">Chars</span>
                             </div>
@@ -3358,7 +3358,7 @@ export default function SettingsHubPage() {
                             type="button"
                             onClick={() => setPasswordRules({ ...passwordRules, require_special: !passwordRules.require_special })}
                             className={`w-10 h-6 rounded-full p-1 transition-all duration-300 focus:outline-none relative flex items-center shrink-0 self-center ${
-                              passwordRules.require_special ? 'bg-primary shadow-[0_0_12px_var(--primary-glow)]' : 'bg-slate-850 border border-border-color'
+                              passwordRules.require_special ? 'bg-primary shadow-[0_0_12px_var(--primary-glow)]' : 'bg-[var(--bg-card)] border border-border-color'
                             }`}
                           >
                             <div className={`w-4 h-4 rounded-full shadow transform transition-transform duration-300 ${
@@ -3375,7 +3375,7 @@ export default function SettingsHubPage() {
                                 type="number" 
                                 value={sessionTimeout}
                                 onChange={(e) => setSessionTimeout(Number(e.target.value))}
-                                className="w-full bg-slate-955 border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono font-semibold"
                               />
                               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-mono font-bold text-text-muted uppercase">Mins</span>
                             </div>
@@ -3399,7 +3399,7 @@ export default function SettingsHubPage() {
                         <div className="overflow-x-auto border border-border-color/80 rounded-2xl bg-bg-card/10 shadow-lg max-h-[340px]">
                           <table className="w-full text-left border-collapse">
                             <thead>
-                              <tr className="bg-slate-955 text-[9px] font-mono text-text-muted uppercase border-b border-border-color sticky top-0 backdrop-blur-md select-none">
+                              <tr className="bg-[var(--bg-card)] text-[9px] font-mono text-text-muted uppercase border-b border-border-color sticky top-0 backdrop-blur-md select-none">
                                 <th className="p-3.5 pl-5">Occurred At</th>
                                 <th className="p-3.5">Actor specifications</th>
                                 <th className="p-3.5">Action Code</th>
@@ -3432,7 +3432,7 @@ export default function SettingsHubPage() {
                                       </span>
                                     </td>
                                     <td className="p-3.5">
-                                      <span className="bg-slate-955 text-[9px] font-bold text-text-muted px-2 py-0.5 rounded-lg border border-border-color/60 uppercase font-mono tracking-wider">
+                                      <span className="bg-[var(--bg-card)] text-[9px] font-bold text-text-muted px-2 py-0.5 rounded-lg border border-border-color/60 uppercase font-mono tracking-wider">
                                         {log.module}
                                       </span>
                                     </td>
@@ -3506,7 +3506,7 @@ export default function SettingsHubPage() {
                                 type="number" 
                                 value={backupConfig.retention}
                                 onChange={(e) => setBackupConfig({ ...backupConfig, retention: Number(e.target.value) })}
-                                className="w-full bg-slate-955 border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono font-semibold"
                               />
                               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-mono font-bold text-text-muted uppercase">Days</span>
                             </div>
@@ -3561,7 +3561,7 @@ export default function SettingsHubPage() {
                             )}
 
                             {/* Retro Terminal Logs View */}
-                            <div className="bg-slate-955 p-4 rounded-xl border border-border-color/60 font-mono text-[10px] text-primary/90 flex flex-col gap-1.5 max-h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-900">
+                            <div className="bg-[var(--bg-card)] p-4 rounded-xl border border-border-color/60 font-mono text-[10px] text-primary/90 flex flex-col gap-1.5 max-h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-900">
                               <div className="text-text-muted border-b border-border-color/40 pb-1.5 mb-1.5 flex items-center justify-between">
                                 <span>SYSTEM LOG TERMINAL (JEET_ERP_BACKUP_DAEMON v1.0.4)</span>
                                 <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
@@ -3604,7 +3604,7 @@ export default function SettingsHubPage() {
                     placeholder="e.g. John Doe"
                     value={newUserFullName}
                     onChange={(e) => setNewUserFullName(e.target.value)}
-                    className="w-full bg-slate-955 border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-sans font-semibold"
+                    className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-sans font-semibold"
                   />
                 </div>
                 <div>
@@ -3615,7 +3615,7 @@ export default function SettingsHubPage() {
                     placeholder="e.g. john@jeetmep.ae"
                     value={newUserEmail}
                     onChange={(e) => setNewUserEmail(e.target.value)}
-                    className="w-full bg-slate-955 border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-sans font-semibold"
+                    className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-sans font-semibold"
                   />
                 </div>
                 <div>
@@ -3626,7 +3626,7 @@ export default function SettingsHubPage() {
                     placeholder="••••••••"
                     value={newUserPassword}
                     onChange={(e) => setNewUserPassword(e.target.value)}
-                    className="w-full bg-slate-955 border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono font-semibold"
+                    className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono font-semibold"
                   />
                 </div>
                 <div>
@@ -3635,7 +3635,7 @@ export default function SettingsHubPage() {
                     required
                     value={newUserDepartment}
                     onChange={(e) => setNewUserDepartment(e.target.value)}
-                    className="w-full bg-slate-955 border border-border-color text-text-secondary rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
+                    className="w-full bg-[var(--bg-card)] border border-border-color text-text-secondary rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
                   >
                     <option value="">Select Department...</option>
                     <option value="MANAGEMENT">Management</option>
@@ -3650,7 +3650,7 @@ export default function SettingsHubPage() {
                 </div>
                 <div>
                   <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">Assign Dynamic Roles</label>
-                  <div className="grid grid-cols-2 gap-2 max-h-[120px] overflow-y-auto p-2 border border-border-color rounded-xl bg-slate-955/50">
+                  <div className="grid grid-cols-2 gap-2 max-h-[120px] overflow-y-auto p-2 border border-border-color rounded-xl bg-[var(--bg-card)]">
                     {roles.map(r => {
                       const isChecked = newUserRoleIds.includes(r.id);
                       return (
@@ -3680,7 +3680,7 @@ export default function SettingsHubPage() {
                   <button
                     type="button"
                     onClick={() => setIsAddModalOpen(false)}
-                    className="bg-[var(--surface-hover)] border border-border-color hover:bg-slate-850 text-text-secondary px-4.5 py-2 rounded-xl text-xs font-bold transition-all active:scale-98 select-none"
+                    className="bg-[var(--surface-hover)] border border-border-color hover:bg-[var(--bg-card)] text-text-secondary px-4.5 py-2 rounded-xl text-xs font-bold transition-all active:scale-98 select-none"
                   >
                     Cancel
                   </button>
@@ -3717,7 +3717,7 @@ export default function SettingsHubPage() {
                     placeholder="e.g. John Doe"
                     value={editUserFullName}
                     onChange={(e) => setEditUserFullName(e.target.value)}
-                    className="w-full bg-slate-955 border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-sans font-semibold"
+                    className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-sans font-semibold"
                   />
                 </div>
                 <div>
@@ -3728,7 +3728,7 @@ export default function SettingsHubPage() {
                     placeholder="e.g. john@jeetmep.ae"
                     value={editUserEmail}
                     onChange={(e) => setEditUserEmail(e.target.value)}
-                    className="w-full bg-slate-955 border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-sans font-semibold"
+                    className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-sans font-semibold"
                   />
                 </div>
                 <div>
@@ -3737,7 +3737,7 @@ export default function SettingsHubPage() {
                     required
                     value={editUserDepartment}
                     onChange={(e) => setEditUserDepartment(e.target.value)}
-                    className="w-full bg-slate-955 border border-border-color text-text-secondary rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
+                    className="w-full bg-[var(--bg-card)] border border-border-color text-text-secondary rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
                   >
                     <option value="">Select Department...</option>
                     <option value="MANAGEMENT">Management</option>
@@ -3752,7 +3752,7 @@ export default function SettingsHubPage() {
                 </div>
                 <div>
                   <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">Assign Dynamic Roles</label>
-                  <div className="grid grid-cols-2 gap-2 max-h-[120px] overflow-y-auto p-2 border border-border-color rounded-xl bg-slate-955/50">
+                  <div className="grid grid-cols-2 gap-2 max-h-[120px] overflow-y-auto p-2 border border-border-color rounded-xl bg-[var(--bg-card)]">
                     {roles.map(r => {
                       const isChecked = editUserRoleIds.includes(r.id);
                       return (
@@ -3782,7 +3782,7 @@ export default function SettingsHubPage() {
                   <button
                     type="button"
                     onClick={() => setIsEditModalOpen(false)}
-                    className="bg-[var(--surface-hover)] border border-border-color hover:bg-slate-850 text-text-secondary px-4.5 py-2 rounded-xl text-xs font-bold transition-all active:scale-98 select-none"
+                    className="bg-[var(--surface-hover)] border border-border-color hover:bg-[var(--bg-card)] text-text-secondary px-4.5 py-2 rounded-xl text-xs font-bold transition-all active:scale-98 select-none"
                   >
                     Cancel
                   </button>
@@ -3822,7 +3822,7 @@ export default function SettingsHubPage() {
                 <button
                   type="button"
                   onClick={() => setIsDeleteModalOpen(false)}
-                  className="bg-[var(--surface-hover)] border border-border-color hover:bg-slate-850 text-text-secondary px-4.5 py-2 rounded-xl text-xs font-bold transition-all active:scale-98 select-none"
+                  className="bg-[var(--surface-hover)] border border-border-color hover:bg-[var(--bg-card)] text-text-secondary px-4.5 py-2 rounded-xl text-xs font-bold transition-all active:scale-98 select-none"
                 >
                   Cancel
                 </button>
