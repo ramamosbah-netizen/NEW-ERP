@@ -40,6 +40,7 @@ import {
   Trophy,
   Swords,
   Coins,
+  ShieldAlert,
   Car,
   Calculator,
   Users,
@@ -134,6 +135,7 @@ const NAV_SECTIONS = [
       { href: '/procurement/suppliers', label: 'Supplier Performance', icon: Users },
       { href: '/procurement/deliveries', label: 'Delivery Tracking', icon: Truck },
       { href: '/procurement/pr-pipeline', label: 'PR Pipeline', icon: ClipboardList },
+      { href: '/procurement/match', label: '3-Way Match', icon: ShieldAlert },
     ],
   },
   {

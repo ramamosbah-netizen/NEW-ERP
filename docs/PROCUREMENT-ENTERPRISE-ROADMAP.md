@@ -29,4 +29,5 @@ Recharts where useful, sidebar link, RBAC (existing roles), and a roadmap update
 - ✅ **Phase 3 — Supplier Performance Leaderboard** (`/procurement/suppliers`): per-supplier PO volume/value, delivery completion %, overdue, invoice-match exceptions; active-only toggle, PO-value chart, leaderboard table linking to each supplier's scorecard. PDF/Excel.
 - ✅ **Phase 4 — PO Delivery Tracking** (`/procurement/deliveries`): open POs (approved/sent/ack/partial, not complete) with overdue/due-soon, not-acknowledged KPIs, delivery-status pie, and a table with days-to-required + ack status, drill to PO. PDF/Excel.
 - ✅ **Phase 5 — PR Pipeline & Cycle Time** (`/procurement/pr-pipeline`): PR KPIs (total, pending, converted, conversion rate, avg approval days), by-status + by-category charts, table with approval turnaround and conversion. PDF/Excel.
-- ⏭ Then: Match → GRN → Savings → Payables → Hub/Polish.
+- ✅ **Phase 6 — Three-Way Match Exceptions** (`/procurement/match`): supplier invoices bucketed Matched/Pending/Exception, clickable KPI filters, status pie, table with supplier+PO+value+match status. PDF/Excel.
+- ⏭ Then: GRN → Savings → Payables → Hub/Polish.
