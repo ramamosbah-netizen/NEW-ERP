@@ -33,4 +33,6 @@ Recharts where useful, sidebar link, RBAC (existing roles), and a roadmap update
 - ✅ **Phase 7 — Goods Receipt (GRN) Analytics** (`/procurement/grn-analytics`): GRN KPIs (total, this month, pending receipts, projects receiving), receipts-per-month + receipts-by-project charts, recent-GRN log (PO + supplier + project). PDF/Excel.
 - ✅ **Phase 8 — Savings & Comparison Analysis** (`/procurement/savings`): from `supplier_comparisons` — savings vs BOQ, money "left on the table" (selected − lowest), avg margin, overrides; savings + selected-vs-lowest charts, table with drill to comparison. PDF/Excel.
 - ✅ **Phase 9 — Payables Overview** (`/procurement/payables`): supplier-invoice outstanding (total − paid), overdue + due-≤7d KPIs, payables-aging buckets, outstanding-by-supplier chart, invoice table with drill to AP. PDF/Excel.
-- ⏭ Then: Hub + Audit & Export Polish (final).
+- ✅ **Phase 10 — Procurement Hub + Audit & Export Polish** (`/procurement`): hub with a live attention strip (PRs pending, overdue deliveries, match exceptions, overdue payables) + module grid; PDF/Excel verified across all pages. See `PROCUREMENT-ENTERPRISE-COMPLETE.md`.
+
+**🎉 All 10 modules complete.** Full report: [`PROCUREMENT-ENTERPRISE-COMPLETE.md`](./PROCUREMENT-ENTERPRISE-COMPLETE.md). No migrations required.

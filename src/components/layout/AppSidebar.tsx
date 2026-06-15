@@ -127,6 +127,7 @@ const NAV_SECTIONS = [
     id: 'procurement',
     label: 'Procurement',
     items: [
+      { href: '/procurement', label: 'Procurement Hub', icon: SlidersHorizontal },
       { href: '/procurement/dashboard', label: 'Procurement Dashboard', icon: LayoutDashboard },
       { href: '/procurement/pr', label: 'Purchase Requests', icon: ClipboardList },
       { href: '/procurement/rfq', label: 'Quotation Requests', icon: Mail },
