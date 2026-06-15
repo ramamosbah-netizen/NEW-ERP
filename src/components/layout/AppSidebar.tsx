@@ -205,6 +205,7 @@ const NAV_SECTIONS = [
       { href: '/hr/labour-cost', label: 'Labour Cost', icon: HardHat },
       { href: '/payroll', label: 'Payroll', icon: Wallet },
       { href: '/payroll/analytics', label: 'Payroll Analytics', icon: Wallet },
+      { href: '/payroll/eosb-liability', label: 'EOSB Liability', icon: Landmark },
       { href: '/timesheets', label: 'Timesheets', icon: Clock },
       { href: '/timesheets/analytics', label: 'Utilization', icon: Clock },
     ],

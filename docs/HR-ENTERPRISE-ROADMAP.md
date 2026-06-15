@@ -5,18 +5,22 @@ UAE compliance-expiry dashboard **without breaking the payroll/leave/timesheet/E
 execution**. New pages use the in-house UI kit + Recharts and the separate-lookup
 pattern. All analytics over existing tables — **no migrations**.
 
-## Build order (proposed 10-item program)
+## Build order (authoritative 14-item program)
 
-1. **HR & Workforce Dashboard** — headcount, by department/type, compliance alerts (expiries due), payroll cost, leave/timesheet pending. `/hr/dashboard` *(no migration)*.
-2. **Document Compliance & Expiry Tracker** — visa / labour card / EID / passport / insurance / licence / probation expiries bucketed by urgency. `/hr/compliance-tracker` *(no migration)*.
-3. **Workforce Analytics** — by department / nationality / employment type / designation, tenure and status mix. `/hr/workforce` *(no migration)*.
-4. **Payroll Analytics** — run history, cost trend, gross/net/OT/deductions breakdown, by department. `/payroll/analytics` *(no migration)*.
-5. **Leave Analytics** — by type / status / department, pending queue, working days. `/hr/leave-analytics` *(no migration)*.
-6. **Timesheet & Utilization** — hours & OT logged, by employee / project, approval status. `/timesheets/analytics` *(no migration)*.
-7. **Project Labour Cost** — labour cost by project (from project_labour_costs). `/hr/labour-cost` *(no migration)*.
-8. **End-of-Service Liability** — EOSB/gratuity accrual across the workforce. `/payroll/eosb-liability` *(no migration)*.
-9. **Headcount by Project / Manpower** — employee distribution by assigned project. `/hr/manpower` *(no migration)*.
-10. **HR Hub + Audit & Export Polish** — `/hr` hub with attention strip; PDF/Excel across all; sidebar wiring.
+1. **HR & Workforce Dashboard** — `/hr/dashboard` *(no migration)*.
+2. **Document Compliance & Expiry Tracker** — `/hr/compliance-tracker` *(no migration)*.
+3. **Workforce Analytics** — `/hr/workforce` *(no migration)*.
+4. **Payroll Analytics** — `/payroll/analytics` *(no migration)*.
+5. **Leave Analytics** — `/hr/leave-analytics` *(no migration)*.
+6. **Timesheet & Utilization** — `/timesheets/analytics` *(no migration)*.
+7. **Project Labour Cost** — `/hr/labour-cost` *(no migration)*.
+8. **EOSB Liability** — `/payroll/eosb-liability` *(no migration)*.
+9. **Manpower Dashboard** — headcount/cost by assigned project, deployed vs bench. `/hr/manpower` *(no migration)*.
+10. **Certification Tracker** — employee certifications + expiry (surface `employee_certifications`). `/hr/certifications` *(no migration)*.
+11. **Training & Competency Matrix** — skills/competency per employee × skill, gaps. `/hr/competency` *(migration: training records + competency matrix)*.
+12. **Attendance & GPS** — daily attendance check-in/out with geolocation, summaries. `/hr/attendance` *(migration: attendance table)*.
+13. **Employee Documents Center** — central document register per employee (IDs, contracts, certs) with expiry. `/hr/documents` *(migration: employee_documents table)*.
+14. **HR Hub + Audit & Export Polish** — `/hr/hub` with attention strip; audit on new writes; PDF/Excel across all.
 
 Each ships: page(s), filters/search, export (PDF/Excel via `finance-export`),
 Recharts where useful, sidebar link, RBAC (existing roles), and a roadmap update.
@@ -30,4 +34,5 @@ Recharts where useful, sidebar link, RBAC (existing roles), and a roadmap update
 - ✅ **Phase 5 — Leave Analytics** (`/hr/leave-analytics`): KPIs (requests, pending, approved days, upcoming), days-by-leave-type pie, by-status, approved-days-by-department, pending-approval queue table. PDF/Excel.
 - ✅ **Phase 6 — Timesheet & Utilization** (`/timesheets/analytics`): KPIs (total hours, OT, OT %, pending), hours-by-week regular-vs-OT stack, by-allocation pie, by-project + by-employee charts. PDF/Excel.
 - ✅ **Phase 7 — Project Labour Cost** (`/hr/labour-cost`): from `project_labour_costs` (defensive `select(*)`). KPIs (total cost, hours, projects + employees charged), cost-by-project + cost-trend charts, by-project table. PDF/Excel.
-- ⏭ Then: EOSB → Manpower → Hub/Polish.
+- ✅ **Phase 8 — EOSB Liability** (`/payroll/eosb-liability`): accrued UAE gratuity across the workforce (reuses `gratuityService.calculateEOSB`, basic salary from payroll lines, rate-based estimate fallback), liability-by-department + by-tenure charts, per-employee table. PDF/Excel.
+- ⏭ Then (per the 14-item list): Manpower → Certifications → Training/Competency → Attendance & GPS → Documents Center → Hub/Polish.
