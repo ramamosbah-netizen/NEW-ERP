@@ -152,6 +152,7 @@ const NAV_SECTIONS = [
       { href: '/amc/pipeline', label: 'Renewals Pipeline', icon: RefreshCw },
       { href: '/amc/profitability', label: 'Contract Profitability', icon: TrendingUp },
       { href: '/amc/equipment', label: 'Equipment Register', icon: Cpu },
+      { href: '/amc/billing', label: 'Billing & Revenue', icon: DollarSign },
       { href: '/technician', label: 'Technician Hub', icon: Wrench },
     ],
   },
