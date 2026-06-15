@@ -203,6 +203,7 @@ const NAV_SECTIONS = [
       { href: '/hr/workforce', label: 'Workforce Analytics', icon: Users },
       { href: '/hr/leave-analytics', label: 'Leave Analytics', icon: CalendarOff },
       { href: '/hr/labour-cost', label: 'Labour Cost', icon: HardHat },
+      { href: '/hr/manpower', label: 'Manpower', icon: HardHat },
       { href: '/payroll', label: 'Payroll', icon: Wallet },
       { href: '/payroll/analytics', label: 'Payroll Analytics', icon: Wallet },
       { href: '/payroll/eosb-liability', label: 'EOSB Liability', icon: Landmark },
