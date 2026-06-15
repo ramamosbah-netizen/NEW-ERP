@@ -37,4 +37,6 @@ RBAC (existing roles), audit logging, and a roadmap update.
 - ✅ **Phase 8 — Installed Assets Tracking** (`/warehouse/installed`): serialized assets deployed (issued/installed) per project site, deployed-by-project chart, warranty ≤90d / expired KPIs (feeds DLP), project filter, PDF/Excel.
 - ✅ **Phase 9 — Material Forecasting** (`/warehouse/forecast`): open MRF demand (un-issued lines) vs on-hand available → net position + shortfall to procure per item, top-shortfalls chart, shortfalls-only toggle, PDF/Excel. Demand-driven complement to reorder-level Replenishment.
 - ✅ **Phase 10 — Inventory GL Integration** (`/warehouse/gl`): period journal of inventory/WIP/COGS postings from the movement ledger via a transaction-type→account mapping (editable; defaults seeded). Debit/credit totals, transfers flagged no-impact, PDF/Excel for accounting. Migration `20260615240000_inventory_gl_mappings` (page falls back to built-in defaults pre-migration).
-- ⏭ Then: Audit & Export Polish (final).
+- ✅ **Phase 11 — Audit & Export Polish**: audit-log writes added to MRF (create/approve/issue) and stock-count (start/post); PDF/Excel verified across all pages; full hub + sidebar wiring. See `WAREHOUSE-ENTERPRISE-COMPLETE.md`.
+
+**🎉 All 11 modules complete.** Full report: [`WAREHOUSE-ENTERPRISE-COMPLETE.md`](./WAREHOUSE-ENTERPRISE-COMPLETE.md).

@@ -5,6 +5,7 @@
 import { supabase } from '@/lib/supabase';
 import { stockTransactionService } from './stockTransactionService';
 import { eventService } from './eventService';
+import { auditService } from './auditService';
 import type { MaterialRequisition, MRFItem, MRFStatus } from '@/types/stock.types';
 
 export const mrfService = {
@@ -66,6 +67,7 @@ export const mrfService = {
         );
       }
 
+      auditService.logEvent({ module: 'Warehouse', action: 'CREATE', entity_type: 'mrf', entity_id: newMrf.id, summary: `MRF ${newMrf.mrf_number} (${mrf.status || 'DRAFT'})` });
       return newMrf.id;
     } catch (err) {
       console.error('Error creating MRF:', err);
@@ -230,6 +232,7 @@ export const mrfService = {
 
       if (statusErr) throw statusErr;
 
+      auditService.logEvent({ module: 'Warehouse', action: 'APPROVE', entity_type: 'mrf', entity_id: id, summary: 'Approved requisition (stock reserved)' });
     } catch (err) {
       console.error('Error approving MRF:', err);
       throw err;
@@ -380,6 +383,7 @@ export const mrfService = {
         .update({ status: nextStatus, updated_at: new Date().toISOString() })
         .eq('id', id);
 
+      auditService.logEvent({ module: 'Warehouse', action: 'ISSUE', entity_type: 'mrf', entity_id: id, summary: `Issued materials (${nextStatus})` });
     } catch (err) {
       console.error('Error issuing MRF:', err);
       throw err;

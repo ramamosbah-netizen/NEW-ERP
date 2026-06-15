@@ -4,6 +4,7 @@
 
 import { supabase } from '@/lib/supabase';
 import { stockTransactionService } from './stockTransactionService';
+import { auditService } from './auditService';
 import type { StockCount, StockCountLine } from '@/types/stock.types';
 
 export const stockCountService = {
@@ -56,6 +57,7 @@ export const stockCountService = {
         if (linesErr) throw linesErr;
       }
 
+      auditService.logEvent({ module: 'Warehouse', action: 'CREATE', entity_type: 'stock_count', entity_id: count.id, summary: 'Started stock count' });
       return count.id;
     } catch (err) {
       console.error('Error starting stock count:', err);
@@ -259,6 +261,7 @@ export const stockCountService = {
 
       if (updateErr) throw updateErr;
 
+      auditService.logEvent({ module: 'Warehouse', action: 'POST', entity_type: 'stock_count', entity_id: id, summary: `Posted count ${count.count_number} (variance adjustments to ledger)` });
     } catch (err) {
       console.error('Error posting stock count:', err);
       throw err;
