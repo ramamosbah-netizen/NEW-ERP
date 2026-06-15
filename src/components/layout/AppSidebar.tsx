@@ -89,6 +89,7 @@ const NAV_SECTIONS = [
       { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
       { href: '/myday', label: 'My Day', icon: Sun },
       { href: '/tasks', label: 'Tasks', icon: CheckSquare },
+      { href: '/tasks/analytics', label: 'Task Analytics', icon: CheckSquare },
       { href: '/meetings', label: 'Meetings', icon: Calendar },
       { href: '/notifications', label: 'Alerts & Logs', icon: Bell },
     ],
