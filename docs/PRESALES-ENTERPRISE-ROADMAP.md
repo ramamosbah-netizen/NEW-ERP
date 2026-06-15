@@ -25,4 +25,5 @@ audit logging where it writes, and a roadmap update.
 
 ## Status
 - ✅ **Module report** (`PRESALES-MODULE-REPORT.md`) + this roadmap.
-- ⏭ Next: **Pre-Sales Dashboard**.
+- ✅ **Phase 1 — Pre-Sales Dashboard** (`/sales/dashboard`): funnel (tenders→BOQs→quotations→won), pipeline value, win rate, conversion, pending quotes, deadline/validity alerts, value-by-status + value-trend charts. PDF/Excel.
+- ⏭ Then: Pipeline → Quotation Analytics → Win/Loss → Margin → Client CRM → Deadlines → Follow-ups → Performance → Hub/Polish.
