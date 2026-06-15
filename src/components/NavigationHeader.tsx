@@ -65,24 +65,24 @@ export const NavigationHeader: React.FC = () => {
   ];
 
   return (
-    <header className="flex flex-col md:flex-row items-center justify-between px-6 py-4 bg-slate-950/80 backdrop-blur-xl border-b border-slate-900 sticky top-0 z-40 gap-4">
+    <header className="flex flex-col md:flex-row items-center justify-between px-6 py-4 bg-[var(--bg-card)] backdrop-blur-xl border-b border-[var(--border)] sticky top-0 z-40 gap-4">
       {/* Brand logo */}
       <div className="flex items-center gap-2.5">
-        <div className="h-9 w-9 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shadow-[0_0_15px_rgba(0,229,160,0.15)]">
+        <div className="h-9 w-9 rounded-xl bg-[var(--accent-glow)] border border-[var(--accent)] flex items-center justify-center text-[var(--accent)] shadow-[0_0_15px_var(--accent-glow)]">
           <Layers size={18} />
         </div>
         <div>
-          <span className="font-heading font-extrabold text-sm text-slate-100 tracking-wider uppercase block">
+          <span className="font-heading font-extrabold text-sm text-[var(--text-primary)] tracking-wider uppercase block">
             Aura ERP
           </span>
-          <span className="text-[9px] font-mono text-emerald-400 uppercase tracking-widest block font-bold">
+          <span className="text-[9px] font-mono text-[var(--accent)] uppercase tracking-widest block font-bold">
             Platform Layer
           </span>
         </div>
       </div>
 
       {/* Navigation tabs */}
-      <nav className="flex items-center gap-1.5 bg-slate-900/40 border border-slate-900 rounded-lg p-1">
+      <nav className="flex items-center gap-1.5 bg-[var(--surface-hover)] border border-[var(--border)] rounded-lg p-1">
         {navLinks.map(link => {
           const isActive = pathname === link.href || pathname?.startsWith(link.href + '/');
           return (
@@ -91,8 +91,8 @@ export const NavigationHeader: React.FC = () => {
               href={link.href}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all ${
                 isActive
-                  ? 'bg-emerald-500 text-slate-950 font-bold shadow-[0_0_12px_rgba(0,229,160,0.25)]'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/50'
+                  ? 'bg-[var(--accent)] text-white font-bold shadow-[0_0_12px_var(--accent-glow)]'
+                  : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-hover)]'
               }`}
             >
               <link.Icon size={13} />
@@ -109,16 +109,16 @@ export const NavigationHeader: React.FC = () => {
 
         {/* User profile dropdown & signout */}
         {userProfile && (
-          <div className="flex items-center gap-3 border-l border-slate-900 pl-4">
+          <div className="flex items-center gap-3 border-l border-[var(--border)] pl-4">
             <div className="hidden sm:block text-right">
-              <div className="text-xs font-semibold text-slate-200">{userProfile.full_name}</div>
-              <div className="text-[9px] text-slate-500 font-mono uppercase font-bold tracking-wider">
+              <div className="text-xs font-semibold text-[var(--text-primary)]">{userProfile.full_name}</div>
+              <div className="text-[9px] text-[var(--text-primary)]0 font-mono uppercase font-bold tracking-wider">
                 {userProfile.role}
               </div>
             </div>
             <button
               onClick={handleLogout}
-              className="p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 hover:text-red-400 hover:border-red-500/20 transition-all"
+              className="p-2 rounded-lg bg-[var(--surface-hover)] border border-[var(--border)] text-[var(--text-secondary)] hover:text-[var(--status-danger-text)] hover:border-[var(--status-danger-border)] transition-all"
               title="Sign Out"
             >
               <LogOut size={15} />

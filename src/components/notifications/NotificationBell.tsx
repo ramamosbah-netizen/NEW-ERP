@@ -67,25 +67,25 @@ export const NotificationBell: React.FC = () => {
     <div className="relative z-50" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2 rounded-lg bg-slate-900/60 border border-slate-800 text-slate-400 hover:text-emerald-400 hover:border-emerald-500/30 transition-all focus:outline-none"
+        className="relative p-2 rounded-lg bg-[var(--surface-hover)] border border-[var(--border)] text-[var(--text-secondary)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-all focus:outline-none"
         aria-label="Notifications"
       >
         <Bell size={20} />
         {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-[10px] font-bold text-slate-950 animate-pulse">
+          <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-[var(--accent)] text-[10px] font-bold text-white animate-pulse">
             {unreadCount > 99 ? '99+' : unreadCount}
           </span>
         )}
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-80 sm:w-96 rounded-xl bg-slate-950/95 backdrop-blur-xl border border-slate-800 shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-250">
+        <div className="absolute right-0 mt-2 w-80 sm:w-96 rounded-xl bg-[var(--bg-card)] backdrop-blur-xl border border-[var(--border)] shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-250">
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800 bg-slate-900/50">
-            <h3 className="font-semibold text-slate-200 text-sm flex items-center gap-1.5">
+          <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border)] bg-[var(--surface-hover)]">
+            <h3 className="font-semibold text-[var(--text-primary)] text-sm flex items-center gap-1.5">
               Notifications
               {unreadCount > 0 && (
-                <span className="px-1.5 py-0.5 rounded text-[10px] bg-slate-800 text-emerald-400 border border-emerald-500/20 font-mono">
+                <span className="px-1.5 py-0.5 rounded text-[10px] bg-[var(--surface-hover)] text-[var(--accent)] border border-[var(--accent)] font-mono">
                   {unreadCount} UNREAD
                 </span>
               )}
@@ -94,7 +94,7 @@ export const NotificationBell: React.FC = () => {
               {unreadCount > 0 && (
                 <button
                   onClick={markAllRead}
-                  className="text-xs text-slate-400 hover:text-emerald-400 transition-colors flex items-center gap-1"
+                  className="text-xs text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors flex items-center gap-1"
                   title="Mark all as read"
                 >
                   <Check size={14} />
@@ -106,7 +106,7 @@ export const NotificationBell: React.FC = () => {
                   setIsOpen(false);
                   router.push('/notifications/preferences');
                 }}
-                className="text-slate-400 hover:text-slate-200 transition-colors"
+                className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
                 title="Preferences"
               >
                 <Settings size={14} />
@@ -115,10 +115,10 @@ export const NotificationBell: React.FC = () => {
           </div>
 
           {/* List */}
-          <div className="max-height-[320px] overflow-y-auto divide-y divide-slate-900/60 custom-scrollbar max-h-[350px]">
+          <div className="max-height-[320px] overflow-y-auto divide-y divide-[var(--border)] custom-scrollbar max-h-[350px]">
             {notifications.length === 0 ? (
-              <div className="px-4 py-8 text-center text-slate-500 text-sm">
-                <Bell size={32} className="mx-auto mb-2 opacity-20 text-slate-400" />
+              <div className="px-4 py-8 text-center text-[var(--text-primary)]0 text-sm">
+                <Bell size={32} className="mx-auto mb-2 opacity-20 text-[var(--text-secondary)]" />
                 All caught up! No notifications.
               </div>
             ) : (
@@ -132,7 +132,7 @@ export const NotificationBell: React.FC = () => {
                     key={n.id}
                     onClick={() => handleNotificationClick(n)}
                     className={`p-3.5 transition-colors cursor-pointer text-left flex gap-3 ${
-                      isUnread ? 'bg-slate-900/30 hover:bg-slate-900/70' : 'hover:bg-slate-900/40 opacity-70'
+                      isUnread ? 'bg-[var(--surface-hover)] hover:bg-[var(--surface-hover)]' : 'hover:bg-[var(--surface-hover)] opacity-70'
                     }`}
                   >
                     <div
@@ -148,22 +148,22 @@ export const NotificationBell: React.FC = () => {
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-1">
-                        <span className={`text-xs font-semibold truncate ${isUnread ? 'text-slate-200' : 'text-slate-400'}`}>
+                        <span className={`text-xs font-semibold truncate ${isUnread ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}`}>
                           {n.title}
                         </span>
-                        {n.link && <ExternalLink size={10} className="text-slate-600 flex-shrink-0" />}
+                        {n.link && <ExternalLink size={10} className="text-[var(--text-tertiary)] flex-shrink-0" />}
                       </div>
-                      <p className="text-xs text-slate-400 line-clamp-2 mt-1 leading-relaxed">
+                      <p className="text-xs text-[var(--text-secondary)] line-clamp-2 mt-1 leading-relaxed">
                         {n.body}
                       </p>
-                      <span className="text-[10px] text-slate-500 font-mono mt-1.5 block">
+                      <span className="text-[10px] text-[var(--text-primary)]0 font-mono mt-1.5 block">
                         {new Date(n.created_at).toLocaleDateString('en-GB')} {new Date(n.created_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
                       </span>
                     </div>
 
                     {isUnread && (
                       <div className="flex-shrink-0 self-center">
-                        <div className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_var(--primary)]" />
+                        <div className="h-1.5 w-1.5 rounded-full bg-[var(--accent)] shadow-[0_0_6px_var(--primary)]" />
                       </div>
                     )}
                   </div>
@@ -173,13 +173,13 @@ export const NotificationBell: React.FC = () => {
           </div>
 
           {/* Footer */}
-          <div className="border-t border-slate-800 bg-slate-900/30 px-4 py-2.5 text-center">
+          <div className="border-t border-[var(--border)] bg-[var(--surface-hover)] px-4 py-2.5 text-center">
             <button
               onClick={() => {
                 setIsOpen(false);
                 router.push('/notifications');
               }}
-              className="text-xs font-semibold text-emerald-400 hover:text-emerald-300 transition-colors inline-flex items-center gap-1"
+              className="text-xs font-semibold text-[var(--accent)] hover:text-[var(--accent)] transition-colors inline-flex items-center gap-1"
             >
               View All Notifications
             </button>

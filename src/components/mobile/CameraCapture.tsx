@@ -84,7 +84,7 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({
   };
 
   return (
-    <div className="flex flex-col gap-3.5 bg-slate-900/40 p-4 border border-slate-900 rounded-lg">
+    <div className="flex flex-col gap-3.5 bg-[var(--surface-hover)] p-4 border border-[var(--border)] rounded-lg">
       <input
         type="file"
         ref={fileInputRef}
@@ -96,14 +96,14 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({
 
       <div className="flex items-center justify-between">
         <div>
-          <span className="text-xs font-bold text-slate-200 block">Mobile Field Photo Capture</span>
-          <span className="text-[10px] text-slate-500 font-mono block mt-0.5">EXIF METADATA STRIPPED & COMPRESSED</span>
+          <span className="text-xs font-bold text-[var(--text-primary)] block">Mobile Field Photo Capture</span>
+          <span className="text-[10px] text-[var(--text-primary)]0 font-mono block mt-0.5">EXIF METADATA STRIPPED & COMPRESSED</span>
         </div>
 
         <button
           type="button"
           onClick={handleTriggerCamera}
-          className="px-3 py-1.5 rounded bg-emerald-500 text-slate-950 font-bold hover:bg-emerald-400 text-xs transition-all flex items-center gap-1.5 shadow-[0_0_15px_rgba(0,229,160,0.15)]"
+          className="px-3 py-1.5 rounded bg-[var(--accent)] text-white font-bold hover:bg-[var(--accent)] text-xs transition-all flex items-center gap-1.5 shadow-[0_0_15px_var(--accent-glow)]"
         >
           <Camera size={13} />
           {preview ? 'Retake' : 'Open Camera'}
@@ -112,23 +112,23 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({
 
       {/* Preview box */}
       {compressing ? (
-        <div className="h-44 w-full rounded border border-dashed border-slate-800 bg-slate-950 flex flex-col items-center justify-center">
-          <RefreshCw className="text-emerald-400 animate-spin mb-2" size={18} />
-          <span className="text-[10px] font-mono text-slate-500">Processing image...</span>
+        <div className="h-44 w-full rounded border border-dashed border-[var(--border)] bg-[var(--bg-card)] flex flex-col items-center justify-center">
+          <RefreshCw className="text-[var(--accent)] animate-spin mb-2" size={18} />
+          <span className="text-[10px] font-mono text-[var(--text-primary)]0">Processing image...</span>
         </div>
       ) : preview ? (
-        <div className="relative rounded overflow-hidden border border-slate-800 bg-slate-950 aspect-video">
+        <div className="relative rounded overflow-hidden border border-[var(--border)] bg-[var(--bg-card)] aspect-video">
           <img
             src={preview}
             alt="Compressed mobile capture"
             className="w-full h-full object-cover"
           />
-          <div className="absolute top-2 right-2 bg-emerald-500 text-slate-950 p-1 rounded-full shadow-md">
+          <div className="absolute top-2 right-2 bg-[var(--accent)] text-white p-1 rounded-full shadow-md">
             <Check size={12} className="stroke-[3]" />
           </div>
         </div>
       ) : (
-        <div className="h-24 w-full rounded border border-dashed border-slate-900 bg-slate-950/20 flex flex-col items-center justify-center text-slate-600">
+        <div className="h-24 w-full rounded border border-dashed border-[var(--border)] bg-[var(--bg-card)] flex flex-col items-center justify-center text-[var(--text-tertiary)]">
           <Image size={24} className="opacity-10 mb-1" />
           <span className="text-[10px] font-mono">No capture loaded.</span>
         </div>

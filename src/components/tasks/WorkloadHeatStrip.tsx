@@ -41,25 +41,25 @@ export const WorkloadHeatStrip: React.FC = () => {
   const getCapacityConfig = (stats: AnalyticsData) => {
     const totalActive = stats.todo_count + stats.in_progress_count;
     if (stats.overdue_count > 0) {
-      return { label: 'CRITICAL (OVERDUE)', color: '#ef4444', bg: 'rgba(239, 68, 68, 0.1)', border: 'border-red-500/30' };
+      return { label: 'CRITICAL (OVERDUE)', color: '#ef4444', bg: 'rgba(239, 68, 68, 0.1)', border: 'border-[var(--status-danger-border)]' };
     }
     if (totalActive >= 8) {
       return { label: 'OVERLOADED', color: '#f97316', bg: 'rgba(249, 115, 22, 0.1)', border: 'border-orange-500/30' };
     }
     if (totalActive >= 5) {
-      return { label: 'HIGH CAPACITY', color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.1)', border: 'border-amber-500/30' };
+      return { label: 'HIGH CAPACITY', color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.1)', border: 'border-[var(--status-warning-border)]' };
     }
     if (totalActive > 0) {
-      return { label: 'BALANCED', color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)', border: 'border-emerald-500/30' };
+      return { label: 'BALANCED', color: '#10b981', bg: 'rgba(16, 185, 129, 0.1)', border: 'border-[var(--accent)]' };
     }
-    return { label: 'IDLE', color: '#94a3b8', bg: 'rgba(148, 163, 184, 0.05)', border: 'border-slate-800' };
+    return { label: 'IDLE', color: 'var(--text-secondary)', bg: 'rgba(148, 163, 184, 0.05)', border: 'border-[var(--border)]' };
   };
 
   if (loading) {
     return (
       <div className="quote-card py-6 flex items-center justify-center gap-2">
-        <RefreshCw className="animate-spin text-emerald-400" size={16} />
-        <span className="text-slate-400 font-mono text-xs">CALCULATING CAPACITIES...</span>
+        <RefreshCw className="animate-spin text-[var(--accent)]" size={16} />
+        <span className="text-[var(--text-secondary)] font-mono text-xs">CALCULATING CAPACITIES...</span>
       </div>
     );
   }
@@ -69,14 +69,14 @@ export const WorkloadHeatStrip: React.FC = () => {
       <div className="quote-card-header">
         <div>
           <h3 className="quote-card-title flex items-center gap-2">
-            <Sparkles size={16} className="text-emerald-400" />
+            <Sparkles size={16} className="text-[var(--accent)]" />
             Team Workload & Capacity Index
           </h3>
           <p className="quote-header-subtitle">Realtime capacity calculations based on active tasks and due dates.</p>
         </div>
         <button
           onClick={loadAnalytics}
-          className="text-slate-500 hover:text-emerald-400 transition-colors p-1"
+          className="text-[var(--text-primary)]0 hover:text-[var(--accent)] transition-colors p-1"
           title="Refresh statistics"
         >
           <RefreshCw size={14} />
@@ -91,16 +91,16 @@ export const WorkloadHeatStrip: React.FC = () => {
           return (
             <div
               key={user.user_id}
-              className={`p-3.5 rounded-xl border bg-slate-950/40 backdrop-blur-md flex flex-col justify-between transition-all ${cap.border}`}
+              className={`p-3.5 rounded-xl border bg-[var(--bg-card)] backdrop-blur-md flex flex-col justify-between transition-all ${cap.border}`}
               style={{ backgroundColor: cap.bg }}
             >
               {/* Profile Card Header */}
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
-                  <div className="font-semibold text-xs text-slate-200 truncate">{user.full_name}</div>
-                  <div className="text-[10px] text-slate-500 font-mono truncate">{user.role}</div>
+                  <div className="font-semibold text-xs text-[var(--text-primary)] truncate">{user.full_name}</div>
+                  <div className="text-[10px] text-[var(--text-primary)]0 font-mono truncate">{user.role}</div>
                 </div>
-                <div className="h-6 w-6 rounded bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400">
+                <div className="h-6 w-6 rounded bg-[var(--surface-hover)] border border-[var(--border)] flex items-center justify-center text-[var(--text-secondary)]">
                   <User size={12} />
                 </div>
               </div>
@@ -108,11 +108,11 @@ export const WorkloadHeatStrip: React.FC = () => {
               {/* Capacities */}
               <div className="mt-4 space-y-2">
                 <div className="flex justify-between items-center text-[10px] font-mono">
-                  <span className="text-slate-500">Active Task Count</span>
-                  <span className="font-bold text-slate-300">{totalActive} open</span>
+                  <span className="text-[var(--text-primary)]0">Active Task Count</span>
+                  <span className="font-bold text-[var(--text-secondary)]">{totalActive} open</span>
                 </div>
                 {/* Horizontal bar indicator */}
-                <div className="h-1.5 w-full bg-slate-900 rounded overflow-hidden">
+                <div className="h-1.5 w-full bg-[var(--surface-hover)] rounded overflow-hidden">
                   <div
                     className="h-full transition-all duration-500"
                     style={{
@@ -124,24 +124,24 @@ export const WorkloadHeatStrip: React.FC = () => {
               </div>
 
               {/* Stats Grid */}
-              <div className="grid grid-cols-4 gap-1 text-center mt-3 pt-2 border-t border-slate-900/60 font-mono text-[9px]">
+              <div className="grid grid-cols-4 gap-1 text-center mt-3 pt-2 border-t border-[var(--border)] font-mono text-[9px]">
                 <div>
-                  <div className="text-slate-500">TODO</div>
-                  <div className="font-bold text-slate-300 mt-0.5">{user.todo_count}</div>
+                  <div className="text-[var(--text-primary)]0">TODO</div>
+                  <div className="font-bold text-[var(--text-secondary)] mt-0.5">{user.todo_count}</div>
                 </div>
                 <div>
-                  <div className="text-slate-500">PROG</div>
-                  <div className="font-bold text-slate-300 mt-0.5">{user.in_progress_count}</div>
+                  <div className="text-[var(--text-primary)]0">PROG</div>
+                  <div className="font-bold text-[var(--text-secondary)] mt-0.5">{user.in_progress_count}</div>
                 </div>
                 <div>
-                  <div className="text-slate-500">BLCK</div>
-                  <div className={`font-bold mt-0.5 ${user.blocked_count > 0 ? 'text-red-400' : 'text-slate-500'}`}>
+                  <div className="text-[var(--text-primary)]0">BLCK</div>
+                  <div className={`font-bold mt-0.5 ${user.blocked_count > 0 ? 'text-[var(--status-danger-text)]' : 'text-[var(--text-primary)]0'}`}>
                     {user.blocked_count}
                   </div>
                 </div>
                 <div>
-                  <div className="text-slate-500">OVER</div>
-                  <div className={`font-bold mt-0.5 ${user.overdue_count > 0 ? 'text-red-400' : 'text-slate-500'}`}>
+                  <div className="text-[var(--text-primary)]0">OVER</div>
+                  <div className={`font-bold mt-0.5 ${user.overdue_count > 0 ? 'text-[var(--status-danger-text)]' : 'text-[var(--text-primary)]0'}`}>
                     {user.overdue_count}
                   </div>
                 </div>
@@ -149,7 +149,7 @@ export const WorkloadHeatStrip: React.FC = () => {
 
               {/* Capacity Badge */}
               <div className="mt-3.5 flex items-center justify-between text-[9px] font-mono">
-                <span className="text-slate-500">CAPACITY STATUS</span>
+                <span className="text-[var(--text-primary)]0">CAPACITY STATUS</span>
                 <span className="font-extrabold tracking-wide" style={{ color: cap.color }}>
                   {cap.label}
                 </span>

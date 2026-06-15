@@ -90,8 +90,8 @@ export const PreferencesMatrix: React.FC = () => {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-20 gap-3">
-        <RefreshCw className="animate-spin text-emerald-400" size={32} />
-        <span className="text-slate-400 font-mono text-sm">LOADING MATRICES...</span>
+        <RefreshCw className="animate-spin text-[var(--accent)]" size={32} />
+        <span className="text-[var(--text-secondary)] font-mono text-sm">LOADING MATRICES...</span>
       </div>
     );
   }
@@ -113,7 +113,7 @@ export const PreferencesMatrix: React.FC = () => {
               {CHANNELS.map(ch => (
                 <th key={ch.key} className="text-center font-mono">
                   <div className="flex items-center justify-center gap-1.5">
-                    <ch.Icon size={14} className="text-slate-400" />
+                    <ch.Icon size={14} className="text-[var(--text-secondary)]" />
                     {ch.label}
                   </div>
                 </th>
@@ -122,10 +122,10 @@ export const PreferencesMatrix: React.FC = () => {
           </thead>
           <tbody>
             {MODULES.map(mod => (
-              <tr key={mod.key} className="border-b border-slate-900/40">
+              <tr key={mod.key} className="border-b border-[var(--border)]">
                 <td className="py-4">
-                  <div className="font-semibold text-slate-200">{mod.label}</div>
-                  <div className="text-xs text-slate-500 mt-0.5">{mod.desc}</div>
+                  <div className="font-semibold text-[var(--text-primary)]">{mod.label}</div>
+                  <div className="text-xs text-[var(--text-primary)]0 mt-0.5">{mod.desc}</div>
                 </td>
                 {CHANNELS.map(ch => {
                   const mode = getPreferenceMode(mod.key, ch.key);
@@ -138,15 +138,15 @@ export const PreferencesMatrix: React.FC = () => {
                         <select
                           value={mode}
                           onChange={(e) => handlePreferenceChange(mod.key, ch.key, e.target.value as NotificationPreferenceMode)}
-                          className="bg-slate-950 border border-slate-800 rounded px-2 py-1 text-xs text-slate-300 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/20 transition-all font-mono"
+                          className="bg-[var(--bg-card)] border border-[var(--border)] rounded px-2 py-1 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] transition-all font-mono"
                         >
                           <option value="INSTANT">⚡ Instant</option>
                           <option value="DIGEST">📭 Daily Digest</option>
                           <option value="OFF">🔕 Off</option>
                         </select>
                         <span className="w-4 h-4 inline-flex items-center justify-center">
-                          {state === 'saving' && <RefreshCw size={10} className="animate-spin text-slate-500" />}
-                          {state === 'saved' && <Check size={10} className="text-emerald-400 animate-pulse" />}
+                          {state === 'saving' && <RefreshCw size={10} className="animate-spin text-[var(--text-primary)]0" />}
+                          {state === 'saved' && <Check size={10} className="text-[var(--accent)] animate-pulse" />}
                         </span>
                       </div>
                     </td>

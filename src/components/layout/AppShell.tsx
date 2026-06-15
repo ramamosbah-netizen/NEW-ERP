@@ -138,18 +138,18 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         <AppSidebar mobileOpen={mobileOpen} onMobileClose={() => setMobileOpen(false)} />
         <div className={`erp-shell-main ${sidebarCollapsed ? 'sidebar-collapsed' : 'sidebar-expanded'}`}>
           <AppTopbar onMobileMenuToggle={handleMobileToggle} />
-          <main className="erp-shell-content flex-1 flex flex-col items-center justify-center p-6 text-center text-slate-100 bg-slate-950 min-h-[calc(100vh-60px)]">
-            <div className="p-8 bg-slate-900/30 border border-slate-900/80 rounded-2xl flex flex-col items-center max-w-md gap-4 shadow-2xl backdrop-blur-md">
-              <div className="rounded-2xl bg-amber-500/10 p-4 border border-amber-500/20 shadow-inner">
-                <AlertTriangle className="text-amber-450 animate-pulse" size={36} />
+          <main className="erp-shell-content flex-1 flex flex-col items-center justify-center p-6 text-center text-[var(--text-primary)] bg-[var(--bg-card)] min-h-[calc(100vh-60px)]">
+            <div className="p-8 bg-[var(--surface-hover)] border border-[var(--border)] rounded-2xl flex flex-col items-center max-w-md gap-4 shadow-2xl backdrop-blur-md">
+              <div className="rounded-2xl bg-[var(--status-warning-bg)] p-4 border border-[var(--status-warning-border)] shadow-inner">
+                <AlertTriangle className="text-[var(--status-warning-text)] animate-pulse" size={36} />
               </div>
               <h2 className="text-lg font-bold tracking-tight text-slate-150">Module Temporarily Disabled</h2>
-              <p className="text-xs text-slate-500 leading-relaxed">
+              <p className="text-xs text-[var(--text-primary)]0 leading-relaxed">
                 This feature module has been globally deactivated by the system administrator. If you require access, please contact your administration desk.
               </p>
               <Link
                 href="/dashboard"
-                className="mt-2 bg-gradient-to-r from-emerald-500 to-emerald-600 text-slate-950 font-bold px-5 py-2 rounded-lg text-xs hover:from-emerald-400 hover:to-emerald-500 transition-all shadow-lg shadow-emerald-500/10 active:scale-98 select-none"
+                className="mt-2 bg-gradient-to-r from-[var(--accent)] to-[var(--accent)] text-white font-bold px-5 py-2 rounded-lg text-xs hover:from-[var(--accent)] hover:to-[var(--accent)] transition-all shadow-lg shadow-[var(--accent-glow)] active:scale-98 select-none"
               >
                 Back to Dashboard
               </Link>
@@ -169,18 +169,18 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         <AppSidebar mobileOpen={mobileOpen} onMobileClose={() => setMobileOpen(false)} />
         <div className={`erp-shell-main ${sidebarCollapsed ? 'sidebar-collapsed' : 'sidebar-expanded'}`}>
           <AppTopbar onMobileMenuToggle={handleMobileToggle} />
-          <main className="erp-shell-content flex-1 flex flex-col items-center justify-center p-6 text-center text-slate-100 bg-slate-950 min-h-[calc(100vh-60px)]">
-            <div className="p-8 bg-slate-900/30 border border-slate-900/80 rounded-2xl flex flex-col items-center max-w-md gap-4 shadow-2xl backdrop-blur-md">
-              <div className="rounded-2xl bg-red-500/10 p-4 border border-red-500/20 shadow-inner">
-                <AlertTriangle className="text-red-400" size={36} />
+          <main className="erp-shell-content flex-1 flex flex-col items-center justify-center p-6 text-center text-[var(--text-primary)] bg-[var(--bg-card)] min-h-[calc(100vh-60px)]">
+            <div className="p-8 bg-[var(--surface-hover)] border border-[var(--border)] rounded-2xl flex flex-col items-center max-w-md gap-4 shadow-2xl backdrop-blur-md">
+              <div className="rounded-2xl bg-[var(--status-danger-bg)] p-4 border border-[var(--status-danger-border)] shadow-inner">
+                <AlertTriangle className="text-[var(--status-danger-text)]" size={36} />
               </div>
               <h2 className="text-lg font-bold tracking-tight text-slate-150">Access Restricted</h2>
-              <p className="text-xs text-slate-500 leading-relaxed">
+              <p className="text-xs text-[var(--text-primary)]0 leading-relaxed">
                 Your role ({role}) doesn&apos;t have access to this section. Contact your administrator if you need it.
               </p>
               <Link
                 href="/finance"
-                className="mt-2 bg-gradient-to-r from-emerald-500 to-emerald-600 text-slate-950 font-bold px-5 py-2 rounded-lg text-xs hover:from-emerald-400 hover:to-emerald-500 transition-all shadow-lg shadow-emerald-500/10 active:scale-98 select-none"
+                className="mt-2 bg-gradient-to-r from-[var(--accent)] to-[var(--accent)] text-white font-bold px-5 py-2 rounded-lg text-xs hover:from-[var(--accent)] hover:to-[var(--accent)] transition-all shadow-lg shadow-[var(--accent-glow)] active:scale-98 select-none"
               >
                 Go to my workspace
               </Link>
