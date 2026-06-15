@@ -35,4 +35,5 @@ RBAC (existing roles), audit logging, and a roadmap update.
 - ✅ **Phase 6 — Contract Profitability** (`/amc/profitability`): annual value vs covered (non-chargeable) spare-parts cost + service activity (tickets/visits) → indicative margin per contract (labour not modelled). Revenue-vs-cost chart, margin %, low-margin KPI, PDF/Excel.
 - ✅ **Phase 7 — Equipment / Asset Register** (`/amc/equipment`): consolidated AMC equipment across contracts with condition, by-system + by-condition charts, search/system/condition filters, per-equipment ticket-history count, PDF/Excel.
 - ✅ **Phase 8 — Spare Parts & Consumption** (`/service/parts`): flattens ticket `parts_used` → total value, chargeable vs covered split, top items by value, monthly consumption trend, per-item table, PDF/Excel.
-- ⏭ Then: Service History → AMC Billing → Polish.
+- ✅ **Phase 9 — Client / Site Service History** (`/service/history`): pick a client → unified reverse-chronological timeline of contracts + tickets + PPM visits, with summary KPIs and drill-through. PDF/Excel.
+- ⏭ Then: AMC Billing → Polish.
