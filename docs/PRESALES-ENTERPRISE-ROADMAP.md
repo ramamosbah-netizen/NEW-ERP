@@ -29,4 +29,5 @@ audit logging where it writes, and a roadmap update.
 - ✅ **Phase 2 — Sales Pipeline (Opportunities)** (`/sales/pipeline`): tenders by stage (count + value strip), value-by-stage + value-by-discipline charts, search/stage filters, table with deadline highlighting and drill-through. PDF/Excel.
 - ✅ **Phase 3 — Quotation Analytics** (`/sales/quotations`): KPIs (count, value, won value, win rate, revised/avg revision), count-by-status pie, issued-value trend, value-by-status, pending-quote aging buckets. PDF/Excel.
 - ✅ **Phase 4 — Win / Loss Analysis** (`/sales/win-loss`): won vs lost counts + value, win rate by count and by value, reasons-for-loss chart, won-vs-lost-by-client chart, lost-quotations table. PDF/Excel.
-- ⏭ Then: Margin → Client CRM → Deadlines → Follow-ups → Performance → Hub/Polish.
+- ✅ **Phase 5 — Estimation & Margin Analysis** (`/sales/margin`): per-BOQ estimated cost/profit/sell + margin % from `boqs.financials`, margin-distribution histogram, cost-component pie (supply/labour/equipment/subcontract/logistics/overhead), table with linked quotation value, drill to BOQ. PDF/Excel.
+- ⏭ Then: Client CRM → Deadlines → Follow-ups → Performance → Hub/Polish.
