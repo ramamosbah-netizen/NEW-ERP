@@ -133,6 +133,7 @@ const NAV_SECTIONS = [
       { href: '/procurement/spend', label: 'Spend Analysis', icon: Coins },
       { href: '/procurement/suppliers', label: 'Supplier Performance', icon: Users },
       { href: '/procurement/deliveries', label: 'Delivery Tracking', icon: Truck },
+      { href: '/procurement/pr-pipeline', label: 'PR Pipeline', icon: ClipboardList },
     ],
   },
   {
