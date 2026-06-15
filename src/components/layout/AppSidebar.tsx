@@ -94,6 +94,7 @@ const NAV_SECTIONS = [
       { href: '/meetings', label: 'Meetings', icon: Calendar },
       { href: '/meetings/analytics', label: 'Meeting Analytics', icon: Calendar },
       { href: '/notifications', label: 'Alerts & Logs', icon: Bell },
+      { href: '/notifications/analytics', label: 'Alerts Analytics', icon: Bell },
     ],
   },
   {
