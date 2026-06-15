@@ -39,6 +39,7 @@ import {
   Building2,
   Trophy,
   Swords,
+  Coins,
   Car,
   Calculator,
   Users,
@@ -129,6 +130,7 @@ const NAV_SECTIONS = [
       { href: '/procurement/comparisons', label: 'Comparisons', icon: Scale },
       { href: '/procurement/po', label: 'Purchase Orders', icon: ShoppingCart },
       { href: '/procurement/grn', label: 'Goods Receipt', icon: PackageCheck },
+      { href: '/procurement/spend', label: 'Spend Analysis', icon: Coins },
     ],
   },
   {

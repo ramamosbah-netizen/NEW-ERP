@@ -25,4 +25,5 @@ Recharts where useful, sidebar link, RBAC (existing roles), and a roadmap update
 ## Status
 - ✅ **Module report** (`PROCUREMENT-MODULE-REPORT.md`) + this roadmap.
 - ✅ **Phase 1 — Procurement Dashboard** (`/procurement/dashboard`): KPIs (committed PO spend, open POs, PRs pending, suppliers, pending receipts, overdue deliveries, GRNs, match exceptions), source-to-pay funnel, PO-spend trend, PO-by-status chart, attention banner. PDF/Excel.
-- ⏭ Then: Spend → Suppliers → Deliveries → PR Pipeline → Match → GRN → Savings → Payables → Hub/Polish.
+- ✅ **Phase 2 — Spend Analysis** (`/procurement/spend`): committed-vs-all scope, spend by supplier/project/type + monthly trend, supplier-spend table with % of total. PDF/Excel.
+- ⏭ Then: Suppliers → Deliveries → PR Pipeline → Match → GRN → Savings → Payables → Hub/Polish.
