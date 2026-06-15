@@ -92,6 +92,7 @@ const NAV_SECTIONS = [
       { href: '/tc', label: 'Testing & Comm.', icon: ClipboardCheck },
       { href: '/handover', label: 'Handover', icon: Handshake },
       { href: '/projects/dlp', label: 'DLP & Warranty', icon: Shield },
+      { href: '/projects/site-records', label: 'RFI / SI / NCR', icon: MessageSquare },
     ],
   },
   {
