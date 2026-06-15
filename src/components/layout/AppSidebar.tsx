@@ -41,6 +41,7 @@ import {
   Swords,
   Coins,
   ShieldAlert,
+  PiggyBank,
   Car,
   Calculator,
   Users,
@@ -137,6 +138,7 @@ const NAV_SECTIONS = [
       { href: '/procurement/pr-pipeline', label: 'PR Pipeline', icon: ClipboardList },
       { href: '/procurement/match', label: '3-Way Match', icon: ShieldAlert },
       { href: '/procurement/grn-analytics', label: 'GRN Analytics', icon: PackageCheck },
+      { href: '/procurement/savings', label: 'Savings Analysis', icon: PiggyBank },
     ],
   },
   {
