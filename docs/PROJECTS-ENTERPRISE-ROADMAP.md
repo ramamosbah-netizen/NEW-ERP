@@ -34,8 +34,8 @@ them. Resource planning (#4) builds on the existing payroll-by-project allocatio
 6. ✅ **Risk Register** — 5×5 likelihood×impact heat map, rating, mitigation, owner, status, PDF/Excel. `/projects/risks`.
 7. ✅ **Project Executive Dashboard** — batched portfolio rollup: contract/billed/collected/committed + projected margin, WBS progress, open-risk exposure, charts, drill-through, PDF/Excel. `/projects/dashboard`.
 8. ✅ **Testing & Commissioning** — existing `/tc` module surfaced in the Projects nav; extended the Executive Dashboard with a T&C-readiness rollup (packages done/total + avg completion per project, portfolio KPI + column + export).
-9. **DLP & Warranty Tracking** — DLP defects + warranty expiry reminders (extend handover). ← next
-10. **RFI / SI / NCR** — Requests for Information, Site Instructions, Non-Conformance Reports.
+9. ✅ **DLP & Warranty Tracking** — warranty register (DLP/manufacturer/supplier, auto expiry status + reminders) + DLP-period defect tracker (severity/status/assignee, auto DEF-### ref), tabs, KPIs, PDF/Excel. `/projects/dlp`.
+10. **RFI / SI / NCR** — Requests for Information, Site Instructions, Non-Conformance Reports. ← next
 11. **Snag Analytics & QA Dashboard** — surface existing snags + analytics.
 12. **Audit & Export Polish** — embed-400 audit, audit logging, PDF/Excel/CSV across project pages.
 

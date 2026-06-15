@@ -91,6 +91,7 @@ const NAV_SECTIONS = [
       { href: '/snags', label: 'Snag List', icon: Camera },
       { href: '/tc', label: 'Testing & Comm.', icon: ClipboardCheck },
       { href: '/handover', label: 'Handover', icon: Handshake },
+      { href: '/projects/dlp', label: 'DLP & Warranty', icon: Shield },
     ],
   },
   {
