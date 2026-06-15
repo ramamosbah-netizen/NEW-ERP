@@ -13,7 +13,7 @@ import { PageHeader } from '@/components/ui/PageHeader';
 import { Card } from '@/components/ui/Card';
 import {
   LayoutDashboard, Briefcase, FileText, Scale, Calculator, Building2,
-  CalendarClock, Bell, Trophy, Tag,
+  CalendarClock, Bell, Trophy, Tag, Swords,
 } from 'lucide-react';
 
 const DAY = 86400000;
@@ -28,6 +28,7 @@ const MODULES = [
   { href: '/sales/deadlines', icon: CalendarClock, title: 'Tender Deadlines', desc: 'Upcoming & overdue submissions' },
   { href: '/sales/follow-ups', icon: Bell, title: 'Quote Follow-ups', desc: 'Awaiting response & expiring quotes' },
   { href: '/sales/performance', icon: Trophy, title: 'Sales Performance', desc: 'By owner — win rate and value' },
+  { href: '/sales/competitors', icon: Swords, title: 'Competitor Tracking', desc: 'Who won, their price, why we lost' },
   { href: '/pricing', icon: Tag, title: 'Pricing Catalogue', desc: 'Master rates feeding BOQ & quotes' },
 ];
 

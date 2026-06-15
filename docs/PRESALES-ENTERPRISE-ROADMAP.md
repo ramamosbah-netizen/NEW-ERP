@@ -37,3 +37,8 @@ audit logging where it writes, and a roadmap update.
 - ✅ **Phase 10 — Pre-Sales Hub + Audit & Export Polish** (`/sales`): single entry point with a live attention strip (overdue/soon deadlines, expiring quotes, awaiting responses) + module grid; CRM writes audit-logged via `clientService`; PDF/Excel verified across all pages. See `PRESALES-ENTERPRISE-COMPLETE.md`.
 
 **🎉 All 10 modules complete.** Full report: [`PRESALES-ENTERPRISE-COMPLETE.md`](./PRESALES-ENTERPRISE-COMPLETE.md).
+
+### Add-on — Competitor Tracking (`/sales/competitors`)
+- ✅ Competitor register (`competitors`) + per-tender competitive log (`tender_competitors`) capturing **who won the job**, their **estimated price**, and the **reason we lost**.
+- Competitive-intelligence KPIs (competitors tracked, jobs lost to competitors, value lost, toughest competitor), wins-by-competitor + reasons-for-loss charts, two-tab UI (directory + log), CRUD, PDF/Excel. New `competitorService` (audit-logged, degrades gracefully pre-migration).
+- Migration: `20260615280000_competitor_tracking.sql`.
