@@ -88,6 +88,7 @@ const NAV_SECTIONS = [
     label: 'Core',
     items: [
       { href: '/workspace', label: 'My Workspace', icon: SlidersHorizontal },
+      { href: '/workspace/approvals', label: 'Approvals', icon: CheckSquare },
       { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
       { href: '/myday', label: 'My Day', icon: Sun },
       { href: '/tasks', label: 'Tasks', icon: CheckSquare },

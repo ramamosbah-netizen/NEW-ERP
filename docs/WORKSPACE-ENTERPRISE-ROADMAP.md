@@ -29,3 +29,7 @@ Recharts where useful, sidebar link, RBAC, and a roadmap update.
 - ✅ **Phase 7 — My Workspace Hub** (`/workspace`): personal entry point with a live attention strip (my open + overdue tasks, unread alerts, today's meetings) + module grid. See `WORKSPACE-ENTERPRISE-COMPLETE.md`.
 
 **🎉 All 7 modules complete.** Full report: [`WORKSPACE-ENTERPRISE-COMPLETE.md`](./WORKSPACE-ENTERPRISE-COMPLETE.md). No migrations required.
+
+### Add-on — Approvals Inbox (`/workspace/approvals`)
+- ✅ "What needs my approval?" — one inbox aggregating pending items from **10 sources** across every module: Purchase Requests, Purchase Orders, Quote Comparisons, Material Requisitions, Supplier Invoices (Procurement/Finance), Quotations (Sales), Payroll Runs / Leave / Timesheets (HR), AMC Contracts (Service).
+- KPIs (pending count, value at stake, oldest waiting, categories), by-category chart, category filter, age-highlighted queue with click-through to each item's approval screen. PDF/Excel. No migration.

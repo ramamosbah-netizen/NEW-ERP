@@ -13,7 +13,7 @@ import { PageHeader } from '@/components/ui/PageHeader';
 import { Card } from '@/components/ui/Card';
 import {
   LayoutDashboard, Sun, CheckSquare, Users, Calendar, Bell,
-  CalendarClock, Activity,
+  CalendarClock, Activity, CheckCircle2,
 } from 'lucide-react';
 
 const DAY = 86400000;
@@ -22,6 +22,7 @@ const OPEN = ['TODO', 'IN_PROGRESS', 'BLOCKED'];
 const MODULES = [
   { href: '/dashboard', icon: LayoutDashboard, title: 'Dashboard', desc: 'Executive KPIs' },
   { href: '/myday', icon: Sun, title: 'My Day', desc: 'Your day at a glance' },
+  { href: '/workspace/approvals', icon: CheckCircle2, title: 'Approvals', desc: 'What needs your approval' },
   { href: '/tasks', icon: CheckSquare, title: 'Tasks', desc: 'Task board' },
   { href: '/tasks/analytics', icon: CheckSquare, title: 'Task Analytics', desc: 'Status, throughput, overdue' },
   { href: '/tasks/team', icon: Users, title: 'Team Workload', desc: 'Load per assignee' },
