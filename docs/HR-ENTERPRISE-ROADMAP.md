@@ -29,4 +29,5 @@ Recharts where useful, sidebar link, RBAC (existing roles), and a roadmap update
 - ✅ **Phase 4 — Payroll Analytics** (`/payroll/analytics`): KPIs (latest gross/net, total OT, avg net), gross-vs-net cost trend, pay-component pie (basic/housing/transport/other/OT), net-by-department, run-history table. PDF/Excel.
 - ✅ **Phase 5 — Leave Analytics** (`/hr/leave-analytics`): KPIs (requests, pending, approved days, upcoming), days-by-leave-type pie, by-status, approved-days-by-department, pending-approval queue table. PDF/Excel.
 - ✅ **Phase 6 — Timesheet & Utilization** (`/timesheets/analytics`): KPIs (total hours, OT, OT %, pending), hours-by-week regular-vs-OT stack, by-allocation pie, by-project + by-employee charts. PDF/Excel.
-- ⏭ Then: Labour Cost → EOSB → Manpower → Hub/Polish.
+- ✅ **Phase 7 — Project Labour Cost** (`/hr/labour-cost`): from `project_labour_costs` (defensive `select(*)`). KPIs (total cost, hours, projects + employees charged), cost-by-project + cost-trend charts, by-project table. PDF/Excel.
+- ⏭ Then: EOSB → Manpower → Hub/Polish.
