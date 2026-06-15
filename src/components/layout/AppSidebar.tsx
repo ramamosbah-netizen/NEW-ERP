@@ -136,6 +136,7 @@ const NAV_SECTIONS = [
     id: 'fieldops',
     label: 'Field Operations',
     items: [
+      { href: '/service/dashboard', label: 'Service Dashboard', icon: LayoutDashboard },
       { href: '/service-desk', label: 'Service Desk', icon: Ticket },
       { href: '/ppm/calendar', label: 'PPM Schedule', icon: CalendarClock },
       { href: '/amc', label: 'AMC Contracts', icon: Shield },
