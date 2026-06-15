@@ -36,4 +36,5 @@ Recharts where useful, sidebar link, RBAC (existing roles), and a roadmap update
 - ✅ **Phase 7 — Project Labour Cost** (`/hr/labour-cost`): from `project_labour_costs` (defensive `select(*)`). KPIs (total cost, hours, projects + employees charged), cost-by-project + cost-trend charts, by-project table. PDF/Excel.
 - ✅ **Phase 8 — EOSB Liability** (`/payroll/eosb-liability`): accrued UAE gratuity across the workforce (reuses `gratuityService.calculateEOSB`, basic salary from payroll lines, rate-based estimate fallback), liability-by-department + by-tenure charts, per-employee table. PDF/Excel.
 - ✅ **Phase 9 — Manpower Dashboard** (`/hr/manpower`): headcount + est. monthly cost by assigned project, deployed-vs-bench split + utilisation %, headcount-by-project chart, manpower-by-project table and an on-bench list. PDF/Excel.
-- ⏭ Then: Certifications → Training/Competency → Attendance & GPS → Documents Center → Hub/Polish.
+- ✅ **Phase 10 — Certification Tracker** (`/hr/certifications`): surfaces `employee_certifications` (SIRA/manufacturer/first-aid/work-at-height) with expiry urgency (Expired/Expiring≤60d/Valid), KPIs, certs-by-type chart, search + type filters, table, and an add-certification modal (via employeeService). PDF/Excel.
+- ⏭ Then: Training/Competency → Attendance & GPS → Documents Center → Hub/Polish.
