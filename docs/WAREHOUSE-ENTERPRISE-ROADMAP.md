@@ -34,4 +34,5 @@ RBAC (existing roles), audit logging, and a roadmap update.
 - ✅ **Phase 5 — Inventory Aging** (`/warehouse/aging`): value bucketed by age since last movement (0–30/31–90/91–180/180+), location + category filters, bucket chart + summary + item table, PDF/Excel.
 - ✅ **Phase 6 — Dead Stock Dashboard** (`/warehouse/dead-stock`): no-movement-for-N-days (90/180/365) with capital tied up, dead-value-by-category chart, and a one-click WRITE_OFF shortcut. PDF/Excel.
 - ✅ **Phase 7 — Serial Tracking** (`/warehouse/serials`): per-serial lifecycle (in store/issued/installed/faulty/returned), location, project, warranty-expiry highlighting; status/location/search filters; KPIs; PDF/Excel.
-- ⏭ Then: Installed Assets → Forecasting → GL → Polish.
+- ✅ **Phase 8 — Installed Assets Tracking** (`/warehouse/installed`): serialized assets deployed (issued/installed) per project site, deployed-by-project chart, warranty ≤90d / expired KPIs (feeds DLP), project filter, PDF/Excel.
+- ⏭ Then: Forecasting → GL → Polish.
