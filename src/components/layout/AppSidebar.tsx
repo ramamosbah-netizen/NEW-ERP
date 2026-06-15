@@ -113,6 +113,7 @@ const NAV_SECTIONS = [
     id: 'warehouse',
     label: 'Warehouse & Inventory',
     items: [
+      { href: '/warehouse/dashboard', label: 'Inventory Dashboard', icon: LayoutDashboard },
       { href: '/warehouse/suppliers', label: 'Suppliers & Subcon', icon: Users },
       { href: '/warehouse/store', label: 'Store', icon: Package },
       { href: '/warehouse/movements', label: 'Goods Movements', icon: Truck },
