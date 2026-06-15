@@ -34,4 +34,6 @@ audit logging where it writes, and a roadmap update.
 - ✅ **Phase 7 — Tender Deadline Tracker** (`/sales/deadlines`): open tenders grouped by urgency (overdue / next 7d / 8–30d / later) with countdown, KPIs, drill-through. PDF/Excel.
 - ✅ **Phase 8 — Quotation Follow-ups & Validity** (`/sales/follow-ups`): pending quotes by follow-up state — awaiting response (days waiting), expiring ≤14d, expired, not-sent-yet — with KPIs and drill-through. PDF/Excel.
 - ✅ **Phase 9 — Sales Performance (by owner)** (`/sales/performance`): per-owner tenders + quotations, quoted/won value and win rate (quotations keyed by prepared_by_name; tenders by created_by→profiles). Top-performer KPI, won-value-by-owner chart, table. PDF/Excel.
-- ⏭ Then: Hub + Audit & Export Polish (final).
+- ✅ **Phase 10 — Pre-Sales Hub + Audit & Export Polish** (`/sales`): single entry point with a live attention strip (overdue/soon deadlines, expiring quotes, awaiting responses) + module grid; CRM writes audit-logged via `clientService`; PDF/Excel verified across all pages. See `PRESALES-ENTERPRISE-COMPLETE.md`.
+
+**🎉 All 10 modules complete.** Full report: [`PRESALES-ENTERPRISE-COMPLETE.md`](./PRESALES-ENTERPRISE-COMPLETE.md).
