@@ -112,7 +112,7 @@ export default function LeaveCalendarPage() {
       <header className="quote-header">
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-            <Link href="/hr" className="text-slate-400 hover:text-emerald-400 font-mono text-[10px] uppercase flex items-center gap-1" style={{ textDecoration: 'none' }}>
+            <Link href="/hr" className="text-[var(--text-secondary)] hover:text-[var(--accent)] font-mono text-[10px] uppercase flex items-center gap-1" style={{ textDecoration: 'none' }}>
               <ArrowLeft size={10} /> Back to Master
             </Link>
           </div>
@@ -124,7 +124,7 @@ export default function LeaveCalendarPage() {
             <button className="quote-btn" style={{ padding: '0.2rem 0.4rem', border: 'none', background: 'transparent' }} onClick={prevMonth}>
               <ChevronLeft size={14} />
             </button>
-            <span className="font-mono text-xs font-bold uppercase tracking-wider text-slate-200" style={{ minWidth: '100px', textAlign: 'center' }}>
+            <span className="font-mono text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]" style={{ minWidth: '100px', textAlign: 'center' }}>
               {monthName} {year}
             </span>
             <button className="quote-btn" style={{ padding: '0.2rem 0.4rem', border: 'none', background: 'transparent' }} onClick={nextMonth}>
@@ -142,23 +142,23 @@ export default function LeaveCalendarPage() {
         <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', flexWrap: 'wrap', fontSize: '11px', fontFamily: 'var(--font-mono)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
             <div className="compliance-light green" style={{ width: '10px', height: '10px' }} />
-            <span className="text-slate-400">Annual Leave</span>
+            <span className="text-[var(--text-secondary)]">Annual Leave</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
             <div className="compliance-light amber" style={{ width: '10px', height: '10px' }} />
-            <span className="text-slate-400">Sick Leave</span>
+            <span className="text-[var(--text-secondary)]">Sick Leave</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
             <div className="compliance-light red" style={{ width: '10px', height: '10px' }} />
-            <span className="text-slate-400">Unpaid Leave</span>
+            <span className="text-[var(--text-secondary)]">Unpaid Leave</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
             <div style={{ width: '10px', height: '10px', background: 'rgba(34, 211, 238, 0.2)', border: '1px solid var(--secondary)', borderRadius: '2px' }} />
-            <span className="text-slate-400">Other Leaves</span>
+            <span className="text-[var(--text-secondary)]">Other Leaves</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginLeft: 'auto' }}>
-            <Info size={12} className="text-slate-500" />
-            <span className="text-slate-500">UAE weekends (Friday & Saturday) are highlighted in dark shading</span>
+            <Info size={12} className="text-[var(--text-primary)]0" />
+            <span className="text-[var(--text-primary)]0">UAE weekends (Friday & Saturday) are highlighted in dark shading</span>
           </div>
         </div>
       </div>
@@ -167,7 +167,7 @@ export default function LeaveCalendarPage() {
       <div className="quote-card" style={{ padding: 0, overflow: 'hidden' }}>
         {/* Calendar Header Row */}
         <div className="swimlane-row" style={{ borderBottom: '2px solid var(--border-color)', background: 'rgba(13, 17, 39, 0.8)', minHeight: '38px' }}>
-          <div className="swimlane-label font-mono uppercase text-slate-400 font-bold" style={{ borderRight: '1px solid var(--border-color)', fontSize: '10px' }}>
+          <div className="swimlane-label font-mono uppercase text-[var(--text-secondary)] font-bold" style={{ borderRight: '1px solid var(--border-color)', fontSize: '10px' }}>
             Staff Member
           </div>
           <div className="swimlane-days" style={{ gridTemplateColumns: `repeat(${daysInMonth}, 1fr)` }}>
@@ -179,13 +179,13 @@ export default function LeaveCalendarPage() {
                   key={day} 
                   className={`swimlane-day-cell flex flex-col items-center justify-center ${isWeekend ? 'weekend' : ''}`}
                   style={{ 
-                    borderRight: '1px solid rgba(255, 255, 255, 0.05)',
+                    borderRight: '1px solid var(--border)',
                     padding: '4px 0',
                     background: isWeekend ? 'rgba(0, 0, 0, 0.3)' : 'transparent'
                   }}
                 >
-                  <span className="text-slate-500 font-bold text-[8px]">{dayAbbrev}</span>
-                  <span className="font-bold text-[9px] mt-0.5 text-slate-300">{day}</span>
+                  <span className="text-[var(--text-primary)]0 font-bold text-[8px]">{dayAbbrev}</span>
+                  <span className="font-bold text-[9px] mt-0.5 text-[var(--text-secondary)]">{day}</span>
                 </div>
               );
             })}
@@ -218,13 +218,13 @@ export default function LeaveCalendarPage() {
                   <div className="swimlane-label flex-col items-start justify-center gap-0.5" style={{ padding: '8px 12px' }}>
                     <Link 
                       href={`/hr/${emp.id}`} 
-                      className="font-semibold text-slate-200 hover:text-emerald-400 text-[11px] block truncate max-w-[150px]"
+                      className="font-semibold text-[var(--text-primary)] hover:text-[var(--accent)] text-[11px] block truncate max-w-[150px]"
                       style={{ textDecoration: 'none' }}
                       title={emp.full_name_en}
                     >
                       {emp.full_name_en}
                     </Link>
-                    <span className="font-mono text-[9px] text-slate-500 uppercase tracking-tight block">
+                    <span className="font-mono text-[9px] text-[var(--text-primary)]0 uppercase tracking-tight block">
                       {emp.designation}
                     </span>
                   </div>
@@ -239,7 +239,7 @@ export default function LeaveCalendarPage() {
                           key={day} 
                           className={`swimlane-day-cell ${isWeekend ? 'weekend' : ''}`}
                           style={{ 
-                            borderRight: '1px solid rgba(255, 255, 255, 0.03)',
+                            borderRight: '1px solid var(--border)',
                             background: isWeekend ? 'rgba(0, 0, 0, 0.15)' : 'transparent'
                           }}
                         />

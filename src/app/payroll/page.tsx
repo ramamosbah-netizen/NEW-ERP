@@ -199,7 +199,7 @@ export default function PayrollPage() {
       <header className="quote-header">
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-            <Link href="/hr" className="text-slate-400 hover:text-emerald-400 font-mono text-[10px] uppercase flex items-center gap-1" style={{ textDecoration: 'none' }}>
+            <Link href="/hr" className="text-[var(--text-secondary)] hover:text-[var(--accent)] font-mono text-[10px] uppercase flex items-center gap-1" style={{ textDecoration: 'none' }}>
               <ArrowLeft size={10} /> Back to Master
             </Link>
           </div>
@@ -223,7 +223,7 @@ export default function PayrollPage() {
       <div className="quote-card mb-6">
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <span className="font-mono text-[9px] uppercase text-slate-500 mb-1">Payroll Period Month</span>
+            <span className="font-mono text-[9px] uppercase text-[var(--text-primary)]0 mb-1">Payroll Period Month</span>
             <input 
               type="month" 
               className="quote-filter-input" 
@@ -267,7 +267,7 @@ export default function PayrollPage() {
         <div className="xl:col-span-1 space-y-6">
           <div className="quote-card">
             <div style={{ display: 'flex', justifyItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
-              <h3 className="text-xs font-mono uppercase text-slate-300 font-bold">Monthly adjustments</h3>
+              <h3 className="text-xs font-mono uppercase text-[var(--text-secondary)] font-bold">Monthly adjustments</h3>
               <button 
                 type="button" 
                 className="quote-btn quote-btn-primary" 
@@ -279,40 +279,40 @@ export default function PayrollPage() {
             </div>
 
             {adjustments.length === 0 ? (
-              <p className="text-[11px] text-slate-500 font-mono italic">No adjustments logged for this period.</p>
+              <p className="text-[11px] text-[var(--text-primary)]0 font-mono italic">No adjustments logged for this period.</p>
             ) : (
               <div className="space-y-3 max-h-[400px] overflow-y-auto">
                 {adjustments.map((adj) => (
-                  <div key={adj.id} className="border border-slate-900 rounded p-2.5 bg-slate-950/40 space-y-1">
+                  <div key={adj.id} className="border border-[var(--border)] rounded p-2.5 bg-[var(--bg-card)] space-y-1">
                     <div className="flex justify-between items-start">
-                      <span className="font-semibold text-slate-200 text-[11px] truncate block max-w-[120px]" title={adj.employee?.full_name_en}>
+                      <span className="font-semibold text-[var(--text-primary)] text-[11px] truncate block max-w-[120px]" title={adj.employee?.full_name_en}>
                         {adj.employee?.full_name_en}
                       </span>
-                      <span className={`font-mono text-[10px] font-bold ${Number(adj.amount) < 0 ? 'text-red-400' : 'text-emerald-400'}`}>
+                      <span className={`font-mono text-[10px] font-bold ${Number(adj.amount) < 0 ? 'text-[var(--status-danger-text)]' : 'text-[var(--accent)]'}`}>
                         AED {adj.amount}
                       </span>
                     </div>
-                    <div className="font-mono text-[9px] text-slate-500">
+                    <div className="font-mono text-[9px] text-[var(--text-primary)]0">
                       Type: {adj.adjustment_type.replace('_', ' ')}
                     </div>
-                    <div className="text-[10px] text-slate-400 leading-tight">
+                    <div className="text-[10px] text-[var(--text-secondary)] leading-tight">
                       Reason: {adj.reason}
                     </div>
-                    <div className="flex justify-between items-center pt-1 border-t border-slate-900/60 mt-1">
+                    <div className="flex justify-between items-center pt-1 border-t border-[var(--border)] mt-1">
                       <span className={`badge-status ${adj.status.toLowerCase()}`} style={{ fontSize: '8px', padding: '1px 3px' }}>
                         {adj.status}
                       </span>
                       {adj.status === 'PENDING' && (
                         <div style={{ display: 'flex', gap: '3px' }}>
                           <button 
-                            className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded p-0.5"
+                            className="bg-[var(--accent-glow)] text-[var(--accent)] border border-[var(--accent)] rounded p-0.5"
                             onClick={() => approveAdjustment(adj.id)}
                             title="Approve"
                           >
                             <Check size={10} />
                           </button>
                           <button 
-                            className="bg-red-500/20 text-red-400 border border-red-500/30 rounded p-0.5"
+                            className="bg-[var(--status-danger-bg)] text-[var(--status-danger-text)] border border-[var(--status-danger-border)] rounded p-0.5"
                             onClick={() => rejectAdjustment(adj.id)}
                             title="Reject"
                           >
@@ -334,17 +334,17 @@ export default function PayrollPage() {
             <div className="quote-card" style={{ padding: 0 }}>
               <div style={{ padding: '1.2rem', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
-                  <h3 className="text-xs font-mono uppercase text-emerald-400 font-bold">Payroll calculation Sheet</h3>
-                  <p className="text-[10px] text-slate-500 font-mono mt-0.5">Summary of gross to net wages. Highlights flag ±10% variances compared to previous month.</p>
+                  <h3 className="text-xs font-mono uppercase text-[var(--accent)] font-bold">Payroll calculation Sheet</h3>
+                  <p className="text-[10px] text-[var(--text-primary)]0 font-mono mt-0.5">Summary of gross to net wages. Highlights flag ±10% variances compared to previous month.</p>
                 </div>
                 <div style={{ display: 'flex', gap: '1.5rem', fontFamily: 'var(--font-mono)', fontSize: '11px' }}>
                   <div>
-                    <span className="text-slate-500 block uppercase text-[9px]">Gross total</span>
-                    <span className="text-slate-200 font-bold">AED {currentRun.gross_total.toLocaleString()}</span>
+                    <span className="text-[var(--text-primary)]0 block uppercase text-[9px]">Gross total</span>
+                    <span className="text-[var(--text-primary)] font-bold">AED {currentRun.gross_total.toLocaleString()}</span>
                   </div>
                   <div>
-                    <span className="text-slate-500 block uppercase text-[9px]">Net total</span>
-                    <span className="text-emerald-400 font-bold">AED {currentRun.net_total.toLocaleString()}</span>
+                    <span className="text-[var(--text-primary)]0 block uppercase text-[9px]">Net total</span>
+                    <span className="text-[var(--accent)] font-bold">AED {currentRun.net_total.toLocaleString()}</span>
                   </div>
                 </div>
               </div>
@@ -387,45 +387,45 @@ export default function PayrollPage() {
                       return (
                         <tr key={line.id}>
                           <td>
-                            <div className="font-semibold text-slate-200">{line.employee?.full_name_en}</div>
-                            <div className="font-mono text-[8px] text-slate-500">{line.employee?.employee_number}</div>
+                            <div className="font-semibold text-[var(--text-primary)]">{line.employee?.full_name_en}</div>
+                            <div className="font-mono text-[8px] text-[var(--text-primary)]0">{line.employee?.employee_number}</div>
                           </td>
-                          <td className="font-mono text-[9px] text-slate-500">{line.employee?.department}</td>
-                          <td style={{ textAlign: 'right' }} className="font-mono text-slate-300">
+                          <td className="font-mono text-[9px] text-[var(--text-primary)]0">{line.employee?.department}</td>
+                          <td style={{ textAlign: 'right' }} className="font-mono text-[var(--text-secondary)]">
                             {Number(line.basic_salary).toFixed(2)}
                           </td>
-                          <td style={{ textAlign: 'right' }} className="font-mono text-slate-300">
+                          <td style={{ textAlign: 'right' }} className="font-mono text-[var(--text-secondary)]">
                             {allowances.toFixed(2)}
                           </td>
                           <td style={{ textAlign: 'center' }} className="font-mono">
-                            <span className="text-cyan-400">{line.ot_hours}h</span>
-                            <span className="text-slate-500 ml-1">({Number(line.ot_amount).toFixed(0)})</span>
+                            <span className="text-[var(--accent)]">{line.ot_hours}h</span>
+                            <span className="text-[var(--text-primary)]0 ml-1">({Number(line.ot_amount).toFixed(0)})</span>
                           </td>
-                          <td style={{ textAlign: 'right' }} className="font-mono text-red-400">
+                          <td style={{ textAlign: 'right' }} className="font-mono text-[var(--status-danger-text)]">
                             {Number(line.leave_deductions) > 0 ? `-${Number(line.leave_deductions).toFixed(2)}` : '0.00'}
                           </td>
-                          <td style={{ textAlign: 'right' }} className={`font-mono ${adjAmt < 0 ? 'text-red-400' : adjAmt > 0 ? 'text-emerald-400' : 'text-slate-500'}`}>
+                          <td style={{ textAlign: 'right' }} className={`font-mono ${adjAmt < 0 ? 'text-[var(--status-danger-text)]' : adjAmt > 0 ? 'text-[var(--accent)]' : 'text-[var(--text-primary)]0'}`}>
                             {adjAmt === 0 ? '—' : adjAmt > 0 ? `+${adjAmt.toFixed(2)}` : adjAmt.toFixed(2)}
                           </td>
-                          <td style={{ textAlign: 'right' }} className="font-mono text-slate-200">
+                          <td style={{ textAlign: 'right' }} className="font-mono text-[var(--text-primary)]">
                             {Number(line.gross_pay).toFixed(2)}
                           </td>
                           <td style={{ textAlign: 'right' }} className="font-mono font-bold">
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px' }}>
                               {isVarianceWarning && (
                                 <span 
-                                  className="text-amber-400" 
+                                  className="text-[var(--status-warning-text)]" 
                                   title={`Variance Warning: ${variancePercent > 0 ? '+' : ''}${variancePercent.toFixed(1)}% variance vs previous month (AED ${prevNet.toFixed(0)})`}
                                 >
                                   <AlertTriangle size={10} />
                                 </span>
                               )}
-                              <span className="text-emerald-400">
+                              <span className="text-[var(--accent)]">
                                 {currentNet.toFixed(2)}
                               </span>
                             </div>
                           </td>
-                          <td style={{ textAlign: 'center' }} className="font-mono text-slate-400">{line.days_worked}</td>
+                          <td style={{ textAlign: 'center' }} className="font-mono text-[var(--text-secondary)]">{line.days_worked}</td>
                         </tr>
                       );
                     })}
@@ -435,9 +435,9 @@ export default function PayrollPage() {
             </div>
           ) : (
             <div className="quote-card" style={{ padding: '4rem', textAlign: 'center' }}>
-              <Layers size={48} className="text-slate-600" style={{ margin: '0 auto 1.5rem auto', opacity: 0.5 }} />
-              <h3 className="font-mono text-xs uppercase tracking-widest text-slate-300 font-bold mb-1">No Run Loaded</h3>
-              <p className="text-[11px] text-slate-500 max-w-sm mx-auto mb-4">Select a payroll month and click compile to process salary, leave deductions, and OT calculations.</p>
+              <Layers size={48} className="text-[var(--text-tertiary)]" style={{ margin: '0 auto 1.5rem auto', opacity: 0.5 }} />
+              <h3 className="font-mono text-xs uppercase tracking-widest text-[var(--text-secondary)] font-bold mb-1">No Run Loaded</h3>
+              <p className="text-[11px] text-[var(--text-primary)]0 max-w-sm mx-auto mb-4">Select a payroll month and click compile to process salary, leave deductions, and OT calculations.</p>
             </div>
           )}
         </div>
@@ -445,18 +445,18 @@ export default function PayrollPage() {
 
       {/* Add Adjustment Modal */}
       {showAdjModal && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-slate-950 border border-slate-800 rounded-lg max-w-md w-full">
-            <div className="flex justify-between items-center p-4 border-b border-slate-900">
-              <h2 className="text-xs font-mono text-emerald-400 uppercase tracking-widest font-bold">Add Salary adjustment</h2>
-              <button onClick={() => setShowAdjModal(false)} className="text-slate-500 hover:text-slate-200">
+        <div className="fixed inset-0 bg-[var(--bg-card)] backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg max-w-md w-full">
+            <div className="flex justify-between items-center p-4 border-b border-[var(--border)]">
+              <h2 className="text-xs font-mono text-[var(--accent)] uppercase tracking-widest font-bold">Add Salary adjustment</h2>
+              <button onClick={() => setShowAdjModal(false)} className="text-[var(--text-primary)]0 hover:text-[var(--text-primary)]">
                 <X size={16} />
               </button>
             </div>
 
             <form onSubmit={handleAddAdjustment} className="p-4 space-y-4">
               <div>
-                <label className="block text-[9px] font-mono text-slate-400 uppercase mb-1">Employee Member</label>
+                <label className="block text-[9px] font-mono text-[var(--text-secondary)] uppercase mb-1">Employee Member</label>
                 <select 
                   required
                   className="quote-filter-input w-full"
@@ -472,7 +472,7 @@ export default function PayrollPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[9px] font-mono text-slate-400 uppercase mb-1">Adjustment Type</label>
+                  <label className="block text-[9px] font-mono text-[var(--text-secondary)] uppercase mb-1">Adjustment Type</label>
                   <select 
                     className="quote-filter-input w-full"
                     value={adjForm.adjustment_type}
@@ -484,7 +484,7 @@ export default function PayrollPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[9px] font-mono text-slate-400 uppercase mb-1">Amount (AED)</label>
+                  <label className="block text-[9px] font-mono text-[var(--text-secondary)] uppercase mb-1">Amount (AED)</label>
                   <input 
                     required
                     type="number"
@@ -498,7 +498,7 @@ export default function PayrollPage() {
               </div>
 
               <div>
-                <label className="block text-[9px] font-mono text-slate-400 uppercase mb-1">Reason / Description</label>
+                <label className="block text-[9px] font-mono text-[var(--text-secondary)] uppercase mb-1">Reason / Description</label>
                 <input 
                   required
                   type="text"
@@ -509,7 +509,7 @@ export default function PayrollPage() {
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-4 border-t border-slate-900">
+              <div className="flex justify-end gap-2 pt-4 border-t border-[var(--border)]">
                 <button type="button" className="quote-btn quote-btn-secondary" onClick={() => setShowAdjModal(false)}>Cancel</button>
                 <button type="submit" className="quote-btn quote-btn-primary">Request adjustment</button>
               </div>

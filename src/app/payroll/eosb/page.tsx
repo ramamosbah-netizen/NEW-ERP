@@ -29,7 +29,7 @@ export default function GratuityLiabilityPage() {
       <header className="quote-header">
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-            <Link href="/payroll" className="text-slate-400 hover:text-emerald-400 font-mono text-[10px] uppercase flex items-center gap-1" style={{ textDecoration: 'none' }}>
+            <Link href="/payroll" className="text-[var(--text-secondary)] hover:text-[var(--accent)] font-mono text-[10px] uppercase flex items-center gap-1" style={{ textDecoration: 'none' }}>
               <ArrowLeft size={10} /> Back to Payroll
             </Link>
           </div>
@@ -45,28 +45,28 @@ export default function GratuityLiabilityPage() {
 
       {/* Summary KPI Block */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        <div className="bg-slate-950/60 border border-slate-900 rounded p-4 flex items-center justify-between">
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4 flex items-center justify-between">
           <div>
-            <span className="text-slate-500 block uppercase font-mono text-[9px]">Total Gratuity Accrued</span>
-            <span className="font-mono text-2xl font-extrabold text-emerald-400 mt-1 block">
+            <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Total Gratuity Accrued</span>
+            <span className="font-mono text-2xl font-extrabold text-[var(--accent)] mt-1 block">
               AED {totalLiability.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </span>
           </div>
-          <DollarSign className="text-emerald-400 opacity-80" size={24} />
+          <DollarSign className="text-[var(--accent)] opacity-80" size={24} />
         </div>
-        <div className="bg-slate-950/60 border border-slate-900 rounded p-4 flex items-center justify-between">
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4 flex items-center justify-between">
           <div>
-            <span className="text-slate-500 block uppercase font-mono text-[9px]">Audited Staff Members</span>
-            <span className="font-mono text-2xl font-extrabold text-slate-100 mt-1 block">
+            <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Audited Staff Members</span>
+            <span className="font-mono text-2xl font-extrabold text-[var(--text-primary)] mt-1 block">
               {liabilityReport.length}
             </span>
           </div>
-          <Layers className="text-cyan-400 opacity-80" size={24} />
+          <Layers className="text-[var(--accent)] opacity-80" size={24} />
         </div>
-        <div className="bg-slate-950/60 border border-slate-900 rounded p-4 flex items-center justify-between">
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4 flex items-center justify-between">
           <div>
-            <span className="text-slate-500 block uppercase font-mono text-[9px]">WPS Registry Status</span>
-            <span className="font-mono text-2xl font-extrabold text-slate-100 mt-1 block">
+            <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">WPS Registry Status</span>
+            <span className="font-mono text-2xl font-extrabold text-[var(--text-primary)] mt-1 block">
               Compliance Checked
             </span>
           </div>
@@ -112,24 +112,24 @@ export default function GratuityLiabilityPage() {
                   return (
                     <tr key={emp.employee_id}>
                       <td style={{ fontWeight: 600 }}>
-                        <div className="text-slate-200">{emp.full_name_en}</div>
-                        <div className="font-mono text-[9px] text-slate-500">{emp.employee_number}</div>
+                        <div className="text-[var(--text-primary)]">{emp.full_name_en}</div>
+                        <div className="font-mono text-[9px] text-[var(--text-primary)]0">{emp.employee_number}</div>
                       </td>
-                      <td className="font-mono text-slate-400">{emp.department}</td>
+                      <td className="font-mono text-[var(--text-secondary)]">{emp.department}</td>
                       <td>{emp.designation}</td>
-                      <td className="font-mono text-slate-400">
+                      <td className="font-mono text-[var(--text-secondary)]">
                         {new Date(emp.join_date).toLocaleDateString('en-GB')}
                       </td>
-                      <td style={{ textAlign: 'center' }} className="font-mono text-slate-300">
+                      <td style={{ textAlign: 'center' }} className="font-mono text-[var(--text-secondary)]">
                         {emp.effective_service_days}
                       </td>
-                      <td style={{ textAlign: 'center' }} className="font-mono text-slate-300">
+                      <td style={{ textAlign: 'center' }} className="font-mono text-[var(--text-secondary)]">
                         {serviceYears.toFixed(2)} yrs
                       </td>
-                      <td style={{ textAlign: 'right' }} className="font-mono text-slate-300">
+                      <td style={{ textAlign: 'right' }} className="font-mono text-[var(--text-secondary)]">
                         AED {Number(emp.basic_salary).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </td>
-                      <td style={{ textAlign: 'right', fontWeight: 'bold' }} className="font-mono text-emerald-400">
+                      <td style={{ textAlign: 'right', fontWeight: 'bold' }} className="font-mono text-[var(--accent)]">
                         AED {Number(emp.accrued_gratuity).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </td>
                     </tr>

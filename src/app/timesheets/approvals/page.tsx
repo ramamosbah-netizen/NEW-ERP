@@ -89,7 +89,7 @@ export default function TimesheetApprovalsPage() {
       <header className="quote-header">
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-            <Link href="/timesheets" className="text-slate-400 hover:text-emerald-400 font-mono text-[10px] uppercase flex items-center gap-1" style={{ textDecoration: 'none' }}>
+            <Link href="/timesheets" className="text-[var(--text-secondary)] hover:text-[var(--accent)] font-mono text-[10px] uppercase flex items-center gap-1" style={{ textDecoration: 'none' }}>
               <ArrowLeft size={10} /> Back to My Timesheet
             </Link>
           </div>
@@ -115,9 +115,9 @@ export default function TimesheetApprovalsPage() {
         </div>
       ) : queue.length === 0 ? (
         <div style={{ padding: '4rem', textAlign: 'center', color: 'var(--text-muted)' }} className="quote-card">
-          <UserCheck size={48} className="text-emerald-400" style={{ margin: '0 auto 1rem auto', opacity: 0.8 }} />
-          <h3 className="font-mono text-xs uppercase tracking-widest text-slate-300 font-bold mb-1">Board Cleared</h3>
-          <p className="text-[11px] text-slate-500">All submitted timesheets have been verified and processed.</p>
+          <UserCheck size={48} className="text-[var(--accent)]" style={{ margin: '0 auto 1rem auto', opacity: 0.8 }} />
+          <h3 className="font-mono text-xs uppercase tracking-widest text-[var(--text-secondary)] font-bold mb-1">Board Cleared</h3>
+          <p className="text-[11px] text-[var(--text-primary)]0">All submitted timesheets have been verified and processed.</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -135,14 +135,14 @@ export default function TimesheetApprovalsPage() {
                 {/* Header row */}
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.2rem', cursor: 'pointer' }} onClick={() => toggleExpand(ts)}>
                   <div>
-                    <h3 className="font-semibold text-slate-200 text-sm">
+                    <h3 className="font-semibold text-[var(--text-primary)] text-sm">
                       {ts.employee?.full_name_en}
                     </h3>
                     <div style={{ display: 'flex', gap: '1rem', marginTop: '0.2rem' }}>
-                      <span className="font-mono text-[9px] text-emerald-400 uppercase tracking-tight">
+                      <span className="font-mono text-[9px] text-[var(--accent)] uppercase tracking-tight">
                         Emp Code: {ts.employee?.employee_number}
                       </span>
-                      <span className="font-mono text-[9px] text-slate-500 uppercase tracking-tight">
+                      <span className="font-mono text-[9px] text-[var(--text-primary)]0 uppercase tracking-tight">
                         Dept: {ts.employee?.department}
                       </span>
                     </div>
@@ -150,20 +150,20 @@ export default function TimesheetApprovalsPage() {
 
                   <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
                     <div style={{ textAlign: 'right' }}>
-                      <span className="text-slate-500 uppercase font-mono text-[9px] block">Week start</span>
-                      <span className="font-mono text-[11px] font-bold text-slate-300">
+                      <span className="text-[var(--text-primary)]0 uppercase font-mono text-[9px] block">Week start</span>
+                      <span className="font-mono text-[11px] font-bold text-[var(--text-secondary)]">
                         {new Date(ts.week_start).toLocaleDateString('en-GB')}
                       </span>
                     </div>
                     <div style={{ textAlign: 'right' }}>
-                      <span className="text-slate-500 uppercase font-mono text-[9px] block">Regular Hrs</span>
-                      <span className="font-mono text-[11px] font-bold text-slate-300">
+                      <span className="text-[var(--text-primary)]0 uppercase font-mono text-[9px] block">Regular Hrs</span>
+                      <span className="font-mono text-[11px] font-bold text-[var(--text-secondary)]">
                         {ts.total_regular_hours}
                       </span>
                     </div>
                     <div style={{ textAlign: 'right' }}>
-                      <span className="text-slate-500 uppercase font-mono text-[9px] block">OT Hrs</span>
-                      <span className="font-mono text-[11px] font-bold text-cyan-400">
+                      <span className="text-[var(--text-primary)]0 uppercase font-mono text-[9px] block">OT Hrs</span>
+                      <span className="font-mono text-[11px] font-bold text-[var(--accent)]">
                         {ts.total_ot_hours}
                       </span>
                     </div>
@@ -188,7 +188,7 @@ export default function TimesheetApprovalsPage() {
                       </button>
                     </div>
                     <div>
-                      {isExpanded ? <ChevronUp size={16} className="text-slate-400" /> : <ChevronDown size={16} className="text-slate-400" />}
+                      {isExpanded ? <ChevronUp size={16} className="text-[var(--text-secondary)]" /> : <ChevronDown size={16} className="text-[var(--text-secondary)]" />}
                     </div>
                   </div>
                 </div>
@@ -229,25 +229,25 @@ export default function TimesheetApprovalsPage() {
                             <tbody>
                               {details.map((entry) => (
                                 <tr key={entry.id}>
-                                  <td className="font-mono text-slate-300">
+                                  <td className="font-mono text-[var(--text-secondary)]">
                                     {new Date(entry.work_date).toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: '2-digit' })}
                                   </td>
                                   <td>
-                                    <span className="font-semibold text-slate-400">{entry.allocation_type.replace('_', ' ')}</span>
+                                    <span className="font-semibold text-[var(--text-secondary)]">{entry.allocation_type.replace('_', ' ')}</span>
                                   </td>
-                                  <td className="text-slate-300">
+                                  <td className="text-[var(--text-secondary)]">
                                     {entry.project ? (
                                       <div>
                                         <div className="font-semibold">{entry.project.name}</div>
-                                        <div className="font-mono text-[9px] text-slate-500">{entry.project.project_number}</div>
+                                        <div className="font-mono text-[9px] text-[var(--text-primary)]0">{entry.project.project_number}</div>
                                       </div>
                                     ) : '—'}
                                   </td>
-                                  <td className="font-mono text-slate-400">
+                                  <td className="font-mono text-[var(--text-secondary)]">
                                     {entry.allocation_type === 'SERVICE_TICKET' ? `Ticket: ${entry.ticket_number || 'N/A'}` : 
                                      entry.allocation_type === 'PPM_VISIT' ? `Visit: ${entry.visit_number || 'N/A'}` : '—'}
                                   </td>
-                                  <td className="text-slate-400">{entry.description || '—'}</td>
+                                  <td className="text-[var(--text-secondary)]">{entry.description || '—'}</td>
                                   <td style={{ textAlign: 'center' }}>
                                     {entry.is_overtime ? (
                                       <span className="ot-badge weekend">
@@ -255,7 +255,7 @@ export default function TimesheetApprovalsPage() {
                                       </span>
                                     ) : '—'}
                                   </td>
-                                  <td style={{ textAlign: 'center', fontWeight: 'bold' }} className="font-mono text-emerald-400">
+                                  <td style={{ textAlign: 'center', fontWeight: 'bold' }} className="font-mono text-[var(--accent)]">
                                     {entry.hours}
                                   </td>
                                 </tr>

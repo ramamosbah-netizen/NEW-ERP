@@ -434,10 +434,10 @@ export default function MyTimesheetPage() {
   if (!employee) {
     return (
       <div className="quote-container">
-        <div className="quote-card border-red-900/50" style={{ padding: '3rem', textAlign: 'center' }}>
-          <AlertTriangle size={48} className="text-red-500" style={{ margin: '0 auto 1.5rem auto' }} />
-          <h2 className="font-mono text-xs uppercase tracking-widest text-slate-100 font-bold mb-2">No Employee Profile Linked</h2>
-          <p className="text-[12px] text-slate-400 max-w-md mx-auto mb-6">
+        <div className="quote-card border-[var(--status-danger-border)]" style={{ padding: '3rem', textAlign: 'center' }}>
+          <AlertTriangle size={48} className="text-[var(--status-danger-text)]" style={{ margin: '0 auto 1.5rem auto' }} />
+          <h2 className="font-mono text-xs uppercase tracking-widest text-[var(--text-primary)] font-bold mb-2">No Employee Profile Linked</h2>
+          <p className="text-[12px] text-[var(--text-secondary)] max-w-md mx-auto mb-6">
             Your login user ID does not map to any employee record in the Employee Master. Please ask an administrator or HR representative to onboard your employee profile and link your user credentials.
           </p>
         </div>
@@ -452,7 +452,7 @@ export default function MyTimesheetPage() {
         <div>
           <h1 className="quote-header-title">My Timesheet Log</h1>
           <p className="quote-header-subtitle">
-            Logged as: <strong className="text-slate-200">{employee.full_name_en}</strong> ({employee.employee_number})
+            Logged as: <strong className="text-[var(--text-primary)]">{employee.full_name_en}</strong> ({employee.employee_number})
           </p>
         </div>
         <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'center' }}>
@@ -465,7 +465,7 @@ export default function MyTimesheetPage() {
             <button className="quote-btn" style={{ padding: '0.2rem 0.4rem', border: 'none', background: 'transparent' }} onClick={() => shiftWeek(-1)}>
               <ChevronLeft size={14} />
             </button>
-            <span className="font-mono text-xs font-bold uppercase tracking-wider text-slate-200" style={{ minWidth: '180px', textAlign: 'center' }}>
+            <span className="font-mono text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]" style={{ minWidth: '180px', textAlign: 'center' }}>
               Week of {new Date(weekStart).toLocaleDateString('en-GB')}
             </span>
             <button className="quote-btn" style={{ padding: '0.2rem 0.4rem', border: 'none', background: 'transparent' }} onClick={() => shiftWeek(1)}>
@@ -494,16 +494,16 @@ export default function MyTimesheetPage() {
               {timesheet?.total_regular_hours || 0}
             </span>
           </div>
-          <Clock className="text-emerald-400" size={24} />
+          <Clock className="text-[var(--accent)]" size={24} />
         </div>
         <div className="timesheet-stat-card">
           <div>
             <span className="timesheet-stat-lbl">Overtime Hours</span>
-            <span className="timesheet-stat-val block mt-1 text-cyan-400">
+            <span className="timesheet-stat-val block mt-1 text-[var(--accent)]">
               {timesheet?.total_ot_hours || 0}
             </span>
           </div>
-          <Sparkles className="text-cyan-400" size={24} />
+          <Sparkles className="text-[var(--accent)]" size={24} />
         </div>
         <div className="timesheet-stat-card">
           <div>
@@ -512,7 +512,7 @@ export default function MyTimesheetPage() {
               {grandTotal} hrs
             </span>
           </div>
-          <Info className="text-slate-400" size={24} />
+          <Info className="text-[var(--text-secondary)]" size={24} />
         </div>
         <div className="timesheet-stat-card">
           <div>
@@ -527,15 +527,15 @@ export default function MyTimesheetPage() {
       {/* Prefill Suggestions Banner */}
       {!isDisabled && suggestions.length > 0 && (
         <div className="suggestion-banner">
-          <div className="flex items-center gap-1.5 text-emerald-400 font-mono text-[10px] uppercase font-bold">
+          <div className="flex items-center gap-1.5 text-[var(--accent)] font-mono text-[10px] uppercase font-bold">
             <Sparkles size={12} /> Auto-Suggestions from Completed Operations
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1">
             {suggestions.map((sug, i) => (
               <div key={i} className="suggestion-pill">
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <span className="text-[10px] text-slate-300 font-semibold">{sug.description}</span>
-                  <span className="font-mono text-[9px] text-slate-500">
+                  <span className="text-[10px] text-[var(--text-secondary)] font-semibold">{sug.description}</span>
+                  <span className="font-mono text-[9px] text-[var(--text-primary)]0">
                     {new Date(sug.work_date).toLocaleDateString('en-GB')} — {sug.allocation_type.replace('_', ' ')}
                   </span>
                 </div>
@@ -619,7 +619,7 @@ export default function MyTimesheetPage() {
                         ))}
                       </select>
                     ) : (
-                      <span className="text-[10px] text-slate-600 italic font-mono block text-center">N/A</span>
+                      <span className="text-[10px] text-[var(--text-tertiary)] italic font-mono block text-center">N/A</span>
                     )}
                   </div>
 
@@ -650,7 +650,7 @@ export default function MyTimesheetPage() {
                         ))}
                       </select>
                     ) : (
-                      <span className="text-[10px] text-slate-600 italic font-mono block text-center">N/A</span>
+                      <span className="text-[10px] text-[var(--text-tertiary)] italic font-mono block text-center">N/A</span>
                     )}
                   </div>
 
@@ -668,7 +668,7 @@ export default function MyTimesheetPage() {
                     
                     {/* Overtime Selector */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', marginLeft: '4px' }}>
-                      <label style={{ display: 'flex', alignItems: 'center', gap: '3px', fontSize: '8px', cursor: 'pointer' }} className="font-mono text-slate-400">
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '3px', fontSize: '8px', cursor: 'pointer' }} className="font-mono text-[var(--text-secondary)]">
                         <input
                           type="checkbox"
                           checked={row.is_overtime}
@@ -682,7 +682,7 @@ export default function MyTimesheetPage() {
                       </label>
                       {row.is_overtime && (
                         <select
-                          className="font-mono text-[8px] bg-slate-900 border border-slate-700 text-cyan-400 rounded outline-none"
+                          className="font-mono text-[8px] bg-[var(--surface-hover)] border border-[var(--border)] text-[var(--accent)] rounded outline-none"
                           style={{ padding: '1px' }}
                           value={row.ot_type}
                           onChange={(e) => updateRowField(row.id, 'ot_type', e.target.value)}
@@ -715,11 +715,11 @@ export default function MyTimesheetPage() {
 
                   {/* Row Total & Delete Button */}
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span className="font-mono text-xs font-bold text-slate-300">{rowTotal}</span>
+                    <span className="font-mono text-xs font-bold text-[var(--text-secondary)]">{rowTotal}</span>
                     {!isDisabled && (
                       <button 
                         type="button" 
-                        className="text-slate-500 hover:text-red-400"
+                        className="text-[var(--text-primary)]0 hover:text-[var(--status-danger-text)]"
                         style={{ border: 'none', background: 'transparent' }}
                         onClick={() => removeRow(row.id)}
                       >
@@ -735,22 +735,22 @@ export default function MyTimesheetPage() {
 
         {/* Footer Sum Grid */}
         <div className="timesheet-row-grid" style={{ borderTop: '2px solid var(--border-color)', borderBottom: 'none', marginTop: '1rem', fontWeight: 'bold' }}>
-          <div style={{ gridColumn: 'span 4' }} className="font-mono text-slate-400 uppercase text-[10px] tracking-wide">
+          <div style={{ gridColumn: 'span 4' }} className="font-mono text-[var(--text-secondary)] uppercase text-[10px] tracking-wide">
             Daily Consolidated Totals
           </div>
           {colTotals.map((tot, idx) => (
-            <div key={idx} className="font-mono text-center text-xs text-slate-200">
+            <div key={idx} className="font-mono text-center text-xs text-[var(--text-primary)]">
               {tot}
             </div>
           ))}
-          <div style={{ textAlign: 'center' }} className="font-mono text-emerald-400 text-sm">
+          <div style={{ textAlign: 'center' }} className="font-mono text-[var(--accent)] text-sm">
             {grandTotal}
           </div>
         </div>
 
         {/* Action Buttons */}
         {!isDisabled && (
-          <div className="flex justify-between items-center mt-6 pt-4 border-t border-slate-900">
+          <div className="flex justify-between items-center mt-6 pt-4 border-t border-[var(--border)]">
             <div style={{ display: 'flex', gap: '0.8rem' }}>
               <button 
                 type="button" 

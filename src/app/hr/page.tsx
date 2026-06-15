@@ -193,37 +193,37 @@ export default function EmployeesListPage() {
 
       {/* KPI Cards Strip */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-        <div className="bg-slate-950/60 border border-slate-900 rounded p-4 flex items-center justify-between">
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4 flex items-center justify-between">
           <div>
-            <span className="text-slate-500 block uppercase font-mono text-[9px]">Total Workforce</span>
-            <span className="font-mono text-xl font-extrabold text-slate-100 mt-1 block">{employees.length}</span>
+            <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Total Workforce</span>
+            <span className="font-mono text-xl font-extrabold text-[var(--text-primary)] mt-1 block">{employees.length}</span>
           </div>
-          <Users className="text-emerald-400 opacity-80" size={24} />
+          <Users className="text-[var(--accent)] opacity-80" size={24} />
         </div>
-        <div className="bg-slate-950/60 border border-slate-900 rounded p-4 flex items-center justify-between">
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4 flex items-center justify-between">
           <div>
-            <span className="text-slate-500 block uppercase font-mono text-[9px]">Projects Dept</span>
-            <span className="font-mono text-xl font-extrabold text-slate-100 mt-1 block">
+            <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Projects Dept</span>
+            <span className="font-mono text-xl font-extrabold text-[var(--text-primary)] mt-1 block">
               {employees.filter(e => e.department === 'PROJECTS').length}
             </span>
           </div>
-          <Briefcase className="text-cyan-400 opacity-80" size={24} />
+          <Briefcase className="text-[var(--accent)] opacity-80" size={24} />
         </div>
-        <div className="bg-slate-950/60 border border-slate-900 rounded p-4 flex items-center justify-between">
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4 flex items-center justify-between">
           <div>
-            <span className="text-slate-500 block uppercase font-mono text-[9px]">Active Status</span>
-            <span className="font-mono text-xl font-extrabold text-slate-100 mt-1 block">
+            <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Active Status</span>
+            <span className="font-mono text-xl font-extrabold text-[var(--text-primary)] mt-1 block">
               {employees.filter(e => e.status === 'ACTIVE').length}
             </span>
           </div>
           <div className="compliance-light green w-3 h-3" />
         </div>
-        <div className="bg-slate-950/60 border border-slate-900 rounded p-4 flex items-center justify-between">
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4 flex items-center justify-between">
           <div>
-            <span className="text-slate-500 block uppercase font-mono text-[9px]">Compliance Audits</span>
-            <span className="font-mono text-xl font-extrabold text-slate-100 mt-1 block">Audit Ready</span>
+            <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Compliance Audits</span>
+            <span className="font-mono text-xl font-extrabold text-[var(--text-primary)] mt-1 block">Audit Ready</span>
           </div>
-          <ShieldAlert className="text-amber-400" size={24} />
+          <ShieldAlert className="text-[var(--status-warning-text)]" size={24} />
         </div>
       </div>
 
@@ -346,11 +346,11 @@ export default function EmployeesListPage() {
 
       {/* Onboard Employee Modal */}
       {showAddModal && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-slate-950 border border-slate-800 rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto flex flex-col">
-            <div className="flex justify-between items-center p-6 border-b border-slate-900">
-              <h2 className="text-xs font-mono text-emerald-400 uppercase tracking-widest font-bold">Onboard New Employee</h2>
-              <button onClick={() => setShowAddModal(false)} className="text-slate-500 hover:text-slate-200">
+        <div className="fixed inset-0 bg-[var(--bg-card)] backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto flex flex-col">
+            <div className="flex justify-between items-center p-6 border-b border-[var(--border)]">
+              <h2 className="text-xs font-mono text-[var(--accent)] uppercase tracking-widest font-bold">Onboard New Employee</h2>
+              <button onClick={() => setShowAddModal(false)} className="text-[var(--text-primary)]0 hover:text-[var(--text-primary)]">
                 <X size={18} />
               </button>
             </div>
@@ -359,26 +359,26 @@ export default function EmployeesListPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Section 1: Basic Info */}
                 <div className="md:col-span-3">
-                  <h3 className="text-[10px] font-mono text-slate-500 uppercase tracking-widest border-b border-slate-900 pb-2 mb-4">1. Personal & Contact Parameters</h3>
+                  <h3 className="text-[10px] font-mono text-[var(--text-primary)]0 uppercase tracking-widest border-b border-[var(--border)] pb-2 mb-4">1. Personal & Contact Parameters</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
-                      <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Full Name (EN) *</label>
+                      <label className="block text-[10px] font-mono text-[var(--text-secondary)] uppercase mb-1">Full Name (EN) *</label>
                       <input required type="text" name="full_name_en" className="quote-filter-input w-full" value={form.full_name_en} onChange={handleInputChange} />
                     </div>
                     <div>
-                      <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Full Name (AR) *</label>
+                      <label className="block text-[10px] font-mono text-[var(--text-secondary)] uppercase mb-1">Full Name (AR) *</label>
                       <input required type="text" name="full_name_ar" className="quote-filter-input w-full text-right" dir="rtl" value={form.full_name_ar} onChange={handleInputChange} />
                     </div>
                     <div>
-                      <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Nationality *</label>
+                      <label className="block text-[10px] font-mono text-[var(--text-secondary)] uppercase mb-1">Nationality *</label>
                       <input required type="text" name="nationality" className="quote-filter-input w-full" value={form.nationality} onChange={handleInputChange} />
                     </div>
                     <div>
-                      <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Date of Birth *</label>
+                      <label className="block text-[10px] font-mono text-[var(--text-secondary)] uppercase mb-1">Date of Birth *</label>
                       <input required type="date" name="dob" className="quote-filter-input w-full" value={form.dob} onChange={handleInputChange} />
                     </div>
                     <div>
-                      <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Gender *</label>
+                      <label className="block text-[10px] font-mono text-[var(--text-secondary)] uppercase mb-1">Gender *</label>
                       <select name="gender" className="quote-filter-input w-full" value={form.gender} onChange={handleInputChange}>
                         <option value="MALE">Male</option>
                         <option value="FEMALE">Female</option>
@@ -386,11 +386,11 @@ export default function EmployeesListPage() {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Mobile No *</label>
+                      <label className="block text-[10px] font-mono text-[var(--text-secondary)] uppercase mb-1">Mobile No *</label>
                       <input required type="text" name="mobile" className="quote-filter-input w-full" placeholder="+971-XX-XXXXXXX" value={form.mobile} onChange={handleInputChange} />
                     </div>
                     <div>
-                      <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Personal Email *</label>
+                      <label className="block text-[10px] font-mono text-[var(--text-secondary)] uppercase mb-1">Personal Email *</label>
                       <input required type="email" name="personal_email" className="quote-filter-input w-full" value={form.personal_email} onChange={handleInputChange} />
                     </div>
                   </div>
@@ -398,14 +398,14 @@ export default function EmployeesListPage() {
 
                 {/* Section 2: Job parameters */}
                 <div className="md:col-span-3">
-                  <h3 className="text-[10px] font-mono text-slate-500 uppercase tracking-widest border-b border-slate-900 pb-2 mb-4">2. Employment & Designation Parameters</h3>
+                  <h3 className="text-[10px] font-mono text-[var(--text-primary)]0 uppercase tracking-widest border-b border-[var(--border)] pb-2 mb-4">2. Employment & Designation Parameters</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
-                      <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Designation *</label>
+                      <label className="block text-[10px] font-mono text-[var(--text-secondary)] uppercase mb-1">Designation *</label>
                       <input required type="text" name="designation" className="quote-filter-input w-full" placeholder="e.g. ELV Technician" value={form.designation} onChange={handleInputChange} />
                     </div>
                     <div>
-                      <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Department *</label>
+                      <label className="block text-[10px] font-mono text-[var(--text-secondary)] uppercase mb-1">Department *</label>
                       <select name="department" className="quote-filter-input w-full" value={form.department} onChange={handleInputChange}>
                         <option value="PROJECTS">Projects</option>
                         <option value="SERVICE">Service</option>
@@ -417,14 +417,14 @@ export default function EmployeesListPage() {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Assigned project (payroll fallback)</label>
+                      <label className="block text-[10px] font-mono text-[var(--text-secondary)] uppercase mb-1">Assigned project (payroll fallback)</label>
                       <select name="assigned_project_id" className="quote-filter-input w-full" value={form.assigned_project_id} onChange={handleInputChange}>
                         <option value="">None (Office)</option>
                         {projects.map(p => <option key={p.id} value={p.id}>{p.label}</option>)}
                       </select>
                     </div>
                     <div>
-                      <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Employment Type *</label>
+                      <label className="block text-[10px] font-mono text-[var(--text-secondary)] uppercase mb-1">Employment Type *</label>
                       <select name="employment_type" className="quote-filter-input w-full" value={form.employment_type} onChange={handleInputChange}>
                         <option value="FULL_TIME">Full Time</option>
                         <option value="LIMITED_CONTRACT">Limited Contract</option>
@@ -432,11 +432,11 @@ export default function EmployeesListPage() {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Join Date *</label>
+                      <label className="block text-[10px] font-mono text-[var(--text-secondary)] uppercase mb-1">Join Date *</label>
                       <input required type="date" name="join_date" className="quote-filter-input w-full" value={form.join_date} onChange={handleInputChange} />
                     </div>
                     <div>
-                      <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Probation End Date</label>
+                      <label className="block text-[10px] font-mono text-[var(--text-secondary)] uppercase mb-1">Probation End Date</label>
                       <input type="date" name="probation_end_date" className="quote-filter-input w-full" value={form.probation_end_date} onChange={handleInputChange} />
                     </div>
                   </div>
@@ -444,61 +444,61 @@ export default function EmployeesListPage() {
 
                 {/* Section 3: Compliance documents */}
                 <div className="md:col-span-3">
-                  <h3 className="text-[10px] font-mono text-slate-500 uppercase tracking-widest border-b border-slate-900 pb-2 mb-4">3. UAE Document Compliance Parameters</h3>
+                  <h3 className="text-[10px] font-mono text-[var(--text-primary)]0 uppercase tracking-widest border-b border-[var(--border)] pb-2 mb-4">3. UAE Document Compliance Parameters</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
-                      <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Passport No *</label>
+                      <label className="block text-[10px] font-mono text-[var(--text-secondary)] uppercase mb-1">Passport No *</label>
                       <input required type="text" name="passport_no" className="quote-filter-input w-full" value={form.passport_no} onChange={handleInputChange} />
                     </div>
                     <div>
-                      <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Passport Expiry *</label>
+                      <label className="block text-[10px] font-mono text-[var(--text-secondary)] uppercase mb-1">Passport Expiry *</label>
                       <input required type="date" name="passport_expiry" className="quote-filter-input w-full" value={form.passport_expiry} onChange={handleInputChange} />
                     </div>
                     <div>
-                      <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Emirates ID No *</label>
+                      <label className="block text-[10px] font-mono text-[var(--text-secondary)] uppercase mb-1">Emirates ID No *</label>
                       <input required type="text" name="emirates_id_no" className="quote-filter-input w-full" placeholder="784-YYYY-XXXXXXX-X" value={form.emirates_id_no} onChange={handleInputChange} />
                     </div>
                     <div>
-                      <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Emirates ID Expiry *</label>
+                      <label className="block text-[10px] font-mono text-[var(--text-secondary)] uppercase mb-1">Emirates ID Expiry *</label>
                       <input required type="date" name="emirates_id_expiry" className="quote-filter-input w-full" value={form.emirates_id_expiry} onChange={handleInputChange} />
                     </div>
                     <div>
-                      <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Visa No *</label>
+                      <label className="block text-[10px] font-mono text-[var(--text-secondary)] uppercase mb-1">Visa No *</label>
                       <input required type="text" name="visa_no" className="quote-filter-input w-full" value={form.visa_no} onChange={handleInputChange} />
                     </div>
                     <div>
-                      <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Visa Expiry *</label>
+                      <label className="block text-[10px] font-mono text-[var(--text-secondary)] uppercase mb-1">Visa Expiry *</label>
                       <input required type="date" name="visa_expiry" className="quote-filter-input w-full" value={form.visa_expiry} onChange={handleInputChange} />
                     </div>
                     <div>
-                      <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Visa Sponsor *</label>
+                      <label className="block text-[10px] font-mono text-[var(--text-secondary)] uppercase mb-1">Visa Sponsor *</label>
                       <select name="visa_sponsor" className="quote-filter-input w-full" value={form.visa_sponsor} onChange={handleInputChange}>
                         <option value="JEET">JEET Security (Own)</option>
                         <option value="OTHER">Other / Client / Spouse</option>
                       </select>
                     </div>
                     <div>
-                      <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Labour Card No *</label>
+                      <label className="block text-[10px] font-mono text-[var(--text-secondary)] uppercase mb-1">Labour Card No *</label>
                       <input required type="text" name="labour_card_no" className="quote-filter-input w-full" value={form.labour_card_no} onChange={handleInputChange} />
                     </div>
                     <div>
-                      <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Labour Card Expiry *</label>
+                      <label className="block text-[10px] font-mono text-[var(--text-secondary)] uppercase mb-1">Labour Card Expiry *</label>
                       <input required type="date" name="labour_card_expiry" className="quote-filter-input w-full" value={form.labour_card_expiry} onChange={handleInputChange} />
                     </div>
                     <div>
-                      <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">MOHRE Person Code *</label>
+                      <label className="block text-[10px] font-mono text-[var(--text-secondary)] uppercase mb-1">MOHRE Person Code *</label>
                       <input required type="text" name="mohre_person_code" className="quote-filter-input w-full" placeholder="14-digit code" value={form.mohre_person_code} onChange={handleInputChange} />
                     </div>
                     <div>
-                      <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Medical Insurance Expiry *</label>
+                      <label className="block text-[10px] font-mono text-[var(--text-secondary)] uppercase mb-1">Medical Insurance Expiry *</label>
                       <input required type="date" name="medical_insurance_expiry" className="quote-filter-input w-full" value={form.medical_insurance_expiry} onChange={handleInputChange} />
                     </div>
                     <div>
-                      <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">ILOE Insurance Expiry</label>
+                      <label className="block text-[10px] font-mono text-[var(--text-secondary)] uppercase mb-1">ILOE Insurance Expiry</label>
                       <input type="date" name="iloe_insurance_expiry" className="quote-filter-input w-full" value={form.iloe_insurance_expiry} onChange={handleInputChange} />
                     </div>
                     <div>
-                      <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Driving License Expiry</label>
+                      <label className="block text-[10px] font-mono text-[var(--text-secondary)] uppercase mb-1">Driving License Expiry</label>
                       <input type="date" name="driving_license_expiry" className="quote-filter-input w-full" value={form.driving_license_expiry} onChange={handleInputChange} />
                     </div>
                   </div>
@@ -506,22 +506,22 @@ export default function EmployeesListPage() {
 
                 {/* Section 4: Bank Details */}
                 <div className="md:col-span-3">
-                  <h3 className="text-[10px] font-mono text-slate-500 uppercase tracking-widest border-b border-slate-900 pb-2 mb-4">4. Bank & WPS salary Card Details</h3>
+                  <h3 className="text-[10px] font-mono text-[var(--text-primary)]0 uppercase tracking-widest border-b border-[var(--border)] pb-2 mb-4">4. Bank & WPS salary Card Details</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
                     <div>
-                      <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Bank Name *</label>
+                      <label className="block text-[10px] font-mono text-[var(--text-secondary)] uppercase mb-1">Bank Name *</label>
                       <input required type="text" name="bank_name" className="quote-filter-input w-full" placeholder="e.g. ADCB / C3 Card" value={form.bank_name} onChange={handleInputChange} />
                     </div>
                     <div>
-                      <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">IBAN *</label>
+                      <label className="block text-[10px] font-mono text-[var(--text-secondary)] uppercase mb-1">IBAN *</label>
                       <input required type="text" name="iban" className="quote-filter-input w-full font-mono" placeholder="AE..." value={form.iban} onChange={handleInputChange} />
                     </div>
                     <div>
-                      <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Bank Routing Code *</label>
+                      <label className="block text-[10px] font-mono text-[var(--text-secondary)] uppercase mb-1">Bank Routing Code *</label>
                       <input required type="text" name="routing_code" className="quote-filter-input w-full" placeholder="9-digit code" value={form.routing_code} onChange={handleInputChange} />
                     </div>
                     <div>
-                      <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">WPS Agent ID *</label>
+                      <label className="block text-[10px] font-mono text-[var(--text-secondary)] uppercase mb-1">WPS Agent ID *</label>
                       <input required type="text" name="agent_id" className="quote-filter-input w-full" placeholder="e.g. C3 Card Agent ID" value={form.agent_id} onChange={handleInputChange} />
                     </div>
                   </div>
@@ -529,7 +529,7 @@ export default function EmployeesListPage() {
               </div>
 
               {/* Actions */}
-              <div className="flex justify-end gap-3 pt-6 border-t border-slate-900">
+              <div className="flex justify-end gap-3 pt-6 border-t border-[var(--border)]">
                 <button type="button" className="quote-btn quote-btn-secondary" onClick={() => setShowAddModal(false)}>Cancel</button>
                 <button type="submit" disabled={saving} className="quote-btn quote-btn-primary flex items-center gap-2">
                   {saving ? 'Onboarding...' : 'Save & Onboard'}

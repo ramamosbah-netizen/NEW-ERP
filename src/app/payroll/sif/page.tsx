@@ -132,7 +132,7 @@ export default function SifExportPage() {
       <header className="quote-header">
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-            <Link href="/payroll" className="text-slate-400 hover:text-emerald-400 font-mono text-[10px] uppercase flex items-center gap-1" style={{ textDecoration: 'none' }}>
+            <Link href="/payroll" className="text-[var(--text-secondary)] hover:text-[var(--accent)] font-mono text-[10px] uppercase flex items-center gap-1" style={{ textDecoration: 'none' }}>
               <ArrowLeft size={10} /> Back to Runs
             </Link>
           </div>
@@ -147,13 +147,13 @@ export default function SifExportPage() {
         {/* Left Side: Parameters Form */}
         <div className="lg:col-span-1 space-y-6">
           <div className="quote-card">
-            <h3 className="text-xs font-mono uppercase text-slate-300 font-bold mb-4 flex items-center gap-1.5">
+            <h3 className="text-xs font-mono uppercase text-[var(--text-secondary)] font-bold mb-4 flex items-center gap-1.5">
               <Settings size={14} /> SIF Parameters
             </h3>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-[9px] font-mono text-slate-400 uppercase mb-1">Approved Payroll Run</label>
+                <label className="block text-[9px] font-mono text-[var(--text-secondary)] uppercase mb-1">Approved Payroll Run</label>
                 <select 
                   className="quote-filter-input w-full"
                   value={selectedRunId}
@@ -167,7 +167,7 @@ export default function SifExportPage() {
               </div>
 
               <div>
-                <label className="block text-[9px] font-mono text-slate-400 uppercase mb-1">MOHRE Establishment ID (13 digits)</label>
+                <label className="block text-[9px] font-mono text-[var(--text-secondary)] uppercase mb-1">MOHRE Establishment ID (13 digits)</label>
                 <input 
                   type="text" 
                   maxLength={13}
@@ -182,7 +182,7 @@ export default function SifExportPage() {
               </div>
 
               <div>
-                <label className="block text-[9px] font-mono text-slate-400 uppercase mb-1">Employer Bank Routing (9 digits)</label>
+                <label className="block text-[9px] font-mono text-[var(--text-secondary)] uppercase mb-1">Employer Bank Routing (9 digits)</label>
                 <input 
                   type="text" 
                   maxLength={9}
@@ -197,7 +197,7 @@ export default function SifExportPage() {
               </div>
 
               <div>
-                <label className="block text-[9px] font-mono text-slate-400 uppercase mb-1">File Reference (Optional, max 15 chars)</label>
+                <label className="block text-[9px] font-mono text-[var(--text-secondary)] uppercase mb-1">File Reference (Optional, max 15 chars)</label>
                 <input 
                   type="text" 
                   maxLength={15}
@@ -229,7 +229,7 @@ export default function SifExportPage() {
         <div className="lg:col-span-2 space-y-6">
           <div className="quote-card">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xs font-mono uppercase text-slate-300 font-bold">WPS Compliance Verification</h3>
+              <h3 className="text-xs font-mono uppercase text-[var(--text-secondary)] font-bold">WPS Compliance Verification</h3>
               
               {isValidated && errors.length === 0 && (
                 <button 
@@ -244,7 +244,7 @@ export default function SifExportPage() {
 
             {!isValidated ? (
               <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-muted)' }}>
-                <HelpCircle size={40} className="text-slate-600 mb-2" style={{ margin: '0 auto 1rem auto' }} />
+                <HelpCircle size={40} className="text-[var(--text-tertiary)] mb-2" style={{ margin: '0 auto 1rem auto' }} />
                 <p className="text-[11px] font-mono">Fill in the establishment ID and bank details, then click "Validate SIF Compliance" to run pre-export validation checks.</p>
               </div>
             ) : errors.length > 0 ? (
@@ -256,9 +256,9 @@ export default function SifExportPage() {
                   </div>
                 </div>
 
-                <div className="border border-slate-900 rounded bg-slate-950/40 p-4 max-h-[300px] overflow-y-auto">
-                  <h4 className="text-[9px] font-mono uppercase text-slate-500 mb-2">Errors List</h4>
-                  <ul className="space-y-1.5 font-mono text-[10px] text-red-400">
+                <div className="border border-[var(--border)] rounded bg-[var(--bg-card)] p-4 max-h-[300px] overflow-y-auto">
+                  <h4 className="text-[9px] font-mono uppercase text-[var(--text-primary)]0 mb-2">Errors List</h4>
+                  <ul className="space-y-1.5 font-mono text-[10px] text-[var(--status-danger-text)]">
                     {errors.map((err, idx) => (
                       <li key={idx} className="flex items-start gap-1">
                         <span>•</span> <span>{err}</span>
@@ -292,13 +292,13 @@ export default function SifExportPage() {
                       {lines.map((line) => (
                         <tr key={line.id}>
                           <td>
-                            <div className="font-semibold text-slate-200">{line.employee?.full_name_en}</div>
-                            <div className="font-mono text-[8px] text-slate-500">{line.employee?.employee_number}</div>
+                            <div className="font-semibold text-[var(--text-primary)]">{line.employee?.full_name_en}</div>
+                            <div className="font-mono text-[8px] text-[var(--text-primary)]0">{line.employee?.employee_number}</div>
                           </td>
-                          <td className="font-mono text-slate-400">{line.mohre_person_code}</td>
-                          <td className="font-mono text-slate-400">{line.agent_id}</td>
-                          <td className="font-mono text-slate-300">{line.iban}</td>
-                          <td style={{ textAlign: 'right', fontWeight: 'bold' }} className="font-mono text-emerald-400">
+                          <td className="font-mono text-[var(--text-secondary)]">{line.mohre_person_code}</td>
+                          <td className="font-mono text-[var(--text-secondary)]">{line.agent_id}</td>
+                          <td className="font-mono text-[var(--text-secondary)]">{line.iban}</td>
+                          <td style={{ textAlign: 'right', fontWeight: 'bold' }} className="font-mono text-[var(--accent)]">
                             AED {Number(line.net_pay).toFixed(2)}
                           </td>
                           <td style={{ textAlign: 'center' }}>

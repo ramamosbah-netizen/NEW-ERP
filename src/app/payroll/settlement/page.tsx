@@ -163,7 +163,7 @@ export default function SettlementPage() {
       <header className="quote-header">
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-            <Link href="/payroll" className="text-slate-400 hover:text-emerald-400 font-mono text-[10px] uppercase flex items-center gap-1" style={{ textDecoration: 'none' }}>
+            <Link href="/payroll" className="text-[var(--text-secondary)] hover:text-[var(--accent)] font-mono text-[10px] uppercase flex items-center gap-1" style={{ textDecoration: 'none' }}>
               <ArrowLeft size={10} /> Back to Payroll
             </Link>
           </div>
@@ -178,13 +178,13 @@ export default function SettlementPage() {
         {/* Left Side: Parameters Inputs */}
         <div className="lg:col-span-2 space-y-6">
           <div className="quote-card">
-            <h3 className="text-xs font-mono uppercase text-slate-300 font-bold mb-4 flex items-center gap-1.5">
+            <h3 className="text-xs font-mono uppercase text-[var(--text-secondary)] font-bold mb-4 flex items-center gap-1.5">
               <Calculator size={14} /> Settlement parameters
             </h3>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-[9px] font-mono text-slate-400 uppercase mb-1">Employee Member *</label>
+                <label className="block text-[9px] font-mono text-[var(--text-secondary)] uppercase mb-1">Employee Member *</label>
                 <select 
                   className="quote-filter-input w-full"
                   value={selectedEmpId}
@@ -201,7 +201,7 @@ export default function SettlementPage() {
                 <>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-[9px] font-mono text-slate-400 uppercase mb-1">Exit Date *</label>
+                      <label className="block text-[9px] font-mono text-[var(--text-secondary)] uppercase mb-1">Exit Date *</label>
                       <input 
                         type="date" 
                         className="quote-filter-input w-full"
@@ -210,7 +210,7 @@ export default function SettlementPage() {
                       />
                     </div>
                     <div>
-                      <label className="block text-[9px] font-mono text-slate-400 uppercase mb-1">Exit Type *</label>
+                      <label className="block text-[9px] font-mono text-[var(--text-secondary)] uppercase mb-1">Exit Type *</label>
                       <select 
                         className="quote-filter-input w-full"
                         value={params.exitType}
@@ -225,7 +225,7 @@ export default function SettlementPage() {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-[9px] font-mono text-slate-400 uppercase mb-1">Unpaid Leave Days</label>
+                      <label className="block text-[9px] font-mono text-[var(--text-secondary)] uppercase mb-1">Unpaid Leave Days</label>
                       <input 
                         type="number" 
                         min="0"
@@ -235,7 +235,7 @@ export default function SettlementPage() {
                       />
                     </div>
                     <div>
-                      <label className="block text-[9px] font-mono text-slate-400 uppercase mb-1">Remaining Leave Days</label>
+                      <label className="block text-[9px] font-mono text-[var(--text-secondary)] uppercase mb-1">Remaining Leave Days</label>
                       <input 
                         type="number" 
                         min="0"
@@ -249,7 +249,7 @@ export default function SettlementPage() {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-[9px] font-mono text-slate-400 uppercase mb-1">Pending Salary Days</label>
+                      <label className="block text-[9px] font-mono text-[var(--text-secondary)] uppercase mb-1">Pending Salary Days</label>
                       <input 
                         type="number" 
                         min="0"
@@ -259,7 +259,7 @@ export default function SettlementPage() {
                       />
                     </div>
                     <div>
-                      <label className="block text-[9px] font-mono text-slate-400 uppercase mb-1">Advances Recovery (AED)</label>
+                      <label className="block text-[9px] font-mono text-[var(--text-secondary)] uppercase mb-1">Advances Recovery (AED)</label>
                       <input 
                         type="number" 
                         min="0"
@@ -288,14 +288,14 @@ export default function SettlementPage() {
               {/* Employee Parameters Sheet */}
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
                 <div>
-                  <h3 className="font-semibold text-slate-200 text-sm">{employee.full_name_en}</h3>
-                  <div className="font-mono text-[9px] text-slate-500 uppercase mt-0.5">
+                  <h3 className="font-semibold text-[var(--text-primary)] text-sm">{employee.full_name_en}</h3>
+                  <div className="font-mono text-[9px] text-[var(--text-primary)]0 uppercase mt-0.5">
                     Date Joined: {new Date(employee.join_date).toLocaleDateString('en-GB')}
                   </div>
                 </div>
                 <div style={{ textAlign: 'right' }}>
-                  <span className="text-slate-500 uppercase font-mono text-[9px] block">Tenure Period</span>
-                  <span className="font-mono text-[11px] font-bold text-slate-300">
+                  <span className="text-[var(--text-primary)]0 uppercase font-mono text-[9px] block">Tenure Period</span>
+                  <span className="font-mono text-[11px] font-bold text-[var(--text-secondary)]">
                     {calculationResult.effectiveServiceDays} days ({(calculationResult.effectiveServiceDays / 365).toFixed(2)} yrs)
                   </span>
                 </div>
@@ -303,35 +303,35 @@ export default function SettlementPage() {
 
               {/* Receipt Ledger Rows */}
               <div className="space-y-3 font-mono text-[11px]">
-                <div className="flex justify-between text-slate-400">
+                <div className="flex justify-between text-[var(--text-secondary)]">
                   <span>Basic Salary Base:</span>
-                  <span className="text-slate-200">AED {basicSalary.toLocaleString()}</span>
+                  <span className="text-[var(--text-primary)]">AED {basicSalary.toLocaleString()}</span>
                 </div>
-                <div className="flex justify-between text-slate-400">
+                <div className="flex justify-between text-[var(--text-secondary)]">
                   <span>Total Salary Base (with Allowances):</span>
-                  <span className="text-slate-200">AED {totalSalary.toLocaleString()}</span>
+                  <span className="text-[var(--text-primary)]">AED {totalSalary.toLocaleString()}</span>
                 </div>
-                <div className="flex justify-between text-slate-400 pt-2 border-t border-slate-900">
+                <div className="flex justify-between text-[var(--text-secondary)] pt-2 border-t border-[var(--border)]">
                   <span>1. Gratuity EOSB Payout:</span>
-                  <span className="text-emerald-400 font-bold">AED {calculationResult.gratuityAmount.toLocaleString()}</span>
+                  <span className="text-[var(--accent)] font-bold">AED {calculationResult.gratuityAmount.toLocaleString()}</span>
                 </div>
-                <div className="flex justify-between text-slate-400">
+                <div className="flex justify-between text-[var(--text-secondary)]">
                   <span>2. Leave Encashment ({calculationResult.leaveEncashmentDays} days):</span>
-                  <span className="text-emerald-400 font-bold">AED {calculationResult.leaveEncashmentAmount.toLocaleString()}</span>
+                  <span className="text-[var(--accent)] font-bold">AED {calculationResult.leaveEncashmentAmount.toLocaleString()}</span>
                 </div>
-                <div className="flex justify-between text-slate-400">
+                <div className="flex justify-between text-[var(--text-secondary)]">
                   <span>3. Pending Salary ({params.pendingSalaryDays} days):</span>
-                  <span className="text-emerald-400 font-bold">AED {calculationResult.pendingSalary.toLocaleString()}</span>
+                  <span className="text-[var(--accent)] font-bold">AED {calculationResult.pendingSalary.toLocaleString()}</span>
                 </div>
-                <div className="flex justify-between text-slate-400 text-red-400">
+                <div className="flex justify-between text-[var(--text-secondary)] text-[var(--status-danger-text)]">
                   <span>4. Deduct: Outstanding Advances:</span>
                   <span>-AED {calculationResult.outstandingAdvances.toLocaleString()}</span>
                 </div>
 
                 {/* Final Net Total */}
-                <div className="flex justify-between text-slate-200 pt-4 border-t-2 border-slate-900 text-sm font-bold bg-slate-950/40 p-3 rounded">
-                  <span className="text-emerald-400">NET SETTLEMENT PAYOUT:</span>
-                  <span className="text-emerald-400 text-base">
+                <div className="flex justify-between text-[var(--text-primary)] pt-4 border-t-2 border-[var(--border)] text-sm font-bold bg-[var(--bg-card)] p-3 rounded">
+                  <span className="text-[var(--accent)]">NET SETTLEMENT PAYOUT:</span>
+                  <span className="text-[var(--accent)] text-base">
                     AED {calculationResult.totalSettlement.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                   </span>
                 </div>
@@ -348,7 +348,7 @@ export default function SettlementPage() {
               )}
 
               {/* Action Buttons */}
-              <div className="flex justify-end pt-4 border-t border-slate-900">
+              <div className="flex justify-end pt-4 border-t border-[var(--border)]">
                 <button 
                   type="button" 
                   className="quote-btn"
@@ -362,9 +362,9 @@ export default function SettlementPage() {
             </div>
           ) : (
             <div className="quote-card flex flex-col items-center justify-center" style={{ padding: '6rem' }}>
-              <Layers size={48} className="text-slate-600 mb-2" style={{ margin: '0 auto 1.5rem auto', opacity: 0.5 }} />
-              <h3 className="font-mono text-xs uppercase tracking-widest text-slate-300 font-bold mb-1">Receipt Summary</h3>
-              <p className="text-[11px] text-slate-500 max-w-sm mx-auto">Select a staff member from the dropdown to audit tenure days and compute final payout details.</p>
+              <Layers size={48} className="text-[var(--text-tertiary)] mb-2" style={{ margin: '0 auto 1.5rem auto', opacity: 0.5 }} />
+              <h3 className="font-mono text-xs uppercase tracking-widest text-[var(--text-secondary)] font-bold mb-1">Receipt Summary</h3>
+              <p className="text-[11px] text-[var(--text-primary)]0 max-w-sm mx-auto">Select a staff member from the dropdown to audit tenure days and compute final payout details.</p>
             </div>
           )}
         </div>

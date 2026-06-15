@@ -133,31 +133,31 @@ export default function ComplianceDashboardPage() {
 
       {/* Summary Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
-        <div className="bg-rose-950/20 border border-rose-500/20 rounded p-5 flex items-center justify-between">
+        <div className="bg-[var(--status-danger-bg)] border border-[var(--status-danger-border)] rounded p-5 flex items-center justify-between">
           <div>
-            <span className="text-slate-500 block uppercase font-mono text-[9px]">Critical Violations</span>
-            <span className="font-mono text-2xl font-extrabold text-rose-500 mt-1 block">{expiredCount}</span>
-            <span className="text-[10px] text-rose-400 font-mono mt-1 block">Expired active credentials</span>
+            <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Critical Violations</span>
+            <span className="font-mono text-2xl font-extrabold text-[var(--status-danger-text)] mt-1 block">{expiredCount}</span>
+            <span className="text-[10px] text-[var(--status-danger-text)] font-mono mt-1 block">Expired active credentials</span>
           </div>
-          <AlertTriangle className="text-rose-500" size={32} />
+          <AlertTriangle className="text-[var(--status-danger-text)]" size={32} />
         </div>
         
-        <div className="bg-amber-950/20 border border-amber-500/20 rounded p-5 flex items-center justify-between">
+        <div className="bg-[var(--status-warning-bg)] border border-[var(--status-warning-border)] rounded p-5 flex items-center justify-between">
           <div>
-            <span className="text-slate-500 block uppercase font-mono text-[9px]">Approaching Expiries (60D)</span>
-            <span className="font-mono text-2xl font-extrabold text-amber-500 mt-1 block">{expiring60dCount}</span>
-            <span className="text-[10px] text-amber-400 font-mono mt-1 block">Action required for renewal</span>
+            <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Approaching Expiries (60D)</span>
+            <span className="font-mono text-2xl font-extrabold text-[var(--status-warning-text)] mt-1 block">{expiring60dCount}</span>
+            <span className="text-[10px] text-[var(--status-warning-text)] font-mono mt-1 block">Action required for renewal</span>
           </div>
-          <Clock className="text-amber-500" size={32} />
+          <Clock className="text-[var(--status-warning-text)]" size={32} />
         </div>
 
-        <div className="bg-slate-950/60 border border-slate-900 rounded p-5 flex items-center justify-between">
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-5 flex items-center justify-between">
           <div>
-            <span className="text-slate-500 block uppercase font-mono text-[9px]">Audit Status</span>
-            <span className="font-mono text-xl font-extrabold text-emerald-400 mt-1 block">AUDIT-READY</span>
-            <span className="text-[10px] text-slate-500 font-mono mt-1 block">100% records catalogued</span>
+            <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Audit Status</span>
+            <span className="font-mono text-xl font-extrabold text-[var(--accent)] mt-1 block">AUDIT-READY</span>
+            <span className="text-[10px] text-[var(--text-primary)]0 font-mono mt-1 block">100% records catalogued</span>
           </div>
-          <CheckCircle className="text-emerald-400" size={32} />
+          <CheckCircle className="text-[var(--accent)]" size={32} />
         </div>
       </div>
 
@@ -167,7 +167,7 @@ export default function ComplianceDashboardPage() {
         {/* Compliance Matrix (Grid) */}
         <div className="lg:col-span-2 quote-card">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-xs font-mono text-emerald-400 uppercase tracking-widest font-bold">Workforce Document Matrix</h3>
+            <h3 className="text-xs font-mono text-[var(--accent)] uppercase tracking-widest font-bold">Workforce Document Matrix</h3>
             <div style={{ position: 'relative', width: '240px' }}>
               <Search size={14} style={{ position: 'absolute', left: '10px', top: '8px', color: 'var(--text-muted)' }} />
               <input
@@ -206,7 +206,7 @@ export default function ComplianceDashboardPage() {
                       <td style={{ fontWeight: 600 }}>
                         <Link href={`/hr/${emp.id}`} style={{ color: 'inherit', textDecoration: 'none' }} className="hover:text-primary">
                           {emp.full_name_en}
-                          <span className="block text-[8px] text-slate-500 font-mono mt-0.5">{emp.employee_number}</span>
+                          <span className="block text-[8px] text-[var(--text-primary)]0 font-mono mt-0.5">{emp.employee_number}</span>
                         </Link>
                       </td>
                       <td style={{ textAlign: 'center' }}>
@@ -234,12 +234,12 @@ export default function ComplianceDashboardPage() {
 
         {/* Expiry timeline log */}
         <div className="quote-card">
-          <h3 className="text-xs font-mono text-emerald-400 uppercase tracking-widest font-bold mb-4 flex items-center gap-2">
+          <h3 className="text-xs font-mono text-[var(--accent)] uppercase tracking-widest font-bold mb-4 flex items-center gap-2">
             <Calendar size={14} /> Upcoming Renewals Schedule
           </h3>
 
           {upcomingExpiries.length === 0 ? (
-            <div className="text-center py-12 text-slate-500 font-mono text-xs">
+            <div className="text-center py-12 text-[var(--text-primary)]0 font-mono text-xs">
               No upcoming renewals detected. All staff files are compliant.
             </div>
           ) : (
@@ -249,8 +249,8 @@ export default function ComplianceDashboardPage() {
                   key={idx} 
                   className={`p-3 rounded border font-mono text-[10px] ${
                     exp.status === 'EXPIRED' 
-                      ? 'bg-rose-500/10 border-rose-500/25 text-rose-300' 
-                      : 'bg-amber-500/5 border-amber-500/25 text-amber-300'
+                      ? 'bg-[var(--status-danger-bg)] border-[var(--status-danger-border)] text-[var(--status-danger-text)]' 
+                      : 'bg-[var(--status-warning-bg)] border-[var(--status-warning-border)] text-[var(--status-warning-text)]'
                   }`}
                 >
                   <div className="flex justify-between items-start">
@@ -259,8 +259,8 @@ export default function ComplianceDashboardPage() {
                       {exp.status === 'EXPIRED' ? 'EXPIRED' : `${exp.daysLeft} days left`}
                     </span>
                   </div>
-                  <p className="text-slate-400 mt-1">{exp.employeeName} ({exp.employeeNumber})</p>
-                  <div className="flex justify-between mt-1 text-[9px] text-slate-500">
+                  <p className="text-[var(--text-secondary)] mt-1">{exp.employeeName} ({exp.employeeNumber})</p>
+                  <div className="flex justify-between mt-1 text-[9px] text-[var(--text-primary)]0">
                     <span>Expiry: {new Date(exp.expiryDate).toLocaleDateString('en-GB')}</span>
                     <Link href={`/hr/${exp.employeeId}`} style={{ color: 'var(--secondary)' }}>
                       View Profile

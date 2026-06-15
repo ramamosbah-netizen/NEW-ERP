@@ -56,7 +56,7 @@ export default function LeaveApprovalsPage() {
       <header className="quote-header">
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-            <Link href="/hr" className="text-slate-400 hover:text-emerald-400 font-mono text-[10px] uppercase flex items-center gap-1" style={{ textDecoration: 'none' }}>
+            <Link href="/hr" className="text-[var(--text-secondary)] hover:text-[var(--accent)] font-mono text-[10px] uppercase flex items-center gap-1" style={{ textDecoration: 'none' }}>
               <ArrowLeft size={10} /> Back to Master
             </Link>
           </div>
@@ -85,9 +85,9 @@ export default function LeaveApprovalsPage() {
         </div>
       ) : queue.length === 0 ? (
         <div style={{ padding: '4rem', textAlign: 'center', color: 'var(--text-muted)' }} className="quote-card">
-          <UserCheck size={48} className="text-emerald-400" style={{ margin: '0 auto 1rem auto', opacity: 0.8 }} />
-          <h3 className="font-mono text-xs uppercase tracking-widest text-slate-300 font-bold mb-1">Queue Empty</h3>
-          <p className="text-[11px] text-slate-500">All submitted employee leave requests have been processed.</p>
+          <UserCheck size={48} className="text-[var(--accent)]" style={{ margin: '0 auto 1rem auto', opacity: 0.8 }} />
+          <h3 className="font-mono text-xs uppercase tracking-widest text-[var(--text-secondary)] font-bold mb-1">Queue Empty</h3>
+          <p className="text-[11px] text-[var(--text-primary)]0">All submitted employee leave requests have been processed.</p>
         </div>
       ) : (
         <div className="quote-card">
@@ -109,14 +109,14 @@ export default function LeaveApprovalsPage() {
                 {queue.map((req) => (
                   <tr key={req.id}>
                     <td>
-                      <div className="font-semibold text-slate-200">
+                      <div className="font-semibold text-[var(--text-primary)]">
                         {req.employee?.full_name_en}
                       </div>
-                      <div className="font-mono text-[9px] text-emerald-400">
+                      <div className="font-mono text-[9px] text-[var(--accent)]">
                         {req.employee?.employee_number}
                       </div>
                     </td>
-                    <td className="font-mono text-[10px] text-slate-400">
+                    <td className="font-mono text-[10px] text-[var(--text-secondary)]">
                       {req.employee?.department || '—'}
                     </td>
                     <td>
@@ -129,13 +129,13 @@ export default function LeaveApprovalsPage() {
                         {new Date(req.from_date).toLocaleDateString('en-GB')} to {new Date(req.to_date).toLocaleDateString('en-GB')}
                       </div>
                     </td>
-                    <td style={{ textAlign: 'center', fontWeight: 'bold' }} className="font-mono text-emerald-400">
+                    <td style={{ textAlign: 'center', fontWeight: 'bold' }} className="font-mono text-[var(--accent)]">
                       {req.days}
                     </td>
-                    <td style={{ maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} className="text-slate-300" title={req.reason || ''}>
-                      {req.reason || <span className="text-slate-600 font-mono italic text-[10px]">No reason provided</span>}
+                    <td style={{ maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} className="text-[var(--text-secondary)]" title={req.reason || ''}>
+                      {req.reason || <span className="text-[var(--text-tertiary)] font-mono italic text-[10px]">No reason provided</span>}
                     </td>
-                    <td className="font-mono text-[10px] text-slate-500">
+                    <td className="font-mono text-[10px] text-[var(--text-primary)]0">
                       {new Date(req.created_at || '').toLocaleDateString('en-GB')}
                     </td>
                     <td>
