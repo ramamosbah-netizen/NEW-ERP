@@ -42,6 +42,7 @@ import {
   Coins,
   ShieldAlert,
   PiggyBank,
+  Receipt,
   Car,
   Calculator,
   Users,
@@ -139,6 +140,7 @@ const NAV_SECTIONS = [
       { href: '/procurement/match', label: '3-Way Match', icon: ShieldAlert },
       { href: '/procurement/grn-analytics', label: 'GRN Analytics', icon: PackageCheck },
       { href: '/procurement/savings', label: 'Savings Analysis', icon: PiggyBank },
+      { href: '/procurement/payables', label: 'Payables', icon: Receipt },
     ],
   },
   {

@@ -32,4 +32,5 @@ Recharts where useful, sidebar link, RBAC (existing roles), and a roadmap update
 - ✅ **Phase 6 — Three-Way Match Exceptions** (`/procurement/match`): supplier invoices bucketed Matched/Pending/Exception, clickable KPI filters, status pie, table with supplier+PO+value+match status. PDF/Excel.
 - ✅ **Phase 7 — Goods Receipt (GRN) Analytics** (`/procurement/grn-analytics`): GRN KPIs (total, this month, pending receipts, projects receiving), receipts-per-month + receipts-by-project charts, recent-GRN log (PO + supplier + project). PDF/Excel.
 - ✅ **Phase 8 — Savings & Comparison Analysis** (`/procurement/savings`): from `supplier_comparisons` — savings vs BOQ, money "left on the table" (selected − lowest), avg margin, overrides; savings + selected-vs-lowest charts, table with drill to comparison. PDF/Excel.
-- ⏭ Then: Payables → Hub/Polish.
+- ✅ **Phase 9 — Payables Overview** (`/procurement/payables`): supplier-invoice outstanding (total − paid), overdue + due-≤7d KPIs, payables-aging buckets, outstanding-by-supplier chart, invoice table with drill to AP. PDF/Excel.
+- ⏭ Then: Hub + Audit & Export Polish (final).
