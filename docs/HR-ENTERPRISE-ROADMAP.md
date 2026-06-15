@@ -27,4 +27,5 @@ Recharts where useful, sidebar link, RBAC (existing roles), and a roadmap update
 - ✅ **Phase 2 — Document Compliance & Expiry Tracker** (`/hr/compliance-tracker`): flattens every employee document expiry (visa/labour-card/EID/passport/medical+ILOE insurance/licence) into rows bucketed by urgency (Expired/≤30/31–60/61–90/Valid); clickable KPI filters, expired+expiring-by-document chart, search + document + status filters, table sorted by soonest, drill to employee. PDF/Excel.
 - ✅ **Phase 3 — Workforce Analytics** (`/hr/workforce`): KPIs (headcount, departments, nationalities, avg tenure), by-department / by-nationality / by-employment-type / tenure-distribution charts, headcount-by-department table with avg tenure. PDF/Excel.
 - ✅ **Phase 4 — Payroll Analytics** (`/payroll/analytics`): KPIs (latest gross/net, total OT, avg net), gross-vs-net cost trend, pay-component pie (basic/housing/transport/other/OT), net-by-department, run-history table. PDF/Excel.
-- ⏭ Then: Leave → Timesheets → Labour Cost → EOSB → Manpower → Hub/Polish.
+- ✅ **Phase 5 — Leave Analytics** (`/hr/leave-analytics`): KPIs (requests, pending, approved days, upcoming), days-by-leave-type pie, by-status, approved-days-by-department, pending-approval queue table. PDF/Excel.
+- ⏭ Then: Timesheets → Labour Cost → EOSB → Manpower → Hub/Polish.
