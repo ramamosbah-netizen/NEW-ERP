@@ -146,6 +146,7 @@ const NAV_SECTIONS = [
       { href: '/service/ppm-compliance', label: 'PPM Compliance', icon: CalendarClock },
       { href: '/amc', label: 'AMC Contracts', icon: Shield },
       { href: '/amc/pipeline', label: 'Renewals Pipeline', icon: RefreshCw },
+      { href: '/amc/profitability', label: 'Contract Profitability', icon: TrendingUp },
       { href: '/technician', label: 'Technician Hub', icon: Wrench },
     ],
   },
