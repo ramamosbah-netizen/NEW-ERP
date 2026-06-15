@@ -30,4 +30,5 @@ audit logging where it writes, and a roadmap update.
 - ✅ **Phase 3 — Quotation Analytics** (`/sales/quotations`): KPIs (count, value, won value, win rate, revised/avg revision), count-by-status pie, issued-value trend, value-by-status, pending-quote aging buckets. PDF/Excel.
 - ✅ **Phase 4 — Win / Loss Analysis** (`/sales/win-loss`): won vs lost counts + value, win rate by count and by value, reasons-for-loss chart, won-vs-lost-by-client chart, lost-quotations table. PDF/Excel.
 - ✅ **Phase 5 — Estimation & Margin Analysis** (`/sales/margin`): per-BOQ estimated cost/profit/sell + margin % from `boqs.financials`, margin-distribution histogram, cost-component pie (supply/labour/equipment/subcontract/logistics/overhead), table with linked quotation value, drill to BOQ. PDF/Excel.
-- ⏭ Then: Client CRM → Deadlines → Follow-ups → Performance → Hub/Polish.
+- ✅ **Phase 6 — Client Directory & 360 (CRM)** (`/sales/clients` + `/[id]`): client list with CRM segmentation (segment/industry/owner/status), per-client quoted + active-AMC rollups, search/segment/status filters, create/edit modal, and a 360 detail (profile + tenders + quotations + AMC). New `clientService` (CRUD with PGRST204 fallback + get360, audit), migration `20260615260000_clients_crm_fields` (additive; page degrades gracefully). PDF/Excel.
+- ⏭ Then: Deadlines → Follow-ups → Performance → Hub/Polish.
