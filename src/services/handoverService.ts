@@ -14,16 +14,17 @@ export const handoverService = {
   async getHandoverPackage(projectId: string): Promise<HandoverPackage | null> {
     // NOTE: PostgREST embeds are unreliable in this setup (handover_packages has
     // no FK to profiles → PGRST200). Use separate keyed lookups instead.
-    const { data: pkg, error: pkgErr } = await supabase
+    // Also avoid .single() here: it returns HTTP 406 when a project has no
+    // package yet. Select a list + take the first row (clean 200 / []).
+    const { data: pkgRows, error: pkgErr } = await supabase
       .from('handover_packages')
       .select('*')
       .eq('project_id', projectId)
-      .single();
+      .limit(1);
 
-    if (pkgErr) {
-      if (pkgErr.code === 'PGRST116') return null; // not found
-      throw pkgErr;
-    }
+    if (pkgErr) throw pkgErr;
+    const pkg = pkgRows?.[0];
+    if (!pkg) return null; // no handover package yet
 
     const { data: items, error: itemsErr } = await supabase
       .from('handover_checklist_items')
