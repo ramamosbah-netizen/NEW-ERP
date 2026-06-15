@@ -128,6 +128,7 @@ const NAV_SECTIONS = [
       { href: '/warehouse/serials', label: 'Serial Tracking', icon: ScanLine },
       { href: '/warehouse/installed', label: 'Installed Assets', icon: HardHat },
       { href: '/warehouse/forecast', label: 'Material Forecasting', icon: TrendingUp },
+      { href: '/warehouse/gl', label: 'GL Integration', icon: Landmark },
       { href: '/pricing', label: 'Pricing Catalog', icon: Calculator },
     ],
   },
