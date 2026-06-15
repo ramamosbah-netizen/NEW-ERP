@@ -201,6 +201,7 @@ const NAV_SECTIONS = [
       { href: '/hr/compliance-tracker', label: 'Doc Compliance', icon: Shield },
       { href: '/hr/workforce', label: 'Workforce Analytics', icon: Users },
       { href: '/payroll', label: 'Payroll', icon: Wallet },
+      { href: '/payroll/analytics', label: 'Payroll Analytics', icon: Wallet },
       { href: '/timesheets', label: 'Timesheets', icon: Clock },
     ],
   },
