@@ -205,6 +205,7 @@ const NAV_SECTIONS = [
       { href: '/payroll', label: 'Payroll', icon: Wallet },
       { href: '/payroll/analytics', label: 'Payroll Analytics', icon: Wallet },
       { href: '/timesheets', label: 'Timesheets', icon: Clock },
+      { href: '/timesheets/analytics', label: 'Utilization', icon: Clock },
     ],
   },
   {

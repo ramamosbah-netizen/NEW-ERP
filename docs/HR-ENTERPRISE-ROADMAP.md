@@ -28,4 +28,5 @@ Recharts where useful, sidebar link, RBAC (existing roles), and a roadmap update
 - ✅ **Phase 3 — Workforce Analytics** (`/hr/workforce`): KPIs (headcount, departments, nationalities, avg tenure), by-department / by-nationality / by-employment-type / tenure-distribution charts, headcount-by-department table with avg tenure. PDF/Excel.
 - ✅ **Phase 4 — Payroll Analytics** (`/payroll/analytics`): KPIs (latest gross/net, total OT, avg net), gross-vs-net cost trend, pay-component pie (basic/housing/transport/other/OT), net-by-department, run-history table. PDF/Excel.
 - ✅ **Phase 5 — Leave Analytics** (`/hr/leave-analytics`): KPIs (requests, pending, approved days, upcoming), days-by-leave-type pie, by-status, approved-days-by-department, pending-approval queue table. PDF/Excel.
-- ⏭ Then: Timesheets → Labour Cost → EOSB → Manpower → Hub/Polish.
+- ✅ **Phase 6 — Timesheet & Utilization** (`/timesheets/analytics`): KPIs (total hours, OT, OT %, pending), hours-by-week regular-vs-OT stack, by-allocation pie, by-project + by-employee charts. PDF/Excel.
+- ⏭ Then: Labour Cost → EOSB → Manpower → Hub/Polish.
