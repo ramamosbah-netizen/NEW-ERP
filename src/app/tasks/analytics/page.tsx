@@ -10,7 +10,6 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { supabase } from '@/lib/supabase';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Card } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { exportTablePdf, exportTableExcel } from '@/lib/finance-export';
 import { CheckSquare, FileDown, Sheet } from 'lucide-react';
@@ -63,20 +62,42 @@ export default function TaskAnalyticsPage() {
         breadcrumbs={[{ label: 'Tasks', href: '/tasks' }, { label: 'Analytics' }]}
         actions={tasks.length > 0 ? (
           <div className="flex gap-2">
-            <Button variant="secondary" icon={FileDown} onClick={() => exportTablePdf({ title: 'Task Analytics', columns: exportCols, rows: exportRows, fileName: 'task-analytics' })}>PDF</Button>
-            <Button variant="secondary" icon={Sheet} onClick={() => exportTableExcel({ title: 'Task Analytics', columns: exportCols, rows: exportRows, fileName: 'task-analytics' })}>Excel</Button>
+            <button
+              onClick={() => exportTablePdf({ title: 'Task Analytics', columns: exportCols, rows: exportRows, fileName: 'task-analytics' })}
+              className="quote-btn quote-btn-secondary text-xs flex items-center gap-1.5"
+            >
+              <FileDown size={14} />
+              PDF
+            </button>
+            <button
+              onClick={() => exportTableExcel({ title: 'Task Analytics', columns: exportCols, rows: exportRows, fileName: 'task-analytics' })}
+              className="quote-btn quote-btn-secondary text-xs flex items-center gap-1.5"
+            >
+              <Sheet size={14} />
+              Excel
+            </button>
           </div>
         ) : undefined}
       />
 
-      <Card className="p-3 flex items-center gap-2">
-        <span className="text-xs text-[var(--text-secondary)]">View:</span>
-        <div className="inline-flex rounded-md border border-[var(--border)] overflow-hidden">
+      <div className="quote-card flex items-center gap-3 py-3 px-4">
+        <span className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">Scope view:</span>
+        <div className="flex bg-[var(--bg-card)] border border-[var(--border-color)] p-0.5 rounded-lg">
           {(['mine', 'all'] as const).map(s => (
-            <button key={s} onClick={() => setScope(s)} className="px-3 h-8 text-xs font-medium" style={{ background: scope === s ? 'var(--accent)' : 'var(--surface)', color: scope === s ? '#fff' : 'var(--text-secondary)' }}>{s === 'mine' ? 'My tasks' : 'Everyone'}</button>
+            <button
+              key={s}
+              onClick={() => setScope(s)}
+              className={`px-3 py-1.5 rounded text-xs font-semibold transition-all ${
+                scope === s
+                  ? 'bg-[var(--accent)] text-[var(--bg-card)] font-bold'
+                  : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+              }`}
+            >
+              {s === 'mine' ? 'My tasks' : 'Everyone'}
+            </button>
           ))}
         </div>
-      </Card>
+      </div>
 
       {loading ? (
         <Card><div className="p-8 text-center text-sm text-[var(--text-tertiary)]">Loading…</div></Card>

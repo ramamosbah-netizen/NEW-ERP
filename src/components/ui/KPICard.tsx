@@ -49,7 +49,7 @@ export const KPICard: React.FC<KPICardProps> = ({
   const sparkRange = sparkMax - sparkMin || 1;
 
   return (
-    <div className={`bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg p-4 flex flex-col gap-3 ${className}`}>
+    <div className={`bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg p-4 flex flex-col gap-3 min-h-[120px] ${className}`}>
       <div className="flex items-start justify-between gap-2">
         <span className="text-xs font-medium text-[var(--text-muted)] leading-none">
           {title}

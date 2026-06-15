@@ -254,13 +254,19 @@ export default function Dashboard() {
         subtitle={`Welcome back, ${profile.full_name}`}
         actions={
           <div className="flex gap-2">
-            <Button variant="secondary" size="sm" icon={RefreshCw} onClick={fetchData} isLoading={refreshing}>
+            <button
+              onClick={fetchData}
+              className="quote-btn quote-btn-secondary text-xs animate-in fade-in duration-200"
+              disabled={refreshing}
+            >
+              <RefreshCw className={refreshing ? 'animate-spin' : ''} size={14} />
               Refresh
-            </Button>
-            <Link href="/finance">
-              <Button variant="primary" size="sm" icon={ArrowRight} iconPosition="right">
-                Finance hub
-              </Button>
+            </button>
+            <Link href="/myday" className="no-underline">
+              <button className="quote-btn quote-btn-primary text-xs flex items-center gap-1.5 cursor-pointer">
+                My Day
+                <ArrowRight size={14} />
+              </button>
             </Link>
           </div>
         }
@@ -442,9 +448,12 @@ export default function Dashboard() {
                         </p>
                       </div>
                     </div>
-                    <Button variant="secondary" size="sm" onClick={() => handleAckAlert(alert.id)}>
+                    <button
+                      className="quote-btn quote-btn-secondary text-xs h-8 px-3 rounded-md cursor-pointer"
+                      onClick={() => handleAckAlert(alert.id)}
+                    >
                       Dismiss
-                    </Button>
+                    </button>
                   </div>
                 );
               })

@@ -64,95 +64,97 @@ export const TaskCard: React.FC<Props> = ({ task, onSelect, onStatusChange }) =>
   return (
     <div
       onClick={() => onSelect(task)}
-      className={`relative group border rounded-xl p-4 bg-slate-900/50 backdrop-blur-md transition-all duration-300 hover:border-slate-700/80 cursor-pointer ${
-        isCompleted ? 'border-slate-900/40 opacity-60' : 'border-slate-800'
-      } ${isOverdue ? 'border-red-950/40 hover:border-red-500/30' : ''}`}
+      className={`relative group border rounded-lg p-4 bg-[var(--bg-card)] border-[var(--border-color)] transition-all duration-300 hover:border-[var(--text-muted)] cursor-pointer ${
+        isCompleted ? 'opacity-60' : ''
+      } ${isOverdue ? 'border-[var(--status-danger-border)]/50 hover:border-[var(--status-danger-border)]' : ''}`}
     >
-      {/* Complete Checkbox */}
       <div className="flex items-start gap-3">
+        {/* Complete Checkbox */}
         <button
           onClick={handleCheckboxClick}
           className={`h-5 w-5 rounded-md border flex items-center justify-center flex-shrink-0 transition-all ${
             isCompleted
-              ? 'bg-emerald-500 border-emerald-500 text-slate-950'
-              : 'border-slate-700 hover:border-emerald-500 hover:bg-emerald-500/10 text-transparent'
+              ? 'bg-[var(--success)] border-[var(--success)] text-[var(--bg-card)]'
+              : 'border-[var(--border-color)] hover:border-[var(--success)] hover:bg-[var(--success-glow)] text-transparent'
           }`}
         >
           <CheckCircle2 size={14} className={isCompleted ? 'stroke-[3]' : ''} />
         </button>
-
+ 
         <div className="flex-1 min-w-0">
-          <h4 className={`text-sm font-semibold truncate transition-colors ${
-            isCompleted ? 'text-slate-500 line-through' : 'text-slate-200 group-hover:text-emerald-400'
-          }`}>
-            {task.title}
-          </h4>
-
+          {/* Header Row: Title & Priority */}
+          <div className="flex items-start justify-between gap-2">
+            <h4 className={`text-sm font-bold truncate transition-colors ${
+              isCompleted ? 'text-[var(--text-muted)] line-through' : 'text-[var(--text-primary)] group-hover:text-[var(--accent)]'
+            }`}>
+              {task.title}
+            </h4>
+            
+            <span
+              className="text-[9px] font-mono font-extrabold px-1.5 py-0.5 rounded tracking-wider flex-shrink-0"
+              style={{
+                backgroundColor: priorityCfg.bg,
+                color: priorityCfg.color,
+                borderColor: priorityCfg.border
+              }}
+            >
+              {priorityCfg.text}
+            </span>
+          </div>
+ 
           {task.description && (
-            <p className="text-xs text-slate-500 line-clamp-1 mt-1 leading-relaxed">
+            <p className="text-xs text-[var(--text-secondary)] line-clamp-1 mt-1 leading-relaxed">
               {task.description}
             </p>
           )}
-
+ 
           {/* Project baseline & origin */}
           <div className="flex flex-wrap items-center gap-2 mt-2.5">
             {task.project_name && (
-              <span className="inline-flex items-center gap-1 text-[10px] font-mono font-bold text-slate-400 bg-slate-950 border border-slate-900 px-1.5 py-0.5 rounded">
+              <span className="inline-flex items-center gap-1 text-[10px] font-mono font-bold text-[var(--text-secondary)] bg-[var(--bg-card)] border border-[var(--border-color)] px-1.5 py-0.5 rounded">
                 <Layers size={9} />
                 {task.project_name}
               </span>
             )}
-            <span className="text-[10px] font-bold tracking-wider uppercase text-slate-600 bg-slate-950/50 px-1 py-0.5 rounded font-mono">
+            <span className="text-[10px] font-bold tracking-wider uppercase text-[var(--text-muted)] bg-[var(--bg-card)] px-1 py-0.5 rounded font-mono">
               {getOriginLabel(task.origin)}
             </span>
           </div>
-
-          {/* Footnotes */}
-          <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-slate-900/40">
-            <div className="flex items-center gap-3">
-              {/* Due date */}
-              {task.due_date && (
-                <span className={`inline-flex items-center gap-1.5 text-[10px] font-mono ${
-                  isOverdue ? 'text-red-400 font-bold' : 'text-slate-500'
-                }`}>
-                  <Calendar size={10} />
-                  {formatDueDate(task.due_date)}
-                </span>
+ 
+          {/* Footer: User (left) and Due Date & Recurrence (right) */}
+          <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-[var(--border-color)]">
+            {/* Assignee info on the left */}
+            <div>
+              {task.assignee_name ? (
+                <div className="flex items-center gap-1.5 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-md px-2 py-0.5" title={task.assignee_name}>
+                  <User size={10} className="text-[var(--text-secondary)]" />
+                  <span className="text-[10px] font-bold text-[var(--text-primary)]">
+                    {task.assignee_name}
+                  </span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-1.5 bg-[var(--bg-card)] border border-[var(--border-color)] border-dashed rounded-md px-2 py-0.5 text-[var(--text-muted)] text-[10px] italic">
+                  Unassigned
+                </div>
               )}
+            </div>
 
-              {/* Recurrence Indicator */}
+            {/* Recurrence & Due Date on the right */}
+            <div className="flex items-center gap-2">
               {task.recurrence && (
-                <span className="text-[10px] font-mono text-emerald-500 flex items-center gap-1" title="Recurring task">
+                <span className="text-[10px] font-mono text-[var(--success)] flex items-center gap-1" title="Recurring task">
                   <RefreshCw size={10} className="animate-spin" style={{ animationDuration: '6s' }} />
                   {task.recurrence.freq}
                 </span>
               )}
-            </div>
 
-            {/* Priority & Assignee */}
-            <div className="flex items-center gap-2">
-              <span
-                className="text-[9px] font-mono font-extrabold px-1.5 py-0.5 rounded tracking-wider"
-                style={{
-                  backgroundColor: priorityCfg.bg,
-                  color: priorityCfg.color,
-                  borderColor: priorityCfg.border
-                }}
-              >
-                {priorityCfg.text}
-              </span>
-
-              {task.assignee_name ? (
-                <div className="flex items-center gap-1 bg-slate-950 border border-slate-900 rounded px-1.5 py-0.5" title={task.assignee_name}>
-                  <User size={10} className="text-slate-500" />
-                  <span className="text-[9px] font-bold text-slate-400 max-w-[70px] truncate">
-                    {task.assignee_name.split(' ')[0]}
-                  </span>
-                </div>
-              ) : (
-                <div className="h-4 w-4 rounded bg-slate-950 border border-slate-900 flex items-center justify-center text-slate-600 text-[8px] font-bold">
-                  U
-                </div>
+              {task.due_date && (
+                <span className={`inline-flex items-center gap-1.5 text-[10px] font-mono px-2 py-0.5 rounded bg-[var(--bg-card)] border border-[var(--border-color)] ${
+                  isOverdue ? 'text-[var(--status-danger-text)] bg-[var(--status-danger-bg)] border-[var(--status-danger-border)] font-bold' : 'text-[var(--text-secondary)]'
+                }`}>
+                  <Calendar size={10} />
+                  {formatDueDate(task.due_date)}
+                </span>
               )}
             </div>
           </div>

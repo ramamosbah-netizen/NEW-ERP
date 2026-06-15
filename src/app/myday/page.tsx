@@ -164,12 +164,12 @@ export default function MyDayPage() {
 
   return (
     <div className="flex flex-col min-h-screen w-full relative z-10">
-<main className="quote-container flex-1 py-8 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 space-y-6">
+      <main className="quote-container flex-1 max-w-7xl mx-auto w-full space-y-6">
         {/* Banner with Greeting & Time */}
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
             <h1 className="quote-header-title flex items-center gap-2">
-              <Sun className="text-emerald-400 animate-pulse" size={28} />
+              <Sun className="text-[var(--accent)] animate-pulse" size={28} />
               My Day Command Center
             </h1>
             <p className="quote-header-subtitle">
@@ -190,23 +190,23 @@ export default function MyDayPage() {
         </div>
 
         {/* AI Quick Add Bar */}
-        <div className="quote-card bg-slate-900/40 border-emerald-500/20">
+        <div className="quote-card border-[var(--accent)]/20">
           <form onSubmit={handleAIParsing} className="flex gap-2 items-center">
             <div className="relative flex-1">
-              <Sparkles size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-emerald-400" />
+              <Sparkles size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--accent)]" />
               <input
                 type="text"
                 placeholder="Ask Gemini: 'Create an urgent task for Site Engineer John to check MEP alignment by tomorrow at 5pm'"
                 value={promptText}
                 onChange={(e) => setPromptText(e.target.value)}
-                className="w-full bg-slate-950/80 border border-slate-800 focus:border-emerald-500 rounded-xl pl-10 pr-4 py-2.5 text-sm text-slate-200 placeholder-slate-500 outline-none transition-all"
+                className="w-full bg-[var(--bg-card)] border border-[var(--border-color)] focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] rounded-lg pl-10 pr-4 py-2.5 text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] outline-none transition-all"
                 disabled={parsing}
               />
             </div>
             <button
               type="submit"
               disabled={parsing || !promptText.trim()}
-              className="quote-btn quote-btn-primary px-5 py-2.5 rounded-xl font-bold flex items-center gap-1.5"
+              className="quote-btn quote-btn-primary px-5 h-9 rounded-lg font-bold flex items-center gap-1.5"
             >
               {parsing ? <RefreshCw className="animate-spin" size={14} /> : <Zap size={14} />}
               Parse
@@ -215,18 +215,18 @@ export default function MyDayPage() {
 
           {/* AI Parsing Confirmation Box */}
           {parsedTask && (
-            <div className="mt-4 p-4 bg-slate-950/80 border border-emerald-500/25 rounded-xl animate-in fade-in slide-in-from-top-1 duration-200 space-y-4">
+            <div className="mt-4 p-4 bg-[var(--bg-card-hover)] border border-[var(--accent)]/25 rounded-lg animate-in fade-in slide-in-from-top-1 duration-200 space-y-4">
               <div className="flex justify-between items-start">
                 <div>
-                  <h4 className="text-xs font-bold font-mono text-emerald-400 uppercase tracking-widest flex items-center gap-1">
+                  <h4 className="text-xs font-bold font-mono text-[var(--accent)] uppercase tracking-widest flex items-center gap-1">
                     <Sparkles size={12} />
                     Gemini Parsed Task Proposal
                   </h4>
-                  <p className="text-[10px] text-slate-500 mt-0.5">Please review the details below before saving to project master.</p>
+                  <p className="text-[10px] text-[var(--text-muted)] mt-0.5">Please review the details below before saving to project master.</p>
                 </div>
                 <button
                   onClick={() => setParsedTask(null)}
-                  className="text-slate-500 hover:text-slate-200 text-xs"
+                  className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-xs"
                 >
                   ✕ Dismiss
                 </button>
@@ -234,16 +234,16 @@ export default function MyDayPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
                 <div className="space-y-1">
-                  <span className="text-slate-500 block">Title</span>
+                  <span className="text-[var(--text-secondary)] block">Title</span>
                   <input
                     type="text"
                     value={parsedTask.title}
                     onChange={(e) => setParsedTask({ ...parsedTask, title: e.target.value })}
-                    className="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1 text-slate-200 outline-none"
+                    className="w-full bg-[var(--bg-card)] border border-[var(--border-color)] rounded px-2 py-1 text-[var(--text-primary)] outline-none"
                   />
                 </div>
                 <div className="space-y-1">
-                  <span className="text-slate-500 block">Project Mapping</span>
+                  <span className="text-[var(--text-secondary)] block">Project Mapping</span>
                   <select
                     value={parsedTask.project_id}
                     onChange={(e) => {
@@ -254,7 +254,7 @@ export default function MyDayPage() {
                         project_name: projects.find(p => p.id === id)?.name || ''
                       });
                     }}
-                    className="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1 text-slate-200 outline-none"
+                    className="w-full bg-[var(--bg-card)] border border-[var(--border-color)] rounded px-2 py-1 text-[var(--text-primary)] outline-none"
                   >
                     <option value="">No Project</option>
                     {projects.map(p => (
@@ -263,7 +263,7 @@ export default function MyDayPage() {
                   </select>
                 </div>
                 <div className="space-y-1">
-                  <span className="text-slate-500 block">Assignee Mapping</span>
+                  <span className="text-[var(--text-secondary)] block">Assignee Mapping</span>
                   <select
                     value={parsedTask.assignee_id}
                     onChange={(e) => {
@@ -274,7 +274,7 @@ export default function MyDayPage() {
                         assignee_name: profiles.find(u => u.id === id)?.full_name || ''
                       });
                     }}
-                    className="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1 text-slate-200 outline-none"
+                    className="w-full bg-[var(--bg-card)] border border-[var(--border-color)] rounded px-2 py-1 text-[var(--text-primary)] outline-none"
                   >
                     <option value="">Unassigned</option>
                     {profiles.map(u => (
@@ -286,11 +286,11 @@ export default function MyDayPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs pt-2">
                 <div className="space-y-1">
-                  <span className="text-slate-500 block">Priority</span>
+                  <span className="text-[var(--text-secondary)] block">Priority</span>
                   <select
                     value={parsedTask.priority}
                     onChange={(e) => setParsedTask({ ...parsedTask, priority: e.target.value })}
-                    className="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1 text-slate-200 outline-none"
+                    className="w-full bg-[var(--bg-card)] border border-[var(--border-color)] rounded px-2 py-1 text-[var(--text-primary)] outline-none"
                   >
                     <option value="LOW">🔵 LOW</option>
                     <option value="MEDIUM">🟢 MEDIUM</option>
@@ -299,12 +299,12 @@ export default function MyDayPage() {
                   </select>
                 </div>
                 <div className="space-y-1">
-                  <span className="text-slate-500 block">Due Date</span>
+                  <span className="text-[var(--text-secondary)] block">Due Date</span>
                   <input
                     type="date"
                     value={parsedTask.due_date}
                     onChange={(e) => setParsedTask({ ...parsedTask, due_date: e.target.value })}
-                    className="w-full bg-slate-900 border border-slate-800 rounded px-2 py-1 text-slate-200 outline-none font-mono"
+                    className="w-full bg-[var(--bg-card)] border border-[var(--border-color)] rounded px-2 py-1 text-[var(--text-primary)] outline-none font-mono"
                   />
                 </div>
               </div>
@@ -313,14 +313,14 @@ export default function MyDayPage() {
                 <button
                   type="button"
                   onClick={() => setParsedTask(null)}
-                  className="quote-btn quote-btn-secondary py-1.5"
+                  className="quote-btn quote-btn-secondary h-8 py-0 rounded text-xs"
                 >
                   Discard
                 </button>
                 <button
                   type="button"
                   onClick={confirmAICreatedTask}
-                  className="quote-btn quote-btn-primary py-1.5"
+                  className="quote-btn quote-btn-primary h-8 py-0 rounded text-xs"
                 >
                   Confirm & Save Task
                 </button>
@@ -329,7 +329,7 @@ export default function MyDayPage() {
           )}
 
           {aiError && (
-            <div className="mt-3 text-xs text-red-400 font-mono flex items-center gap-1.5">
+            <div className="mt-3 text-xs text-[var(--status-danger-text)] font-mono flex items-center gap-1.5">
               <AlertCircle size={12} />
               {aiError}
             </div>
@@ -346,35 +346,35 @@ export default function MyDayPage() {
             <div className="quote-card">
               <div className="quote-card-header">
                 <h3 className="quote-card-title flex items-center gap-2">
-                  <AlertCircle className="text-red-400" size={18} />
+                  <AlertCircle className="text-[var(--status-danger-text)]" size={18} />
                   Needs Action (Critical Blockages & Approvals)
                 </h3>
-                <span className="px-2 py-0.5 rounded text-[10px] bg-red-950/40 text-red-400 border border-red-500/25 font-mono font-bold">
+                <span className="px-2 py-0.5 rounded text-[10px] bg-[var(--status-danger-bg)] text-[var(--status-danger-text)] border border-[var(--status-danger-border)] font-mono font-bold">
                   {needsAction.length} PENDING
                 </span>
               </div>
 
               {needsAction.length === 0 ? (
-                <div className="py-8 text-center text-slate-650 text-xs italic">
+                <div className="py-8 text-center text-[var(--text-muted)] text-xs italic">
                   No critical approvals or blockages require your action today.
                 </div>
               ) : (
-                <div className="divide-y divide-slate-900/60 space-y-3">
+                <div className="divide-y divide-[var(--border-color)] space-y-3">
                   {needsAction.map((n) => (
                     <div
                       key={n.id}
                       onClick={() => handleActionNotificationClick(n.link)}
-                      className="p-3 bg-red-950/10 border border-red-950/30 rounded-xl flex items-center justify-between hover:bg-red-950/20 transition-all cursor-pointer group"
+                      className="p-3 bg-[var(--status-danger-bg)]/20 border border-[var(--status-danger-border)]/30 rounded-lg flex items-center justify-between hover:bg-[var(--status-danger-bg)]/35 transition-all cursor-pointer group"
                     >
                       <div className="min-w-0 flex-1">
-                        <div className="font-semibold text-xs text-red-300 group-hover:text-red-200">
+                        <div className="font-semibold text-xs text-[var(--status-danger-text)]">
                           {n.title}
                         </div>
-                        <p className="text-[11px] text-slate-400 line-clamp-1 mt-0.5 leading-normal">
+                        <p className="text-[11px] text-[var(--text-secondary)] line-clamp-1 mt-0.5 leading-normal">
                           {n.body}
                         </p>
                       </div>
-                      <ChevronRight size={14} className="text-red-400 opacity-60 group-hover:opacity-100 transition-opacity ml-2 flex-shrink-0" />
+                      <ChevronRight size={14} className="text-[var(--status-danger-text)] opacity-60 group-hover:opacity-100 transition-opacity ml-2 flex-shrink-0" />
                     </div>
                   ))}
                 </div>
@@ -385,13 +385,13 @@ export default function MyDayPage() {
             <div className="quote-card">
               <div className="quote-card-header">
                 <h3 className="quote-card-title flex items-center gap-2">
-                  <Calendar className="text-cyan-400" size={18} />
+                  <Calendar className="text-[var(--accent)]" size={18} />
                   Scheduled Meetings Today
                 </h3>
               </div>
 
               {meetingsToday.length === 0 ? (
-                <div className="py-8 text-center text-slate-650 text-xs italic">
+                <div className="py-8 text-center text-[var(--text-muted)] text-xs italic">
                   No meetings scheduled for today.
                 </div>
               ) : (
@@ -400,24 +400,24 @@ export default function MyDayPage() {
                     <div
                       key={m.id}
                       onClick={() => router.push(`/meetings`)}
-                      className="p-3.5 bg-slate-950/50 border border-slate-900 rounded-xl hover:border-slate-800 transition-all cursor-pointer space-y-2 text-left"
+                      className="p-3.5 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg hover:border-[var(--text-muted)] transition-all cursor-pointer space-y-2 text-left"
                     >
                       <div className="flex justify-between items-start">
-                        <span className="text-[10px] font-mono font-bold text-cyan-400 bg-cyan-950/40 border border-cyan-900/35 px-1.5 py-0.5 rounded">
+                        <span className="text-[10px] font-mono font-bold text-[var(--accent)] bg-[var(--accent-glow)] border border-[var(--accent)]/30 px-1.5 py-0.5 rounded">
                           {formatTime(m.starts_at)} - {formatTime(m.ends_at)}
                         </span>
                         {m.location && (
-                          <span className="text-[10px] text-slate-500 max-w-[100px] truncate flex items-center gap-0.5">
+                          <span className="text-[10px] text-[var(--text-secondary)] max-w-[100px] truncate flex items-center gap-0.5">
                             <MapPin size={9} />
                             {m.location}
                           </span>
                         )}
                       </div>
-                      <h4 className="font-semibold text-xs text-slate-200 truncate mt-1">
+                      <h4 className="font-semibold text-xs text-[var(--text-primary)] truncate mt-1">
                         {m.title}
                       </h4>
                       {m.project_name && (
-                        <p className="text-[10px] text-slate-500 font-mono truncate">
+                        <p className="text-[10px] text-[var(--text-secondary)] font-mono truncate">
                           Project: {m.project_name}
                         </p>
                       )}
@@ -431,16 +431,16 @@ export default function MyDayPage() {
             <div className="quote-card">
               <div className="quote-card-header">
                 <h3 className="quote-card-title flex items-center gap-2">
-                  <CheckCircle2 className="text-emerald-400" size={18} />
+                  <CheckCircle2 className="text-[var(--success)]" size={18} />
                   Your Day Checklist (Tasks Due Today)
                 </h3>
-                <span className="text-[10px] font-mono text-slate-500">
+                <span className="text-[10px] font-mono text-[var(--text-muted)]">
                   {tasksToday.length} Tasks
                 </span>
               </div>
 
               {tasksToday.length === 0 ? (
-                <div className="py-8 text-center text-slate-650 text-xs italic">
+                <div className="py-8 text-center text-[var(--text-muted)] text-xs italic">
                   No tasks due today. Use AI Quick Add above to log work.
                 </div>
               ) : (
@@ -449,17 +449,17 @@ export default function MyDayPage() {
                     <div
                       key={t.id}
                       onClick={() => setSelectedTaskId(t.id)}
-                      className="p-3 bg-slate-950/55 border border-slate-900 rounded-xl hover:border-slate-800 transition-all cursor-pointer flex items-center justify-between"
+                      className="p-3 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-lg hover:border-[var(--text-muted)] transition-all cursor-pointer flex items-center justify-between"
                     >
                       <div className="min-w-0">
-                        <div className="font-semibold text-xs text-slate-200">{t.title}</div>
+                        <div className="font-semibold text-xs text-[var(--text-primary)]">{t.title}</div>
                         {t.project_name && (
-                          <span className="text-[9px] font-mono text-slate-500 mt-1 block">
+                          <span className="text-[9px] font-mono text-[var(--text-secondary)] mt-1 block">
                             Project: {t.project_name}
                           </span>
                         )}
                       </div>
-                      <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-slate-900 border border-slate-850 text-slate-400">
+                      <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-[var(--bg-card-hover)] border border-[var(--border-color)] text-[var(--text-secondary)]">
                         {t.priority}
                       </span>
                     </div>
@@ -474,16 +474,16 @@ export default function MyDayPage() {
           <div className="lg:col-span-4 space-y-6">
             
             {/* Urgent & Overdue list */}
-            <div className="quote-card border-red-500/15">
+            <div className="quote-card border-[var(--status-danger-border)]/30">
               <div className="quote-card-header">
-                <h3 className="quote-card-title text-red-400 flex items-center gap-1.5">
+                <h3 className="quote-card-title text-[var(--status-danger-text)] flex items-center gap-1.5">
                   <AlertCircle size={15} />
                   Urgent & Overdue
                 </h3>
               </div>
 
               {urgentOverdueTasks.length === 0 ? (
-                <div className="py-6 text-center text-slate-650 text-xs italic">
+                <div className="py-6 text-center text-[var(--text-muted)] text-xs italic">
                   Clear! No overdue tasks.
                 </div>
               ) : (
@@ -494,19 +494,19 @@ export default function MyDayPage() {
                       <div
                         key={t.id}
                         onClick={() => setSelectedTaskId(t.id)}
-                        className="p-2.5 bg-slate-950/70 border border-slate-900 hover:border-red-500/20 rounded-lg cursor-pointer transition-all flex justify-between items-start gap-1"
+                        className="p-2.5 bg-[var(--bg-card)] border border-[var(--border-color)] hover:border-[var(--status-danger-border)] rounded-lg cursor-pointer transition-all flex justify-between items-start gap-1"
                       >
                         <div className="min-w-0 flex-1">
-                          <div className="font-semibold text-[11px] text-slate-300 truncate">
+                          <div className="font-semibold text-[11px] text-[var(--text-primary)] truncate">
                             {t.title}
                           </div>
                           {t.due_date && (
-                            <span className={`text-[9px] font-mono block mt-0.5 ${isOverdue ? 'text-red-400 font-bold animate-pulse' : 'text-slate-500'}`}>
+                            <span className={`text-[9px] font-mono block mt-0.5 ${isOverdue ? 'text-[var(--status-danger-text)] font-bold animate-pulse' : 'text-[var(--text-muted)]'}`}>
                               {isOverdue ? 'OVERDUE' : 'DUE'}: {formatDate(t.due_date)}
                             </span>
                           )}
                         </div>
-                        <span className="text-[8px] font-mono font-extrabold px-1 py-0.5 bg-red-950/30 text-red-400 border border-red-900/30 rounded">
+                        <span className="text-[8px] font-mono font-extrabold px-1 py-0.5 bg-[var(--status-danger-bg)] text-[var(--status-danger-text)] border border-[var(--status-danger-border)] rounded">
                           {t.priority}
                         </span>
                       </div>
@@ -520,7 +520,7 @@ export default function MyDayPage() {
             <div className="quote-card">
               <div className="quote-card-header">
                 <h3 className="quote-card-title flex items-center gap-2">
-                  <TrendingUp className="text-amber-500" size={15} />
+                  <TrendingUp className="text-[var(--accent)]" size={15} />
                   Radar Lookout (7-Day Horizon)
                 </h3>
               </div>
@@ -528,12 +528,12 @@ export default function MyDayPage() {
               <div className="space-y-4">
                 {/* Expiring docs */}
                 <div className="space-y-2">
-                  <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1">
-                    <FileWarning size={11} className="text-amber-500" />
+                  <div className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest flex items-center gap-1">
+                    <FileWarning size={11} className="text-[var(--accent)]" />
                     Expiring Project Compliance Docs
                   </div>
                   {expiringDocs.length === 0 ? (
-                    <div className="p-2 bg-slate-950/20 rounded-lg text-slate-650 text-[10px] italic text-center">
+                    <div className="p-2 bg-[var(--bg-card-hover)] rounded-lg text-[var(--text-muted)] text-[10px] italic text-center">
                       No documents expiring in 30 days.
                     </div>
                   ) : (
@@ -541,12 +541,12 @@ export default function MyDayPage() {
                       <div
                         key={doc.id}
                         onClick={() => router.push(`/documents`)}
-                        className="p-2 bg-slate-950/40 border border-slate-900 hover:border-slate-800 rounded-lg cursor-pointer text-left text-xs"
+                        className="p-2 bg-[var(--bg-card)] border border-[var(--border-color)] hover:border-[var(--text-muted)] rounded-lg cursor-pointer text-left text-xs"
                       >
-                        <div className="font-semibold text-[11px] text-slate-300 truncate">{doc.title}</div>
-                        <div className="flex justify-between text-[9px] text-slate-500 font-mono mt-0.5">
+                        <div className="font-semibold text-[11px] text-[var(--text-primary)] truncate">{doc.title}</div>
+                        <div className="flex justify-between text-[9px] text-[var(--text-secondary)] font-mono mt-0.5">
                           <span>Expiry: {formatDate(doc.expiry_date)}</span>
-                          <span className="text-amber-500 truncate max-w-[100px]">{doc.project_name}</span>
+                          <span className="text-[var(--accent)] truncate max-w-[100px]">{doc.project_name}</span>
                         </div>
                       </div>
                     ))
@@ -555,11 +555,11 @@ export default function MyDayPage() {
 
                 {/* Tasks due lookahead */}
                 <div className="space-y-2">
-                  <div className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                  <div className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest">
                     Tasks Due Later This Week
                   </div>
                   {tasksThisWeek.length === 0 ? (
-                    <div className="p-2 bg-slate-950/20 rounded-lg text-slate-650 text-[10px] italic text-center">
+                    <div className="p-2 bg-[var(--bg-card-hover)] rounded-lg text-[var(--text-muted)] text-[10px] italic text-center">
                       No other tasks due this week.
                     </div>
                   ) : (
@@ -567,13 +567,13 @@ export default function MyDayPage() {
                       <div
                         key={t.id}
                         onClick={() => setSelectedTaskId(t.id)}
-                        className="p-2 bg-slate-950/40 border border-slate-900 hover:border-slate-850 rounded-lg cursor-pointer text-left text-xs flex justify-between items-center"
+                        className="p-2 bg-[var(--bg-card)] border border-[var(--border-color)] hover:border-[var(--text-muted)] rounded-lg cursor-pointer text-left text-xs flex justify-between items-center"
                       >
                         <div className="min-w-0 flex-1 pr-2">
-                          <div className="font-semibold text-[11px] text-slate-300 truncate">{t.title}</div>
-                          {t.due_date && <span className="text-[9px] text-slate-500 font-mono">Due: {formatDate(t.due_date)}</span>}
+                          <div className="font-semibold text-[11px] text-[var(--text-primary)] truncate">{t.title}</div>
+                          {t.due_date && <span className="text-[9px] text-[var(--text-secondary)] font-mono">Due: {formatDate(t.due_date)}</span>}
                         </div>
-                        <span className="text-[8px] font-mono px-1 py-0.5 rounded bg-slate-900 border border-slate-850 text-slate-400">
+                        <span className="text-[8px] font-mono px-1 py-0.5 rounded bg-[var(--bg-card-hover)] border border-[var(--border-color)] text-[var(--text-secondary)]">
                           {t.priority}
                         </span>
                       </div>
@@ -586,14 +586,14 @@ export default function MyDayPage() {
             {/* Recently Completed Log */}
             <div className="quote-card">
               <div className="quote-card-header">
-                <h3 className="quote-card-title text-slate-400 flex items-center gap-1.5">
+                <h3 className="quote-card-title text-[var(--text-secondary)] flex items-center gap-1.5">
                   <CheckCircle2 size={15} />
                   Recently Completed (48h)
                 </h3>
               </div>
 
               {recentlyCompleted.length === 0 ? (
-                <div className="py-4 text-center text-slate-650 text-[10px] italic">
+                <div className="py-4 text-center text-[var(--text-muted)] text-[10px] italic">
                   No completed tasks logged recently.
                 </div>
               ) : (
@@ -602,11 +602,11 @@ export default function MyDayPage() {
                     <div
                       key={t.id}
                       onClick={() => setSelectedTaskId(t.id)}
-                      className="p-2 bg-slate-950/30 border border-slate-900/50 hover:border-slate-800 rounded-lg text-left text-xs cursor-pointer opacity-70"
+                      className="p-2 bg-[var(--bg-card)] border border-[var(--border-color)]/50 hover:border-[var(--text-muted)] rounded-lg text-left text-xs cursor-pointer opacity-70"
                     >
-                      <div className="font-semibold text-[11px] text-slate-400 truncate line-through">{t.title}</div>
+                      <div className="font-semibold text-[11px] text-[var(--text-secondary)] truncate line-through">{t.title}</div>
                       {t.completed_at && (
-                        <span className="text-[9px] text-slate-600 font-mono mt-0.5 block">
+                        <span className="text-[9px] text-[var(--text-muted)] font-mono mt-0.5 block">
                           Completed: {formatDate(t.completed_at)} {formatTime(t.completed_at)}
                         </span>
                       )}
@@ -623,7 +623,7 @@ export default function MyDayPage() {
       {/* Task Drawer Inspector Overlay */}
       {selectedTaskId && (
         <>
-          <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-40" onClick={() => setSelectedTaskId(null)} />
+          <div className="fixed inset-0 bg-black/55 z-40" onClick={() => setSelectedTaskId(null)} />
           <TaskDetailDrawer
             taskId={selectedTaskId}
             onClose={() => setSelectedTaskId(null)}

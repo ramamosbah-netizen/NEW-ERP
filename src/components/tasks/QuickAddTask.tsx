@@ -5,6 +5,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { supabase } from '@/lib/supabase';
 import { Calendar, User, Briefcase, Plus, AlertCircle, Clock, RotateCcw } from 'lucide-react';
 import type { Task, TaskPriority, TaskStatus } from '@/types/task.types';
@@ -16,6 +17,12 @@ type Props = {
 
 export const QuickAddTask: React.FC<Props> = ({ onTaskCreated, projectId }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
   
   // Form States
   const [title, setTitle] = useState('');
@@ -138,84 +145,90 @@ export const QuickAddTask: React.FC<Props> = ({ onTaskCreated, projectId }) => {
         Create Task
       </button>
 
-      {isOpen && (
-        <div className="quote-modal-overlay">
-          <div className="quote-modal max-w-xl">
-            <div className="quote-modal-header">
-              <h3 className="font-semibold text-slate-200 text-base flex items-center gap-2">
-                <Plus size={18} className="text-emerald-400" />
+      {isOpen && mounted && createPortal(
+        <div className="fixed inset-0 w-screen h-screen bg-black/55 flex items-center justify-center z-[9999] p-4 font-body">
+          <div className="bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl w-full max-w-xl shadow-2xl flex flex-col overflow-hidden max-h-[90vh] text-left">
+            {/* Header */}
+            <div className="flex justify-between items-center px-6 py-4 border-b border-[var(--border-color)] bg-[var(--bg-card-hover)]">
+              <h3 className="font-bold text-[var(--text-primary)] text-sm flex items-center gap-2">
+                <Plus size={16} className="text-[var(--accent)]" />
                 Add New Task
               </h3>
               <button
+                type="button"
                 onClick={() => {
                   resetForm();
                   setIsOpen(false);
                 }}
-                className="text-slate-400 hover:text-slate-200"
+                className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-base font-bold"
               >
                 ✕
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="quote-modal-body space-y-4">
+            <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-4 custom-scrollbar">
               {error && (
-                <div className="p-3 bg-red-950/40 border border-red-500/20 text-red-300 rounded-lg flex items-start gap-2 text-xs">
-                  <AlertCircle size={16} className="text-red-400 mt-0.5 flex-shrink-0" />
+                <div className="p-3 bg-[var(--status-danger-bg)] border border-[var(--status-danger-border)] text-[var(--status-danger-text)] rounded-lg flex items-start gap-2 text-xs font-semibold">
+                  <AlertCircle size={16} className="text-[var(--error)] mt-0.5 flex-shrink-0" />
                   <span>{error}</span>
                 </div>
               )}
 
               {/* Title */}
               <div className="quote-form-group">
-                <label>Task Title</label>
+                <label className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">Task Title</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Verify supplier commercial terms"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="quote-form-input"
+                  className="quote-form-input text-xs font-semibold text-[var(--text-primary)]"
                 />
               </div>
 
               {/* Description */}
               <div className="quote-form-group">
-                <label>Description</label>
+                <label className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">Description</label>
                 <textarea
                   placeholder="Add details, checklists, or steps..."
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className="quote-form-textarea"
+                  className="quote-form-textarea text-xs text-[var(--text-primary)]"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 {/* Project */}
                 <div className="quote-form-group">
-                  <label className="flex items-center gap-1"><Briefcase size={12} /> Project</label>
+                  <label className="flex items-center gap-1 text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">
+                    <Briefcase size={12} className="text-[var(--text-secondary)]" /> Project
+                  </label>
                   <select
                     value={selectedProjectId}
                     onChange={(e) => setSelectedProjectId(e.target.value)}
-                    className="quote-form-input"
+                    className="quote-form-input text-xs font-semibold text-[var(--text-primary)]"
                   >
-                    <option value="">No Project Link</option>
+                    <option value="" className="bg-[var(--bg-card)] text-[var(--text-primary)]">No Project Link</option>
                     {projects.map(p => (
-                      <option key={p.id} value={p.id}>{p.name}</option>
+                      <option key={p.id} value={p.id} className="bg-[var(--bg-card)] text-[var(--text-primary)]">{p.name}</option>
                     ))}
                   </select>
                 </div>
 
                 {/* Assignee */}
                 <div className="quote-form-group">
-                  <label className="flex items-center gap-1"><User size={12} /> Assignee</label>
+                  <label className="flex items-center gap-1 text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">
+                    <User size={12} className="text-[var(--text-secondary)]" /> Assignee
+                  </label>
                   <select
                     value={assigneeId}
                     onChange={(e) => setAssigneeId(e.target.value)}
-                    className="quote-form-input"
+                    className="quote-form-input text-xs font-semibold text-[var(--text-primary)]"
                   >
-                    <option value="">Unassigned</option>
+                    <option value="" className="bg-[var(--bg-card)] text-[var(--text-primary)]">Unassigned</option>
                     {profiles.map(p => (
-                      <option key={p.id} value={p.id}>{p.full_name} ({p.role})</option>
+                      <option key={p.id} value={p.id} className="bg-[var(--bg-card)] text-[var(--text-primary)]">{p.full_name} ({p.role})</option>
                     ))}
                   </select>
                 </div>
@@ -224,71 +237,75 @@ export const QuickAddTask: React.FC<Props> = ({ onTaskCreated, projectId }) => {
               <div className="grid grid-cols-2 gap-4">
                 {/* Priority */}
                 <div className="quote-form-group">
-                  <label className="flex items-center gap-1"><AlertCircle size={12} /> Priority</label>
+                  <label className="flex items-center gap-1 text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">
+                    <AlertCircle size={12} className="text-[var(--text-secondary)]" /> Priority
+                  </label>
                   <select
                     value={priority}
                     onChange={(e) => setPriority(e.target.value as TaskPriority)}
-                    className="quote-form-input font-mono"
+                    className="quote-form-input font-mono text-xs font-semibold text-[var(--text-primary)]"
                   >
-                    <option value="LOW">🔵 LOW</option>
-                    <option value="MEDIUM">🟢 MEDIUM</option>
-                    <option value="HIGH">🟡 HIGH</option>
-                    <option value="URGENT">🔴 URGENT</option>
+                    <option value="LOW" className="bg-[var(--bg-card)] text-[var(--text-primary)]">🔵 LOW</option>
+                    <option value="MEDIUM" className="bg-[var(--bg-card)] text-[var(--text-primary)]">🟢 MEDIUM</option>
+                    <option value="HIGH" className="bg-[var(--bg-card)] text-[var(--text-primary)]">🟡 HIGH</option>
+                    <option value="URGENT" className="bg-[var(--bg-card)] text-[var(--text-primary)]">🔴 URGENT</option>
                   </select>
                 </div>
 
                 {/* Due Date */}
                 <div className="quote-form-group">
-                  <label className="flex items-center gap-1"><Calendar size={12} /> Due Date</label>
+                  <label className="flex items-center gap-1 text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">
+                    <Calendar size={12} className="text-[var(--text-secondary)]" /> Due Date
+                  </label>
                   <input
                     type="date"
                     value={dueDate}
                     onChange={(e) => setDueDate(e.target.value)}
-                    className="quote-form-input font-mono"
+                    className="quote-form-input font-mono text-xs font-semibold text-[var(--text-primary)]"
                   />
                 </div>
               </div>
 
               {/* Tags */}
               <div className="quote-form-group">
-                <label>Tags (Comma-separated)</label>
+                <label className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">Tags (Comma-separated)</label>
                 <input
                   type="text"
                   placeholder="e.g. audit, urgent, billing"
                   value={tagInput}
                   onChange={(e) => setTagInput(e.target.value)}
-                  className="quote-form-input"
+                  className="quote-form-input text-xs font-semibold text-[var(--text-primary)]"
                 />
               </div>
 
               {/* Recurrence Trigger */}
-              <div className="border-t border-slate-900/60 pt-3">
+              <div className="border-t border-[var(--border-color)] pt-3">
                 <label className="flex items-center gap-2 cursor-pointer select-none">
                   <input
                     type="checkbox"
                     checked={isRecurring}
                     onChange={(e) => setIsRecurring(e.target.checked)}
-                    className="rounded bg-slate-950 border-slate-800 text-emerald-400 focus:ring-0"
+                    className="rounded bg-[var(--bg-card)] border-[var(--border-color)] text-[var(--success)] focus:ring-0"
                   />
-                  <span className="text-xs font-bold text-slate-300 uppercase tracking-wide flex items-center gap-1.5">
+                  <span className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wide flex items-center gap-1.5">
                     <RotateCcw size={12} className={isRecurring ? 'animate-spin' : ''} />
                     Set Recurrence Schedule (Auto-Spawn)
                   </span>
                 </label>
 
                 {isRecurring && (
-                  <div className="mt-3 p-3 bg-slate-950/60 border border-slate-900 rounded-lg space-y-3 animate-in slide-in-from-top-1 duration-200">
+                  <div className="mt-3 p-3 bg-[var(--bg-card-hover)] border border-[var(--border-color)] rounded-lg space-y-3 animate-in slide-in-from-top-1 duration-200">
                     <div className="grid grid-cols-2 gap-4">
                       <div className="quote-form-group">
                         <label className="text-[10px]">Frequency</label>
                         <select
                           value={recurrenceFreq}
                           onChange={(e) => setRecurrenceFreq(e.target.value as any)}
-                          className="quote-form-input font-mono text-xs"
+                          className="quote-form-input font-mono text-xs text-[var(--text-primary)] font-semibold"
                         >
-                          <option value="DAILY">DAILY</option>
-                          <option value="WEEKLY">WEEKLY</option>
-                          <option value="MONTHLY">MONTHLY</option>
+                          <option value="DAILY" className="bg-[var(--bg-card)] text-[var(--text-primary)]">DAILY</option>
+                          <option value="WEEKLY" className="bg-[var(--bg-card)] text-[var(--text-primary)]">WEEKLY</option>
+                          <option value="MONTHLY" className="bg-[var(--bg-card)] text-[var(--text-primary)]">MONTHLY</option>
                         </select>
                       </div>
 
@@ -298,7 +315,7 @@ export const QuickAddTask: React.FC<Props> = ({ onTaskCreated, projectId }) => {
                           type="date"
                           value={recurrenceUntil}
                           onChange={(e) => setRecurrenceUntil(e.target.value)}
-                          className="quote-form-input font-mono text-xs"
+                          className="quote-form-input font-mono text-xs text-[var(--text-primary)] font-semibold"
                         />
                       </div>
                     </div>
@@ -316,8 +333,8 @@ export const QuickAddTask: React.FC<Props> = ({ onTaskCreated, projectId }) => {
                                 onClick={() => handleWeekdayToggle(day)}
                                 className={`h-8 w-8 rounded text-[10px] font-bold transition-all border ${
                                   active
-                                    ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/40 shadow-[0_0_8px_rgba(0,229,160,0.15)]'
-                                    : 'bg-slate-900 text-slate-500 border-slate-800 hover:border-slate-700'
+                                    ? 'bg-[var(--success-glow)] text-[var(--success)] border-[var(--success)]'
+                                    : 'bg-[var(--bg-card)] text-[var(--text-secondary)] border-[var(--border-color)] hover:border-[var(--text-muted)]'
                                 }`}
                               >
                                 {day}
@@ -332,21 +349,21 @@ export const QuickAddTask: React.FC<Props> = ({ onTaskCreated, projectId }) => {
               </div>
 
               {/* Submit Buttons */}
-              <div className="flex justify-end gap-2 pt-2">
+              <div className="flex justify-end gap-2 pt-2 border-t border-[var(--border-color)] mt-4">
                 <button
                   type="button"
                   onClick={() => {
                     resetForm();
                     setIsOpen(false);
                   }}
-                  className="quote-btn quote-btn-secondary"
+                  className="quote-btn quote-btn-secondary text-xs"
                   disabled={loading}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="quote-btn quote-btn-primary"
+                  className="quote-btn quote-btn-primary text-xs"
                   disabled={loading}
                 >
                   {loading ? 'Creating...' : 'Create Task'}
@@ -354,7 +371,8 @@ export const QuickAddTask: React.FC<Props> = ({ onTaskCreated, projectId }) => {
               </div>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

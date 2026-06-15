@@ -73,27 +73,27 @@ export const CalendarGrid: React.FC<Props> = ({ meetings, tasks, onSelectMeeting
   return (
     <div className="quote-card overflow-hidden">
       {/* Control Header */}
-      <div className="flex items-center justify-between pb-4 border-b border-border-color mb-5">
-        <h3 className="quote-card-title flex items-center gap-2">
-          <CalIcon size={16} className="text-primary" />
+      <div className="flex items-center justify-between pb-4 border-b border-[var(--border-color)] mb-5">
+        <h3 className="quote-card-title flex items-center gap-2 text-[var(--text-primary)]">
+          <CalIcon size={16} className="text-[var(--accent)]" />
           {monthNames[month]} {year}
         </h3>
         <div className="flex gap-2">
           <button
             onClick={handlePrevMonth}
-            className="p-1.5 rounded bg-bg-dark border border-border-color text-text-secondary hover:text-primary hover:border-primary/20 transition-all cursor-pointer"
+            className="p-1.5 rounded bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--text-secondary)] transition-all cursor-pointer"
           >
             <ChevronLeft size={16} />
           </button>
           <button
             onClick={() => setCurrentDate(new Date())}
-            className="px-2.5 py-1 rounded bg-bg-dark border border-border-color text-[10px] font-bold font-mono text-text-secondary hover:text-primary hover:border-primary/20 transition-all uppercase tracking-wider cursor-pointer"
+            className="px-2.5 py-1 rounded bg-[var(--bg-card)] border border-[var(--border-color)] text-[10px] font-bold font-mono text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--text-secondary)] transition-all uppercase tracking-wider cursor-pointer"
           >
             Today
           </button>
           <button
             onClick={handleNextMonth}
-            className="p-1.5 rounded bg-bg-dark border border-border-color text-text-secondary hover:text-primary hover:border-primary/20 transition-all cursor-pointer"
+            className="p-1.5 rounded bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--text-secondary)] transition-all cursor-pointer"
           >
             <ChevronRight size={16} />
           </button>
@@ -101,22 +101,22 @@ export const CalendarGrid: React.FC<Props> = ({ meetings, tasks, onSelectMeeting
       </div>
 
       {/* Weekdays indicator */}
-      <div className="grid grid-cols-7 text-center font-mono text-[10px] font-extrabold text-text-muted uppercase tracking-widest pb-2.5 border-b border-border-color">
+      <div className="grid grid-cols-7 text-center font-mono text-[10px] font-extrabold uppercase tracking-widest pb-2.5 border-b border-[var(--border-color)]">
         {weekdays.map(d => (
-          <div key={d} className={d === 'Fri' || d === 'Sat' ? 'text-text-muted' : 'text-text-secondary'}>
+          <div key={d} className={d === 'Fri' || d === 'Sat' ? 'text-[var(--text-secondary)] opacity-85' : 'text-[var(--text-primary)]'}>
             {d}
           </div>
         ))}
       </div>
 
       {/* Calendar Grid */}
-      <div className="grid grid-cols-7 grid-rows-5 gap-1.5 mt-2.5">
+      <div className="grid grid-cols-7 gap-1.5 mt-2.5">
         {daysArray.map((day, idx) => {
           if (day === null) {
             return (
               <div
                 key={`empty-${idx}`}
-                className="min-h-[95px] rounded-lg bg-bg-dark/10 border border-transparent"
+                className="min-h-[105px] rounded-lg bg-[var(--bg-card-hover)]/40 border border-transparent opacity-45"
               />
             );
           }
@@ -127,21 +127,25 @@ export const CalendarGrid: React.FC<Props> = ({ meetings, tasks, onSelectMeeting
           return (
             <div
               key={`day-${day}`}
-              className={`min-h-[105px] p-2 rounded-lg border flex flex-col justify-between transition-all bg-bg-dark/35 hover:bg-bg-card-hover/20 ${
+              className={`min-h-[105px] p-2 rounded-lg border flex flex-col justify-between transition-all bg-[var(--bg-card-hover)] ${
                 isToday
-                  ? 'border-primary/45 bg-primary/5 shadow-[inset_0_0_12px_var(--primary-glow)]'
-                  : 'border-border-color hover:border-border-color'
+                  ? 'border-[var(--accent)] bg-[var(--accent-glow)]'
+                  : 'border-[var(--border-color)] hover:border-[var(--text-secondary)]'
               }`}
             >
               {/* Day Number */}
               <div className="flex justify-between items-center">
-                <span className={`text-[11px] font-mono font-bold ${
-                  isToday ? 'text-primary font-extrabold' : 'text-text-muted'
-                }`}>
-                  {String(day).padStart(2, '0')}
-                </span>
+                {isToday ? (
+                  <span className="flex items-center justify-center h-5 w-5 rounded-full bg-[var(--accent)] text-[var(--bg-card)] text-[10px] font-mono font-bold">
+                    {day}
+                  </span>
+                ) : (
+                  <span className="text-[11px] font-mono font-bold text-[var(--text-primary)]">
+                    {String(day).padStart(2, '0')}
+                  </span>
+                )}
                 {(dayMeetings.length > 0 || dayTasks.length > 0) && (
-                  <span className="h-1.5 w-1.5 rounded-full bg-primary shadow-[0_0_4px_var(--primary)]" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]" />
                 )}
               </div>
 
@@ -152,32 +156,32 @@ export const CalendarGrid: React.FC<Props> = ({ meetings, tasks, onSelectMeeting
                   <div
                     key={m.id}
                     onClick={() => onSelectMeeting(m)}
-                    className="p-1 rounded bg-secondary-glow/20 border border-secondary/35 text-secondary text-[9px] truncate cursor-pointer hover:border-secondary/50 flex items-center gap-1 font-sans"
+                    className="p-1 rounded bg-[var(--accent-glow)]/50 border border-[var(--accent)]/30 border-l-2 border-l-[var(--accent)] text-[var(--text-primary)] text-[11px] font-bold truncate cursor-pointer hover:border-[var(--accent)] flex items-center gap-1 font-sans transition-all"
                     title={`Meeting: ${m.title}`}
                   >
-                    <Users size={8} className="flex-shrink-0" />
+                    <Users size={8} className="flex-shrink-0 text-[var(--accent)]" />
                     <span className="truncate">{m.title}</span>
                   </div>
                 ))}
 
                 {/* Tasks */}
                 {dayTasks.map(t => {
-                  const isDone = ['DONE', 'DONE_AUTO'].includes(t.status);
-                  return (
-                    <div
-                      key={t.id}
-                      onClick={() => onSelectTask(t)}
-                      className={`p-1 rounded bg-bg-dark/40 border border-border-color text-[9px] truncate cursor-pointer flex items-center gap-1 font-sans ${
-                        isDone
-                          ? 'border-border-color/10 text-text-muted line-through'
-                          : 'text-text-secondary hover:border-primary/20'
-                      }`}
-                      title={`Task: ${t.title}`}
-                    >
-                      <CheckSquare size={8} className="flex-shrink-0 text-text-muted" />
-                      <span className="truncate">{t.title}</span>
-                    </div>
-                  );
+                   const isDone = ['DONE', 'DONE_AUTO'].includes(t.status);
+                   return (
+                     <div
+                       key={t.id}
+                       onClick={() => onSelectTask(t)}
+                       className={`p-1 rounded border border-l-2 text-[11px] font-bold truncate cursor-pointer flex items-center gap-1 font-sans transition-all ${
+                         isDone
+                           ? 'bg-[var(--bg-card)] border-[var(--border-color)] border-l-2 border-l-[var(--text-muted)]/50 text-[var(--text-secondary)] line-through opacity-75 hover:border-[var(--text-secondary)]'
+                           : 'bg-[var(--success-glow)]/50 border border-[var(--success)]/30 border-l-[var(--success)] text-[var(--text-primary)] hover:border-[var(--success)]'
+                       }`}
+                       title={`Task: ${t.title}`}
+                     >
+                       <CheckSquare size={8} className={`flex-shrink-0 ${isDone ? 'text-[var(--text-secondary)]' : 'text-[var(--success)]'}`} />
+                       <span className="truncate">{t.title}</span>
+                     </div>
+                   );
                 })}
               </div>
             </div>

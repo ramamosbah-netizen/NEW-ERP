@@ -14,11 +14,11 @@ type Props = {
   onStatusChange: (id: string, newStatus: TaskStatus) => void;
 };
 
-const COLUMNS: { key: TaskStatus; label: string; bg: string; text: string; glow: string }[] = [
-  { key: 'TODO', label: 'To Do', bg: 'bg-slate-950/60', text: 'text-slate-400', glow: 'border-slate-800' },
-  { key: 'IN_PROGRESS', label: 'In Progress', bg: 'bg-slate-950/60', text: 'text-cyan-400', glow: 'border-cyan-500/20' },
-  { key: 'BLOCKED', label: 'Blocked', bg: 'bg-slate-950/60', text: 'text-red-400', glow: 'border-red-500/20' },
-  { key: 'DONE', label: 'Completed', bg: 'bg-slate-950/60', text: 'text-emerald-400', glow: 'border-emerald-500/20' }
+const COLUMNS: { key: TaskStatus; label: string; text: string }[] = [
+  { key: 'TODO', label: 'To Do', text: 'text-[var(--text-secondary)]' },
+  { key: 'IN_PROGRESS', label: 'In Progress', text: 'text-[var(--accent)]' },
+  { key: 'BLOCKED', label: 'Blocked', text: 'text-[var(--status-danger-text)]' },
+  { key: 'DONE', label: 'Completed', text: 'text-[var(--success)]' }
 ];
 
 export const TaskKanban: React.FC<Props> = ({ tasks, onSelectTask, onStatusChange }) => {
@@ -57,14 +57,14 @@ export const TaskKanban: React.FC<Props> = ({ tasks, onSelectTask, onStatusChang
             key={col.key}
             onDragOver={handleDragOver}
             onDrop={(e) => handleDrop(e, col.key)}
-            className="flex flex-col h-[650px] rounded-xl border border-slate-900 bg-slate-950/45 p-4 space-y-4"
+            className="flex flex-col h-[650px] rounded-lg border border-[var(--border-color)] bg-[var(--bg-card-hover)] p-4 space-y-4"
           >
             {/* Column Header */}
-            <div className="flex items-center justify-between pb-2 border-b border-slate-900/60">
+            <div className="flex items-center justify-between pb-2 border-b border-[var(--border-color)]">
               <span className={`text-xs font-bold font-mono tracking-widest uppercase ${col.text}`}>
                 {col.label}
               </span>
-              <span className="text-[10px] font-mono font-bold text-slate-500 bg-slate-900 px-2 py-0.5 rounded border border-slate-800">
+              <span className="text-[10px] font-mono font-bold text-[var(--text-secondary)] bg-[var(--bg-card)] px-2 py-0.5 rounded border border-[var(--border-color)]">
                 {columnTasks.length}
               </span>
             </div>
@@ -72,7 +72,7 @@ export const TaskKanban: React.FC<Props> = ({ tasks, onSelectTask, onStatusChang
             {/* Column Body list */}
             <div className="flex-1 overflow-y-auto space-y-3 custom-scrollbar pr-1">
               {columnTasks.length === 0 ? (
-                <div className="h-28 border border-dashed border-slate-900/40 rounded-xl flex items-center justify-center text-slate-600 text-xs italic">
+                <div className="h-28 border border-dashed border-[var(--border-color)]/50 rounded-lg flex items-center justify-center text-[var(--text-muted)] text-xs italic">
                   Drop tasks here
                 </div>
               ) : (

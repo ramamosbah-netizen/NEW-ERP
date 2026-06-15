@@ -99,11 +99,11 @@ export default function MeetingsPage() {
   const getRSVPBadge = (response: AttendeeResponse) => {
     switch (response) {
       case 'ACCEPTED':
-        return <span className="px-2 py-0.5 rounded text-[9px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">ACCEPTED</span>;
+        return <span className="px-2 py-0.5 rounded text-[9px] font-mono bg-[var(--status-success-bg)] text-[var(--status-success-text)] border border-[var(--status-success-border)]">ACCEPTED</span>;
       case 'DECLINED':
-        return <span className="px-2 py-0.5 rounded text-[9px] font-mono bg-red-500/10 text-red-400 border border-red-500/25">DECLINED</span>;
+        return <span className="px-2 py-0.5 rounded text-[9px] font-mono bg-[var(--status-danger-bg)] text-[var(--status-danger-text)] border border-[var(--status-danger-border)]">DECLINED</span>;
       default:
-        return <span className="px-2 py-0.5 rounded text-[9px] font-mono bg-slate-900 text-slate-400 border border-slate-800">PENDING</span>;
+        return <span className="px-2 py-0.5 rounded text-[9px] font-mono bg-[var(--status-neutral-bg)] text-[var(--status-neutral-text)] border border-[var(--status-neutral-border)]">PENDING</span>;
     }
   };
 
@@ -407,8 +407,8 @@ export default function MeetingsPage() {
                   {/* Agenda */}
                   {meetingDetail.agenda && (
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Agenda Details</label>
-                      <div className="p-3.5 bg-bg-dark border border-border-color rounded-xl text-text-primary text-xs leading-relaxed whitespace-pre-wrap">
+                      <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Agenda Details</label>
+                      <div className="p-3.5 bg-[var(--bg-card-hover)] border border-[var(--border-color)] rounded-xl text-[var(--text-primary)] text-xs leading-relaxed whitespace-pre-wrap">
                         {meetingDetail.agenda}
                       </div>
                     </div>
@@ -485,8 +485,8 @@ export default function MeetingsPage() {
 
                       {/* Minutes Content */}
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Minutes Content</label>
-                        <div className="p-3.5 bg-bg-dark border border-border-color rounded-xl text-text-primary text-xs leading-relaxed whitespace-pre-wrap font-mono">
+                        <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider">Minutes Content</label>
+                        <div className="p-3.5 bg-[var(--bg-card-hover)] border border-[var(--border-color)] rounded-xl text-[var(--text-primary)] text-xs leading-relaxed whitespace-pre-wrap font-mono">
                           {meetingDetail.minutes}
                         </div>
                       </div>
