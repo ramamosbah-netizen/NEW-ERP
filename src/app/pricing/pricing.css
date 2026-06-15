@@ -9,37 +9,40 @@
 
 /* --- Design Tokens --- */
 :root {
-  --p-bg: #0a0a0f;
-  --p-surface: #111118;
-  --p-surface-2: #18181f;
-  --p-surface-3: #1f1f28;
-  --p-border: rgba(255, 255, 255, 0.06);
-  --p-border-hover: rgba(255, 255, 255, 0.12);
+  /* Re-skinned to the JEET light/amber design system (was dark obsidian).
+     Page markup and class rules are unchanged — only these token values
+     are remapped onto the shared design tokens (bg, text, accent, status). */
+  --p-bg: var(--bg-dark);
+  --p-surface: var(--bg-card);
+  --p-surface-2: var(--bg-card);
+  --p-surface-3: var(--surface-hover);
+  --p-border: var(--border-color);
+  --p-border-hover: var(--border-color);
 
-  --p-mint: #00E5A0;
-  --p-mint-dim: rgba(0, 229, 160, 0.15);
-  --p-mint-glow: rgba(0, 229, 160, 0.25);
+  --p-mint: var(--accent);
+  --p-mint-dim: var(--accent-glow);
+  --p-mint-glow: var(--accent-glow);
 
-  --p-text: #e8e8ef;
-  --p-text-dim: #8b8b9e;
-  --p-text-muted: #5a5a6e;
-  --p-text-bright: #ffffff;
+  --p-text: var(--text-primary);
+  --p-text-dim: var(--text-secondary);
+  --p-text-muted: var(--text-muted);
+  --p-text-bright: var(--text-primary);
 
-  --p-red: #ff4d6a;
-  --p-red-dim: rgba(255, 77, 106, 0.12);
-  --p-orange: #ff9f43;
-  --p-orange-dim: rgba(255, 159, 67, 0.12);
-  --p-blue: #5b8def;
-  --p-blue-dim: rgba(91, 141, 239, 0.12);
-  --p-purple: #a78bfa;
-  --p-purple-dim: rgba(167, 139, 250, 0.12);
-  --p-cyan: #22d3ee;
-  --p-cyan-dim: rgba(34, 211, 238, 0.12);
-  --p-yellow: #fbbf24;
+  --p-red: var(--status-danger-text);
+  --p-red-dim: var(--status-danger-bg);
+  --p-orange: var(--status-warning-text);
+  --p-orange-dim: var(--status-warning-bg);
+  --p-blue: #2563eb;
+  --p-blue-dim: rgba(37, 99, 235, 0.1);
+  --p-purple: #7c3aed;
+  --p-purple-dim: rgba(124, 58, 237, 0.1);
+  --p-cyan: #0891b2;
+  --p-cyan-dim: rgba(8, 145, 178, 0.1);
+  --p-yellow: var(--status-warning-text);
 
-  --p-font-data: 'DM Mono', 'Menlo', monospace;
-  --p-font-header: 'Barlow Condensed', sans-serif;
-  --p-font-body: 'Figtree', 'Inter', sans-serif;
+  --p-font-data: var(--font-mono);
+  --p-font-header: var(--font-heading);
+  --p-font-body: var(--font-body);
 
   --p-radius: 6px;
   --p-radius-lg: 10px;
@@ -67,8 +70,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 12px 28px;
-  background: rgba(10, 10, 15, 0.85);
-  
+  background: var(--bg-card);
+
   border-bottom: 1px solid var(--p-border);
 }
 
@@ -138,7 +141,7 @@
 }
 
 .pricing-topbar-btn.primary:hover {
-  background: #00cc8e;
+  background: #d97706;
   box-shadow: 0 0 16px var(--p-mint-glow);
 }
 
@@ -988,7 +991,7 @@
 }
 
 .labour-expandable-panel {
-  background: rgba(10, 10, 15, 0.5);
+  background: var(--surface-hover);
   border: 1px solid var(--p-border);
   border-top: none;
   border-bottom-left-radius: var(--p-radius-lg);
