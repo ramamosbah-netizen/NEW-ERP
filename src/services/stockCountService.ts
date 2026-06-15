@@ -71,8 +71,7 @@ export const stockCountService = {
       .from('stock_counts')
       .select(`
         *,
-        stock_locations(name),
-        profiles:counted_by(full_name)
+        stock_locations(name)
       `)
       .order('created_at', { ascending: false });
 
@@ -83,10 +82,19 @@ export const stockCountService = {
     const { data, error } = await query;
     if (error) throw error;
 
-    return (data || []).map(row => ({
+    const rows = data || [];
+    // counter name via separate lookup (no FK stock_counts -> profiles in this DB)
+    const ids = [...new Set(rows.map((r: any) => r.counted_by).filter(Boolean))];
+    const nameMap = new Map<string, string>();
+    if (ids.length) {
+      const { data: profs } = await supabase.from('profiles').select('id, full_name').in('id', ids);
+      (profs || []).forEach((p: any) => nameMap.set(p.id, p.full_name));
+    }
+
+    return rows.map((row: any) => ({
       ...row,
       location_name: row.stock_locations?.name,
-      counter_name: row.profiles?.full_name
+      counter_name: row.counted_by ? nameMap.get(row.counted_by) : undefined
     })) as StockCount[];
   },
 
@@ -98,13 +106,19 @@ export const stockCountService = {
       .from('stock_counts')
       .select(`
         *,
-        stock_locations(name, location_code),
-        profiles:counted_by(full_name)
+        stock_locations(name, location_code)
       `)
       .eq('id', id)
       .single();
 
     if (countErr) throw countErr;
+
+    // counter name via separate lookup (no FK stock_counts -> profiles in this DB)
+    let counterName: string | undefined;
+    if (count.counted_by) {
+      const { data: prof } = await supabase.from('profiles').select('full_name').eq('id', count.counted_by).maybeSingle();
+      counterName = prof?.full_name;
+    }
 
     const { data: lines, error: linesErr } = await supabase
       .from('stock_count_lines')
@@ -136,7 +150,7 @@ export const stockCountService = {
     return {
       ...count,
       location_name: count.stock_locations?.name,
-      counter_name: count.profiles?.full_name,
+      counter_name: counterName,
       lines: formattedLines
     } as StockCount;
   },

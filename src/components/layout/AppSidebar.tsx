@@ -117,6 +117,7 @@ const NAV_SECTIONS = [
       { href: '/warehouse/suppliers', label: 'Suppliers & Subcon', icon: Users },
       { href: '/warehouse/store', label: 'Store', icon: Package },
       { href: '/warehouse/movements', label: 'Goods Movements', icon: Truck },
+      { href: '/warehouse/stock-count', label: 'Stock Count', icon: ClipboardCheck },
       { href: '/pricing', label: 'Pricing Catalog', icon: Calculator },
     ],
   },

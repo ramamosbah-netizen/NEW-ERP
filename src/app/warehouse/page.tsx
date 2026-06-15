@@ -7,10 +7,11 @@
 import React from 'react';
 import Link from 'next/link';
 import { PageHeader } from '@/components/ui/PageHeader';
-import { Users, Package, Truck, Calculator, ArrowRight, LayoutDashboard } from 'lucide-react';
+import { Users, Package, Truck, Calculator, ArrowRight, LayoutDashboard, ClipboardCheck } from 'lucide-react';
 
 const SECTIONS = [
   { href: '/warehouse/dashboard', title: 'Inventory Dashboard', desc: 'Stock value, risk and movement health at a glance — value by category/system, dead stock and receipts vs issues.', icon: LayoutDashboard },
+  { href: '/warehouse/stock-count', title: 'Stock Count / Stock-take', desc: 'Freeze a location, count physical stock, review variances by value, and post adjustments to the ledger.', icon: ClipboardCheck },
   { href: '/warehouse/suppliers', title: 'Suppliers & Subcontractors', desc: 'Register and manage suppliers; performance scoring from order history. Suppliers created anywhere in the system appear here.', icon: Users },
   { href: '/warehouse/store', title: 'Store', desc: 'Registered goods and materials on hand, valuation, and stock-risk alerts (out of stock / below reorder level).', icon: Package },
   { href: '/warehouse/movements', title: 'Goods Movements', desc: 'Track materials across sites and projects — receipts, issues, returns, transfers, adjustments and write-offs.', icon: Truck },
