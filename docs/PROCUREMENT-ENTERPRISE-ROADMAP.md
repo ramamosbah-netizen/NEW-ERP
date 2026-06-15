@@ -30,4 +30,5 @@ Recharts where useful, sidebar link, RBAC (existing roles), and a roadmap update
 - ✅ **Phase 4 — PO Delivery Tracking** (`/procurement/deliveries`): open POs (approved/sent/ack/partial, not complete) with overdue/due-soon, not-acknowledged KPIs, delivery-status pie, and a table with days-to-required + ack status, drill to PO. PDF/Excel.
 - ✅ **Phase 5 — PR Pipeline & Cycle Time** (`/procurement/pr-pipeline`): PR KPIs (total, pending, converted, conversion rate, avg approval days), by-status + by-category charts, table with approval turnaround and conversion. PDF/Excel.
 - ✅ **Phase 6 — Three-Way Match Exceptions** (`/procurement/match`): supplier invoices bucketed Matched/Pending/Exception, clickable KPI filters, status pie, table with supplier+PO+value+match status. PDF/Excel.
-- ⏭ Then: GRN → Savings → Payables → Hub/Polish.
+- ✅ **Phase 7 — Goods Receipt (GRN) Analytics** (`/procurement/grn-analytics`): GRN KPIs (total, this month, pending receipts, projects receiving), receipts-per-month + receipts-by-project charts, recent-GRN log (PO + supplier + project). PDF/Excel.
+- ⏭ Then: Savings → Payables → Hub/Polish.
