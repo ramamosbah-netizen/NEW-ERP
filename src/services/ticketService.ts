@@ -6,6 +6,7 @@
 
 import { supabase } from '@/lib/supabase';
 import { eventService } from './eventService';
+import { auditService } from './auditService';
 import { calculateSLADeadlines, pauseSLATimer, resumeSLATimer, evaluateSLABreach } from './slaService';
 import { fetchCompanyHolidays } from './businessTime';
 import { invoiceService } from './invoiceService';
@@ -164,6 +165,7 @@ export const ticketService = {
       }
     );
 
+    auditService.logEvent({ module: 'Service', action: 'CREATE', entity_type: 'service_ticket', entity_id: ticket.id, summary: `Ticket ${ticket.ticket_number}: ${ticket.title}` });
     return ticket as ServiceTicket;
   },
 
@@ -405,6 +407,7 @@ export const ticketService = {
       }
     );
 
+    auditService.logEvent({ module: 'Service', action: 'RESOLVE', entity_type: 'service_ticket', entity_id: ticketId, summary: `Resolved ticket ${updated.ticket_number}` });
     return updated as ServiceTicket;
   },
 
@@ -496,6 +499,7 @@ export const ticketService = {
       }
     );
 
+    auditService.logEvent({ module: 'Service', action: 'CLOSE', entity_type: 'service_ticket', entity_id: ticketId, summary: `Closed ticket ${updated.ticket_number}${invoiceNo ? ` (invoice ${invoiceNo})` : ''}` });
     return updated as ServiceTicket;
   },
 

@@ -37,4 +37,6 @@ RBAC (existing roles), audit logging, and a roadmap update.
 - ✅ **Phase 8 — Spare Parts & Consumption** (`/service/parts`): flattens ticket `parts_used` → total value, chargeable vs covered split, top items by value, monthly consumption trend, per-item table, PDF/Excel.
 - ✅ **Phase 9 — Client / Site Service History** (`/service/history`): pick a client → unified reverse-chronological timeline of contracts + tickets + PPM visits, with summary KPIs and drill-through. PDF/Excel.
 - ✅ **Phase 10 — AMC Billing & Revenue** (`/amc/billing`): installment-schedule status (pending/invoiced/paid), billed + collected + pending + overdue KPIs, scheduled-value-by-month stacked chart, status filter, schedule table, and a "Run due installments" action (amcBillingService → draft invoices). PDF/Excel.
-- ⏭ Then: Audit & Export Polish (final).
+- ✅ **Phase 11 — Audit & Export Polish**: audit-log writes added to ticketService (create/resolve/close) and amcService (activate/renew); PDF/Excel verified across all pages. See `AMC-SERVICE-ENTERPRISE-COMPLETE.md`.
+
+**🎉 All 11 modules complete.** Full report: [`AMC-SERVICE-ENTERPRISE-COMPLETE.md`](./AMC-SERVICE-ENTERPRISE-COMPLETE.md).
