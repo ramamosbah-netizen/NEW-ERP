@@ -201,6 +201,7 @@ const NAV_SECTIONS = [
     id: 'hr',
     label: 'HR & Payroll',
     items: [
+      { href: '/hr/hub', label: 'HR Hub', icon: SlidersHorizontal },
       { href: '/hr/dashboard', label: 'HR Dashboard', icon: LayoutDashboard },
       { href: '/hr', label: 'Employees', icon: Users },
       { href: '/hr/compliance-tracker', label: 'Doc Compliance', icon: Shield },
