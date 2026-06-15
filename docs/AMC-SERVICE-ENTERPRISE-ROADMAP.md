@@ -28,4 +28,5 @@ RBAC (existing roles), audit logging, and a roadmap update.
 ## Status
 - ✅ **Module report** (`AMC-SERVICE-MODULE-REPORT.md`) + this roadmap.
 - ✅ **Phase 1 — Service & AMC Operations Dashboard** (`/service/dashboard`): unified KPIs (open tickets, SLA breaches/compliance, emergency, active contracts, AMC revenue, expiring, SIRA expiring, PPM open/overdue/completion), tickets-by-status/priority + PPM-by-status charts, attention banner, drill-through. PDF/Excel.
-- ⏭ Then: SLA Analytics → Technician Utilization → PPM Compliance → Renewals Pipeline → Contract Profitability → Equipment Register → Spare Parts → Service History → AMC Billing → Polish.
+- ✅ **Phase 2 — SLA Analytics & Compliance** (`/service/sla`): response/resolution compliance %, breaches, MTTR, compliance-trend line, compliance-by-priority, breaches-by-system, per-technician compliance table; priority filter; PDF/Excel.
+- ⏭ Then: Technician Utilization → PPM Compliance → Renewals Pipeline → Contract Profitability → Equipment Register → Spare Parts → Service History → AMC Billing → Polish.
