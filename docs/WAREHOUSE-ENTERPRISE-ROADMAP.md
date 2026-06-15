@@ -35,4 +35,5 @@ RBAC (existing roles), audit logging, and a roadmap update.
 - ✅ **Phase 6 — Dead Stock Dashboard** (`/warehouse/dead-stock`): no-movement-for-N-days (90/180/365) with capital tied up, dead-value-by-category chart, and a one-click WRITE_OFF shortcut. PDF/Excel.
 - ✅ **Phase 7 — Serial Tracking** (`/warehouse/serials`): per-serial lifecycle (in store/issued/installed/faulty/returned), location, project, warranty-expiry highlighting; status/location/search filters; KPIs; PDF/Excel.
 - ✅ **Phase 8 — Installed Assets Tracking** (`/warehouse/installed`): serialized assets deployed (issued/installed) per project site, deployed-by-project chart, warranty ≤90d / expired KPIs (feeds DLP), project filter, PDF/Excel.
-- ⏭ Then: Forecasting → GL → Polish.
+- ✅ **Phase 9 — Material Forecasting** (`/warehouse/forecast`): open MRF demand (un-issued lines) vs on-hand available → net position + shortfall to procure per item, top-shortfalls chart, shortfalls-only toggle, PDF/Excel. Demand-driven complement to reorder-level Replenishment.
+- ⏭ Then: GL Integration → Polish.

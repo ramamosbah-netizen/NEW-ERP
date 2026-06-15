@@ -127,6 +127,7 @@ const NAV_SECTIONS = [
       { href: '/warehouse/dead-stock', label: 'Dead Stock', icon: PackageX },
       { href: '/warehouse/serials', label: 'Serial Tracking', icon: ScanLine },
       { href: '/warehouse/installed', label: 'Installed Assets', icon: HardHat },
+      { href: '/warehouse/forecast', label: 'Material Forecasting', icon: TrendingUp },
       { href: '/pricing', label: 'Pricing Catalog', icon: Calculator },
     ],
   },
