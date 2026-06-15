@@ -25,4 +25,5 @@ Recharts where useful, sidebar link, RBAC (existing roles), and a roadmap update
 - ✅ **Module report** (`HR-MODULE-REPORT.md`) + this roadmap.
 - ✅ **Phase 1 — HR & Workforce Dashboard** (`/hr/dashboard`): headcount, departments, latest payroll cost, UAE doc-expiry alerts (expired / ≤30d / 31–90d across visa/labour-card/EID/passport/insurance/licence), leave + timesheet pending, headcount-by-department + by-employment-type charts, attention banner. PDF/Excel.
 - ✅ **Phase 2 — Document Compliance & Expiry Tracker** (`/hr/compliance-tracker`): flattens every employee document expiry (visa/labour-card/EID/passport/medical+ILOE insurance/licence) into rows bucketed by urgency (Expired/≤30/31–60/61–90/Valid); clickable KPI filters, expired+expiring-by-document chart, search + document + status filters, table sorted by soonest, drill to employee. PDF/Excel.
-- ⏭ Then: Workforce → Payroll → Leave → Timesheets → Labour Cost → EOSB → Manpower → Hub/Polish.
+- ✅ **Phase 3 — Workforce Analytics** (`/hr/workforce`): KPIs (headcount, departments, nationalities, avg tenure), by-department / by-nationality / by-employment-type / tenure-distribution charts, headcount-by-department table with avg tenure. PDF/Excel.
+- ⏭ Then: Payroll → Leave → Timesheets → Labour Cost → EOSB → Manpower → Hub/Polish.
