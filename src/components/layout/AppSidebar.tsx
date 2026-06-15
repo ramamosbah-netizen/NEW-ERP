@@ -78,7 +78,11 @@ import {
   DollarSign,
   Scale,
   Mail,
-  Handshake
+  Handshake,
+  Fuel,
+  TrendingDown,
+  Trash2,
+  LayoutGrid
 } from 'lucide-react';
 
 // Navigation structure: grouped sections
@@ -104,7 +108,7 @@ const NAV_SECTIONS = [
   },
   {
     id: 'sales',
-    label: 'Sales & Projects',
+    label: 'Sales & Pre-Award',
     items: [
       { href: '/sales', label: 'Pre-Sales Hub', icon: SlidersHorizontal },
       { href: '/sales/dashboard', label: 'Pre-Sales Dashboard', icon: LayoutDashboard },
@@ -119,6 +123,12 @@ const NAV_SECTIONS = [
       { href: '/sales/follow-ups', label: 'Quote Follow-ups', icon: Bell },
       { href: '/sales/performance', label: 'Sales Performance', icon: Trophy },
       { href: '/sales/competitors', label: 'Competitor Tracking', icon: Swords },
+    ],
+  },
+  {
+    id: 'projects',
+    label: 'Project Delivery & Execution',
+    items: [
       { href: '/projects', label: 'Projects', icon: FolderKanban },
       { href: '/projects/controls', label: 'Project Controls', icon: SlidersHorizontal },
       { href: '/projects/daily-reports', label: 'Daily Site Reports', icon: ClipboardList },
@@ -202,8 +212,20 @@ const NAV_SECTIONS = [
     id: 'fleet',
     label: 'Fleet & Assets',
     items: [
+      { href: '/fleet/hub', label: 'Fleet & Assets Hub', icon: LayoutDashboard },
       { href: '/fleet', label: 'Fleet Registry', icon: Car },
+      { href: '/fleet/dashboard', label: 'Fleet Dashboard', icon: Activity },
+      { href: '/fleet/compliance', label: 'Compliance Tracker', icon: ShieldAlert },
+      { href: '/fleet/fuel-analytics', label: 'Fuel Analytics', icon: Fuel },
+      { href: '/fleet/fines-analytics', label: 'Fines Analytics', icon: AlertTriangle },
+      { href: '/fleet/maintenance', label: 'Maintenance & Downtime', icon: Wrench },
+      { href: '/fleet/tco', label: 'Cost of Ownership', icon: Gauge },
       { href: '/assets', label: 'Fixed Assets', icon: Calculator },
+      { href: '/assets/dashboard', label: 'Asset Dashboard', icon: Activity },
+      { href: '/assets/depreciation-forecast', label: 'Depreciation Forecast', icon: TrendingDown },
+      { href: '/assets/disposals', label: 'Disposals & Gain/Loss', icon: Trash2 },
+      { href: '/tools', label: 'Tools & Equipment', icon: LayoutGrid },
+      { href: '/tools/calibration', label: 'Calibration Tracker', icon: Award },
     ],
   },
   {

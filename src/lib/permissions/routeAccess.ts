@@ -29,7 +29,7 @@ const ROLE_ALLOWLIST: Record<string, string[]> = {
   hr: ['/hr', '/payroll', '/timesheets'],
   'service coordinator': ['/service', '/service-desk', '/ppm', '/amc'],
   estimator: ['/tenders', '/quotations', '/sales', '/pricing'],
-  'fleet coordinator': ['/fleet', '/vehicles'],
+  'fleet coordinator': ['/fleet', '/vehicles', '/assets', '/tools'],
   'site engineer': ['/projects', '/tc', '/snags', '/handover', '/vo'],
   'field technician': ['/service-desk', '/ppm'],
 };
