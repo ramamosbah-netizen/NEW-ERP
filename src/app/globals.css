@@ -108,6 +108,18 @@
   --spacing-card-padding: 1rem;
   --spacing-gap: 1rem;
   --font-size-table: 0.8125rem;
+
+  /* ----------------------------------------------------------------
+     Compatibility aliases — legacy token names used across ~100 page
+     files map onto the refreshed design tokens. Defined once here;
+     because CSS custom properties resolve lazily, these pick up the
+     correct per-theme value in light, dark (auto) and manual modes.
+     ---------------------------------------------------------------- */
+  --surface: var(--bg-card);
+  --surface-hover: var(--bg-card-hover);
+  --surface-active: var(--status-neutral-bg);
+  --border: var(--border-color);
+  --text-tertiary: var(--text-muted);
 }
 
 /* ============================================================

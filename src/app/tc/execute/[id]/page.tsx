@@ -366,7 +366,7 @@ export default function TCChecklistRunnerPage({ params }: PageProps) {
               <label className="quote-form-label">Measuring Instrument / Test Equipment</label>
               <select
                 className="quote-input"
-                style={{ width: '100%', border: '1px solid var(--border-color)', height: '40px', background: 'var(--card-bg)' }}
+                style={{ width: '100%', border: '1px solid var(--border-color)', height: '40px', background: 'var(--bg-card)' }}
                 value={selectedToolId}
                 onChange={(e) => handleToolSelect(e.target.value)}
               >
