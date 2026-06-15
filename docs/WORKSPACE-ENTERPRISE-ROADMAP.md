@@ -25,4 +25,5 @@ Recharts where useful, sidebar link, RBAC, and a roadmap update.
 - ✅ **Phase 3 — Meeting Analytics & Action Items** (`/meetings/analytics`): KPIs (meetings, upcoming, minutes published vs completed, open + overdue actions), meetings-by-status + per-month charts, open-action-item table (assignee + meeting + due). PDF/Excel.
 - ✅ **Phase 4 — Notifications & Alerts Analytics** (`/notifications/analytics`): KPIs (total, unread, critical, read rate, actioned rate), by-severity pie, by-channel, 14-day volume trend, unread-critical/action-required table. PDF/Excel.
 - ✅ **Phase 5 — Unified Calendar** (`/workspace/calendar`): month grid merging tasks (due), meetings, leave (spanning days) and PPM visits, colour-coded with a legend, prev/next month nav, today marker, click-through. No migration.
-- ⏭ Then: Activity Timeline → Hub.
+- ✅ **Phase 6 — Activity Timeline** (`/workspace/activity`): chronological feed from `audit_log` grouped by day (Today/Yesterday/…), KPIs (24h / 7d / modules / actors), activity-by-module chart, module filter, colour-coded actions, actor names. PDF/Excel.
+- ⏭ Then: Workspace Hub (final).
