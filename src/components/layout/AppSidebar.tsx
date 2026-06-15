@@ -92,6 +92,7 @@ const NAV_SECTIONS = [
       { href: '/tasks/analytics', label: 'Task Analytics', icon: CheckSquare },
       { href: '/tasks/team', label: 'Team Workload', icon: Users },
       { href: '/meetings', label: 'Meetings', icon: Calendar },
+      { href: '/meetings/analytics', label: 'Meeting Analytics', icon: Calendar },
       { href: '/notifications', label: 'Alerts & Logs', icon: Bell },
     ],
   },
