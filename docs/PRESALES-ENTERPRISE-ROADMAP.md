@@ -32,4 +32,5 @@ audit logging where it writes, and a roadmap update.
 - ✅ **Phase 5 — Estimation & Margin Analysis** (`/sales/margin`): per-BOQ estimated cost/profit/sell + margin % from `boqs.financials`, margin-distribution histogram, cost-component pie (supply/labour/equipment/subcontract/logistics/overhead), table with linked quotation value, drill to BOQ. PDF/Excel.
 - ✅ **Phase 6 — Client Directory & 360 (CRM)** (`/sales/clients` + `/[id]`): client list with CRM segmentation (segment/industry/owner/status), per-client quoted + active-AMC rollups, search/segment/status filters, create/edit modal, and a 360 detail (profile + tenders + quotations + AMC). New `clientService` (CRUD with PGRST204 fallback + get360, audit), migration `20260615260000_clients_crm_fields` (additive; page degrades gracefully). PDF/Excel.
 - ✅ **Phase 7 — Tender Deadline Tracker** (`/sales/deadlines`): open tenders grouped by urgency (overdue / next 7d / 8–30d / later) with countdown, KPIs, drill-through. PDF/Excel.
-- ⏭ Then: Follow-ups → Performance → Hub/Polish.
+- ✅ **Phase 8 — Quotation Follow-ups & Validity** (`/sales/follow-ups`): pending quotes by follow-up state — awaiting response (days waiting), expiring ≤14d, expired, not-sent-yet — with KPIs and drill-through. PDF/Excel.
+- ⏭ Then: Performance → Hub/Polish.

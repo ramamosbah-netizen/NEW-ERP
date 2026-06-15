@@ -95,6 +95,7 @@ const NAV_SECTIONS = [
       { href: '/sales/margin', label: 'Margin Analysis', icon: Calculator },
       { href: '/sales/clients', label: 'Client Directory', icon: Building2 },
       { href: '/sales/deadlines', label: 'Tender Deadlines', icon: CalendarClock },
+      { href: '/sales/follow-ups', label: 'Quote Follow-ups', icon: Bell },
       { href: '/projects', label: 'Projects', icon: FolderKanban },
       { href: '/projects/controls', label: 'Project Controls', icon: SlidersHorizontal },
       { href: '/projects/daily-reports', label: 'Daily Site Reports', icon: ClipboardList },
