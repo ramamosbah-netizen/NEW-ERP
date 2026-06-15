@@ -120,6 +120,7 @@ const NAV_SECTIONS = [
       { href: '/warehouse/mrf', label: 'Requisitions (MRF)', icon: ClipboardList },
       { href: '/warehouse/stock-count', label: 'Stock Count', icon: ClipboardCheck },
       { href: '/warehouse/replenishment', label: 'Replenishment', icon: ShoppingCart },
+      { href: '/warehouse/aging', label: 'Inventory Aging', icon: Clock },
       { href: '/pricing', label: 'Pricing Catalog', icon: Calculator },
     ],
   },
