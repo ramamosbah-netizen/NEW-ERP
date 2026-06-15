@@ -358,7 +358,7 @@ export default function QuotationDetailPage({ params }: { params: Promise<{ id: 
           
           <div style={{ textAlign: 'right' }}>
             <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em', fontWeight: 600 }}>Grand Total</span>
-            <div style={{ fontSize: '2rem', fontWeight: 700, color: '#00E5A0', fontFamily: 'var(--font-heading)', textShadow: '0 0 15px rgba(0, 229, 160, 0.25)' }}>
+            <div style={{ fontSize: '2rem', fontWeight: 700, color: 'var(--accent)', fontFamily: 'var(--font-heading)', textShadow: '0 0 15px rgba(0, 229, 160, 0.25)' }}>
               {fmtAED(quotation.grand_total_with_vat)}
             </div>
             <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Inclusive of 5% VAT</span>
@@ -367,9 +367,9 @@ export default function QuotationDetailPage({ params }: { params: Promise<{ id: 
       </div>
 
       {/* Action panel (Sticky context buttons) */}
-      <div className="quote-card" style={{ borderColor: '#00E5A0', background: 'rgba(0, 229, 160, 0.03)', padding: '1rem 1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+      <div className="quote-card" style={{ borderColor: 'var(--accent)', background: 'rgba(0, 229, 160, 0.03)', padding: '1rem 1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
         <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
-          Logged in as: <strong style={{ color: '#00E5A0' }}>{currentProfile?.full_name} ({currentProfile?.role})</strong>
+          Logged in as: <strong style={{ color: 'var(--accent)' }}>{currentProfile?.full_name} ({currentProfile?.role})</strong>
         </span>
         
         <div style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap' }}>
@@ -441,12 +441,12 @@ export default function QuotationDetailPage({ params }: { params: Promise<{ id: 
                 </button>
               )}
               {existingProject ? (
-                <Link href={`/projects/${existingProject.id}`} className="quote-btn quote-btn-primary" style={{ background: 'var(--secondary)', color: '#060814', fontWeight: 'bold', textDecoration: 'none' }}>
+                <Link href={`/projects/${existingProject.id}`} className="quote-btn quote-btn-primary" style={{ background: 'var(--secondary)', color: 'var(--bg-card)', fontWeight: 'bold', textDecoration: 'none' }}>
                   View Project {existingProject.project_number} &rarr;
                 </Link>
               ) : (
                 <>
-                  <Link href={`/projects/new/${quotation.id}`} className="quote-btn quote-btn-primary" style={{ background: 'var(--secondary)', color: '#060814', fontWeight: 'bold', textDecoration: 'none' }}>
+                  <Link href={`/projects/new/${quotation.id}`} className="quote-btn quote-btn-primary" style={{ background: 'var(--secondary)', color: 'var(--bg-card)', fontWeight: 'bold', textDecoration: 'none' }}>
                     Initialize Project Master &rarr;
                   </Link>
                   <button className="quote-btn quote-btn-secondary" onClick={openLinkModal}>
@@ -454,7 +454,7 @@ export default function QuotationDetailPage({ params }: { params: Promise<{ id: 
                   </button>
                 </>
               )}
-              <Link href={`/procurement/comparisons/new/${quotation.id}`} className="quote-btn quote-btn-primary" style={{ background: '#00E5A0', color: '#060814', fontWeight: 'bold', textDecoration: 'none' }}>
+              <Link href={`/procurement/comparisons/new/${quotation.id}`} className="quote-btn quote-btn-primary" style={{ background: 'var(--accent)', color: 'var(--bg-card)', fontWeight: 'bold', textDecoration: 'none' }}>
                 Create Supplier Comparison &rarr;
               </Link>
             </>
@@ -493,7 +493,7 @@ export default function QuotationDetailPage({ params }: { params: Promise<{ id: 
               {quotation.scope_summary || 'No scope summary defined.'}
             </p>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '1rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '1.5rem', borderTop: '1px solid var(--surface-hover)', paddingTop: '1rem' }}>
               <div>
                 <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>CLIENT DETAILS</span>
                 <p style={{ fontWeight: 600, fontSize: '0.92rem', marginTop: '0.2rem' }}>{quotation.client_name}</p>
@@ -657,30 +657,30 @@ export default function QuotationDetailPage({ params }: { params: Promise<{ id: 
       {activeTab === 'terms' && (
         <div className="quote-card" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           <div>
-            <h4 style={{ color: '#00E5A0', marginBottom: '0.4rem' }}>Payment Terms</h4>
+            <h4 style={{ color: 'var(--accent)', marginBottom: '0.4rem' }}>Payment Terms</h4>
             <p style={{ whiteSpace: 'pre-wrap', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>{quotation.payment_terms || 'N/A'}</p>
           </div>
           <div>
-            <h4 style={{ color: '#00E5A0', marginBottom: '0.4rem' }}>Delivery Period</h4>
+            <h4 style={{ color: 'var(--accent)', marginBottom: '0.4rem' }}>Delivery Period</h4>
             <p style={{ whiteSpace: 'pre-wrap', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>{quotation.delivery_period || 'N/A'}</p>
           </div>
           <div>
-            <h4 style={{ color: '#00E5A0', marginBottom: '0.4rem' }}>Warranty Terms</h4>
+            <h4 style={{ color: 'var(--accent)', marginBottom: '0.4rem' }}>Warranty Terms</h4>
             <p style={{ whiteSpace: 'pre-wrap', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>{quotation.warranty_terms || 'N/A'}</p>
           </div>
           <div>
-            <h4 style={{ color: '#00E5A0', marginBottom: '0.4rem' }}>Terms & Conditions</h4>
+            <h4 style={{ color: 'var(--accent)', marginBottom: '0.4rem' }}>Terms & Conditions</h4>
             <p style={{ whiteSpace: 'pre-wrap', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>{quotation.terms_and_conditions || 'N/A'}</p>
           </div>
           <div>
-            <h4 style={{ color: '#00E5A0', marginBottom: '0.4rem' }}>Inclusions</h4>
+            <h4 style={{ color: 'var(--accent)', marginBottom: '0.4rem' }}>Inclusions</h4>
             <p style={{ whiteSpace: 'pre-wrap', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>{quotation.inclusions || 'N/A'}</p>
           </div>
           <div>
-            <h4 style={{ color: '#00E5A0', marginBottom: '0.4rem' }}>Exclusions</h4>
+            <h4 style={{ color: 'var(--accent)', marginBottom: '0.4rem' }}>Exclusions</h4>
             <p style={{ whiteSpace: 'pre-wrap', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>{quotation.exclusions || 'N/A'}</p>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '1rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', borderTop: '1px solid var(--surface-hover)', paddingTop: '1rem' }}>
             <div>
               <h4 style={{ color: 'var(--text-muted)', marginBottom: '0.4rem' }}>Notes to Client (PDF Footer)</h4>
               <p style={{ whiteSpace: 'pre-wrap', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>{quotation.notes_client || 'None'}</p>
@@ -748,7 +748,7 @@ export default function QuotationDetailPage({ params }: { params: Promise<{ id: 
                         {statusLabels[rev.status] || rev.status}
                       </span>
                     </td>
-                    <td style={{ textAlign: 'right', color: '#00E5A0' }}>{fmtAED(rev.grand_total_with_vat)}</td>
+                    <td style={{ textAlign: 'right', color: 'var(--accent)' }}>{fmtAED(rev.grand_total_with_vat)}</td>
                     <td>{new Date(rev.created_at).toLocaleString('en-GB')}</td>
                     <td style={{ textAlign: 'center' }}>
                       {rev.id !== quotation.id ? (

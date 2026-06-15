@@ -56,7 +56,7 @@ export default function AssetDetailPage({ params }: { params: Promise<{ id: stri
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[var(--bg-dark)] text-[#f8fafc] flex items-center justify-center font-mono text-xs">
+      <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex items-center justify-center font-mono text-xs">
         Loading asset ledger...
       </div>
     );
@@ -64,7 +64,7 @@ export default function AssetDetailPage({ params }: { params: Promise<{ id: stri
 
   if (!asset) {
     return (
-      <div className="min-h-screen bg-[var(--bg-dark)] text-[#f8fafc] flex flex-col items-center justify-center gap-4">
+      <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex flex-col items-center justify-center gap-4">
         <span className="text-xs font-mono text-[var(--text-primary)]0">Asset record not found.</span>
         <Link href="/assets" className="text-xs text-[var(--primary)] font-bold flex items-center gap-1.5">
           <ArrowLeft size={14} /> Back to Register
@@ -97,7 +97,7 @@ export default function AssetDetailPage({ params }: { params: Promise<{ id: stri
   const pendingMonths = schedule.filter(r => !r.posted).length;
 
   return (
-    <div className="min-h-screen bg-[var(--bg-dark)] text-[#f8fafc]">
+    <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)]">
 <main className="max-w-[1600px] mx-auto px-6 py-8">
         
         {/* BACK */}
@@ -318,7 +318,7 @@ export default function AssetDetailPage({ params }: { params: Promise<{ id: stri
         {/* MODAL: DISPOSAL FORM */}
         {showDisposalModal && (
           <div className="fixed inset-0 z-50 bg-[var(--bg-card)] backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-[#0c0f24] border border-[var(--border)] rounded-2xl w-full max-w-md p-6 relative">
+            <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl w-full max-w-md p-6 relative">
               <h2 className="font-heading font-extrabold text-sm uppercase tracking-wider text-[var(--text-primary)] mb-4">
                 Dispose Asset Profile
               </h2>

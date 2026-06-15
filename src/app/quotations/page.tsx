@@ -227,7 +227,7 @@ export default function QuotationsListPage() {
                         {statusLabels[quote.status] || quote.status}
                       </span>
                     </td>
-                    <td style={{ textAlign: 'right', fontWeight: 600, color: '#00E5A0' }}>
+                    <td style={{ textAlign: 'right', fontWeight: 600, color: 'var(--accent)' }}>
                       {fmtAED(quote.grand_total_with_vat)}
                     </td>
                     <td>{quote.prepared_by_name || 'Estimator'}</td>
@@ -276,8 +276,8 @@ export default function QuotationsListPage() {
                         display: 'flex', 
                         justifyContent: 'space-between', 
                         alignItems: 'center',
-                        background: 'rgba(255, 255, 255, 0.02)',
-                        borderColor: 'rgba(255, 255, 255, 0.06)'
+                        background: 'var(--surface-hover)',
+                        borderColor: 'var(--surface-hover)'
                       }}
                     >
                       <div>

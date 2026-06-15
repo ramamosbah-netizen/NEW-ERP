@@ -443,9 +443,9 @@ export default function CreateQuotationWizard({ params }: { params: Promise<{ bo
               style={{ 
                 flex: 1, 
                 textAlign: 'center', 
-                borderBottom: `2px solid ${step > idx + 1 ? 'var(--success)' : step === idx + 1 ? '#00E5A0' : 'rgba(255,255,255,0.06)'}`,
+                borderBottom: `2px solid ${step > idx + 1 ? 'var(--success)' : step === idx + 1 ? 'var(--accent)' : 'var(--surface-hover)'}`,
                 paddingBottom: '0.5rem',
-                color: step === idx + 1 ? '#00E5A0' : step > idx + 1 ? 'var(--success)' : 'var(--text-muted)',
+                color: step === idx + 1 ? 'var(--accent)' : step > idx + 1 ? 'var(--success)' : 'var(--text-muted)',
                 fontWeight: step === idx + 1 ? 700 : 500,
                 fontSize: '0.8rem'
               }}
@@ -489,7 +489,7 @@ export default function CreateQuotationWizard({ params }: { params: Promise<{ bo
             </div>
           </div>
 
-          <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '1.5rem', marginBottom: '1.5rem' }}>
+          <div style={{ borderTop: '1px solid var(--surface-hover)', paddingTop: '1.5rem', marginBottom: '1.5rem' }}>
             <h4 style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Client Search & Profile</h4>
             
             <div className="quote-form-grid" style={{ marginBottom: '1rem' }}>
@@ -554,7 +554,7 @@ export default function CreateQuotationWizard({ params }: { params: Promise<{ bo
             </div>
           </div>
 
-          <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '1.5rem' }}>
+          <div style={{ borderTop: '1px solid var(--surface-hover)', paddingTop: '1.5rem' }}>
             <div className="quote-form-group" style={{ marginBottom: '1.2rem' }}>
               <label>Quotation Subject</label>
               <input type="text" name="subject" className="quote-form-input" placeholder="e.g. CCTV & Access Control System — Villa 42, Palm Jumeirah" value={quoteHeader.subject} onChange={handleHeaderChange} />
@@ -835,7 +835,7 @@ export default function CreateQuotationWizard({ params }: { params: Promise<{ bo
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
             {/* Header info */}
             <div>
-              <h4 style={{ fontSize: '0.9rem', color: '#00E5A0', marginBottom: '0.5rem' }}>Header Information</h4>
+              <h4 style={{ fontSize: '0.9rem', color: 'var(--accent)', marginBottom: '0.5rem' }}>Header Information</h4>
               <p><strong>Subject:</strong> {quoteHeader.subject}</p>
               <p><strong>Client Name:</strong> {quoteHeader.client_name}</p>
               <p><strong>Project Ref:</strong> {quoteHeader.project_ref}</p>
@@ -843,8 +843,8 @@ export default function CreateQuotationWizard({ params }: { params: Promise<{ bo
             </div>
 
             {/* Financial Summary */}
-            <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '1rem' }}>
-              <h4 style={{ fontSize: '0.9rem', color: '#00E5A0', marginBottom: '0.5rem' }}>Financial Totals</h4>
+            <div style={{ borderTop: '1px solid var(--surface-hover)', paddingTop: '1rem' }}>
+              <h4 style={{ fontSize: '0.9rem', color: 'var(--accent)', marginBottom: '0.5rem' }}>Financial Totals</h4>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', maxWidth: '400px' }}>
                 <div>Subtotal Excl. VAT:</div>
                 <div style={{ fontWeight: 600 }}>{fmtAED(subtotal)}</div>
@@ -857,18 +857,18 @@ export default function CreateQuotationWizard({ params }: { params: Promise<{ bo
                 <div>VAT Amount (5%):</div>
                 <div>{fmtAED(vat)}</div>
                 <div style={{ fontWeight: 700, fontSize: '1.1rem' }}>Grand Total:</div>
-                <div style={{ fontWeight: 700, fontSize: '1.1rem', color: '#00E5A0' }}>{fmtAED(grandTotal)}</div>
+                <div style={{ fontWeight: 700, fontSize: '1.1rem', color: 'var(--accent)' }}>{fmtAED(grandTotal)}</div>
               </div>
             </div>
 
             {/* Clause Previews */}
-            <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '1rem' }}>
-              <h4 style={{ fontSize: '0.9rem', color: '#00E5A0', marginBottom: '0.5rem' }}>Terms Preview</h4>
+            <div style={{ borderTop: '1px solid var(--surface-hover)', paddingTop: '1rem' }}>
+              <h4 style={{ fontSize: '0.9rem', color: 'var(--accent)', marginBottom: '0.5rem' }}>Terms Preview</h4>
               <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}><strong>Payment:</strong> {quoteHeader.payment_terms || 'None'}</p>
               <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '0.5rem' }}><strong>Warranty:</strong> {quoteHeader.warranty_terms || 'None'}</p>
             </div>
 
-            <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '1rem', textAlign: 'center' }}>
+            <div style={{ borderTop: '1px solid var(--surface-hover)', paddingTop: '1rem', textAlign: 'center' }}>
               <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginBottom: '1rem' }}>Click below to create this quotation. It will be saved as DRAFT status, allowing you to edit or submit for review.</p>
             </div>
           </div>

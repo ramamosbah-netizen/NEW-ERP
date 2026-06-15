@@ -53,7 +53,7 @@ const KANBAN_COLUMNS: { status: ServiceTicketStatus; label: string; color: strin
   { status: 'IN_PROGRESS', label: 'In Progress', color: '#eab308' },
   { status: 'ON_HOLD_PARTS', label: 'On Hold', color: '#f97316' },
   { status: 'RESOLVED', label: 'Resolved', color: '#22d3ee' },
-  { status: 'CLOSED', label: 'Closed', color: '#00E5A0' }
+  { status: 'CLOSED', label: 'Closed', color: 'var(--accent)' }
 ];
 
 // --- SLA Clock component ---
@@ -73,8 +73,8 @@ function SLAClock({ dueDate, label, met }: { dueDate: string; label: string; met
   const minutes = Math.floor((absDiff % (1000 * 60 * 60)) / (1000 * 60));
 
   // Color coding
-  let timerColor = '#00E5A0'; // green: >4h remaining
-  if (met === true) timerColor = '#00E5A0';
+  let timerColor = 'var(--accent)'; // green: >4h remaining
+  if (met === true) timerColor = 'var(--accent)';
   else if (met === false || isOverdue) timerColor = '#ef4444';
   else if (hours < 1) timerColor = '#ef4444'; // red: <1h
   else if (hours < 4) timerColor = '#f97316'; // orange: <4h
@@ -126,7 +126,7 @@ function TicketCard({ ticket, onAssign, onDispatch }: {
     <div style={{
       padding: '0.8rem',
       background: 'rgba(0,0,0,0.3)',
-      border: '1px solid rgba(255,255,255,0.06)',
+      border: '1px solid var(--surface-hover)',
       borderRadius: '8px',
       borderLeft: `3px solid ${priorityColors.text}`,
       display: 'flex',
@@ -136,11 +136,11 @@ function TicketCard({ ticket, onAssign, onDispatch }: {
       cursor: 'pointer'
     }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)';
+        e.currentTarget.style.borderColor = 'var(--border)';
         e.currentTarget.style.background = 'rgba(0,0,0,0.4)';
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)';
+        e.currentTarget.style.borderColor = 'var(--surface-hover)';
         e.currentTarget.style.background = 'rgba(0,0,0,0.3)';
       }}
     >
@@ -282,9 +282,9 @@ function TicketCard({ ticket, onAssign, onDispatch }: {
             padding: '0.35rem',
             fontSize: '0.65rem',
             fontWeight: 700,
-            background: 'rgba(255,255,255,0.04)',
+            background: 'var(--surface-hover)',
             color: 'var(--text-secondary)',
-            border: '1px solid rgba(255,255,255,0.08)',
+            border: '1px solid var(--surface-hover)',
             borderRadius: '4px',
             cursor: 'pointer',
             display: 'flex',
@@ -410,7 +410,7 @@ export default function ServiceDeskPage() {
             display: 'flex',
             background: 'rgba(0,0,0,0.3)',
             borderRadius: '6px',
-            border: '1px solid rgba(255,255,255,0.06)',
+            border: '1px solid var(--surface-hover)',
             overflow: 'hidden'
           }}>
             <button
@@ -463,7 +463,7 @@ export default function ServiceDeskPage() {
           </div>
           <div>
             <p style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Active Tickets</p>
-            <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#f8fafc' }}>{metrics.activeCount}</h3>
+            <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-primary)' }}>{metrics.activeCount}</h3>
           </div>
         </div>
 
@@ -473,7 +473,7 @@ export default function ServiceDeskPage() {
           </div>
           <div>
             <p style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>SLA Breached</p>
-            <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: metrics.breachedCount > 0 ? '#ef4444' : '#f8fafc' }}>{metrics.breachedCount}</h3>
+            <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: metrics.breachedCount > 0 ? '#ef4444' : 'var(--text-primary)' }}>{metrics.breachedCount}</h3>
           </div>
         </div>
 
@@ -483,7 +483,7 @@ export default function ServiceDeskPage() {
           </div>
           <div>
             <p style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Emergency</p>
-            <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: metrics.emergencyCount > 0 ? '#ef4444' : '#f8fafc' }}>{metrics.emergencyCount}</h3>
+            <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: metrics.emergencyCount > 0 ? '#ef4444' : 'var(--text-primary)' }}>{metrics.emergencyCount}</h3>
           </div>
         </div>
 
@@ -493,7 +493,7 @@ export default function ServiceDeskPage() {
           </div>
           <div>
             <p style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Pending Close</p>
-            <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#f8fafc' }}>{metrics.resolvedPendingClose}</h3>
+            <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-primary)' }}>{metrics.resolvedPendingClose}</h3>
           </div>
         </div>
       </div>
@@ -570,9 +570,9 @@ export default function ServiceDeskPage() {
             const columnTickets = ticketsByStatus[col.status] || [];
             return (
               <div key={col.status} style={{
-                background: 'rgba(255,255,255,0.02)',
+                background: 'var(--surface-hover)',
                 borderRadius: '10px',
-                border: '1px solid rgba(255,255,255,0.04)',
+                border: '1px solid var(--surface-hover)',
                 overflow: 'hidden',
                 minHeight: '400px',
                 display: 'flex',
@@ -758,8 +758,8 @@ export default function ServiceDeskPage() {
           padding: '1rem'
         }}>
           <div style={{
-            background: 'var(--card-bg, #1a1f2e)',
-            border: '1px solid rgba(255,255,255,0.1)',
+            background: 'var(--card-bg, var(--bg-card))',
+            border: '1px solid var(--border)',
             borderRadius: '12px',
             padding: '1.5rem',
             width: '100%',

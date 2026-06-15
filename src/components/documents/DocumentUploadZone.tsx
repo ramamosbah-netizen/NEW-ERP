@@ -102,7 +102,7 @@ export const DocumentUploadZone: React.FC<Props> = ({
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
       
       {/* Upload Settings options */}
-      <div className="quote-form-grid" style={{ gridTemplateColumns: '1fr auto', alignItems: 'center', gap: '1.5rem', background: 'rgba(255,255,255,0.01)', padding: '0.8rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.03)' }}>
+      <div className="quote-form-grid" style={{ gridTemplateColumns: '1fr auto', alignItems: 'center', gap: '1.5rem', background: 'var(--surface-hover)', padding: '0.8rem', borderRadius: '8px', border: '1px solid var(--surface-hover)' }}>
         <div className="quote-form-group" style={{ margin: 0 }}>
           <label>Add Tags to uploaded files (Comma separated)</label>
           <input 
@@ -162,7 +162,7 @@ export const DocumentUploadZone: React.FC<Props> = ({
       {/* Upload Queue list */}
       {queue.length > 0 && (
         <div className="quote-card" style={{ margin: 0, padding: '1rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '0.5rem', marginBottom: '0.8rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--surface-hover)', paddingBottom: '0.5rem', marginBottom: '0.8rem' }}>
             <h4 style={{ fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-secondary)' }}>
               Filing Queue ({queue.length})
             </h4>
@@ -193,7 +193,7 @@ export const DocumentUploadZone: React.FC<Props> = ({
                     alignItems: 'center', 
                     padding: '0.6rem 0.8rem', 
                     background: 'rgba(0,0,0,0.15)', 
-                    border: '1px solid rgba(255,255,255,0.03)', 
+                    border: '1px solid var(--surface-hover)', 
                     borderRadius: '6px' 
                   }}
                 >
@@ -214,7 +214,7 @@ export const DocumentUploadZone: React.FC<Props> = ({
                     </div>
 
                     {/* Progress Bar */}
-                    <div style={{ width: '100%', height: '4px', background: 'rgba(255,255,255,0.05)', borderRadius: '2px', overflow: 'hidden' }}>
+                    <div style={{ width: '100%', height: '4px', background: 'var(--surface-hover)', borderRadius: '2px', overflow: 'hidden' }}>
                       <div 
                         style={{ 
                           width: `${item.progress}%`, 

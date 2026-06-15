@@ -107,7 +107,7 @@ export default function PORegistryPage() {
         </div>
         <div className="proc-kpi-card">
           <span className="proc-kpi-title">Committed Cost YTD</span>
-          <span className="proc-kpi-value" style={{ color: '#00E5A0' }}>{fmtAED(kpis.totalCommitted)}</span>
+          <span className="proc-kpi-value" style={{ color: 'var(--accent)' }}>{fmtAED(kpis.totalCommitted)}</span>
           <span className="proc-kpi-desc">Active LPO values (ex-Drafts)</span>
         </div>
         <div className="proc-kpi-card">
@@ -217,7 +217,7 @@ export default function PORegistryPage() {
               </thead>
               <tbody>
                 {pos.map(po => {
-                  const colors = PO_STATUS_COLORS[po.status] || { bg: 'rgba(255,255,255,0.05)', text: '#fff', border: 'rgba(255,255,255,0.1)' };
+                  const colors = PO_STATUS_COLORS[po.status] || { bg: 'var(--surface-hover)', text: '#fff', border: 'var(--border)' };
                   
                   return (
                     <tr key={po.id}>
@@ -245,12 +245,12 @@ export default function PORegistryPage() {
                           <span style={{ fontSize: '0.72rem', fontWeight: 500 }}>
                             {po.delivery_status === 'COMPLETE' ? 'Fully Delivered' : po.delivery_status === 'PARTIAL' ? 'Partially Delivered' : 'Not Delivered'}
                           </span>
-                          <div style={{ height: '4px', width: '100%', background: 'rgba(255,255,255,0.08)', borderRadius: '2px', overflow: 'hidden' }}>
+                          <div style={{ height: '4px', width: '100%', background: 'var(--surface-hover)', borderRadius: '2px', overflow: 'hidden' }}>
                             <div 
                               style={{ 
                                 height: '100%', 
                                 width: po.delivery_status === 'COMPLETE' ? '100%' : po.delivery_status === 'PARTIAL' ? '50%' : '0%',
-                                background: po.delivery_status === 'COMPLETE' ? '#00E5A0' : po.delivery_status === 'PARTIAL' ? '#f97316' : '#ef4444' 
+                                background: po.delivery_status === 'COMPLETE' ? 'var(--accent)' : po.delivery_status === 'PARTIAL' ? '#f97316' : '#ef4444' 
                               }}
                             />
                           </div>

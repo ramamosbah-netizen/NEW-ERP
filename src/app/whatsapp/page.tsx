@@ -282,7 +282,7 @@ export default function WhatsAppInbox() {
               <div style={{ display: 'flex', gap: '0.65rem' }}>
                 <button 
                   className="logout-btn"
-                  style={{ padding: '0.45rem 0.8rem', background: 'rgba(255, 255, 255, 0.04)', borderColor: 'var(--border-color)', color: '#fff' }}
+                  style={{ padding: '0.45rem 0.8rem', background: 'var(--surface-hover)', borderColor: 'var(--border-color)', color: '#fff' }}
                   onClick={() => setShowLinkModal(true)}
                 >
                   <Link2 size={14} /> Link Client
@@ -436,7 +436,7 @@ export default function WhatsAppInbox() {
                   {searchedClients.map(cli => (
                     <div 
                       key={cli.id} 
-                      style={{ padding: '0.6rem 1rem', cursor: 'pointer', borderBottom: '1px solid rgba(255,255,255,0.03)', background: selectedClientId === cli.id ? 'rgba(0, 229, 160, 0.08)' : 'transparent', color: selectedClientId === cli.id ? 'var(--primary)' : '#fff', fontSize: '0.82rem' }}
+                      style={{ padding: '0.6rem 1rem', cursor: 'pointer', borderBottom: '1px solid var(--surface-hover)', background: selectedClientId === cli.id ? 'rgba(0, 229, 160, 0.08)' : 'transparent', color: selectedClientId === cli.id ? 'var(--primary)' : '#fff', fontSize: '0.82rem' }}
                       onClick={() => {
                         setSelectedClientId(cli.id);
                         setSelectedContractId(null);

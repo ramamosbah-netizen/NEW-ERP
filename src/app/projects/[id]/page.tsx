@@ -245,7 +245,7 @@ export default function ProjectDetailPage({ params }: Props) {
               </span>
               <ProjectStatusChip status={project.status} />
               {project.sira_applicable && (
-                <span style={{ fontSize: '0.68rem', background: 'rgba(0, 229, 160, 0.1)', color: '#00E5A0', border: '1px solid rgba(0, 229, 160, 0.3)', padding: '2px 6px', borderRadius: '4px', fontWeight: 700 }}>
+                <span style={{ fontSize: '0.68rem', background: 'rgba(0, 229, 160, 0.1)', color: 'var(--accent)', border: '1px solid rgba(0, 229, 160, 0.3)', padding: '2px 6px', borderRadius: '4px', fontWeight: 700 }}>
                   SIRA COMPLIANT
                 </span>
               )}
@@ -265,7 +265,7 @@ export default function ProjectDetailPage({ params }: Props) {
                   <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Original: {fmtAED(project.original_contract_value ?? project.contract_value)}</span>
                   <span style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', textTransform: 'uppercase', fontWeight: 600 }}>VOs ({project.vo_count}): +{fmtAED(project.vo_total_sell ?? 0)}</span>
                 </div>
-                <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#00E5A0', fontFamily: 'var(--font-heading)', lineHeight: 1 }}>
+                <div style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--accent)', fontFamily: 'var(--font-heading)', lineHeight: 1 }}>
                   {fmtAED(project.revised_contract_value ?? project.contract_value)}
                 </div>
                 <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
@@ -275,7 +275,7 @@ export default function ProjectDetailPage({ params }: Props) {
             ) : (
               <>
                 <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Contract Value</span>
-                <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#00E5A0', fontFamily: 'var(--font-heading)' }}>
+                <div style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--accent)', fontFamily: 'var(--font-heading)' }}>
                   {fmtAED(project.contract_value)}
                 </div>
                 {project.planned_end_date && (
@@ -479,9 +479,9 @@ export default function ProjectDetailPage({ params }: Props) {
                     justifyContent: 'space-between', 
                     alignItems: 'center', 
                     padding: '0.8rem', 
-                    background: m.status === 'DONE' ? 'rgba(0, 229, 160, 0.02)' : 'rgba(255,255,255,0.01)', 
+                    background: m.status === 'DONE' ? 'rgba(0, 229, 160, 0.02)' : 'var(--surface-hover)', 
                     border: '1px solid',
-                    borderColor: m.status === 'DONE' ? 'rgba(0, 229, 160, 0.15)' : 'rgba(255,255,255,0.04)',
+                    borderColor: m.status === 'DONE' ? 'rgba(0, 229, 160, 0.15)' : 'var(--surface-hover)',
                     borderRadius: '8px' 
                   }}
                 >

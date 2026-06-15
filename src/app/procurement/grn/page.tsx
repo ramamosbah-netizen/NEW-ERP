@@ -327,7 +327,7 @@ export default function GRNRegistryDashboard() {
                 </thead>
                 <tbody>
                   {filteredReturns.map(r => {
-                    const statusColors = GRN_RETURN_STATUS_COLORS[r.status] || { bg: 'rgba(255,255,255,0.05)', text: '#fff' };
+                    const statusColors = GRN_RETURN_STATUS_COLORS[r.status] || { bg: 'var(--surface-hover)', text: '#fff' };
                     
                     return (
                       <tr key={r.id}>
@@ -392,7 +392,7 @@ export default function GRNRegistryDashboard() {
               </button>
             </div>
             <div className="quote-modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <div style={{ background: 'rgba(255,255,255,0.02)', padding: '0.8rem', borderRadius: '4px', border: '1px solid var(--border-color)' }}>
+              <div style={{ background: 'var(--surface-hover)', padding: '0.8rem', borderRadius: '4px', border: '1px solid var(--border-color)' }}>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Item & Supplier</div>
                 <div style={{ fontWeight: 600, fontSize: '0.9rem', marginTop: '0.2rem' }}>
                   {selectedReturn.item_description} ({selectedReturn.qty} {selectedReturn.unit})

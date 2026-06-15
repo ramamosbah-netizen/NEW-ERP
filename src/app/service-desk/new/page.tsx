@@ -188,7 +188,7 @@ export default function NewTicketPage() {
                 style={{
                   padding: '0.75rem 0.5rem',
                   borderRadius: '8px',
-                  border: isSelected ? '2px solid var(--primary)' : '1px solid rgba(255,255,255,0.08)',
+                  border: isSelected ? '2px solid var(--primary)' : '1px solid var(--surface-hover)',
                   background: isSelected ? 'rgba(0, 229, 160, 0.1)' : 'rgba(0,0,0,0.2)',
                   color: isSelected ? 'var(--primary)' : 'var(--text-secondary)',
                   cursor: 'pointer',
@@ -387,7 +387,7 @@ export default function NewTicketPage() {
         </div>
 
         {/* Submit */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '1rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1.5rem', borderTop: '1px solid var(--surface-hover)', paddingTop: '1rem' }}>
           <Link
             href="/service-desk"
             className="quote-btn quote-btn-secondary"

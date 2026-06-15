@@ -54,9 +54,9 @@ const statusConfig: Record<DocumentStatus, { label: string; bg: string; text: st
 export const DocumentProcessingChip: React.FC<Props> = ({ status, confidence, className = '' }) => {
   const config = statusConfig[status] || {
     label: status,
-    bg: 'rgba(255, 255, 255, 0.05)',
+    bg: 'var(--surface-hover)',
     text: 'var(--text-secondary)',
-    border: 'rgba(255, 255, 255, 0.1)',
+    border: 'var(--border)',
     Icon: AlertCircle
   };
 

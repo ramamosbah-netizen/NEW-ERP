@@ -87,7 +87,7 @@ export default function AMCRegistryPage() {
           </div>
           <div>
             <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Active Portfolio Value</p>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#f8fafc', marginTop: '0.2rem' }}>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', marginTop: '0.2rem' }}>
               {fmtAED(metrics.totalPortfolioValue)}
             </h3>
           </div>
@@ -100,7 +100,7 @@ export default function AMCRegistryPage() {
           </div>
           <div>
             <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Active Contracts</p>
-            <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#f8fafc', marginTop: '0.2rem' }}>
+            <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-primary)', marginTop: '0.2rem' }}>
               {metrics.activeCount}
             </h3>
           </div>
@@ -113,7 +113,7 @@ export default function AMCRegistryPage() {
           </div>
           <div>
             <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Expiring / Expired</p>
-            <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#f8fafc', marginTop: '0.2rem' }}>
+            <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-primary)', marginTop: '0.2rem' }}>
               {metrics.expiringCount}
             </h3>
           </div>
@@ -126,7 +126,7 @@ export default function AMCRegistryPage() {
           </div>
           <div>
             <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>SIRA Regulated Active</p>
-            <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#f8fafc', marginTop: '0.2rem' }}>
+            <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-primary)', marginTop: '0.2rem' }}>
               {metrics.siraLinkedCount}
             </h3>
           </div>
@@ -224,8 +224,8 @@ export default function AMCRegistryPage() {
                               key={sys} 
                               style={{ 
                                 fontSize: '0.68rem', 
-                                background: 'rgba(255,255,255,0.04)', 
-                                border: '1px solid rgba(255,255,255,0.06)', 
+                                background: 'var(--surface-hover)', 
+                                border: '1px solid var(--surface-hover)', 
                                 borderRadius: '4px', 
                                 padding: '1px 4px',
                                 fontFamily: 'var(--font-mono)' 

@@ -210,7 +210,7 @@ export default function TCPackageWorkspacePage({ params }: PageProps) {
 
         <div className="quote-card" style={{ marginBottom: 0 }}>
           <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Witness Gate Requirement</span>
-          <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#f8fafc', margin: '0.2rem 0' }}>{pkg.witness_required.replace(/_/g, ' ')}</h3>
+          <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text-primary)', margin: '0.2rem 0' }}>{pkg.witness_required.replace(/_/g, ' ')}</h3>
           <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Status: {pkg.status.replace(/_/g, ' ')}</span>
         </div>
 
@@ -224,7 +224,7 @@ export default function TCPackageWorkspacePage({ params }: PageProps) {
 
         <div className="quote-card" style={{ marginBottom: 0 }}>
           <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Devices Registered</span>
-          <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#f8fafc', margin: '0.2rem 0' }}>{devices.length} Units</h3>
+          <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)', margin: '0.2rem 0' }}>{devices.length} Units</h3>
           <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
             Passed: {devices.filter(d => d.status === 'PASSED').length} | Failed: {devices.filter(d => d.status === 'FAILED').length}
           </span>
@@ -269,7 +269,7 @@ export default function TCPackageWorkspacePage({ params }: PageProps) {
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
                 {scripts.map((script, idx) => (
-                  <div key={script.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '0.8rem', background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border-color)', borderRadius: '8px' }}>
+                  <div key={script.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', padding: '0.8rem', background: 'var(--surface-hover)', border: '1px solid var(--border-color)', borderRadius: '8px' }}>
                     <div style={{ flex: 1, paddingRight: '1rem' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.2rem' }}>
                         <span style={{ fontSize: '0.7rem', fontWeight: 'bold', color: 'var(--secondary)', background: 'rgba(34, 211, 238, 0.1)', padding: '0.1rem 0.4rem', borderRadius: '4px' }}>

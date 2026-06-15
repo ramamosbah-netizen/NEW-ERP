@@ -303,9 +303,9 @@ export default function EditQuotationPage({ params }: { params: Promise<{ id: st
               style={{ 
                 flex: 1, 
                 textAlign: 'center', 
-                borderBottom: `2px solid ${step > idx + 1 ? 'var(--success)' : step === idx + 1 ? '#00E5A0' : 'rgba(255,255,255,0.06)'}`,
+                borderBottom: `2px solid ${step > idx + 1 ? 'var(--success)' : step === idx + 1 ? 'var(--accent)' : 'var(--surface-hover)'}`,
                 paddingBottom: '0.5rem',
-                color: step === idx + 1 ? '#00E5A0' : step > idx + 1 ? 'var(--success)' : 'var(--text-muted)',
+                color: step === idx + 1 ? 'var(--accent)' : step > idx + 1 ? 'var(--success)' : 'var(--text-muted)',
                 fontWeight: step === idx + 1 ? 700 : 500,
                 fontSize: '0.8rem'
               }}
@@ -349,7 +349,7 @@ export default function EditQuotationPage({ params }: { params: Promise<{ id: st
             </div>
           </div>
 
-          <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '1.5rem', marginBottom: '1.5rem' }}>
+          <div style={{ borderTop: '1px solid var(--surface-hover)', paddingTop: '1.5rem', marginBottom: '1.5rem' }}>
             <div className="quote-form-grid" style={{ marginBottom: '1rem' }}>
               <div className="quote-form-group">
                 <label>Select Existing Client</label>
@@ -405,7 +405,7 @@ export default function EditQuotationPage({ params }: { params: Promise<{ id: st
             </div>
           </div>
 
-          <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '1.5rem' }}>
+          <div style={{ borderTop: '1px solid var(--surface-hover)', paddingTop: '1.5rem' }}>
             <div className="quote-form-group" style={{ marginBottom: '1.2rem' }}>
               <label>Quotation Subject</label>
               <input type="text" name="subject" className="quote-form-input" value={quoteHeader.subject} onChange={handleHeaderChange} />
@@ -662,15 +662,15 @@ export default function EditQuotationPage({ params }: { params: Promise<{ id: st
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
             <div>
-              <h4 style={{ fontSize: '0.9rem', color: '#00E5A0', marginBottom: '0.5rem' }}>Header Information</h4>
+              <h4 style={{ fontSize: '0.9rem', color: 'var(--accent)', marginBottom: '0.5rem' }}>Header Information</h4>
               <p><strong>Quotation Number:</strong> {quoteHeader.quotation_number}</p>
               <p><strong>Subject:</strong> {quoteHeader.subject}</p>
               <p><strong>Client Name:</strong> {quoteHeader.client_name}</p>
               <p><strong>Project Ref:</strong> {quoteHeader.project_ref}</p>
             </div>
 
-            <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '1rem' }}>
-              <h4 style={{ fontSize: '0.9rem', color: '#00E5A0', marginBottom: '0.5rem' }}>Calculated Totals</h4>
+            <div style={{ borderTop: '1px solid var(--surface-hover)', paddingTop: '1rem' }}>
+              <h4 style={{ fontSize: '0.9rem', color: 'var(--accent)', marginBottom: '0.5rem' }}>Calculated Totals</h4>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', maxWidth: '400px' }}>
                 <div>Subtotal Excl. VAT:</div>
                 <div style={{ fontWeight: 600 }}>{fmtAED(subtotal)}</div>
@@ -683,7 +683,7 @@ export default function EditQuotationPage({ params }: { params: Promise<{ id: st
                 <div>VAT (5%):</div>
                 <div>{fmtAED(vat)}</div>
                 <div style={{ fontWeight: 700, fontSize: '1.1rem' }}>Grand Total:</div>
-                <div style={{ fontWeight: 700, fontSize: '1.1rem', color: '#00E5A0' }}>{fmtAED(grandTotal)}</div>
+                <div style={{ fontWeight: 700, fontSize: '1.1rem', color: 'var(--accent)' }}>{fmtAED(grandTotal)}</div>
               </div>
             </div>
           </div>

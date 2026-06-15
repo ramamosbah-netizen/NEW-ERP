@@ -262,7 +262,7 @@ export default function PPMExecutionPage() {
         gap: '0.75rem',
         marginBottom: '1rem',
         padding: '0.75rem 0',
-        borderBottom: '1px solid rgba(255,255,255,0.06)'
+        borderBottom: '1px solid var(--surface-hover)'
       }}>
         <Link href="/ppm/calendar" style={{ color: 'var(--text-secondary)' }}>
           <ArrowLeft size={20} />
@@ -296,7 +296,7 @@ export default function PPMExecutionPage() {
         padding: '0.75rem',
         background: 'rgba(0,0,0,0.25)',
         borderRadius: '12px',
-        border: '1px solid rgba(255,255,255,0.04)'
+        border: '1px solid var(--surface-hover)'
       }}>
         {STEPS.map((step, idx) => {
           const StepIcon = STEP_ICONS[step];
@@ -308,7 +308,7 @@ export default function PPMExecutionPage() {
                 <div style={{
                   width: '20px',
                   height: '2px',
-                  background: isCompleted ? 'var(--primary)' : 'rgba(255,255,255,0.08)'
+                  background: isCompleted ? 'var(--primary)' : 'var(--surface-hover)'
                 }} />
               )}
               <div style={{
@@ -328,14 +328,14 @@ export default function PPMExecutionPage() {
                     ? 'var(--primary)'
                     : isCompleted
                       ? 'rgba(0, 229, 160, 0.2)'
-                      : 'rgba(255,255,255,0.04)',
+                      : 'var(--surface-hover)',
                   color: isActive
                     ? '#000'
                     : isCompleted
                       ? 'var(--primary)'
                       : 'var(--text-muted)',
                   transition: 'all 0.3s ease',
-                  border: isActive ? '2px solid var(--primary)' : '1px solid rgba(255,255,255,0.06)'
+                  border: isActive ? '2px solid var(--primary)' : '1px solid var(--surface-hover)'
                 }}>
                   {isCompleted ? <CheckCircle size={14} /> : <StepIcon size={14} />}
                 </div>
@@ -539,7 +539,7 @@ export default function PPMExecutionPage() {
             <div style={{
               width: '100%',
               height: '6px',
-              background: 'rgba(255,255,255,0.06)',
+              background: 'var(--surface-hover)',
               borderRadius: '3px',
               overflow: 'hidden'
             }}>
@@ -589,9 +589,9 @@ export default function PPMExecutionPage() {
                     fontWeight: 600,
                     padding: '2px 6px',
                     borderRadius: '4px',
-                    background: 'rgba(255,255,255,0.05)',
+                    background: 'var(--surface-hover)',
                     color: 'var(--text-muted)',
-                    border: '1px solid rgba(255,255,255,0.06)',
+                    border: '1px solid var(--surface-hover)',
                     marginTop: '0.5rem',
                     display: 'inline-block'
                   }}>
@@ -614,12 +614,12 @@ export default function PPMExecutionPage() {
                       padding: '1.2rem 0.5rem',
                       borderRadius: '10px',
                       border: currentItem.result === 'PASS'
-                        ? '2px solid #00E5A0'
-                        : '1px solid rgba(255,255,255,0.08)',
+                        ? '2px solid var(--accent)'
+                        : '1px solid var(--surface-hover)',
                       background: currentItem.result === 'PASS'
                         ? 'rgba(0, 229, 160, 0.15)'
                         : 'rgba(0,0,0,0.2)',
-                      color: currentItem.result === 'PASS' ? '#00E5A0' : 'var(--text-secondary)',
+                      color: currentItem.result === 'PASS' ? 'var(--accent)' : 'var(--text-secondary)',
                       cursor: 'pointer',
                       display: 'flex',
                       flexDirection: 'column',
@@ -641,7 +641,7 @@ export default function PPMExecutionPage() {
                       borderRadius: '10px',
                       border: currentItem.result === 'FAIL'
                         ? '2px solid #ef4444'
-                        : '1px solid rgba(255,255,255,0.08)',
+                        : '1px solid var(--surface-hover)',
                       background: currentItem.result === 'FAIL'
                         ? 'rgba(239, 68, 68, 0.15)'
                         : 'rgba(0,0,0,0.2)',
@@ -666,12 +666,12 @@ export default function PPMExecutionPage() {
                       padding: '1.2rem 0.5rem',
                       borderRadius: '10px',
                       border: currentItem.result === 'NA'
-                        ? '2px solid #94a3b8'
-                        : '1px solid rgba(255,255,255,0.08)',
+                        ? '2px solid var(--text-tertiary)'
+                        : '1px solid var(--surface-hover)',
                       background: currentItem.result === 'NA'
                         ? 'rgba(148, 163, 184, 0.15)'
                         : 'rgba(0,0,0,0.2)',
-                      color: currentItem.result === 'NA' ? '#94a3b8' : 'var(--text-secondary)',
+                      color: currentItem.result === 'NA' ? 'var(--text-tertiary)' : 'var(--text-secondary)',
                       cursor: 'pointer',
                       display: 'flex',
                       flexDirection: 'column',
@@ -717,13 +717,13 @@ export default function PPMExecutionPage() {
                           padding: '0.6rem',
                           borderRadius: '8px',
                           border: currentItem.result === r
-                            ? `2px solid ${r === 'PASS' ? '#00E5A0' : r === 'FAIL' ? '#ef4444' : '#94a3b8'}`
-                            : '1px solid rgba(255,255,255,0.08)',
+                            ? `2px solid ${r === 'PASS' ? 'var(--accent)' : r === 'FAIL' ? '#ef4444' : 'var(--text-tertiary)'}`
+                            : '1px solid var(--surface-hover)',
                           background: currentItem.result === r
                             ? `rgba(${r === 'PASS' ? '0,229,160' : r === 'FAIL' ? '239,68,68' : '148,163,184'}, 0.15)`
                             : 'rgba(0,0,0,0.2)',
                           color: currentItem.result === r
-                            ? (r === 'PASS' ? '#00E5A0' : r === 'FAIL' ? '#ef4444' : '#94a3b8')
+                            ? (r === 'PASS' ? 'var(--accent)' : r === 'FAIL' ? '#ef4444' : 'var(--text-tertiary)')
                             : 'var(--text-muted)',
                           cursor: 'pointer',
                           fontSize: '0.75rem',
@@ -843,7 +843,7 @@ export default function PPMExecutionPage() {
                 border: '1px solid rgba(0, 229, 160, 0.15)',
                 textAlign: 'center'
               }}>
-                <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#00E5A0', fontFamily: 'var(--font-mono)' }}>{passedItems}</div>
+                <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--accent)', fontFamily: 'var(--font-mono)' }}>{passedItems}</div>
                 <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 600 }}>PASSED</div>
               </div>
               <div style={{
@@ -863,7 +863,7 @@ export default function PPMExecutionPage() {
                 border: '1px solid rgba(148, 163, 184, 0.15)',
                 textAlign: 'center'
               }}>
-                <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#94a3b8', fontFamily: 'var(--font-mono)' }}>{totalItems - passedItems - failedItems}</div>
+                <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)' }}>{totalItems - passedItems - failedItems}</div>
                 <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 600 }}>N/A / SKIPPED</div>
               </div>
             </div>
@@ -900,10 +900,10 @@ export default function PPMExecutionPage() {
                   borderRadius: '6px',
                   fontSize: '0.78rem'
                 }}>
-                  {item.result === 'PASS' && <CheckCircle size={14} style={{ color: '#00E5A0', flexShrink: 0 }} />}
+                  {item.result === 'PASS' && <CheckCircle size={14} style={{ color: 'var(--accent)', flexShrink: 0 }} />}
                   {item.result === 'FAIL' && <XCircle size={14} style={{ color: '#ef4444', flexShrink: 0 }} />}
-                  {item.result === 'NA' && <MinusCircle size={14} style={{ color: '#94a3b8', flexShrink: 0 }} />}
-                  {!item.result && <div style={{ width: 14, height: 14, borderRadius: '50%', border: '1px solid rgba(255,255,255,0.1)', flexShrink: 0 }} />}
+                  {item.result === 'NA' && <MinusCircle size={14} style={{ color: 'var(--text-tertiary)', flexShrink: 0 }} />}
+                  {!item.result && <div style={{ width: 14, height: 14, borderRadius: '50%', border: '1px solid var(--border)', flexShrink: 0 }} />}
                   <span style={{
                     color: !item.result ? 'var(--text-muted)' : 'var(--text-secondary)',
                     flex: 1,
@@ -1009,7 +1009,7 @@ export default function PPMExecutionPage() {
               {/* Placeholder for signature pad */}
               <div style={{
                 padding: '2rem',
-                border: '2px dashed rgba(255,255,255,0.1)',
+                border: '2px dashed var(--border)',
                 borderRadius: '10px',
                 textAlign: 'center',
                 color: 'var(--text-muted)'

@@ -106,8 +106,8 @@ export default function ScoringWeightsPage() {
       <div style={{ maxWidth: '800px', margin: '0 auto', width: '100%' }}>
         <div className="quote-card" style={{ padding: '2rem' }}>
           
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '1rem' }}>
-            <Sliders size={22} style={{ color: '#00E5A0' }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--surface-hover)', paddingBottom: '1rem' }}>
+            <Sliders size={22} style={{ color: 'var(--accent)' }} />
             <h3 style={{ fontSize: '1.2rem', fontWeight: 600 }}>Multi-Criteria Evaluation Sliders</h3>
           </div>
 
@@ -235,7 +235,7 @@ export default function ScoringWeightsPage() {
           {/* Sum Display bar */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1.5rem', background: 'rgba(0,0,0,0.3)', padding: '0.8rem 1.2rem', borderRadius: '6px' }}>
             <span style={{ fontSize: '0.82rem', fontWeight: 600 }}>Total Scoring Weights:</span>
-            <span style={{ fontSize: '1.2rem', fontWeight: 700, color: isBalanced ? '#00E5A0' : '#ef4444' }}>{total}%</span>
+            <span style={{ fontSize: '1.2rem', fontWeight: 700, color: isBalanced ? 'var(--accent)' : '#ef4444' }}>{total}%</span>
           </div>
 
           {/* Save & Reset buttons */}
@@ -267,9 +267,9 @@ export default function ScoringWeightsPage() {
         </div>
 
         {/* Explain weights card */}
-        <div className="quote-card" style={{ marginTop: '1.5rem', padding: '1.2rem', borderLeft: '3px solid #00E5A0' }}>
+        <div className="quote-card" style={{ marginTop: '1.5rem', padding: '1.2rem', borderLeft: '3px solid var(--accent)' }}>
           <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'flex-start' }}>
-            <Info size={18} style={{ color: '#00E5A0', flexShrink: 0, marginTop: '2px' }} />
+            <Info size={18} style={{ color: 'var(--accent)', flexShrink: 0, marginTop: '2px' }} />
             <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: '1.4' }}>
               <strong>Pricing Logic Detail:</strong> The formula dynamically benchmarks the cheapest supplier cost against other offers to determine the Price score. If delivery details or history ratings are unavailable, the engine automatically defaults to a safety benchmark (e.g. 50% score for Delivery TBC) to ensure no supplier is unfairly zeroed.
             </div>

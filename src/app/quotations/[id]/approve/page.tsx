@@ -341,7 +341,7 @@ export default function GMApprovalPage({ params }: { params: Promise<{ id: strin
                 <span>VAT (5%):</span>
                 <span>{fmtAED(quotation.vat_amount)}</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.2rem', fontWeight: 700, color: '#00E5A0', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '0.6rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.2rem', fontWeight: 700, color: 'var(--accent)', borderTop: '1px solid var(--surface-hover)', paddingTop: '0.6rem' }}>
                 <span>Grand Total:</span>
                 <span>{fmtAED(quotation.grand_total_with_vat)}</span>
               </div>
@@ -353,7 +353,7 @@ export default function GMApprovalPage({ params }: { params: Promise<{ id: strin
             <h3 className="quote-card-title">Commercial Manager Audit</h3>
             <div style={{ marginTop: '0.8rem' }}>
               <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Reviewed by: {quotation.commercial_reviewer_name || 'Commercial Reviewer'}</span>
-              <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.5rem', background: 'rgba(255,255,255,0.02)', padding: '0.6rem', border: '1px solid rgba(255,255,255,0.04)', borderRadius: '6px' }}>
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.5rem', background: 'var(--surface-hover)', padding: '0.6rem', border: '1px solid var(--surface-hover)', borderRadius: '6px' }}>
                 "{quotation.commercial_comment || 'Approved without comment.'}"
               </p>
             </div>
@@ -371,7 +371,7 @@ export default function GMApprovalPage({ params }: { params: Promise<{ id: strin
           right: 0, 
           background: 'rgba(6, 8, 20, 0.98)', 
           backdropFilter: 'blur(16px)',
-          borderTop: '1px solid rgba(255, 255, 255, 0.12)', 
+          borderTop: '1px solid var(--border)', 
           padding: '1.2rem 2rem', 
           zIndex: 100,
           boxShadow: '0 -10px 40px rgba(0,0,0,0.7)'

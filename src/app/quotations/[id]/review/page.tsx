@@ -160,7 +160,7 @@ export default function CommercialReviewPage({ params }: { params: Promise<{ id:
               </p>
             </div>
             {quotation.scope_summary && (
-              <div style={{ marginTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '0.8rem' }}>
+              <div style={{ marginTop: '1rem', borderTop: '1px solid var(--surface-hover)', paddingTop: '0.8rem' }}>
                 <strong>Scope Summary:</strong>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginTop: '0.4rem' }}>{quotation.scope_summary}</p>
               </div>
@@ -226,7 +226,7 @@ export default function CommercialReviewPage({ params }: { params: Promise<{ id:
               <h5 style={{ color: 'var(--secondary)' }}>Terms & Conditions</h5>
               <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.2rem', whiteSpace: 'pre-wrap' }}>{quotation.terms_and_conditions || 'None'}</p>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '1rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', borderTop: '1px solid var(--surface-hover)', paddingTop: '1rem' }}>
               <div>
                 <h5 style={{ color: 'var(--text-muted)' }}>Exclusions</h5>
                 <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', whiteSpace: 'pre-wrap' }}>{quotation.exclusions || 'None'}</p>
@@ -260,7 +260,7 @@ export default function CommercialReviewPage({ params }: { params: Promise<{ id:
                 <span>VAT (5%):</span>
                 <span>{fmtAED(quotation.vat_amount)}</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.2rem', fontWeight: 700, color: '#00E5A0', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '0.6rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.2rem', fontWeight: 700, color: 'var(--accent)', borderTop: '1px solid var(--surface-hover)', paddingTop: '0.6rem' }}>
                 <span>Grand Total:</span>
                 <span>{fmtAED(quotation.grand_total_with_vat)}</span>
               </div>
@@ -289,7 +289,7 @@ export default function CommercialReviewPage({ params }: { params: Promise<{ id:
           right: 0, 
           background: 'rgba(6, 8, 20, 0.95)', 
           backdropFilter: 'blur(12px)',
-          borderTop: '1px solid rgba(255, 255, 255, 0.08)', 
+          borderTop: '1px solid var(--surface-hover)', 
           padding: '1rem 2rem', 
           zIndex: 100,
           display: 'flex',

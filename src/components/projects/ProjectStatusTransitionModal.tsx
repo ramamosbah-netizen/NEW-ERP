@@ -84,7 +84,7 @@ export const ProjectStatusTransitionModal: React.FC<Props> = ({
         <form onSubmit={handleSubmit} className="quote-modal-body" style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
           <div className="quote-form-group">
             <label>Current Status</label>
-            <div className="quote-filter-input" style={{ background: 'rgba(255,255,255,0.03)', color: 'var(--text-secondary)' }}>
+            <div className="quote-filter-input" style={{ background: 'var(--surface-hover)', color: 'var(--text-secondary)' }}>
               {project.status}
             </div>
           </div>

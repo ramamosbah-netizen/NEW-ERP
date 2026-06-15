@@ -139,7 +139,7 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[var(--bg-dark)] text-[#f8fafc] flex items-center justify-center font-mono text-xs">
+      <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex items-center justify-center font-mono text-xs">
         Loading vehicle workspace...
       </div>
     );
@@ -147,7 +147,7 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
 
   if (!vehicle) {
     return (
-      <div className="min-h-screen bg-[var(--bg-dark)] text-[#f8fafc] flex flex-col items-center justify-center gap-4">
+      <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex flex-col items-center justify-center gap-4">
         <span className="text-xs font-mono text-[var(--text-primary)]0">Vehicle record not found or deleted.</span>
         <Link href="/fleet" className="text-xs text-[var(--primary)] font-bold flex items-center gap-1.5">
           <ArrowLeft size={14} /> Back to Fleet Directory
@@ -269,7 +269,7 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
   const activeAssignment = assignments.find(a => !a.to_date);
 
   return (
-    <div className="min-h-screen bg-[var(--bg-dark)] text-[#f8fafc]">
+    <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)]">
 <main className="max-w-[1600px] mx-auto px-6 py-8">
         
         {/* BACK TO DIRECTORY */}
@@ -492,7 +492,7 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
                   {assignments.map(a => (
                     <div key={a.id} className="relative bg-[var(--bg-card)] border border-[var(--border)] p-4 rounded-xl flex flex-col sm:flex-row justify-between gap-4">
                       {/* Timeline dot */}
-                      <span className={`absolute -left-[31px] top-5 h-4.5 w-4.5 rounded-full border border-[#060814] ${!a.to_date ? 'bg-[var(--primary)]' : 'bg-[var(--surface-hover)]'}`}></span>
+                      <span className={`absolute -left-[31px] top-5 h-4.5 w-4.5 rounded-full border border-[var(--bg-card)] ${!a.to_date ? 'bg-[var(--primary)]' : 'bg-[var(--surface-hover)]'}`}></span>
                       
                       <div>
                         <div className="flex items-center gap-2">
@@ -838,7 +838,7 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
         {/* MODAL: ASSIGN CUSTODY */}
         {showAssignModal && (
           <div className="fixed inset-0 z-50 bg-[var(--bg-card)] backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-[#0c0f24] border border-[var(--border)] rounded-2xl w-full max-w-md p-6 relative">
+            <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl w-full max-w-md p-6 relative">
               <h2 className="font-heading font-extrabold text-sm uppercase tracking-wider text-[var(--text-primary)] mb-4">
                 Assign Custody to Driver
               </h2>
@@ -919,7 +919,7 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
         {/* MODAL: END CUSTODY */}
         {showEndAssignModal && (
           <div className="fixed inset-0 z-50 bg-[var(--bg-card)] backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-[#0c0f24] border border-[var(--border)] rounded-2xl w-full max-w-md p-6 relative">
+            <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl w-full max-w-md p-6 relative">
               <h2 className="font-heading font-extrabold text-sm uppercase tracking-wider text-[var(--text-primary)] mb-4">
                 Release Driver Custody
               </h2>
@@ -975,7 +975,7 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
         {/* MODAL: LOG FUEL */}
         {showFuelModal && (
           <div className="fixed inset-0 z-50 bg-[var(--bg-card)] backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-[#0c0f24] border border-[var(--border)] rounded-2xl w-full max-w-md p-6 relative">
+            <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl w-full max-w-md p-6 relative">
               <h2 className="font-heading font-extrabold text-sm uppercase tracking-wider text-[var(--text-primary)] mb-4">
                 Log Fuel Fill-up (Mobile Form)
               </h2>
@@ -1109,7 +1109,7 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
         {/* MODAL: LOG MAINTENANCE */}
         {showMaintModal && (
           <div className="fixed inset-0 z-50 bg-[var(--bg-card)] backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-[#0c0f24] border border-[var(--border)] rounded-2xl w-full max-w-md p-6 relative">
+            <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl w-full max-w-md p-6 relative">
               <h2 className="font-heading font-extrabold text-sm uppercase tracking-wider text-[var(--text-primary)] mb-4">
                 Log Maintenance / Service Request
               </h2>
@@ -1262,7 +1262,7 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
         {/* MODAL: LOG FINE */}
         {showFineModal && (
           <div className="fixed inset-0 z-50 bg-[var(--bg-card)] backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-[#0c0f24] border border-[var(--border)] rounded-2xl w-full max-w-md p-6 relative">
+            <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl w-full max-w-md p-6 relative">
               <h2 className="font-heading font-extrabold text-sm uppercase tracking-wider text-[var(--text-primary)] mb-4">
                 Log Fine Ticket Notice
               </h2>

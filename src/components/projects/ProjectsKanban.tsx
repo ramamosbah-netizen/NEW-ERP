@@ -38,7 +38,7 @@ export const ProjectsKanban: React.FC<Props> = ({ projects }) => {
               flexDirection: 'column', 
               background: 'rgba(6, 8, 20, 0.4)', 
               borderRadius: '12px', 
-              border: '1px solid rgba(255, 255, 255, 0.05)',
+              border: '1px solid var(--surface-hover)',
               padding: '0.9rem'
             }}
           >
@@ -51,7 +51,7 @@ export const ProjectsKanban: React.FC<Props> = ({ projects }) => {
                 style={{ 
                   fontSize: '0.75rem', 
                   color: 'var(--text-secondary)', 
-                  background: 'rgba(255,255,255,0.04)', 
+                  background: 'var(--surface-hover)', 
                   padding: '2px 8px', 
                   borderRadius: '10px' 
                 }}
@@ -63,7 +63,7 @@ export const ProjectsKanban: React.FC<Props> = ({ projects }) => {
             {/* Cards List */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', overflowY: 'auto', flex: 1 }}>
               {colProjects.length === 0 ? (
-                <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.75rem', border: '1px dashed rgba(255,255,255,0.03)', borderRadius: '8px' }}>
+                <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.75rem', border: '1px dashed var(--surface-hover)', borderRadius: '8px' }}>
                   No projects
                 </div>
               ) : (
@@ -79,7 +79,7 @@ export const ProjectsKanban: React.FC<Props> = ({ projects }) => {
                         margin: 0, 
                         padding: '0.9rem', 
                         background: 'rgba(13, 17, 39, 0.8)', 
-                        borderColor: 'rgba(255,255,255,0.04)',
+                        borderColor: 'var(--surface-hover)',
                         cursor: 'pointer',
                         transition: 'var(--transition-fast)'
                       }}
@@ -88,7 +88,7 @@ export const ProjectsKanban: React.FC<Props> = ({ projects }) => {
                         e.currentTarget.style.transform = 'translateY(-2px)';
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.borderColor = 'rgba(255,255,255,0.04)';
+                        e.currentTarget.style.borderColor = 'var(--surface-hover)';
                         e.currentTarget.style.transform = 'none';
                       }}
                     >
@@ -101,7 +101,7 @@ export const ProjectsKanban: React.FC<Props> = ({ projects }) => {
                       </h4>
 
                       {/* Details info */}
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', fontSize: '0.72rem', color: 'var(--text-secondary)', borderTop: '1px solid rgba(255,255,255,0.04)', paddingTop: '0.5rem' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', fontSize: '0.72rem', color: 'var(--text-secondary)', borderTop: '1px solid var(--surface-hover)', paddingTop: '0.5rem' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                           <Building size={12} />
                           <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
@@ -117,7 +117,7 @@ export const ProjectsKanban: React.FC<Props> = ({ projects }) => {
                       </div>
 
                       {/* Footer Actions */}
-                      <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '0.6rem', borderTop: '1px solid rgba(255,255,255,0.03)', paddingTop: '0.4rem' }}>
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '0.6rem', borderTop: '1px solid var(--surface-hover)', paddingTop: '0.4rem' }}>
                         <span style={{ fontSize: '0.72rem', color: 'var(--primary)', display: 'flex', alignItems: 'center', gap: '0.1rem', fontWeight: 600 }}>
                           Details <ChevronRight size={12} />
                         </span>

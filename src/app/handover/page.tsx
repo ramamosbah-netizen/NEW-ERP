@@ -428,7 +428,7 @@ export default function HandoverGatePage() {
                       {item.status === 'PENDING' ? (
                         <>
                           {item.category === 'O&M' || item.category === 'Warranty' || item.category === 'Training' ? (
-                            <label style={{ cursor: 'pointer', padding: '0.35rem 0.75rem', fontSize: '0.75rem', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-color)', borderRadius: '6px', color: 'var(--text-secondary)', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
+                            <label style={{ cursor: 'pointer', padding: '0.35rem 0.75rem', fontSize: '0.75rem', background: 'var(--surface-hover)', border: '1px solid var(--border-color)', borderRadius: '6px', color: 'var(--text-secondary)', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
                               <Upload size={12} /> Upload
                               <input 
                                 type="file" 
@@ -494,7 +494,7 @@ export default function HandoverGatePage() {
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--border-color)', paddingTop: '0.5rem' }}>
                   <span style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>Total Retention Portfolio:</span>
-                  <span style={{ fontWeight: 'bold', color: '#f8fafc' }}>{fmtAED(retentionValues.total)}</span>
+                  <span style={{ fontWeight: 'bold', color: 'var(--text-primary)' }}>{fmtAED(retentionValues.total)}</span>
                 </div>
 
                 <div style={{ background: 'rgba(34, 211, 238, 0.05)', border: '1px solid var(--secondary-glow)', borderRadius: '8px', padding: '0.75rem', marginTop: '0.5rem' }}>

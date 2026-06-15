@@ -330,7 +330,7 @@ export default function AMCDetailPage({ params }: { params: Promise<{ id: string
             </div>
 
             {(!contract.equipment || contract.equipment.length === 0) ? (
-              <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)', border: '1px dashed rgba(255,255,255,0.06)', borderRadius: '8px' }}>
+              <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)', border: '1px dashed var(--surface-hover)', borderRadius: '8px' }}>
                 <Cpu size={36} style={{ margin: '0 auto 0.8rem auto', opacity: 0.2 }} />
                 <p>No equipment assets registered under this contract yet.</p>
               </div>
@@ -413,7 +413,7 @@ export default function AMCDetailPage({ params }: { params: Promise<{ id: string
                           <span 
                             className="q-badge" 
                             style={{ 
-                              background: item.status === 'PAID' ? 'rgba(16,185,129,0.1)' : item.status === 'INVOICED' ? 'rgba(234,179,8,0.1)' : 'rgba(255,255,255,0.03)',
+                              background: item.status === 'PAID' ? 'rgba(16,185,129,0.1)' : item.status === 'INVOICED' ? 'rgba(234,179,8,0.1)' : 'var(--surface-hover)',
                               color: item.status === 'PAID' ? 'var(--success)' : item.status === 'INVOICED' ? 'var(--warning)' : 'var(--text-secondary)'
                             }}
                           >
@@ -679,7 +679,7 @@ function AMCVisitsList({ contractId, technicians, onRefetch, status }: { contrac
 
   if (visits.length === 0) {
     return (
-      <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)', border: '1px dashed rgba(255,255,255,0.06)', borderRadius: '8px' }}>
+      <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)', border: '1px dashed var(--surface-hover)', borderRadius: '8px' }}>
         <Calendar size={36} style={{ margin: '0 auto 0.8rem auto', opacity: 0.2 }} />
         <p>Visits schedule has not been generated. It will be generated when the contract is activated.</p>
       </div>
@@ -719,7 +719,7 @@ function AMCVisitsList({ contractId, technicians, onRefetch, status }: { contrac
                         fontWeight: 700, 
                         padding: '2px 6px', 
                         borderRadius: '4px',
-                        background: v.status === 'COMPLETED' ? 'rgba(16,185,129,0.1)' : v.status === 'SCHEDULED' ? 'rgba(14,165,233,0.1)' : 'rgba(255,255,255,0.03)',
+                        background: v.status === 'COMPLETED' ? 'rgba(16,185,129,0.1)' : v.status === 'SCHEDULED' ? 'rgba(14,165,233,0.1)' : 'var(--surface-hover)',
                         color: v.status === 'COMPLETED' ? 'var(--success)' : v.status === 'SCHEDULED' ? 'var(--secondary)' : 'var(--text-secondary)'
                       }}
                     >

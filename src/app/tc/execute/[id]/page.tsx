@@ -296,7 +296,7 @@ export default function TCChecklistRunnerPage({ params }: PageProps) {
             {currentScript.title}
           </h3>
 
-          <div style={{ background: 'rgba(255,255,255,0.01)', border: '1px solid var(--border-color)', borderRadius: '8px', padding: '0.75rem', marginBottom: '1.25rem', fontSize: '0.85rem' }}>
+          <div style={{ background: 'var(--surface-hover)', border: '1px solid var(--border-color)', borderRadius: '8px', padding: '0.75rem', marginBottom: '1.25rem', fontSize: '0.85rem' }}>
             <span style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.2rem' }}>Expected Outcome:</span>
             <span style={{ color: 'var(--text-secondary)' }}>{currentScript.expected}</span>
           </div>

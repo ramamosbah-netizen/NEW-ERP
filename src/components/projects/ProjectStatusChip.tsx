@@ -68,7 +68,7 @@ const statusConfig: Record<ProjectStatus, { label: string; bg: string; text: str
   CLOSED: {
     label: 'Closed',
     bg: 'rgba(100, 116, 139, 0.12)',
-    text: '#94a3b8',
+    text: 'var(--text-tertiary)',
     border: 'rgba(100, 116, 139, 0.25)',
     Icon: Archive
   },
@@ -89,7 +89,7 @@ const statusConfig: Record<ProjectStatus, { label: string; bg: string; text: str
   LOST: {
     label: 'Lost Opportunity',
     bg: 'rgba(148, 163, 184, 0.15)', // steel grey/reddish
-    text: '#94a3b8',
+    text: 'var(--text-tertiary)',
     border: 'rgba(148, 163, 184, 0.3)',
     Icon: XOctagon
   }
@@ -98,9 +98,9 @@ const statusConfig: Record<ProjectStatus, { label: string; bg: string; text: str
 export const ProjectStatusChip: React.FC<Props> = ({ status, className = '' }) => {
   const config = statusConfig[status] || {
     label: status,
-    bg: 'rgba(255, 255, 255, 0.05)',
+    bg: 'var(--surface-hover)',
     text: 'var(--text-secondary)',
-    border: 'rgba(255, 255, 255, 0.1)',
+    border: 'var(--border)',
     Icon: Play
   };
 

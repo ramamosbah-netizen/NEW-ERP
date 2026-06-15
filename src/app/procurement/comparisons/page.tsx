@@ -162,7 +162,7 @@ export default function ComparisonsRegistryPage() {
         </div>
         <div className="proc-kpi-card">
           <span className="proc-kpi-title">Avg Procurement Margin</span>
-          <span className="proc-kpi-value" style={{ color: '#00E5A0' }}>{kpis.avgMargin.toFixed(2)}%</span>
+          <span className="proc-kpi-value" style={{ color: 'var(--accent)' }}>{kpis.avgMargin.toFixed(2)}%</span>
           <span className="proc-kpi-desc">Based on approved comparison sheets</span>
         </div>
         <div className="proc-kpi-card">
@@ -350,8 +350,8 @@ export default function ComparisonsRegistryPage() {
                         display: 'flex', 
                         justifyContent: 'space-between', 
                         alignItems: 'center',
-                        background: 'rgba(255, 255, 255, 0.02)',
-                        borderColor: 'rgba(255, 255, 255, 0.06)'
+                        background: 'var(--surface-hover)',
+                        borderColor: 'var(--surface-hover)'
                       }}
                     >
                       <div>

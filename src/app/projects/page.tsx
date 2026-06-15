@@ -92,13 +92,13 @@ export default function ProjectsListPage() {
           
           {/* View Toggles */}
           {tabMode === 'registry' && (
-            <div style={{ display: 'flex', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '8px', padding: '2px' }}>
+            <div style={{ display: 'flex', background: 'var(--surface-hover)', border: '1px solid var(--surface-hover)', borderRadius: '8px', padding: '2px' }}>
               <button 
                 type="button"
                 onClick={() => setViewMode('table')}
                 style={{
                   background: viewMode === 'table' ? 'var(--primary)' : 'transparent',
-                  color: viewMode === 'table' ? '#060814' : 'var(--text-secondary)',
+                  color: viewMode === 'table' ? 'var(--bg-card)' : 'var(--text-secondary)',
                   border: 'none',
                   borderRadius: '6px',
                   padding: '0.4rem 0.8rem',
@@ -118,7 +118,7 @@ export default function ProjectsListPage() {
                 onClick={() => setViewMode('kanban')}
                 style={{
                   background: viewMode === 'kanban' ? 'var(--primary)' : 'transparent',
-                  color: viewMode === 'kanban' ? '#060814' : 'var(--text-secondary)',
+                  color: viewMode === 'kanban' ? 'var(--bg-card)' : 'var(--text-secondary)',
                   border: 'none',
                   borderRadius: '6px',
                   padding: '0.4rem 0.8rem',
@@ -143,7 +143,7 @@ export default function ProjectsListPage() {
       </header>
 
       {/* Tab selectors */}
-      <div style={{ display: 'flex', gap: '1rem', borderBottom: '1px solid rgba(255,255,255,0.08)', marginBottom: '1.5rem' }}>
+      <div style={{ display: 'flex', gap: '1rem', borderBottom: '1px solid var(--surface-hover)', marginBottom: '1.5rem' }}>
         <button 
           onClick={() => handleTabChange('registry')}
           className={`quote-tab ${tabMode === 'registry' ? 'active' : ''}`}
@@ -177,15 +177,15 @@ export default function ProjectsListPage() {
               </div>
             </div>
 
-            <div className="quote-card" style={{ margin: 0, borderLeft: '4px solid #00E5A0', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            <div className="quote-card" style={{ margin: 0, borderLeft: '4px solid var(--accent)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
                 <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
                   Opportunities Won
                 </span>
-                <Plus size={18} style={{ color: '#00E5A0' }} />
+                <Plus size={18} style={{ color: 'var(--accent)' }} />
               </div>
               <div>
-                <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#00E5A0' }}>{wonCount}</div>
+                <div style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--accent)' }}>{wonCount}</div>
                 <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>Advanced to execution stage</div>
               </div>
             </div>
@@ -358,7 +358,7 @@ export default function ProjectsListPage() {
                     {tabMode === 'registry' ? (
                       <>
                         <td style={{ fontSize: '0.78rem' }}>{proj.project_type.replace('_', ' ')}</td>
-                        <td style={{ fontWeight: 600, color: '#00E5A0' }}>{fmtAED(proj.contract_value)}</td>
+                        <td style={{ fontWeight: 600, color: 'var(--accent)' }}>{fmtAED(proj.contract_value)}</td>
                       </>
                     ) : (
                       <>

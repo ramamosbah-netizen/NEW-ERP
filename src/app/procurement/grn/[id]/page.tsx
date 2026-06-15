@@ -48,7 +48,7 @@ export default function GRNDetailPage({ params }: PageProps) {
     );
   }
 
-  const badgeColors = GRN_STATUS_COLORS[grn.status] || { bg: 'rgba(255,255,255,0.05)', text: '#fff', border: 'rgba(255,255,255,0.1)' };
+  const badgeColors = GRN_STATUS_COLORS[grn.status] || { bg: 'var(--surface-hover)', text: '#fff', border: 'var(--border)' };
   const anyRejections = grn.items?.some(it => it.qty_rejected > 0);
 
   return (

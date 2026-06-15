@@ -419,7 +419,7 @@ function CreateAMCForm() {
                     onClick={() => handleSystemToggle(sys)}
                     style={{
                       background: isActive ? 'rgba(0, 229, 160, 0.08)' : 'rgba(0,0,0,0.2)',
-                      border: `1px solid ${isActive ? 'var(--primary)' : 'rgba(255,255,255,0.06)'}`,
+                      border: `1px solid ${isActive ? 'var(--primary)' : 'var(--surface-hover)'}`,
                       borderRadius: '8px',
                       padding: '0.6rem',
                       color: isActive ? 'var(--primary)' : 'var(--text-secondary)',

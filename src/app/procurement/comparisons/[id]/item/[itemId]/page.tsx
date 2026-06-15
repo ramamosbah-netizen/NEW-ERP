@@ -95,14 +95,14 @@ export default function ItemEditorPage({ params }: { params: Promise<{ id: strin
 
     // Colors list for different suppliers
     const colors = [
-      { stroke: '#00E5A0', fill: 'rgba(0, 229, 160, 0.15)' }, // Mint
+      { stroke: 'var(--accent)', fill: 'rgba(0, 229, 160, 0.15)' }, // Mint
       { stroke: '#22d3ee', fill: 'rgba(34, 211, 238, 0.15)' }, // Cyan
       { stroke: '#a855f7', fill: 'rgba(168, 85, 247, 0.15)' }, // Purple
       { stroke: '#f59e0b', fill: 'rgba(245, 158, 11, 0.15)' }   // Amber
     ];
 
     return (
-      <svg width="340" height="320" viewBox="0 0 340 320" style={{ background: 'rgba(0,0,0,0.2)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.06)' }}>
+      <svg width="340" height="320" viewBox="0 0 340 320" style={{ background: 'rgba(0,0,0,0.2)', borderRadius: '12px', border: '1px solid var(--surface-hover)' }}>
         {/* Grids concentric circles */}
         {[20, 40, 60, 80, 100].map((radius, idx) => {
           const points = angles.map(angle => {
@@ -115,7 +115,7 @@ export default function ItemEditorPage({ params }: { params: Promise<{ id: strin
               key={idx} 
               points={points} 
               fill="none" 
-              stroke="rgba(255,255,255,0.06)" 
+              stroke="var(--surface-hover)" 
               strokeWidth="1" 
             />
           );
@@ -137,7 +137,7 @@ export default function ItemEditorPage({ params }: { params: Promise<{ id: strin
                 y1={cy} 
                 x2={xLine} 
                 y2={yLine} 
-                stroke="rgba(255,255,255,0.12)" 
+                stroke="var(--border)" 
                 strokeWidth="1.2" 
               />
               <text 
@@ -264,12 +264,12 @@ export default function ItemEditorPage({ params }: { params: Promise<{ id: strin
                   className="quote-card" 
                   style={{ 
                     margin: 0, 
-                    border: isSelected ? '2px solid #00E5A0' : '1px solid var(--border-color)',
-                    background: isSelected ? 'rgba(0,229,160,0.02)' : 'rgba(255,255,255,0.01)'
+                    border: isSelected ? '2px solid var(--accent)' : '1px solid var(--border-color)',
+                    background: isSelected ? 'rgba(0,229,160,0.02)' : 'var(--surface-hover)'
                   }}
                 >
                   {/* Title card header */}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '0.6rem', marginBottom: '0.8rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '1px solid var(--surface-hover)', paddingBottom: '0.6rem', marginBottom: '0.8rem' }}>
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
                         <h4 style={{ fontSize: '1.05rem', fontWeight: 700 }}>{offer.supplier_name}</h4>
@@ -307,7 +307,7 @@ export default function ItemEditorPage({ params }: { params: Promise<{ id: strin
                   </div>
 
                   {/* Supplier compliance and Brand */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', borderTop: '1px solid rgba(255,255,255,0.04)', paddingTop: '0.8rem', fontSize: '0.78rem' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', borderTop: '1px solid var(--surface-hover)', paddingTop: '0.8rem', fontSize: '0.78rem' }}>
                     <div>
                       <p><strong>Brand Offered:</strong> {offer.brand_offered || 'As per Spec'}</p>
                       <p style={{ marginTop: '0.2rem' }}>
@@ -337,7 +337,7 @@ export default function ItemEditorPage({ params }: { params: Promise<{ id: strin
 
                   {/* Selection Button */}
                   {!comparison.is_locked && (
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.04)', paddingTop: '0.8rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem', borderTop: '1px solid var(--surface-hover)', paddingTop: '0.8rem' }}>
                       <button 
                         className={`quote-btn ${isSelected ? 'quote-btn-primary' : 'quote-btn-secondary'}`}
                         style={{ padding: '0.35rem 1rem', fontSize: '0.78rem' }}
@@ -367,7 +367,7 @@ export default function ItemEditorPage({ params }: { params: Promise<{ id: strin
                 <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center', width: '100%', marginTop: '0.5rem' }}>
                   {/* Radar Chart Color legends */}
                   {offers.slice(0, 4).map((offer: any, idx: number) => {
-                    const colors = ['#00E5A0', '#22d3ee', '#a855f7', '#f59e0b'];
+                    const colors = ['var(--accent)', '#22d3ee', '#a855f7', '#f59e0b'];
                     return (
                       <div key={offer.id} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.7rem' }}>
                         <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: colors[idx % 4] }}></span>
@@ -398,9 +398,9 @@ export default function ItemEditorPage({ params }: { params: Promise<{ id: strin
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span>Margin delta vs client:</span>
-                <span style={{ fontWeight: 600, color: '#00E5A0' }}>{item.item_margin_pct.toFixed(2)}%</span>
+                <span style={{ fontWeight: 600, color: 'var(--accent)' }}>{item.item_margin_pct.toFixed(2)}%</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '0.6rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--surface-hover)', paddingTop: '0.6rem' }}>
                 <span>Savings vs BOQ Material:</span>
                 <span style={{ fontWeight: 700, color: item.item_savings_vs_boq >= 0 ? '#10b981' : '#ef4444' }}>
                   {fmtAED(item.item_savings_vs_boq)}

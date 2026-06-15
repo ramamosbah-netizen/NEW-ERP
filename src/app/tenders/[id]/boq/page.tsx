@@ -1251,7 +1251,7 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
       )}
 
       {/* Workflow Progress Bar */}
-      <div className="bg-[#0b0f2a] border border-[var(--border)] rounded-xl p-4">
+      <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-4">
         <div className="relative flex justify-between items-center w-full">
           <div className="absolute top-[14px] left-[20px] right-[20px] h-[2px] bg-[var(--surface-hover)] z-0" />
           <div className="absolute top-[14px] left-[20px] h-[2px] bg-gradient-to-r from-secondary to-primary z-10 transition-all duration-500" style={{ width: progressWidth }} />
@@ -1316,7 +1316,7 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
 
             {/* Bulk actions bar */}
             {isEditable && (
-              <div className="flex flex-wrap justify-between items-center bg-[#0b0f2a] border border-[var(--border)] rounded-lg p-3 gap-3">
+              <div className="flex flex-wrap justify-between items-center bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-3 gap-3">
                 <span className="text-xs font-bold text-primary font-heading">{selectedIds.size} lines selected</span>
                 <div className="flex flex-wrap gap-2 items-center">
                   <Button onClick={handleBulkDuplicate} disabled={selectedIds.size === 0} size="sm" variant="secondary" className="text-[10px] py-1 px-2.5 h-8 flex items-center gap-1 font-bold">
@@ -2062,7 +2062,7 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
             </h3>
 
             {profile && (
-              <div className="text-[10px] text-text-muted font-mono leading-relaxed bg-[#0b0f2a] border border-[var(--border)] p-2 rounded-lg">
+              <div className="text-[10px] text-text-muted font-mono leading-relaxed bg-[var(--bg-card)] border border-[var(--border)] p-2 rounded-lg">
                 User: <span className="text-text-primary font-semibold">{profile.full_name}</span><br />
                 Role: <span className="text-primary font-bold uppercase">{profile.role}</span>
               </div>

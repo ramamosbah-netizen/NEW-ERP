@@ -62,7 +62,7 @@ export const MilestoneTimeline: React.FC<Props> = ({ milestones }) => {
                     left: 'calc(50% + 15px)', 
                     right: 'calc(-50% + 15px)', 
                     height: '2px', 
-                    background: isDone ? 'var(--primary)' : 'rgba(255, 255, 255, 0.08)',
+                    background: isDone ? 'var(--primary)' : 'var(--surface-hover)',
                     zIndex: 1
                   }}
                 />

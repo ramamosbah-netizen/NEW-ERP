@@ -407,7 +407,7 @@ export default function InvoiceCreatePage() {
             </h3>
 
             {selectedProj && (
-              <div className="bg-[#0b122c] border border-[#162754] rounded p-3 text-xs flex flex-col gap-1.5">
+              <div className="bg-[var(--bg-card)] border border-[#162754] rounded p-3 text-xs flex flex-col gap-1.5">
                 <div className="text-[10px] text-[var(--text-secondary)] font-mono uppercase tracking-wider">Project Contract Status</div>
                 <div className="flex justify-between">
                   <span className="text-[var(--text-secondary)]">Original Value:</span>

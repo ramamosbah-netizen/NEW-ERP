@@ -58,8 +58,8 @@ function SLACountdown({ dueDate, label, met }: { dueDate: string; label: string;
   const h = Math.floor(abs / 3600000);
   const m = Math.floor((abs % 3600000) / 60000);
 
-  let color = '#00E5A0';
-  if (met === true) color = '#00E5A0';
+  let color = 'var(--accent)';
+  if (met === true) color = 'var(--accent)';
   else if (met === false || isOverdue) color = '#ef4444';
   else if (h < 1) color = '#ef4444';
   else if (h < 4) color = '#f97316';
@@ -414,7 +414,7 @@ export default function TicketDetailPage() {
                     </label>
                     <button onClick={addPartRow} style={{
                       background: 'none',
-                      border: '1px solid rgba(255,255,255,0.1)',
+                      border: '1px solid var(--border)',
                       borderRadius: '4px',
                       color: 'var(--secondary)',
                       fontSize: '0.68rem',
@@ -516,7 +516,7 @@ export default function TicketDetailPage() {
                   display: 'flex',
                   gap: '0.75rem',
                   paddingBottom: '1rem',
-                  borderLeft: idx < (ticket.events?.length || 0) - 1 ? '2px solid rgba(255,255,255,0.06)' : 'none',
+                  borderLeft: idx < (ticket.events?.length || 0) - 1 ? '2px solid var(--surface-hover)' : 'none',
                   marginLeft: '7px',
                   paddingLeft: '1rem',
                   position: 'relative'
@@ -562,7 +562,7 @@ export default function TicketDetailPage() {
               display: 'flex',
               gap: '0.5rem',
               marginTop: '0.5rem',
-              borderTop: '1px solid rgba(255,255,255,0.06)',
+              borderTop: '1px solid var(--surface-hover)',
               paddingTop: '0.75rem'
             }}>
               <input
@@ -679,7 +679,7 @@ export default function TicketDetailPage() {
                   <div style={{
                     fontSize: '0.82rem',
                     fontWeight: 800,
-                    color: ticket.response_met ? '#00E5A0' : '#ef4444'
+                    color: ticket.response_met ? 'var(--accent)' : '#ef4444'
                   }}>
                     {ticket.response_met ? '✓ MET' : '✗ BREACHED'}
                   </div>
@@ -689,7 +689,7 @@ export default function TicketDetailPage() {
                   <div style={{
                     fontSize: '0.82rem',
                     fontWeight: 800,
-                    color: ticket.resolution_met ? '#00E5A0' : '#ef4444'
+                    color: ticket.resolution_met ? 'var(--accent)' : '#ef4444'
                   }}>
                     {ticket.resolution_met ? '✓ MET' : '✗ BREACHED'}
                   </div>

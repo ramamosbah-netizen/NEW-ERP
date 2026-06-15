@@ -184,7 +184,7 @@ export default function TemplatesPage() {
 
       {/* Editor Pane (overlay or side panel) */}
       {isEditing && (
-        <div className="quote-card" style={{ borderColor: '#00E5A0', background: 'rgba(0, 229, 160, 0.02)' }}>
+        <div className="quote-card" style={{ borderColor: 'var(--accent)', background: 'rgba(0, 229, 160, 0.02)' }}>
           <h3 className="quote-card-title">
             <Edit size={16} /> {selectedTemplate ? 'Edit Clause Template' : 'New Clause Template'}
           </h3>

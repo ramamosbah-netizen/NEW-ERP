@@ -78,7 +78,7 @@ export default function DocumentExpiryPage() {
                 margin: 0,
                 cursor: 'pointer',
                 borderColor: isActive ? item.color : 'var(--border-color)',
-                background: isActive ? 'rgba(255, 255, 255, 0.03)' : 'var(--bg-card)',
+                background: isActive ? 'var(--surface-hover)' : 'var(--bg-card)',
                 borderLeft: `4px solid ${item.color}`,
                 transition: 'var(--transition-fast)'
               }}

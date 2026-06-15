@@ -86,7 +86,7 @@ export const ProjectContactsCard: React.FC<Props> = ({ contacts, onAdd, onDelete
       </div>
 
       {showAddForm && (
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', borderBottom: '1px solid rgba(255, 255, 255, 0.05)', paddingBottom: '1.5rem', marginBottom: '1.5rem' }}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', borderBottom: '1px solid var(--surface-hover)', paddingBottom: '1.5rem', marginBottom: '1.5rem' }}>
           <div className="quote-form-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))' }}>
             <div className="quote-form-group">
               <label>Full Name</label>
@@ -209,8 +209,8 @@ export const ProjectContactsCard: React.FC<Props> = ({ contacts, onAdd, onDelete
                 justifyContent: 'space-between', 
                 alignItems: 'center', 
                 padding: '0.8rem', 
-                background: 'rgba(255,255,255,0.02)', 
-                border: '1px solid rgba(255,255,255,0.05)', 
+                background: 'var(--surface-hover)', 
+                border: '1px solid var(--surface-hover)', 
                 borderRadius: '8px' 
               }}
             >
@@ -222,7 +222,7 @@ export const ProjectContactsCard: React.FC<Props> = ({ contacts, onAdd, onDelete
                   <span 
                     style={{ 
                       fontSize: '0.68rem', 
-                      background: 'rgba(255,255,255,0.05)', 
+                      background: 'var(--surface-hover)', 
                       padding: '1px 6px', 
                       borderRadius: '4px',
                       color: 'var(--text-secondary)'

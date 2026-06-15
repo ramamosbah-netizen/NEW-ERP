@@ -257,7 +257,7 @@ export default function CommercialReviewPage({ params }: { params: Promise<{ id:
                       <tr key={item.id}>
                         <td>{item.description}</td>
                         <td>{item.quantity} {item.unit}</td>
-                        <td style={{ fontWeight: 600, color: '#00E5A0' }}>{selectedOffer?.supplier_name || 'N/A'}</td>
+                        <td style={{ fontWeight: 600, color: 'var(--accent)' }}>{selectedOffer?.supplier_name || 'N/A'}</td>
                         <td style={{ textAlign: 'right' }}>{fmtAED(item.selected_unit_cost)}</td>
                         <td style={{ textAlign: 'right', fontWeight: 600 }}>{fmtAED(item.selected_total_cost)}</td>
                         <td style={{ textAlign: 'right', fontWeight: 600 }}>{item.item_margin_pct.toFixed(1)}%</td>
@@ -284,9 +284,9 @@ export default function CommercialReviewPage({ params }: { params: Promise<{ id:
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span>Supplier Award Cost:</span>
-                <span style={{ fontWeight: 600, color: '#00E5A0' }}>{fmtAED(comparison.total_selected_supplier_cost)}</span>
+                <span style={{ fontWeight: 600, color: 'var(--accent)' }}>{fmtAED(comparison.total_selected_supplier_cost)}</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '0.6rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--surface-hover)', paddingTop: '0.6rem' }}>
                 <span>Procurement Savings:</span>
                 <span style={{ fontWeight: 700, color: '#22d3ee' }}>{fmtAED(comparison.total_savings_vs_boq)}</span>
               </div>
@@ -294,7 +294,7 @@ export default function CommercialReviewPage({ params }: { params: Promise<{ id:
                 <span>Savings Percentage:</span>
                 <span style={{ fontWeight: 600 }}>{comparison.total_savings_pct.toFixed(1)}%</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '0.6rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--surface-hover)', paddingTop: '0.6rem' }}>
                 <span>Overall Margin:</span>
                 <span style={{ fontWeight: 700, color: comparison.overall_margin_pct >= comparison.target_margin_pct ? '#10b981' : '#ef4444' }}>
                   {comparison.overall_margin_pct.toFixed(2)}%

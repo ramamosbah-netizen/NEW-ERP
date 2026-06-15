@@ -36,7 +36,7 @@ export default function ProjectProfitabilityDetailPage({ params }: { params: Pro
     { name: 'Contract', value: s.contractValue, fill: '#64748b' },
     { name: 'Billed', value: s.revenueBilled, fill: '#2563eb' },
     { name: 'Collected', value: s.revenueCollected, fill: '#22c55e' },
-    { name: 'Budget cost', value: s.budgetCost, fill: '#94a3b8' },
+    { name: 'Budget cost', value: s.budgetCost, fill: 'var(--text-tertiary)' },
     { name: 'Committed', value: s.committedCost, fill: '#f59e0b' },
     { name: 'Actual cost', value: s.actualCost, fill: '#ef4444' },
     { name: 'Forecast cost', value: s.projectedCostAtCompletion, fill: '#a855f7' },

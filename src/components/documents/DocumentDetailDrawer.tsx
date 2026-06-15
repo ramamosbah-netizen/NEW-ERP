@@ -144,7 +144,7 @@ export const DocumentDetailDrawer: React.FC<Props> = ({
       }}
     >
       {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.2rem', borderBottom: '1px solid rgba(255, 255, 255, 0.05)' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.2rem', borderBottom: '1px solid var(--surface-hover)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
           <FileText size={18} style={{ color: 'var(--secondary)' }} />
           <span style={{ fontSize: '0.85rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-secondary)' }}>
@@ -216,7 +216,7 @@ export const DocumentDetailDrawer: React.FC<Props> = ({
             )}
 
             {/* Standard Stats */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', background: 'rgba(0,0,0,0.15)', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.03)', fontSize: '0.8rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', background: 'rgba(0,0,0,0.15)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--surface-hover)', fontSize: '0.8rem' }}>
               <div>
                 <span style={{ color: 'var(--text-muted)', display: 'block', marginBottom: '0.2rem' }}>Original File</span>
                 <span style={{ fontWeight: 500, color: 'var(--text-secondary)', wordBreak: 'break-all' }}>{doc.original_filename}</span>
@@ -228,7 +228,7 @@ export const DocumentDetailDrawer: React.FC<Props> = ({
             </div>
 
             {/* Classification & Metadata */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', borderBottom: '1px solid rgba(255, 255, 255, 0.05)', paddingBottom: '1.5rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', borderBottom: '1px solid var(--surface-hover)', paddingBottom: '1.5rem' }}>
               <h3 style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-secondary)', letterSpacing: '0.05em' }}>
                 Filing Taxonomy
               </h3>
@@ -348,7 +348,7 @@ export const DocumentDetailDrawer: React.FC<Props> = ({
                     <div style={{ display: 'grid', gridTemplateColumns: '140px 1fr', alignItems: 'center' }}>
                       <span style={{ color: 'var(--text-muted)' }}>Tags:</span>
                       <div style={{ display: 'flex', gap: '0.3rem', flexWrap: 'wrap' }}>
-                        {doc.tags.map(t => <span key={t} style={{ fontSize: '0.65rem', background: 'rgba(255,255,255,0.05)', color: 'var(--text-secondary)', padding: '2px 6px', borderRadius: '4px' }}>{t}</span>)}
+                        {doc.tags.map(t => <span key={t} style={{ fontSize: '0.65rem', background: 'var(--surface-hover)', color: 'var(--text-secondary)', padding: '2px 6px', borderRadius: '4px' }}>{t}</span>)}
                       </div>
                     </div>
                   )}
@@ -358,11 +358,11 @@ export const DocumentDetailDrawer: React.FC<Props> = ({
 
             {/* AI Summary */}
             {!editMode && doc.ai_summary && (
-              <div style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)', paddingBottom: '1.5rem' }}>
+              <div style={{ borderBottom: '1px solid var(--surface-hover)', paddingBottom: '1.5rem' }}>
                 <h3 style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-secondary)', letterSpacing: '0.05em', marginBottom: '0.5rem' }}>
                   AI Summary & Content Highlights
                 </h3>
-                <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: '1.4', background: 'rgba(0,0,0,0.12)', padding: '0.8rem', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.02)' }}>
+                <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', lineHeight: '1.4', background: 'rgba(0,0,0,0.12)', padding: '0.8rem', borderRadius: '6px', border: '1px solid var(--surface-hover)' }}>
                   {doc.ai_summary}
                 </p>
               </div>
@@ -370,7 +370,7 @@ export const DocumentDetailDrawer: React.FC<Props> = ({
 
             {/* Revision chain stack */}
             {!editMode && doc.revisions && doc.revisions.length > 0 && (
-              <div style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)', paddingBottom: '1.5rem' }}>
+              <div style={{ borderBottom: '1px solid var(--surface-hover)', paddingBottom: '1.5rem' }}>
                 <h3 style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-secondary)', letterSpacing: '0.05em', marginBottom: '0.5rem' }}>
                   Revision Stack History
                 </h3>
@@ -384,8 +384,8 @@ export const DocumentDetailDrawer: React.FC<Props> = ({
                         alignItems: 'center',
                         fontSize: '0.78rem',
                         padding: '0.4rem 0.6rem',
-                        background: 'rgba(255,255,255,0.01)',
-                        border: '1px solid rgba(255,255,255,0.03)',
+                        background: 'var(--surface-hover)',
+                        border: '1px solid var(--surface-hover)',
                         borderRadius: '4px'
                       }}
                     >
@@ -407,7 +407,7 @@ export const DocumentDetailDrawer: React.FC<Props> = ({
                 </h3>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxHeight: '180px', overflowY: 'auto' }}>
                   {doc.activity.map((act) => (
-                    <div key={act.id} style={{ fontSize: '0.72rem', color: 'var(--text-muted)', borderLeft: '2px solid rgba(255,255,255,0.08)', paddingLeft: '0.5rem' }}>
+                    <div key={act.id} style={{ fontSize: '0.72rem', color: 'var(--text-muted)', borderLeft: '2px solid var(--surface-hover)', paddingLeft: '0.5rem' }}>
                       <div style={{ color: 'var(--text-secondary)', fontWeight: 600 }}>
                         {act.action} by {act.user_name}
                       </div>
@@ -444,7 +444,7 @@ export const DocumentDetailDrawer: React.FC<Props> = ({
 
       {/* Footer controls (Signed URLs Download) */}
       {doc && !editMode && (
-        <div style={{ padding: '1.2rem', borderTop: '1px solid rgba(255, 255, 255, 0.05)', background: 'rgba(0, 0, 0, 0.2)', display: 'grid', gridTemplateColumns: '1fr' }}>
+        <div style={{ padding: '1.2rem', borderTop: '1px solid var(--surface-hover)', background: 'rgba(0, 0, 0, 0.2)', display: 'grid', gridTemplateColumns: '1fr' }}>
           <button 
             type="button" 
             className="quote-btn quote-btn-primary" 

@@ -110,8 +110,8 @@ export default function VOApprovalQueuePage() {
         </div>
 
         {/* Dashboard info card */}
-        <div className="bg-[#0b122c] border border-[#162754] rounded p-4 text-xs flex items-start gap-2.5">
-          <Clock className="text-[#00E5A0] shrink-0 mt-0.5 animate-pulse" size={16} />
+        <div className="bg-[var(--bg-card)] border border-[#162754] rounded p-4 text-xs flex items-start gap-2.5">
+          <Clock className="text-[var(--accent)] shrink-0 mt-0.5 animate-pulse" size={16} />
           <div>
             <span className="font-mono text-[var(--text-primary)] font-bold block">Internal Threshold Routing System</span>
             <p className="text-[var(--text-secondary)] mt-1 leading-normal">

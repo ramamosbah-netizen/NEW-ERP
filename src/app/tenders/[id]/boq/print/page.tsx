@@ -164,11 +164,11 @@ export default function BOQPrintPage({ params }: { params: Promise<{ id: string 
     <div style={{ maxWidth: '850px', margin: '0 auto', padding: '20px', background: '#ffffff', color: '#000000', fontFamily: 'sans-serif' }}>
       
       {/* Action panel (hidden on actual print) */}
-      <div className="action-btn-row" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px', borderBottom: '1px solid #e2e8f0', paddingBottom: '15px' }}>
+      <div className="action-btn-row" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px', borderBottom: '1px solid var(--text-primary)', paddingBottom: '15px' }}>
         <Link 
           href={`/tenders/${tenderId}/boq`} 
           className="action-btn btn-secondary" 
-          style={{ textDecoration: 'none', padding: '0.5rem 1rem', fontSize: '0.85rem', color: '#1e293b', border: '1px solid #cbd5e1', background: '#f8fafc' }}
+          style={{ textDecoration: 'none', padding: '0.5rem 1rem', fontSize: '0.85rem', color: '#1e293b', border: '1px solid var(--text-secondary)', background: 'var(--text-primary)' }}
         >
           <ArrowLeft size={14} /> Back to Details
         </Link>
@@ -208,9 +208,9 @@ export default function BOQPrintPage({ params }: { params: Promise<{ id: string 
       </div>
 
       {/* Project Meta Information */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '25px', padding: '15px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '4px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '25px', padding: '15px', background: 'var(--text-primary)', border: '1px solid var(--text-primary)', borderRadius: '4px' }}>
         <div>
-          <h3 style={{ fontSize: '12px', color: '#64748b', textTransform: 'uppercase', margin: '0 0 8px 0', fontWeight: 'bold', borderBottom: '1px solid #e2e8f0', paddingBottom: '3px' }}>
+          <h3 style={{ fontSize: '12px', color: '#64748b', textTransform: 'uppercase', margin: '0 0 8px 0', fontWeight: 'bold', borderBottom: '1px solid var(--text-primary)', paddingBottom: '3px' }}>
             Tender Details
           </h3>
           <p style={{ margin: '0 0 5px 0', fontSize: '13px' }}>
@@ -224,7 +224,7 @@ export default function BOQPrintPage({ params }: { params: Promise<{ id: string 
           </p>
         </div>
         <div>
-          <h3 style={{ fontSize: '12px', color: '#64748b', textTransform: 'uppercase', margin: '0 0 8px 0', fontWeight: 'bold', borderBottom: '1px solid #e2e8f0', paddingBottom: '3px' }}>
+          <h3 style={{ fontSize: '12px', color: '#64748b', textTransform: 'uppercase', margin: '0 0 8px 0', fontWeight: 'bold', borderBottom: '1px solid var(--text-primary)', paddingBottom: '3px' }}>
             BOQ Version Control & Status
           </h3>
           <p style={{ margin: '0 0 5px 0', fontSize: '13px' }}>
@@ -246,7 +246,7 @@ export default function BOQPrintPage({ params }: { params: Promise<{ id: string 
       
       <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '30px', fontSize: '11px' }}>
         <thead>
-          <tr style={{ borderBottom: '2px solid #000000', background: '#f1f5f9' }}>
+          <tr style={{ borderBottom: '2px solid #000000', background: 'var(--text-primary)' }}>
             <th style={{ padding: '6px 4px', textAlign: 'left', width: '30px' }}>No.</th>
             <th style={{ padding: '6px 4px', textAlign: 'left' }}>Item Description</th>
             <th style={{ padding: '6px 4px', textAlign: 'center', width: '50px' }}>Qty</th>
@@ -262,7 +262,7 @@ export default function BOQPrintPage({ params }: { params: Promise<{ id: string 
         </thead>
         <tbody>
           {itemsList.map((item, index) => (
-            <tr key={index} style={{ borderBottom: '1px solid #e2e8f0' }}>
+            <tr key={index} style={{ borderBottom: '1px solid var(--text-primary)' }}>
               <td style={{ padding: '6px 4px' }}>{index + 1}</td>
               <td style={{ padding: '6px 4px', fontWeight: 'bold' }}>{item.name}</td>
               <td style={{ padding: '6px 4px', textAlign: 'center' }}>{item.quantity ?? (item as any).qty}</td>
@@ -294,54 +294,54 @@ export default function BOQPrintPage({ params }: { params: Promise<{ id: string 
         
         {/* Left Side: Cost elements */}
         <div>
-          <h4 style={{ fontSize: '12px', textTransform: 'uppercase', margin: '0 0 10px 0', borderBottom: '1px solid #cbd5e1', paddingBottom: '3px' }}>
+          <h4 style={{ fontSize: '12px', textTransform: 'uppercase', margin: '0 0 10px 0', borderBottom: '1px solid var(--text-secondary)', paddingBottom: '3px' }}>
             Cost Estimations Drivers
           </h4>
           <table style={{ width: '100%', fontSize: '11px', borderCollapse: 'collapse' }}>
             <tbody>
-              <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
+              <tr style={{ borderBottom: '1px solid var(--text-primary)' }}>
                 <td style={{ padding: '5px 0', color: '#475569' }}>Material Supply Subtotal</td>
                 <td style={{ padding: '5px 0', textAlign: 'right', fontWeight: 'bold' }}>
                   {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(supplySubtotal)}
                 </td>
               </tr>
-              <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
+              <tr style={{ borderBottom: '1px solid var(--text-primary)' }}>
                 <td style={{ padding: '5px 0', color: '#475569' }}>Total Material Wastage Cost</td>
                 <td style={{ padding: '5px 0', textAlign: 'right', fontWeight: 'bold' }}>
                   {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(fin.wastage_value || 0)}
                 </td>
               </tr>
-              <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
+              <tr style={{ borderBottom: '1px solid var(--text-primary)' }}>
                 <td style={{ padding: '5px 0', color: '#475569' }}>Total Freight & Logistics Cost</td>
                 <td style={{ padding: '5px 0', textAlign: 'right', fontWeight: 'bold' }}>
                   {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(fin.logistics_cost || 0)}
                 </td>
               </tr>
-              <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
+              <tr style={{ borderBottom: '1px solid var(--text-primary)' }}>
                 <td style={{ padding: '5px 0', color: '#475569' }}>Total Labor Cost Breakdown</td>
                 <td style={{ padding: '5px 0', textAlign: 'right', fontWeight: 'bold' }}>
                   {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(fin.labor_total || 0)}
                 </td>
               </tr>
-              <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
+              <tr style={{ borderBottom: '1px solid var(--text-primary)' }}>
                 <td style={{ padding: '5px 0', color: '#475569' }}>Total Overhead Allowance</td>
                 <td style={{ padding: '5px 0', textAlign: 'right', fontWeight: 'bold' }}>
                   {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(fin.overhead_value || 0)}
                 </td>
               </tr>
-              <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
+              <tr style={{ borderBottom: '1px solid var(--text-primary)' }}>
                 <td style={{ padding: '5px 0', color: '#475569' }}>Global Equipment rentals</td>
                 <td style={{ padding: '5px 0', textAlign: 'right' }}>
                   {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(ce.equipment_cost || fin.equipment_cost || 0)}
                 </td>
               </tr>
-              <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
+              <tr style={{ borderBottom: '1px solid var(--text-primary)' }}>
                 <td style={{ padding: '5px 0', color: '#475569' }}>Global Subcontracting outlay</td>
                 <td style={{ padding: '5px 0', textAlign: 'right' }}>
                   {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(ce.subcontract_cost || fin.subcontract_cost || 0)}
                 </td>
               </tr>
-              <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
+              <tr style={{ borderBottom: '1px solid var(--text-primary)' }}>
                 <td style={{ padding: '5px 0', color: '#475569' }}>Global Contingency Risk buffer</td>
                 <td style={{ padding: '5px 0', textAlign: 'right' }}>
                   {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(ce.risk_cost || fin.risk_cost || 0)}
@@ -357,10 +357,10 @@ export default function BOQPrintPage({ params }: { params: Promise<{ id: string 
 
         {/* Right Side: Totals */}
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
-          <h4 style={{ fontSize: '12px', textTransform: 'uppercase', margin: '0 0 10px 0', borderBottom: '1px solid #cbd5e1', paddingBottom: '3px' }}>
+          <h4 style={{ fontSize: '12px', textTransform: 'uppercase', margin: '0 0 10px 0', borderBottom: '1px solid var(--text-secondary)', paddingBottom: '3px' }}>
             Final Bid Valuation
           </h4>
-          <div style={{ background: '#f8fafc', padding: '15px', border: '1px solid #e2e8f0', borderRadius: '4px' }}>
+          <div style={{ background: 'var(--text-primary)', padding: '15px', border: '1px solid var(--text-primary)', borderRadius: '4px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: '8px', color: '#475569' }}>
               <span>Total Direct Costs:</span>
               <span style={{ fontWeight: 'bold' }}>
@@ -375,7 +375,7 @@ export default function BOQPrintPage({ params }: { params: Promise<{ id: string 
               </span>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: '8px', borderTop: '1px dashed #cbd5e1', paddingTop: '8px', color: '#475569' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: '8px', borderTop: '1px dashed var(--text-secondary)', paddingTop: '8px', color: '#475569' }}>
               <span>Pre-Profit Cost:</span>
               <span>
                 {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(
@@ -418,8 +418,8 @@ export default function BOQPrintPage({ params }: { params: Promise<{ id: string 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '15px', fontSize: '11px' }}>
           
           {/* Engineering Sign-off */}
-          <div style={{ border: '1px solid #cbd5e1', padding: '10px', borderRadius: '4px', textAlign: 'center' }}>
-            <p style={{ fontWeight: 'bold', margin: '0 0 15px 0', textTransform: 'uppercase', color: '#475569', borderBottom: '1px solid #e2e8f0', paddingBottom: '3px' }}>
+          <div style={{ border: '1px solid var(--text-secondary)', padding: '10px', borderRadius: '4px', textAlign: 'center' }}>
+            <p style={{ fontWeight: 'bold', margin: '0 0 15px 0', textTransform: 'uppercase', color: '#475569', borderBottom: '1px solid var(--text-primary)', paddingBottom: '3px' }}>
               Technical Approver
             </p>
             {engSig.signed ? (
@@ -430,15 +430,15 @@ export default function BOQPrintPage({ params }: { params: Promise<{ id: string 
               </div>
             ) : (
               <div>
-                <p style={{ margin: '0 0 3px 0', fontWeight: 'bold', color: '#94a3b8' }}>PENDING SIGNATURE</p>
-                <p style={{ margin: '0', color: '#94a3b8', fontStyle: 'italic' }}>Sequential Step 2</p>
+                <p style={{ margin: '0 0 3px 0', fontWeight: 'bold', color: 'var(--text-tertiary)' }}>PENDING SIGNATURE</p>
+                <p style={{ margin: '0', color: 'var(--text-tertiary)', fontStyle: 'italic' }}>Sequential Step 2</p>
               </div>
             )}
           </div>
 
           {/* Manager Sign-off */}
-          <div style={{ border: '1px solid #cbd5e1', padding: '10px', borderRadius: '4px', textAlign: 'center' }}>
-            <p style={{ fontWeight: 'bold', margin: '0 0 15px 0', textTransform: 'uppercase', color: '#475569', borderBottom: '1px solid #e2e8f0', paddingBottom: '3px' }}>
+          <div style={{ border: '1px solid var(--text-secondary)', padding: '10px', borderRadius: '4px', textAlign: 'center' }}>
+            <p style={{ fontWeight: 'bold', margin: '0 0 15px 0', textTransform: 'uppercase', color: '#475569', borderBottom: '1px solid var(--text-primary)', paddingBottom: '3px' }}>
               Cost Validation
             </p>
             {mgrSig.signed ? (
@@ -449,15 +449,15 @@ export default function BOQPrintPage({ params }: { params: Promise<{ id: string 
               </div>
             ) : (
               <div>
-                <p style={{ margin: '0 0 3px 0', fontWeight: 'bold', color: '#94a3b8' }}>PENDING SIGNATURE</p>
-                <p style={{ margin: '0', color: '#94a3b8', fontStyle: 'italic' }}>Sequential Step 3</p>
+                <p style={{ margin: '0 0 3px 0', fontWeight: 'bold', color: 'var(--text-tertiary)' }}>PENDING SIGNATURE</p>
+                <p style={{ margin: '0', color: 'var(--text-tertiary)', fontStyle: 'italic' }}>Sequential Step 3</p>
               </div>
             )}
           </div>
 
           {/* Finance Sign-off */}
-          <div style={{ border: '1px solid #cbd5e1', padding: '10px', borderRadius: '4px', textAlign: 'center' }}>
-            <p style={{ fontWeight: 'bold', margin: '0 0 15px 0', textTransform: 'uppercase', color: '#475569', borderBottom: '1px solid #e2e8f0', paddingBottom: '3px' }}>
+          <div style={{ border: '1px solid var(--text-secondary)', padding: '10px', borderRadius: '4px', textAlign: 'center' }}>
+            <p style={{ fontWeight: 'bold', margin: '0 0 15px 0', textTransform: 'uppercase', color: '#475569', borderBottom: '1px solid var(--text-primary)', paddingBottom: '3px' }}>
               Finance Approval
             </p>
             {finSig.signed ? (
@@ -468,8 +468,8 @@ export default function BOQPrintPage({ params }: { params: Promise<{ id: string 
               </div>
             ) : (
               <div>
-                <p style={{ margin: '0 0 3px 0', fontWeight: 'bold', color: '#94a3b8' }}>PENDING SIGNATURE</p>
-                <p style={{ margin: '0', color: '#94a3b8', fontStyle: 'italic' }}>Sequential Step 4</p>
+                <p style={{ margin: '0 0 3px 0', fontWeight: 'bold', color: 'var(--text-tertiary)' }}>PENDING SIGNATURE</p>
+                <p style={{ margin: '0', color: 'var(--text-tertiary)', fontStyle: 'italic' }}>Sequential Step 4</p>
               </div>
             )}
           </div>

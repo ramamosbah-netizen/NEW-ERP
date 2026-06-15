@@ -547,7 +547,7 @@ export default function ComparisonMatrixPage({ params }: { params: Promise<{ id:
         </Link>
         <div style={{ display: 'flex', gap: '0.5rem' }}>
           <button className="quote-btn quote-btn-secondary" onClick={() => setShowDrawer(true)}>
-            <Sparkles size={14} style={{ color: '#00E5A0' }} /> Gemini AI Extract
+            <Sparkles size={14} style={{ color: 'var(--accent)' }} /> Gemini AI Extract
           </button>
           <button className="quote-btn quote-btn-secondary" onClick={handleExportExcel}>
             <FileSpreadsheet size={14} /> Export Excel
@@ -583,7 +583,7 @@ export default function ComparisonMatrixPage({ params }: { params: Promise<{ id:
 
           <div style={{ textAlign: 'right' }}>
             <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Supplier Procured Cost</span>
-            <div style={{ fontSize: '1.8rem', fontWeight: 700, color: '#00E5A0', textShadow: '0 0 15px rgba(0, 229, 160, 0.2)' }}>
+            <div style={{ fontSize: '1.8rem', fontWeight: 700, color: 'var(--accent)', textShadow: '0 0 15px rgba(0, 229, 160, 0.2)' }}>
               {fmtAED(comparison.total_selected_supplier_cost)}
             </div>
             <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Project target: {comparison.target_margin_pct}%</span>
@@ -680,7 +680,7 @@ export default function ComparisonMatrixPage({ params }: { params: Promise<{ id:
             <Link 
               href={`/procurement/po/from-comparison/${comparison.id}`} 
               className="quote-btn quote-btn-primary" 
-              style={{ fontSize: '0.78rem', padding: '0.4rem 0.8rem', background: '#00E5A0', borderColor: '#00E5A0', color: '#000', fontWeight: 600 }}
+              style={{ fontSize: '0.78rem', padding: '0.4rem 0.8rem', background: 'var(--accent)', borderColor: 'var(--accent)', color: '#000', fontWeight: 600 }}
             >
               Generate LPOs
             </Link>
@@ -767,19 +767,19 @@ export default function ComparisonMatrixPage({ params }: { params: Promise<{ id:
               ))}
 
               {/* Frozen Right columns */}
-              <th className="frozen-right" style={{ width: '220px', borderLeft: '2px solid rgba(255,255,255,0.1)' }}>Selected procurement</th>
+              <th className="frozen-right" style={{ width: '220px', borderLeft: '2px solid var(--border)' }}>Selected procurement</th>
             </tr>
             <tr>
               {/* Sub-headers Left */}
-              <th className="frozen-left" style={{ borderBottom: '2px solid rgba(255,255,255,0.1)' }}></th>
-              <th className="frozen-left-2" style={{ borderBottom: '2px solid rgba(255,255,255,0.1)' }}>Description & Code</th>
-              <th style={{ borderBottom: '2px solid rgba(255,255,255,0.1)' }}></th>
-              <th style={{ borderBottom: '2px solid rgba(255,255,255,0.1)' }}></th>
-              <th style={{ borderBottom: '2px solid rgba(255,255,255,0.1)' }}></th>
+              <th className="frozen-left" style={{ borderBottom: '2px solid var(--border)' }}></th>
+              <th className="frozen-left-2" style={{ borderBottom: '2px solid var(--border)' }}>Description & Code</th>
+              <th style={{ borderBottom: '2px solid var(--border)' }}></th>
+              <th style={{ borderBottom: '2px solid var(--border)' }}></th>
+              <th style={{ borderBottom: '2px solid var(--border)' }}></th>
               
               {/* Sub-headers for each Supplier */}
               {allSupplierNames.map(supName => (
-                <th key={`${supName}-sub`} colSpan={6} style={{ fontSize: '0.7rem', textTransform: 'uppercase', background: 'rgba(0, 0, 0, 0.2)', borderBottom: '2px solid rgba(255,255,255,0.1)' }}>
+                <th key={`${supName}-sub`} colSpan={6} style={{ fontSize: '0.7rem', textTransform: 'uppercase', background: 'rgba(0, 0, 0, 0.2)', borderBottom: '2px solid var(--border)' }}>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '4px', textAlign: 'center' }}>
                     <span>Unit (AED)</span>
                     <span>Total (AED)</span>
@@ -792,7 +792,7 @@ export default function ComparisonMatrixPage({ params }: { params: Promise<{ id:
               ))}
 
               {/* Sub-headers Right */}
-              <th className="frozen-right" style={{ borderLeft: '2px solid rgba(255,255,255,0.1)', borderBottom: '2px solid rgba(255,255,255,0.1)' }}>
+              <th className="frozen-right" style={{ borderLeft: '2px solid var(--border)', borderBottom: '2px solid var(--border)' }}>
                 Selected Cost & Savings
               </th>
             </tr>
@@ -955,7 +955,7 @@ export default function ComparisonMatrixPage({ params }: { params: Promise<{ id:
                   })}
 
                   {/* Frozen Right Selected Supplier cells */}
-                  <td className="frozen-right" style={{ borderLeft: '2px solid rgba(255,255,255,0.1)' }}>
+                  <td className="frozen-right" style={{ borderLeft: '2px solid var(--border)' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                       <select
                         className="quote-filter-input"
@@ -1054,11 +1054,11 @@ export default function ComparisonMatrixPage({ params }: { params: Promise<{ id:
                 );
               })}
 
-              <td className="frozen-right" style={{ borderLeft: '2px solid rgba(255,255,255,0.1)' }}>
+              <td className="frozen-right" style={{ borderLeft: '2px solid var(--border)' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <span>Selected Cost:</span>
-                    <span style={{ color: '#00E5A0' }}>{fmtAED(comparison.total_selected_supplier_cost)}</span>
+                    <span style={{ color: 'var(--accent)' }}>{fmtAED(comparison.total_selected_supplier_cost)}</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <span>BOQ Savings:</span>
@@ -1124,7 +1124,7 @@ export default function ComparisonMatrixPage({ params }: { params: Promise<{ id:
           <div className="quote-modal" style={{ maxWidth: '800px' }}>
             <div className="quote-modal-header">
               <h3 className="quote-card-title">
-                <Sparkles size={18} style={{ color: '#00E5A0' }} /> 
+                <Sparkles size={18} style={{ color: 'var(--accent)' }} /> 
                 Gemini AI Supplier Proposal Extractor
               </h3>
               <button className="quote-btn quote-btn-secondary" style={{ padding: '0.3rem', border: 'none', background: 'transparent' }} onClick={() => setShowDrawer(false)}>
@@ -1156,10 +1156,10 @@ export default function ComparisonMatrixPage({ params }: { params: Promise<{ id:
 
               {/* Extraction confirmation mapping preview */}
               {extractedData && (
-                <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '1.2rem' }}>
+                <div style={{ borderTop: '1px solid var(--surface-hover)', paddingTop: '1.2rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
                     <span style={{ fontSize: '0.85rem' }}>Supplier identified: <strong>{extractedData.supplier_name}</strong></span>
-                    <span style={{ fontSize: '0.85rem', color: '#00E5A0' }}>AI Confidence: <strong>{confidence}%</strong></span>
+                    <span style={{ fontSize: '0.85rem', color: 'var(--accent)' }}>AI Confidence: <strong>{confidence}%</strong></span>
                   </div>
 
                   <h4 style={{ fontSize: '0.85rem', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>Confirm Line Mappings</h4>

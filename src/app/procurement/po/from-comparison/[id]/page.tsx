@@ -274,8 +274,8 @@ export default function POFromComparisonPage({ params }: PageProps) {
                 key={prop.supplier_id} 
                 className="quote-card" 
                 style={{ 
-                  border: isSelected ? '1px solid rgba(0, 229, 160, 0.25)' : '1px solid rgba(255,255,255,0.06)',
-                  background: isSelected ? 'rgba(0, 229, 160, 0.01)' : 'rgba(255,255,255,0.01)'
+                  border: isSelected ? '1px solid rgba(0, 229, 160, 0.25)' : '1px solid var(--surface-hover)',
+                  background: isSelected ? 'rgba(0, 229, 160, 0.01)' : 'var(--surface-hover)'
                 }}
               >
                 {/* Proposal Header */}

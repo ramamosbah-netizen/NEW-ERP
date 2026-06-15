@@ -167,7 +167,7 @@ export const ReviewQueueSplitView: React.FC<Props> = ({
             height: '100%'
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '0.6rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', borderBottom: '1px solid var(--surface-hover)', paddingBottom: '0.6rem' }}>
             <Settings size={18} style={{ color: 'var(--primary)' }} />
             <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#ffffff' }}>
               AI Suggested Classification
@@ -282,7 +282,7 @@ export const ReviewQueueSplitView: React.FC<Props> = ({
           </div>
 
           {/* Action buttons */}
-          <div style={{ display: 'flex', gap: '1rem', marginTop: 'auto', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '1.2rem' }}>
+          <div style={{ display: 'flex', gap: '1rem', marginTop: 'auto', borderTop: '1px solid var(--surface-hover)', paddingTop: '1.2rem' }}>
             <button 
               type="button" 
               className="quote-btn quote-btn-danger" 

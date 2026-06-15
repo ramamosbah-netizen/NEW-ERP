@@ -943,7 +943,7 @@ export default function EditTender({ params }: { params: Promise<{ id: string }>
               )}
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1.5rem', borderTop: '1px solid rgba(255, 255, 255, 0.05)', paddingTop: '1.5rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1.5rem', borderTop: '1px solid var(--surface-hover)', paddingTop: '1.5rem' }}>
               <button 
                 type="button" 
                 className="action-btn btn-secondary"

@@ -233,7 +233,7 @@ export default function AMCRenewalPipelinePage() {
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '0.5rem', borderBottom: '2px solid var(--text-muted)', marginBottom: '1rem', alignItems: 'center' }}>
               <span style={{ fontSize: '0.85rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-secondary)' }}>Renewed Lanes</span>
-              <span style={{ fontSize: '0.75rem', background: 'rgba(255,255,255,0.05)', padding: '2px 6px', borderRadius: '4px', color: 'var(--text-secondary)', fontWeight: 700 }}>
+              <span style={{ fontSize: '0.75rem', background: 'var(--surface-hover)', padding: '2px 6px', borderRadius: '4px', color: 'var(--text-secondary)', fontWeight: 700 }}>
                 {pipeline.RENEWED.length}
               </span>
             </div>

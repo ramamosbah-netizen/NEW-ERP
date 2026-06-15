@@ -225,7 +225,7 @@ export default function CreateComparisonWizard({ params }: { params: Promise<{ q
                   value={targetMargin} 
                   onChange={(e) => setTargetMargin(parseFloat(e.target.value))} 
                 />
-                <span style={{ fontSize: '1.1rem', fontWeight: 700, color: '#00E5A0', fontFamily: 'var(--font-mono)', width: '60px', textAlign: 'right' }}>
+                <span style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--accent)', fontFamily: 'var(--font-mono)', width: '60px', textAlign: 'right' }}>
                   {targetMargin.toFixed(1)}%
                 </span>
               </div>
@@ -235,7 +235,7 @@ export default function CreateComparisonWizard({ params }: { params: Promise<{ q
             </div>
 
             {/* Config Summaries */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', marginTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '1.2rem', fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', marginTop: '1.5rem', borderTop: '1px solid var(--surface-hover)', paddingTop: '1.2rem', fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span>Material Revenue:</span>
                 <span style={{ fontWeight: 600 }}>{fmtAED(quotation.subtotal_after_discount)}</span>

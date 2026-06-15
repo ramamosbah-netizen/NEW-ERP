@@ -89,7 +89,7 @@ export const CategoryTree: React.FC<Props> = ({
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', background: 'rgba(0,0,0,0.18)', padding: '1rem', borderRadius: '10px', border: '1px solid var(--border-color)', height: 'fit-content' }}>
-      <h3 style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: '1px solid rgba(255, 255, 255, 0.05)', paddingBottom: '0.5rem', marginBottom: '0.5rem' }}>
+      <h3 style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: '1px solid var(--surface-hover)', paddingBottom: '0.5rem', marginBottom: '0.5rem' }}>
         Taxonomy Library
       </h3>
 
@@ -148,7 +148,7 @@ export const CategoryTree: React.FC<Props> = ({
 
             {/* Subcategories list */}
             {isExpanded && (
-              <div style={{ display: 'flex', flexDirection: 'column', paddingLeft: '1.5rem', borderLeft: '1px solid rgba(255, 255, 255, 0.04)', margin: '0.2rem 0 0.4rem 0.8rem', gap: '0.2rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', paddingLeft: '1.5rem', borderLeft: '1px solid var(--surface-hover)', margin: '0.2rem 0 0.4rem 0.8rem', gap: '0.2rem' }}>
                 {node.subcategories.map((sub) => {
                   const isCurrentSub = selectedCategory === node.name && selectedSubcategory === sub;
 

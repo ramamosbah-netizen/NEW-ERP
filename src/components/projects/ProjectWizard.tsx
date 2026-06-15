@@ -231,7 +231,7 @@ export const ProjectWizard: React.FC<Props> = ({ quotationId }) => {
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
       {/* Step Indicator */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2rem', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '1rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2rem', borderBottom: '1px solid var(--surface-hover)', paddingBottom: '1rem' }}>
         {[
           { step: 1, label: 'Basics' },
           { step: 2, label: 'Commercials' },
@@ -388,7 +388,7 @@ export const ProjectWizard: React.FC<Props> = ({ quotationId }) => {
 
             <div className="quote-form-group">
               <label style={{ marginBottom: '0.5rem' }}>Systems & Disciplines Included</label>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '0.8rem', background: 'rgba(0,0,0,0.15)', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.03)' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '0.8rem', background: 'rgba(0,0,0,0.15)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--surface-hover)' }}>
                 {SYSTEM_LIST.map((sys) => (
                   <label key={sys} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '0.8rem', cursor: 'pointer', color: 'var(--text-primary)' }}>
                     <input 
@@ -554,8 +554,8 @@ export const ProjectWizard: React.FC<Props> = ({ quotationId }) => {
                     gap: '1rem', 
                     alignItems: 'center', 
                     padding: '0.8rem', 
-                    background: 'rgba(255,255,255,0.01)', 
-                    border: '1px solid rgba(255,255,255,0.04)', 
+                    background: 'var(--surface-hover)', 
+                    border: '1px solid var(--surface-hover)', 
                     borderRadius: '8px' 
                   }}
                 >
@@ -624,7 +624,7 @@ export const ProjectWizard: React.FC<Props> = ({ quotationId }) => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
             <h2 className="quote-card-title" style={{ fontSize: '1.2rem' }}><Briefcase size={20} /> Step 4: Review and Confirm Project Setup</h2>
             
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', background: 'rgba(0,0,0,0.15)', padding: '1.2rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.03)' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', background: 'rgba(0,0,0,0.15)', padding: '1.2rem', borderRadius: '8px', border: '1px solid var(--surface-hover)' }}>
               <div>
                 <h4 style={{ color: 'var(--secondary)', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Basics</h4>
                 <div style={{ fontSize: '0.9rem', fontWeight: 600, color: '#ffffff' }}>{name}</div>
@@ -633,7 +633,7 @@ export const ProjectWizard: React.FC<Props> = ({ quotationId }) => {
                 <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>Location: {emirate}</div>
                 {systems.length > 0 && (
                   <div style={{ marginTop: '0.5rem', display: 'flex', gap: '0.3rem', flexWrap: 'wrap' }}>
-                    {systems.map(s => <span key={s} style={{ fontSize: '0.65rem', background: 'rgba(255,255,255,0.05)', padding: '2px 6px', borderRadius: '4px' }}>{s}</span>)}
+                    {systems.map(s => <span key={s} style={{ fontSize: '0.65rem', background: 'var(--surface-hover)', padding: '2px 6px', borderRadius: '4px' }}>{s}</span>)}
                   </div>
                 )}
               </div>
@@ -651,7 +651,7 @@ export const ProjectWizard: React.FC<Props> = ({ quotationId }) => {
               <h4 style={{ color: 'var(--secondary)', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Milestones Schema</h4>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                 {milestones.map((m, idx) => (
-                  <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', padding: '0.3rem 0.5rem', background: 'rgba(255,255,255,0.01)', borderRadius: '4px' }}>
+                  <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', padding: '0.3rem 0.5rem', background: 'var(--surface-hover)', borderRadius: '4px' }}>
                     <span>#{m.sort_order} {m.title}</span>
                     <span style={{ fontWeight: 600, color: m.payment_linked ? 'var(--secondary)' : 'var(--text-muted)' }}>
                       {m.payment_linked ? `Billing: ${m.payment_pct}%` : 'Visual track'}
@@ -670,7 +670,7 @@ export const ProjectWizard: React.FC<Props> = ({ quotationId }) => {
         )}
 
         {/* Wizard Footer controls */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1.8rem', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '1.2rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1.8rem', borderTop: '1px solid var(--surface-hover)', paddingTop: '1.2rem' }}>
           <button 
             type="button" 
             className="quote-btn quote-btn-secondary" 

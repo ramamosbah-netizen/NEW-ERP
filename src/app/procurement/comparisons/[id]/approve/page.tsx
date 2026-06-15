@@ -64,7 +64,7 @@ export default function GMApprovalPage({ params }: { params: Promise<{ id: strin
       const canvas = canvasRef.current;
       const ctx = canvas.getContext('2d');
       if (ctx) {
-        ctx.strokeStyle = '#00E5A0'; // Electric mint signature ink
+        ctx.strokeStyle = 'var(--accent)'; // Electric mint signature ink
         ctx.lineWidth = 3;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
@@ -322,12 +322,12 @@ export default function GMApprovalPage({ params }: { params: Promise<{ id: strin
           {/* Commercial Review Log */}
           <div className="quote-card">
             <h3 className="quote-card-title"><FileText size={18} /> Commercial Manager Audit comments</h3>
-            <div style={{ marginTop: '1rem', fontSize: '0.82rem', color: 'var(--text-secondary)', background: 'rgba(255,255,255,0.02)', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.05)' }}>
+            <div style={{ marginTop: '1rem', fontSize: '0.82rem', color: 'var(--text-secondary)', background: 'var(--surface-hover)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--surface-hover)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-muted)', fontSize: '0.72rem', marginBottom: '0.4rem' }}>
                 <span>Reviewer: {comparison.commercial_approver_id ? 'Commercial Manager' : 'N/A'}</span>
                 <span>Date: {comparison.commercial_approved_at ? new Date(comparison.commercial_approved_at).toLocaleDateString('en-GB') : '-'}</span>
               </div>
-              <p style={{ fontStyle: 'italic', color: '#00E5A0', fontSize: '0.88rem' }}>
+              <p style={{ fontStyle: 'italic', color: 'var(--accent)', fontSize: '0.88rem' }}>
                 "{comparison.commercial_comment || 'No review comments logged.'}"
               </p>
             </div>
@@ -348,9 +348,9 @@ export default function GMApprovalPage({ params }: { params: Promise<{ id: strin
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span>Selected Supplier Cost:</span>
-                <span style={{ fontWeight: 600, color: '#00E5A0' }}>{fmtAED(comparison.total_selected_supplier_cost)}</span>
+                <span style={{ fontWeight: 600, color: 'var(--accent)' }}>{fmtAED(comparison.total_selected_supplier_cost)}</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '0.6rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--surface-hover)', paddingTop: '0.6rem' }}>
                 <span>Procurement Savings:</span>
                 <span style={{ fontWeight: 700, color: '#22d3ee' }}>{fmtAED(comparison.total_savings_vs_boq)}</span>
               </div>
@@ -358,7 +358,7 @@ export default function GMApprovalPage({ params }: { params: Promise<{ id: strin
                 <span>Savings Percentage:</span>
                 <span style={{ fontWeight: 600 }}>{comparison.total_savings_pct.toFixed(1)}%</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '0.6rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--surface-hover)', paddingTop: '0.6rem' }}>
                 <span>Project Sold Revenue:</span>
                 <span style={{ fontWeight: 600 }}>{fmtAED(comparison.total_quotation_material_revenue)}</span>
               </div>
@@ -377,7 +377,7 @@ export default function GMApprovalPage({ params }: { params: Promise<{ id: strin
               <Edit3 size={16} /> Draw GM Signature
             </h3>
             
-            <div style={{ border: '2px dashed rgba(255,255,255,0.15)', borderRadius: '8px', background: '#02040a', overflow: 'hidden' }}>
+            <div style={{ border: '2px dashed var(--border)', borderRadius: '8px', background: 'var(--bg-card)', overflow: 'hidden' }}>
               <canvas
                 ref={canvasRef}
                 width={300}

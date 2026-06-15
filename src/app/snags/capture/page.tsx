@@ -333,7 +333,7 @@ export default function WalkthroughLoggerPage() {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
             {snagRows.map((row, idx) => (
-              <div key={row.id} style={{ position: 'relative', border: '1px solid var(--border-color)', padding: '1rem', borderRadius: '8px', background: 'rgba(255,255,255,0.01)' }}>
+              <div key={row.id} style={{ position: 'relative', border: '1px solid var(--border-color)', padding: '1rem', borderRadius: '8px', background: 'var(--surface-hover)' }}>
                 {/* Row Header */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
                   <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: 'var(--secondary)' }}>Defect Item #{idx+1}</span>

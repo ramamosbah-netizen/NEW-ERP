@@ -463,7 +463,7 @@ function VOCreatePageContent() {
                         required
                       />
                       {item.boq_item_ref && (
-                        <div className="absolute right-2.5 top-2.5 text-[8px] text-[var(--accent)] font-mono uppercase border border-[var(--accent)] px-1 rounded bg-[#060a1e]">
+                        <div className="absolute right-2.5 top-2.5 text-[8px] text-[var(--accent)] font-mono uppercase border border-[var(--accent)] px-1 rounded bg-[var(--bg-card)]">
                           BOQ: {item.boq_item_ref.toString().substring(0, 12)}
                         </div>
                       )}

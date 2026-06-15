@@ -389,7 +389,7 @@ export default function SnagsRegistryPage() {
               <span className={getSeverityBadgeClass(selectedSnag.severity)}>{selectedSnag.severity} Severity</span>
               
               <div style={{ margin: '1.25rem 0', display: 'flex', flexDirection: 'column', gap: '0.8rem', fontSize: '0.85rem' }}>
-                <div style={{ background: 'rgba(255,255,255,0.02)', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                <div style={{ background: 'var(--surface-hover)', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
                   <span style={{ color: 'var(--text-muted)', fontSize: '0.7rem', display: 'block', textTransform: 'uppercase' }}>Defect Description</span>
                   <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{selectedSnag.description}</span>
                 </div>

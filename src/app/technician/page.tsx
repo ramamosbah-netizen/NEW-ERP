@@ -57,8 +57,8 @@ function SLAMini({ dueDate, met }: { dueDate: string; met?: boolean | null }) {
   const h = Math.floor(abs / 3600000);
   const m = Math.floor((abs % 3600000) / 60000);
 
-  let color = '#00E5A0';
-  if (met === true) color = '#00E5A0';
+  let color = 'var(--accent)';
+  if (met === true) color = 'var(--accent)';
   else if (met === false || isOverdue) color = '#ef4444';
   else if (h < 1) color = '#ef4444';
   else if (h < 4) color = '#f97316';
@@ -140,7 +140,7 @@ export default function TechnicianHomePage() {
       {/* Greeting Header */}
       <header style={{
         padding: '1.5rem 0',
-        borderBottom: '1px solid rgba(255,255,255,0.06)',
+        borderBottom: '1px solid var(--surface-hover)',
         marginBottom: '1.5rem'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
@@ -196,7 +196,7 @@ export default function TechnicianHomePage() {
               fontSize: '1.6rem',
               fontWeight: 800,
               fontFamily: 'var(--font-mono)',
-              color: slaBreach.length > 0 ? '#ef4444' : '#00E5A0'
+              color: slaBreach.length > 0 ? '#ef4444' : 'var(--accent)'
             }}>
               {slaBreach.length}
             </div>
@@ -212,7 +212,7 @@ export default function TechnicianHomePage() {
             borderRadius: '8px',
             textAlign: 'center'
           }}>
-            <div style={{ fontSize: '1.6rem', fontWeight: 800, color: '#00E5A0', fontFamily: 'var(--font-mono)' }}>
+            <div style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--accent)', fontFamily: 'var(--font-mono)' }}>
               {completedToday.length}
             </div>
             <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase' }}>
@@ -230,7 +230,7 @@ export default function TechnicianHomePage() {
         borderRadius: '10px',
         padding: '4px',
         marginBottom: '1.5rem',
-        border: '1px solid rgba(255,255,255,0.04)'
+        border: '1px solid var(--surface-hover)'
       }}>
         {[
           { key: 'overview', label: 'My Day', icon: Sun },
@@ -365,7 +365,7 @@ export default function TechnicianHomePage() {
                           justifyContent: 'space-between',
                           padding: '0.8rem',
                           background: 'rgba(0,0,0,0.2)',
-                          border: '1px solid rgba(255,255,255,0.06)',
+                          border: '1px solid var(--surface-hover)',
                           borderRadius: '8px',
                           textDecoration: 'none',
                           color: '#fff',
@@ -444,7 +444,7 @@ export default function TechnicianHomePage() {
                           justifyContent: 'space-between',
                           padding: '0.8rem',
                           background: 'rgba(0,0,0,0.2)',
-                          border: '1px solid rgba(255,255,255,0.06)',
+                          border: '1px solid var(--surface-hover)',
                           borderLeft: `3px solid ${prioColors.text}`,
                           borderRadius: '8px',
                           textDecoration: 'none',
@@ -549,7 +549,7 @@ export default function TechnicianHomePage() {
                         justifyContent: 'space-between',
                         padding: '0.75rem',
                         background: 'rgba(0,0,0,0.15)',
-                        border: '1px solid rgba(255,255,255,0.04)',
+                        border: '1px solid var(--surface-hover)',
                         borderRadius: '6px',
                         textDecoration: 'none',
                         color: '#fff'
@@ -601,7 +601,7 @@ export default function TechnicianHomePage() {
                         justifyContent: 'space-between',
                         padding: '0.75rem',
                         background: 'rgba(0,0,0,0.15)',
-                        border: '1px solid rgba(255,255,255,0.04)',
+                        border: '1px solid var(--surface-hover)',
                         borderLeft: `3px solid ${prioColors.text}`,
                         borderRadius: '6px',
                         textDecoration: 'none',

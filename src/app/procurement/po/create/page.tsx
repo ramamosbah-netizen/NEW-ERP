@@ -581,7 +581,7 @@ function POFormContent() {
           {comparisonProposals.length > 0 && (
             <div className="quote-card" style={{ border: '1px solid rgba(0, 229, 160, 0.3)', background: 'rgba(0, 229, 160, 0.04)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', flexWrap: 'wrap' }}>
-                <Scale size={18} style={{ color: 'var(--secondary, #00E5A0)', flexShrink: 0 }} />
+                <Scale size={18} style={{ color: 'var(--secondary, var(--accent))', flexShrink: 0 }} />
                 <div style={{ flex: 1, minWidth: '200px' }}>
                   <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-primary)' }}>Comparison sheet found for this project</div>
                   <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>

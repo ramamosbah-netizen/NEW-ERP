@@ -142,8 +142,8 @@ export default function PPMCalendarPage() {
                     key={v.id}
                     style={{ 
                       padding: '1.2rem', 
-                      background: 'rgba(255,255,255,0.02)',
-                      border: '1px solid rgba(255,255,255,0.06)',
+                      background: 'var(--surface-hover)',
+                      border: '1px solid var(--surface-hover)',
                       borderRadius: '8px',
                       display: 'flex',
                       justifyContent: 'space-between',
@@ -216,7 +216,7 @@ export default function PPMCalendarPage() {
 
         {/* Right: Unscheduled backlog sidebar */}
         <div className="quote-card" style={{ padding: '1.2rem' }}>
-          <h2 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '1rem', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h2 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '1rem', borderBottom: '1px solid var(--surface-hover)', paddingBottom: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span>Unscheduled Backlog</span>
             <span style={{ fontSize: '0.75rem', background: 'rgba(239,68,68,0.1)', color: 'var(--error)', padding: '2px 6px', borderRadius: '4px' }}>
               {unscheduledVisits.length}
@@ -236,7 +236,7 @@ export default function PPMCalendarPage() {
                     style={{ 
                       padding: '0.8rem', 
                       background: 'rgba(0,0,0,0.25)', 
-                      border: '1px solid rgba(255,255,255,0.04)',
+                      border: '1px solid var(--surface-hover)',
                       borderRadius: '6px',
                       display: 'flex',
                       flexDirection: 'column',

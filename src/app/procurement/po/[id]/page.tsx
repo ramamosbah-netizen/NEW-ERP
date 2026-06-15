@@ -329,7 +329,7 @@ export default function PODetailPage({ params }: PageProps) {
     );
   }
 
-  const badgeColors = PO_STATUS_COLORS[po.status] || { bg: 'rgba(255,255,255,0.05)', text: '#fff', border: 'rgba(255,255,255,0.1)' };
+  const badgeColors = PO_STATUS_COLORS[po.status] || { bg: 'var(--surface-hover)', text: '#fff', border: 'var(--border)' };
 
   return (
     <div className="comp-container">
@@ -387,7 +387,7 @@ export default function PODetailPage({ params }: PageProps) {
           )}
 
           {po.status === 'SENT' && (
-            <button className="quote-btn quote-btn-primary" style={{ background: '#00E5A0', borderColor: '#00E5A0', color: '#000', fontWeight: 600 }} onClick={() => setShowAckModal(true)} disabled={actionLoading}>
+            <button className="quote-btn quote-btn-primary" style={{ background: 'var(--accent)', borderColor: 'var(--accent)', color: '#000', fontWeight: 600 }} onClick={() => setShowAckModal(true)} disabled={actionLoading}>
               Acknowledge Receipt
             </button>
           )}
@@ -611,7 +611,7 @@ export default function PODetailPage({ params }: PageProps) {
                 <CheckCircle size={16} /> LPO Sign-Off Workbench
               </h3>
               
-              <div style={{ margin: '1rem 0', padding: '0.8rem', background: 'rgba(255, 255, 255, 0.02)', borderRadius: '4px', border: '1px dashed var(--border-color)' }}>
+              <div style={{ margin: '1rem 0', padding: '0.8rem', background: 'var(--surface-hover)', borderRadius: '4px', border: '1px dashed var(--border-color)' }}>
                 <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Active Approval Stage</div>
                 <div style={{ fontSize: '0.98rem', fontWeight: 700, color: '#fff', marginTop: '0.2rem' }}>
                   {activeStage === 'COMMERCIAL' ? 'Commercial Manager' : 'General Manager Approval'}

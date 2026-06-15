@@ -122,11 +122,11 @@ export default function WhatsAppSettingsPage() {
       {/* Header */}
       <header className="db-header">
         <div className="db-logo-section">
-          <Link href="/whatsapp" className="logout-btn" style={{ textDecoration: 'none', background: 'rgba(255, 255, 255, 0.04)', borderColor: 'var(--border-color)', color: 'var(--text-primary)', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.4rem 0.8rem' }}>
+          <Link href="/whatsapp" className="logout-btn" style={{ textDecoration: 'none', background: 'var(--surface-hover)', borderColor: 'var(--border-color)', color: 'var(--text-primary)', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.4rem 0.8rem' }}>
             <ArrowLeft size={16} /> Back to Live Chats
           </Link>
           <div style={{ marginLeft: '1rem' }}>
-            <h1 className="db-logo-text" style={{ background: 'linear-gradient(135deg, #00E5A0, #22d3ee)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            <h1 className="db-logo-text" style={{ background: 'linear-gradient(135deg, var(--accent), #22d3ee)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
               WhatsApp Integration Engine
             </h1>
             <p className="stat-desc">Configure Meta WhatsApp Business APIs, template maps, webhooks, and Gemini AI credentials</p>
@@ -173,13 +173,13 @@ export default function WhatsAppSettingsPage() {
                 />
                 <span className="slider-round" style={{
                   position: 'absolute', cursor: 'pointer', top: 0, left: 0, right: 0, bottom: 0,
-                  backgroundColor: enabled ? 'var(--primary)' : 'rgba(255,255,255,0.1)',
+                  backgroundColor: enabled ? 'var(--primary)' : 'var(--border)',
                   borderRadius: '34px', transition: '0.3s',
                   boxShadow: enabled ? '0 0 10px var(--primary-glow)' : 'none'
                 }}>
                   <span style={{
                     position: 'absolute', content: '""', height: '18px', width: '18px', left: '3px', bottom: '3px',
-                    backgroundColor: '#060814', borderRadius: '50%', transition: '0.3s',
+                    backgroundColor: 'var(--bg-card)', borderRadius: '50%', transition: '0.3s',
                     transform: enabled ? 'translateX(22px)' : 'translateX(0)'
                   }} />
                 </span>
@@ -307,7 +307,7 @@ export default function WhatsAppSettingsPage() {
               Configure your Meta Developer dashboard webhook settings to send messages directly to your JEET ERP backend database for real-time ticket logs.
             </p>
 
-            <div style={{ background: 'rgba(0,0,0,0.35)', border: '1px solid rgba(255,255,255,0.04)', padding: '1rem', borderRadius: '8px', marginTop: '0.5rem' }}>
+            <div style={{ background: 'rgba(0,0,0,0.35)', border: '1px solid var(--surface-hover)', padding: '1rem', borderRadius: '8px', marginTop: '0.5rem' }}>
               <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.3rem', fontWeight: 600 }}>Callback URL</div>
               <code style={{ fontSize: '0.78rem', color: 'var(--secondary)', wordBreak: 'break-all', fontFamily: 'monospace' }}>{webhookEndpointUrl}</code>
               
@@ -340,7 +340,7 @@ export default function WhatsAppSettingsPage() {
                 <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>No templates seeded in registry.</p>
               ) : (
                 templates.map((tmpl) => (
-                  <div key={tmpl.id} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)', borderRadius: '8px', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                  <div key={tmpl.id} style={{ background: 'var(--surface-hover)', border: '1px solid var(--surface-hover)', borderRadius: '8px', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-primary)', fontFamily: 'monospace' }}>{tmpl.event_type}</span>
                       <span style={{ fontSize: '0.65rem', background: 'rgba(0, 229, 160, 0.1)', color: 'var(--primary)', padding: '0.15rem 0.4rem', borderRadius: '4px', border: '1px solid rgba(0, 229, 160, 0.2)' }}>

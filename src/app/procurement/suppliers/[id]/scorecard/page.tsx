@@ -103,7 +103,7 @@ export default function SupplierScorecardPage({ params }: { params: Promise<{ id
 
   // Composite status coloring
   let scoreColor = '#ef4444'; // Red
-  if (compositeScore >= 80) scoreColor = '#00E5A0'; // Electric mint
+  if (compositeScore >= 80) scoreColor = 'var(--accent)'; // Electric mint
   else if (compositeScore >= 60) scoreColor = '#f59e0b'; // Amber
 
   return (
@@ -136,7 +136,7 @@ export default function SupplierScorecardPage({ params }: { params: Promise<{ id
                 cy="50" 
                 r="40" 
                 fill="none" 
-                stroke="rgba(255,255,255,0.06)" 
+                stroke="var(--surface-hover)" 
                 strokeWidth="8" 
               />
               {/* Colored Indicator */}
@@ -165,18 +165,18 @@ export default function SupplierScorecardPage({ params }: { params: Promise<{ id
           </div>
 
           <h2 style={{ fontSize: '1.6rem', fontWeight: 700, margin: '0.5rem 0 0.2rem 0' }}>{supplier.supplier_name}</h2>
-          <span className="best-tag" style={{ background: 'rgba(255,255,255,0.06)', color: 'var(--text-secondary)', borderColor: 'rgba(255,255,255,0.1)' }}>
+          <span className="best-tag" style={{ background: 'var(--surface-hover)', color: 'var(--text-secondary)', borderColor: 'var(--border)' }}>
             Corporate Supplier Profile
           </span>
 
-          <div style={{ width: '100%', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '1.5rem', marginTop: '0.5rem', display: 'flex', flexDirection: 'column', gap: '0.8rem', textAlign: 'left', fontSize: '0.82rem' }}>
+          <div style={{ width: '100%', borderTop: '1px solid var(--surface-hover)', paddingTop: '1.5rem', marginTop: '0.5rem', display: 'flex', flexDirection: 'column', gap: '0.8rem', textAlign: 'left', fontSize: '0.82rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span style={{ color: 'var(--text-muted)' }}>Total Orders Placed:</span>
               <strong style={{ color: '#ffffff' }}>{supplier.total_orders} orders</strong>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span style={{ color: 'var(--text-muted)' }}>Total Spend Volume:</span>
-              <strong style={{ color: '#00E5A0' }}>{fmtAED(Number(supplier.total_value))}</strong>
+              <strong style={{ color: 'var(--accent)' }}>{fmtAED(Number(supplier.total_value))}</strong>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span style={{ color: 'var(--text-muted)' }}>Last Order Date:</span>
@@ -200,7 +200,7 @@ export default function SupplierScorecardPage({ params }: { params: Promise<{ id
             <div className="proc-kpi-card" style={{ background: 'rgba(0,0,0,0.2)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span className="proc-kpi-title">On-Time Delivery</span>
-                <Clock size={16} style={{ color: '#00E5A0' }} />
+                <Clock size={16} style={{ color: 'var(--accent)' }} />
               </div>
               <div className="proc-kpi-value" style={{ color: supplier.on_time_delivery_pct >= 90 ? '#10b981' : '#f59e0b' }}>
                 {Number(supplier.on_time_delivery_pct).toFixed(1)}%
@@ -212,7 +212,7 @@ export default function SupplierScorecardPage({ params }: { params: Promise<{ id
             <div className="proc-kpi-card" style={{ background: 'rgba(0,0,0,0.2)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span className="proc-kpi-title">Quality Standard</span>
-                <Award size={16} style={{ color: '#00E5A0' }} />
+                <Award size={16} style={{ color: 'var(--accent)' }} />
               </div>
               <div className="proc-kpi-value" style={{ display: 'flex', gap: '0.2rem', alignItems: 'center', color: '#f59e0b' }}>
                 {Number(supplier.quality_rating).toFixed(2)}
@@ -254,11 +254,11 @@ export default function SupplierScorecardPage({ params }: { params: Promise<{ id
           {/* Legal / Disputes audits logs */}
           <div className="quote-card">
             <h3 className="quote-card-title" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-              <ShieldCheck size={18} style={{ color: '#00E5A0' }} /> Quality & Contract Compliance Registry
+              <ShieldCheck size={18} style={{ color: 'var(--accent)' }} /> Quality & Contract Compliance Registry
             </h3>
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1.2rem', fontSize: '0.82rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', background: 'rgba(255,255,255,0.02)', padding: '0.8rem 1rem', borderRadius: '6px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', background: 'var(--surface-hover)', padding: '0.8rem 1rem', borderRadius: '6px' }}>
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                   <span style={{ fontWeight: 600 }}>Disputes Logged</span>
                   <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Unresolved invoices or technical compliance issues</span>
@@ -269,7 +269,7 @@ export default function SupplierScorecardPage({ params }: { params: Promise<{ id
               </div>
 
               <div style={{ display: 'flex', gap: '1rem', background: 'rgba(0, 229, 160, 0.04)', border: '1px solid rgba(0, 229, 160, 0.15)', padding: '1rem', borderRadius: '8px' }}>
-                <ThumbsUp size={20} style={{ color: '#00E5A0', flexShrink: 0, marginTop: '2px' }} />
+                <ThumbsUp size={20} style={{ color: 'var(--accent)', flexShrink: 0, marginTop: '2px' }} />
                 <div style={{ color: 'var(--text-secondary)', lineHeight: '1.4', fontSize: '0.78rem' }}>
                   <strong>Credibility Status: APPROVED SUPPLIER</strong>
                   <br />
