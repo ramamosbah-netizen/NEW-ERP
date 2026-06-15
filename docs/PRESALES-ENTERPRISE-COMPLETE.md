@@ -26,17 +26,28 @@ data the tender/quotation system already produces.
 | 8 | Quotation Follow-ups & Validity | `/sales/follow-ups` | quotations |
 | 9 | Sales Performance (by owner) | `/sales/performance` | tenders + quotations + profiles |
 | 10 | Pre-Sales Hub + Audit & Export Polish | `/sales` | reuses above |
+| + | **Competitor Tracking** (add-on) | `/sales/competitors` | competitors + tender_competitors |
 
 All pages are linked in the sidebar **Sales & Projects** group; `/sales` is the hub.
+
+### Add-on — Competitor Tracking (`/sales/competitors`)
+
+Captures **who won the job**, the **competitor's estimated price**, and the **reason
+we lost**, on two new tables (`competitors`, `tender_competitors`). Competitive-
+intelligence KPIs (competitors tracked, jobs lost to competitors, value lost,
+toughest competitor), jobs-won-by-competitor + reasons-for-loss charts, a two-tab
+UI (competitor directory + competitive log) with full CRUD, and PDF/Excel.
+New `competitorService` (audit-logged; lists degrade to `[]` before migration).
 
 ---
 
 ## 2. Migrations to apply (Supabase SQL editor)
 
-Only **one** migration, and it is additive (the CRM page degrades gracefully
-without it via a PGRST204 fallback in `clientService`):
+Two migrations, both safe to apply any time (the pages degrade gracefully without
+them — `clientService` has a PGRST204 fallback; `competitorService` returns `[]`):
 
 1. `supabase/migrations/20260615260000_clients_crm_fields.sql` — adds `segment, industry, owner_name, status, website, trn, notes` to `clients`.
+2. `supabase/migrations/20260615280000_competitor_tracking.sql` — `competitors` + `tender_competitors` (who won, estimated price, reason for loss).
 
 Everything else computes over existing tables (`tenders`, `boqs`, `quotations`,
 `amc_contracts`, `profiles`).
