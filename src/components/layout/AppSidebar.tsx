@@ -89,6 +89,7 @@ const NAV_SECTIONS = [
       { href: '/tenders', label: 'Tenders', icon: Briefcase },
       { href: '/sales/pipeline', label: 'Sales Pipeline', icon: Briefcase },
       { href: '/quotations', label: 'Quotations', icon: FileText },
+      { href: '/sales/quotations', label: 'Quotation Analytics', icon: FileText },
       { href: '/projects', label: 'Projects', icon: FolderKanban },
       { href: '/projects/controls', label: 'Project Controls', icon: SlidersHorizontal },
       { href: '/projects/daily-reports', label: 'Daily Site Reports', icon: ClipboardList },
