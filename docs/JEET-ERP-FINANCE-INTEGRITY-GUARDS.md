@@ -68,8 +68,47 @@ values ((select id from public.projects limit 1),
 A normal `DRAFT` insert and the usual approve → send → record-payment flow
 continue to work unchanged.
 
+## Stage 2 — Budget-availability guard (opt-in)
+
+**Migration:** `supabase/migrations/20260616221000_po_budget_guard.sql`
+
+The app already *detects* budget overruns on PO approval (`poApprovalService`
+emits `po.budget_exceeded`) but only **warns** and proceeds. This migration adds a
+DB trigger that can actually **block** approving a PO that would push a project's
+committed cost over its budget ceiling.
+
+**Opt-in by design** — a hard always-on block would change existing behaviour
+(over-budget POs that currently get approved would suddenly fail), which the
+"don't break existing modules" rule forbids. So:
+
+- New flag `projects.budget_enforced` (default **`false`**) → today's behaviour is
+  unchanged; nothing is blocked until you opt a project in.
+- The trigger only fires when `budget_enforced = true` **and** a budget ceiling
+  exists (approved `project_budgets` total + contingency, falling back to
+  `projects.budget_cost`).
+- Committed = open/approved POs (excl. the one being approved) + open manual
+  `cost_commitments` (excl. PO/PAYROLL, already represented by live records).
+- No existing service code modified; RLS untouched; also catches a bypass that
+  forges an `APPROVED` PO via direct write.
+
+Helper functions `project_budget_ceiling(uuid)` and
+`project_budget_committed(uuid, exclude_po uuid)` are exposed for UI use.
+
+**Activate** for a project:
+```sql
+update public.projects set budget_enforced = true where project_number = 'P-xxxx';
+```
+**Verify** (with enforcement on and an approved budget): approving a PO that takes
+committed cost over the ceiling should fail with a `check_violation` naming the
+overage. Turning `budget_enforced` back to `false` (or raising the budget) is the
+override.
+
+> Scope note: the guard sits at **PO approval** — the commitment point. Supplier
+> invoices (AP) are *actuals* against an already-committed PO, so they're not
+> gated here; direct (PO-less) AP budget gating can follow the same pattern later.
+
 ## Apply order
 
-This migration is independent of the workflow seeds; apply it any time after the
+These migrations are independent of the workflow seeds; apply any time after the
 base finance schema. Full outstanding order:
-`190000 → 193000 → 200000 → 201000 → 210000 → 211000 → 212000 → 220000`.
+`190000 → 193000 → 200000 → 201000 → 210000 → 211000 → 212000 → 220000 → 221000`.
