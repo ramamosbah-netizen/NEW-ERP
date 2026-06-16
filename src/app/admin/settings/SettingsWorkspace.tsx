@@ -265,12 +265,17 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
   const loadSettings = async () => {
     setLoading(true);
     try {
-      // Perf: one query for ALL settings, then resolve keys locally (was ~27 round-trips).
-      const _all = await settingsService.getSettings();
+      // Perf: fetch everything in parallel + one query for ALL settings, then
+      // resolve keys from a local map (was ~30 sequential round-trips).
+      const [_all, profile, uList, rList, pList] = await Promise.all([
+        settingsService.getSettings(),
+        settingsService.getCompanyProfile(),
+        userRoleService.getUsers(),
+        userRoleService.getRoles(),
+        permissionService.getPermissions(),
+      ]);
       const _sm = new Map<string, any>((_all || []).map((r: any) => [r.key, r.value]));
       const pick = <T,>(k: string, d: T): T => (_sm.has(k) ? (_sm.get(k) as T) : d);
-      // 1. Fetch Company Settings
-      const profile = await settingsService.getCompanyProfile();
       setCompanyName(profile.company_name);
       setTradeLicense(profile.trade_license_number);
       setTrn(profile.trn);
@@ -279,13 +284,6 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
       setEmail(profile.email);
       setLogoUrl(profile.logo_url);
       setWebsite(profile.website);
-
-      // 2. Fetch Users & Roles & Permissions for Tab 2
-      const [uList, rList, pList] = await Promise.all([
-        userRoleService.getUsers(),
-        userRoleService.getRoles(),
-        permissionService.getPermissions()
-      ]);
       setUsers(uList);
       setRoles(rList);
       setPermissions(pList);
