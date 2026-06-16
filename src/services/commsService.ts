@@ -319,6 +319,27 @@ export const commsService = {
   // back-compat alias
   async endCall(callId: string): Promise<void> { return this.endMeeting(callId); },
 
+  // Opportunistic cleanup: close meetings still marked live whose last activity
+  // is older than the threshold (e.g. everyone hard-closed their tab). Prefers the
+  // server-side reap_stale_meetings() RPC; falls back to a client-side sweep.
+  async reapStaleMeetings(thresholdMinutes = 15): Promise<number> {
+    try {
+      const rpc = await supabase.rpc('reap_stale_meetings', { p_minutes: thresholdMinutes });
+      if (!rpc.error) return (rpc.data as number) || 0;
+      // fallback (RPC not installed yet)
+      const cutoff = new Date(Date.now() - thresholdMinutes * 60000).toISOString();
+      const { data: stale } = await supabase.from('comm_calls').select('id, started_at').in('status', ['ringing', 'ongoing', 'active']).lt('last_activity_at', cutoff);
+      if (!stale?.length) return 0;
+      const now = new Date().toISOString();
+      for (const c of stale as any[]) {
+        const dur = c.started_at ? Math.max(0, Math.round((Date.now() - new Date(c.started_at).getTime()) / 1000)) : null;
+        await supabase.from('comm_calls').update({ status: 'completed', ended_at: now, duration_seconds: dur, participant_count: 0 }).eq('id', c.id);
+      }
+      await supabase.from('comm_call_participants').update({ left_at: now }).in('call_id', (stale as any[]).map(c => c.id)).is('left_at', null).then(() => {}, () => {});
+      return stale.length;
+    } catch { return 0; }
+  },
+
   async getMeetings(limit = 100): Promise<any[]> {
     const { data, error } = await supabase.from('comm_calls').select('*').order('started_at', { ascending: false }).limit(limit);
     if (error) return [];

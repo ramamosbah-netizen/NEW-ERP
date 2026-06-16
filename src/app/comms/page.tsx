@@ -55,6 +55,7 @@ export default function CommsPage() {
       setMeId(user.id);
       const [dir, cs] = await Promise.all([commsService.getDirectory(), commsService.getMyConversations(user.id)]);
       setDirectory(dir); setConvs(cs); setLoading(false);
+      commsService.reapStaleMeetings(); // opportunistic cleanup of abandoned meetings
       const c = params.get('c'); if (c) setActiveId(c);
     })();
   }, []);

@@ -23,7 +23,7 @@ export default function MeetingAnalyticsPage() {
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState<any | null>(null);
 
-  useEffect(() => { commsService.getMeetings(200).then(m => { setMeetings(m); setLoading(false); }); }, []);
+  useEffect(() => { (async () => { await commsService.reapStaleMeetings(15); const m = await commsService.getMeetings(200); setMeetings(m); setLoading(false); })(); }, []);
 
   const live = meetings.filter(m => LIVE.includes(m.status));
   const totalSecs = meetings.reduce((a, m) => a + (m.duration_seconds || 0), 0);
