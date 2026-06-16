@@ -41,6 +41,72 @@ export default function CommsPage() {
   const [searchResults, setSearchResults] = useState<Message[]>([]);
   const [showNew, setShowNew] = useState<false | 'dm' | 'group'>(false);
   const [loading, setLoading] = useState(true);
+  const [activeCall, setActiveCall] = useState<{ id: string; roomName: string; type: 'voice' | 'video' } | null>(null);
+  const jitsiContainerRef = useRef<HTMLDivElement>(null);
+  const jitsiApiRef = useRef<any>(null);
+
+  // Load Jitsi external API script
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const existing = document.querySelector('script[src="https://meet.jit.si/external_api.js"]');
+    if (!existing) {
+      const script = document.createElement('script');
+      script.src = 'https://meet.jit.si/external_api.js';
+      script.async = true;
+      document.body.appendChild(script);
+    }
+  }, []);
+
+  // Initialize embedded Jitsi Meet on active call state change
+  useEffect(() => {
+    if (!activeCall || typeof window === 'undefined') return;
+    
+    const timer = setTimeout(() => {
+      if (!jitsiContainerRef.current) return;
+      if (!(window as any).JitsiMeetExternalAPI) {
+        console.error('Jitsi API script not fully parsed yet.');
+        return;
+      }
+      
+      const domain = 'meet.jit.si';
+      const options = {
+        roomName: activeCall.roomName,
+        width: '100%',
+        height: '100%',
+        parentNode: jitsiContainerRef.current,
+        configOverwrite: {
+          startWithAudioMuted: activeCall.type === 'voice',
+          startWithVideoMuted: activeCall.type === 'voice',
+        },
+        interfaceConfigOverwrite: {
+          TOOLBAR_BUTTONS: [
+            'microphone', 'camera', 'closedcaptions', 'desktop', 'embedmeeting', 'fullscreen',
+            'fodeviceselection', 'hangup', 'profile', 'chat', 'recording',
+            'livestreaming', 'etherpad', 'sharedvideo', 'settings', 'raisehand',
+            'videoquality', 'filmstrip', 'invite', 'feedback', 'stats', 'shortcuts',
+            'tileview', 'videobackgroundblur', 'download', 'help', 'mute-everyone',
+            'security'
+          ],
+        }
+      };
+      
+      const api = new (window as any).JitsiMeetExternalAPI(domain, options);
+      jitsiApiRef.current = api;
+      
+      api.addEventListener('videoConferenceLeft', async () => {
+        await commsService.endCall(activeCall.id);
+        setActiveCall(null);
+      });
+    }, 500);
+
+    return () => {
+      clearTimeout(timer);
+      if (jitsiApiRef.current) {
+        jitsiApiRef.current.dispose();
+        jitsiApiRef.current = null;
+      }
+    };
+  }, [activeCall]);
   const [mentionQuery, setMentionQuery] = useState<string | null>(null);
   const [pendingMentions, setPendingMentions] = useState<DirectoryUser[]>([]);
   const endRef = useRef<HTMLDivElement>(null);
@@ -133,9 +199,29 @@ export default function CommsPage() {
     if (!active || !meId) return;
     const room = `JEET-${active.id.slice(0, 8)}-${Date.now().toString(36)}`;
     const url = `https://meet.jit.si/${room}`;
-    await supabase.from('comm_calls').insert({ conversation_id: active.id, type, room_name: room, room_url: url, started_by: meId, title: active.display_name }).then(() => {}, () => {});
-    await commsService.sendMessage({ conversationId: active.id, senderId: meId, body: `started a ${type} call: ${url}`, type: 'call' });
-    window.open(url, '_blank');
+    
+    const { data: callData, error } = await supabase.from('comm_calls').insert({ 
+      conversation_id: active.id, 
+      type, 
+      room_name: room, 
+      room_url: url, 
+      started_by: meId, 
+      title: active.display_name 
+    }).select().single();
+    
+    if (error || !callData) {
+      alert('Failed to initialize meeting.');
+      return;
+    }
+    
+    await commsService.sendMessage({ 
+      conversationId: active.id, 
+      senderId: meId, 
+      body: `started a ${type} call: ${callData.id}:${room}`, 
+      type: 'call' 
+    });
+    
+    setActiveCall({ id: callData.id, roomName: room, type });
   };
 
   const startDirect = async (u: DirectoryUser) => { if (!meId) return; const c = await commsService.getOrCreateDirect(meId, u.id); if (c) { await reloadConvs(); setShowNew(false); openConv(c.id); } };
@@ -201,7 +287,17 @@ export default function CommsPage() {
                   return (
                     <React.Fragment key={m.id}>
                       {newDay && <div className="flex items-center gap-2 my-3"><div className="flex-1 h-px bg-[var(--border)]" /><span className="text-[10px] text-[var(--text-tertiary)] font-medium">{fmtDay(m.created_at)}</span><div className="flex-1 h-px bg-[var(--border)]" /></div>}
-                      <MessageRow m={m} me={meId} grouped={grouped2} onReact={react} onDelete={() => commsService.deleteMessage(m.id).then(() => setMessages(p => p.map(x => x.id === m.id ? { ...x, is_deleted: true, body: null } : x)))} dirMap={dirMap} />
+                      <MessageRow 
+                        m={m} 
+                        me={meId} 
+                        grouped={grouped2} 
+                        onReact={react} 
+                        onDelete={() => commsService.deleteMessage(m.id).then(() => setMessages(p => p.map(x => x.id === m.id ? { ...x, is_deleted: true, body: null } : x)))} 
+                        dirMap={dirMap} 
+                        onJoinCall={(callId, roomName, type) => {
+                          setActiveCall({ id: callId, roomName, type });
+                        }}
+                      />
                     </React.Fragment>
                   );
                 })}
@@ -229,6 +325,41 @@ export default function CommsPage() {
       </div>
 
       {showNew && <NewChatModal mode={showNew} setMode={setShowNew} directory={directory} onDirect={startDirect} onGroup={async (name, ids) => { if (!meId) return; const c = await commsService.createGroup(name, ids, meId); if (c) { await reloadConvs(); setShowNew(false); openConv(c.id); } }} />}
+
+      {activeCall && (
+        <div className="fixed inset-0 z-[2000] bg-slate-950/90 flex flex-col items-center justify-center p-4">
+          <div className="w-full max-w-5xl h-[85vh] bg-[var(--surface)] border border-[var(--border)] rounded-2xl overflow-hidden flex flex-col shadow-2xl">
+            <div className="p-4 border-b border-[var(--border)] flex items-center justify-between bg-[var(--bg-card)]">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-sm font-semibold text-[var(--text-primary)]">Meeting in Progress: {activeCall.roomName}</span>
+              </div>
+              <button 
+                onClick={async () => {
+                  if (confirm('Are you sure you want to exit the meeting?')) {
+                    if (jitsiApiRef.current) {
+                      jitsiApiRef.current.dispose();
+                      jitsiApiRef.current = null;
+                    }
+                    await commsService.endCall(activeCall.id);
+                    setActiveCall(null);
+                  }
+                }}
+                className="px-3.5 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-semibold flex items-center gap-1 transition-colors shadow-sm"
+              >
+                <X size={14} /> Leave Call
+              </button>
+            </div>
+            
+            {/* Jitsi Meet Iframe Container */}
+            <div 
+              ref={jitsiContainerRef} 
+              id="jitsi-container" 
+              className="flex-1 bg-slate-900"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -254,11 +385,50 @@ function Section({ title, items, activeId, onOpen }: { title: string; items: Con
   );
 }
 
-function MessageRow({ m, me, grouped, onReact, onDelete, dirMap }: { m: Message; me: string | null; grouped: boolean; onReact: (id: string, e: string) => void; onDelete: () => void; dirMap: Map<string, string> }) {
+function MessageRow({ 
+  m, 
+  me, 
+  grouped, 
+  onReact, 
+  onDelete, 
+  dirMap, 
+  onJoinCall 
+}: { 
+  m: Message; 
+  me: string | null; 
+  grouped: boolean; 
+  onReact: (id: string, e: string) => void; 
+  onDelete: () => void; 
+  dirMap: Map<string, string>; 
+  onJoinCall?: (callId: string, roomName: string, type: 'voice' | 'video') => void; 
+}) {
   const [hover, setHover] = useState(false);
   const [pick, setPick] = useState(false);
   const reactionGroups = useMemo(() => { const g = new Map<string, string[]>(); (m.reactions || []).forEach(r => { const a = g.get(r.emoji) || []; a.push(r.user_id); g.set(r.emoji, a); }); return [...g.entries()]; }, [m.reactions]);
-  if (m.type === 'system' || m.type === 'call') return <div className="text-center text-[11px] text-[var(--text-tertiary)] py-1">{m.sender_name || 'Someone'} {m.body}</div>;
+  
+  if (m.type === 'system') return <div className="text-center text-[11px] text-[var(--text-tertiary)] py-1">{m.sender_name || 'Someone'} {m.body}</div>;
+  
+  if (m.type === 'call') {
+    const parts = (m.body || '').split(': ');
+    const callDetails = parts[1] || '';
+    const [callId, roomName] = callDetails.split(':');
+    const isVoice = (m.body || '').includes('voice');
+    
+    return (
+      <div className="text-center text-xs py-3 my-2 border border-dashed border-[var(--border)] bg-[var(--surface-hover)] rounded-xl flex flex-col items-center justify-center gap-2 max-w-sm mx-auto shadow-sm">
+        <span className="font-semibold text-[var(--text-primary)]">Meeting Started</span>
+        <span className="text-[11px] text-[var(--text-tertiary)]">{m.sender_name || 'Someone'} started a {isVoice ? 'voice' : 'video'} call</span>
+        {callId && roomName && (
+          <button 
+            onClick={() => onJoinCall && onJoinCall(callId, roomName, isVoice ? 'voice' : 'video')}
+            className="px-4 py-1.5 bg-[var(--accent)] text-white font-medium text-xs rounded-lg hover:bg-[var(--accent-hover)] transition-colors flex items-center gap-1 shadow-sm"
+          >
+            <Video size={13} /> Join Meeting
+          </button>
+        )}
+      </div>
+    );
+  }
   return (
     <div className="group relative flex gap-2.5 px-1 py-0.5 rounded hover:bg-[var(--surface-hover)]" onMouseEnter={() => setHover(true)} onMouseLeave={() => { setHover(false); setPick(false); }}>
       <div className="w-8 shrink-0">{!grouped && <span className="h-8 w-8 rounded-full grid place-items-center text-[10px] font-bold text-white" style={{ background: 'var(--accent)' }}>{initials(m.sender_name)}</span>}</div>

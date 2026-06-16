@@ -227,4 +227,39 @@ export const commsService = {
       .subscribe();
     return () => { supabase.removeChannel(channel); };
   },
+
+  // ---- SMTP configurations ----
+  async getUserSmtpConfig(userId: string): Promise<any> {
+    const { data, error } = await supabase.from('user_smtp_configs').select('*').eq('user_id', userId).limit(1);
+    if (error || !data?.length) return null;
+    return data[0];
+  },
+  async saveUserSmtpConfig(userId: string, host: string, port: number, username: string, password: string, senderEmail: string): Promise<boolean> {
+    const { error } = await supabase.from('user_smtp_configs').upsert({
+      user_id: userId,
+      host,
+      port,
+      username,
+      password,
+      sender_email: senderEmail,
+      updated_at: new Date().toISOString()
+    }, { onConflict: 'user_id' });
+    return !error;
+  },
+  async deleteUserSmtpConfig(userId: string): Promise<boolean> {
+    const { error } = await supabase.from('user_smtp_configs').delete().eq('user_id', userId);
+    return !error;
+  },
+  async getAllUserSmtpConfigs(): Promise<any[]> {
+    const { data, error } = await supabase.from('user_smtp_configs').select('*').order('updated_at', { ascending: false });
+    if (error) return [];
+    const ids = (data || []).map((r: any) => r.user_id);
+    const nm = await nameMap(ids);
+    return (data || []).map((r: any) => ({ ...r, user_name: nm.get(r.user_id) || 'Unknown User' }));
+  },
+
+  // ---- calls ----
+  async endCall(callId: string): Promise<void> {
+    await supabase.from('comm_calls').update({ status: 'ended', ended_at: new Date().toISOString() }).eq('id', callId);
+  },
 };
