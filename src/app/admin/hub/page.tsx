@@ -15,6 +15,7 @@ import { Card } from '@/components/ui/Card';
 import {
   Activity, Users, ShieldCheck, KeySquare, GitCompare, FileText, FileCode2,
   Hash, SlidersHorizontal, Layers, ScrollText, ChevronRight, ShieldAlert, Clock,
+  Building2, Bell, Cpu,
 } from 'lucide-react';
 
 interface Tile { href: string; label: string; desc: string; icon: React.ComponentType<{ size?: number | string; className?: string }>; }
@@ -26,7 +27,11 @@ const ANALYTICS: Tile[] = [
   { href: '/admin/configuration', label: 'Configuration Audit', desc: 'Workflows, forms, templates, rules', icon: SlidersHorizontal },
 ];
 const CONFIG: Tile[] = [
-  { href: '/admin/settings', label: 'Users, Roles & Settings', desc: 'Manage users, roles & parameters', icon: ShieldCheck },
+  { href: '/admin/settings', label: 'General Config', desc: 'Company, branding & module toggles', icon: Building2 },
+  { href: '/admin/settings/access', label: 'Access Control', desc: 'Users, roles, permissions & sessions', icon: ShieldCheck },
+  { href: '/admin/settings/operational', label: 'Operational Scales', desc: 'Finance, procurement, inventory, projects, HR', icon: SlidersHorizontal },
+  { href: '/admin/settings/alerts', label: 'Templates & Alerts', desc: 'Notifications, templates & integrations', icon: Bell },
+  { href: '/admin/settings/system', label: 'System & Advanced', desc: 'System admin, audit/security & backup', icon: Cpu },
   { href: '/admin/workflows', label: 'Workflow Designer', desc: 'Statuses & transitions per module', icon: GitCompare },
   { href: '/admin/forms', label: 'Form Builder', desc: 'Dynamic form definitions', icon: FileCode2 },
   { href: '/admin/templates', label: 'Document Templates', desc: 'Printable document templates', icon: FileText },

@@ -304,7 +304,11 @@ const NAV_SECTIONS = [
       { href: '/admin/permissions', label: 'Permissions Matrix', icon: KeySquare },
       { href: '/admin/workflows/analytics', label: 'Workflow Analytics', icon: Activity },
       { href: '/admin/configuration', label: 'Configuration Audit', icon: SlidersHorizontal },
-      { href: '/admin/settings', label: 'Users, Roles & Settings', icon: ShieldCheck },
+      { href: '/admin/settings', label: 'General Config', icon: Building2 },
+      { href: '/admin/settings/access', label: 'Access Control', icon: ShieldCheck },
+      { href: '/admin/settings/operational', label: 'Operational Scales', icon: SlidersHorizontal },
+      { href: '/admin/settings/alerts', label: 'Templates & Alerts', icon: Bell },
+      { href: '/admin/settings/system', label: 'System & Advanced', icon: Cpu },
       { href: '/admin/workflows', label: 'Workflow Designer', icon: GitCompare },
       { href: '/admin/forms', label: 'Form Builder', icon: FileCode2 },
       { href: '/admin/templates', label: 'Document Templates', icon: FileText },
@@ -425,6 +429,8 @@ export default function AppSidebar({ mobileOpen = false, onMobileClose }: AppSid
     if (href === '/finance') return pathname === '/finance';
     // Admin hub should only match exact (sub-pages have their own links)
     if (href === '/admin') return pathname === '/admin';
+    // Settings General is the base route; don't let it match its sub-sections
+    if (href === '/admin/settings') return pathname === '/admin/settings';
     return pathname === href || (pathname?.startsWith(href + '/') ?? false);
   };
 
