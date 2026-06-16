@@ -265,6 +265,10 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
   const loadSettings = async () => {
     setLoading(true);
     try {
+      // Perf: one query for ALL settings, then resolve keys locally (was ~27 round-trips).
+      const _all = await settingsService.getSettings();
+      const _sm = new Map<string, any>((_all || []).map((r: any) => [r.key, r.value]));
+      const pick = <T,>(k: string, d: T): T => (_sm.has(k) ? (_sm.get(k) as T) : d);
       // 1. Fetch Company Settings
       const profile = await settingsService.getCompanyProfile();
       setCompanyName(profile.company_name);
@@ -290,35 +294,35 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
       }
 
       // 3. Fetch Finance & Tax settings
-      const vatRateVal = await settingsService.getSettingByKey('finance.vat_rate', 5.00);
+      const vatRateVal = pick('finance.vat_rate', 5.00);
       setVatRate(Number(vatRateVal));
 
-      const vatPeriodVal = await settingsService.getSettingByKey('finance.vat_period_months', 3);
+      const vatPeriodVal = pick('finance.vat_period_months', 3);
       setVatPeriodMonths(Number(vatPeriodVal));
 
-      const threshQuoteVal = await settingsService.getSettingByKey('finance.approval_threshold_quotation', 50000);
+      const threshQuoteVal = pick('finance.approval_threshold_quotation', 50000);
       setThresholdQuote(Number(threshQuoteVal));
 
-      const currencyVal = await settingsService.getSettingByKey('finance.currency', 'AED');
+      const currencyVal = pick('finance.currency', 'AED');
       setCurrency(String(currencyVal));
 
       // 4. Procurement settings
-      const threshPOVal = await settingsService.getSettingByKey('finance.approval_threshold_po', 20000);
+      const threshPOVal = pick('finance.approval_threshold_po', 20000);
       setThresholdPO(Number(threshPOVal));
-      const directThreshVal = await settingsService.getSettingByKey('procurement.direct_purchase_threshold', 10000);
+      const directThreshVal = pick('procurement.direct_purchase_threshold', 10000);
       setDirectPurchaseThreshold(Number(directThreshVal));
 
-      const autoRankVal = await settingsService.getSettingByKey('procurement.auto_rank', true);
+      const autoRankVal = pick('procurement.auto_rank', true);
       setAutoRank(Boolean(autoRankVal));
 
       // 5. Inventory & Assets
-      const mrfAppVal = await settingsService.getSettingByKey('inventory.mrf_approval_required', true);
+      const mrfAppVal = pick('inventory.mrf_approval_required', true);
       setMrfApprovalRequired(Boolean(mrfAppVal));
 
-      const stockThreshVal = await settingsService.getSettingByKey('inventory.low_stock_threshold', 10);
+      const stockThreshVal = pick('inventory.low_stock_threshold', 10);
       setLowStockThreshold(Number(stockThreshVal));
 
-      const usefulLivesVal = await settingsService.getSettingByKey('fleet.depreciation_lives_months', {
+      const usefulLivesVal = pick('fleet.depreciation_lives_months', {
         VEHICLE: 60,
         IT_EQUIPMENT: 36,
         TOOLS_INSTRUMENTS: 48,
@@ -328,21 +332,21 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
       setUsefulLives(usefulLivesVal);
 
       // 6. Projects & Operations
-      const projStages = await settingsService.getSettingByKey('projects.default_stages', [
+      const projStages = pick('projects.default_stages', [
         'Tender', 'BOQ Mapping', 'Quotation Draft', 'Sent to Client', 'Project Active', 'DLP Stage', 'Handovered'
       ]);
       setDefaultStages(projStages);
 
-      const voThreshVal = await settingsService.getSettingByKey('projects.vo_threshold', 15000);
+      const voThreshVal = pick('projects.vo_threshold', 15000);
       setVoThreshold(Number(voThreshVal));
 
       // 7. Maintenance & SLA
-      const maintSlots = await settingsService.getSettingByKey('maintenance.slots', [
+      const maintSlots = pick('maintenance.slots', [
         '08:00 - 10:00', '10:00 - 12:00', '13:00 - 15:00', '15:00 - 17:00'
       ]);
       setMaintenanceSlots(maintSlots);
 
-      const slaVal = await settingsService.getSettingByKey('maintenance.sla_categories', {
+      const slaVal = pick('maintenance.sla_categories', {
         CRITICAL: 2,
         HIGH: 4,
         MEDIUM: 8,
@@ -351,14 +355,14 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
       setSlaCategories(slaVal);
 
       // 8. HR & Workforce
-      const bizHours = await settingsService.getSettingByKey('workflow.business_hours', {
+      const bizHours = pick('workflow.business_hours', {
         start: '08:00',
         end: '17:00',
         working_days: [0, 1, 2, 3, 4]
       });
       setBusinessHours(bizHours);
 
-      const gratuity = await settingsService.getSettingByKey('payroll.gratuity_entitlement_days', {
+      const gratuity = pick('payroll.gratuity_entitlement_days', {
         under_1yr: 0,
         '1to5yr': 21,
         above5yr: 30
@@ -366,14 +370,14 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
       setGratuityEntitlement(gratuity);
 
       // 9. Notifications & Communications
-      const notifCh = await settingsService.getSettingByKey('notifications.channel_toggles', {
+      const notifCh = pick('notifications.channel_toggles', {
         email: true,
         whatsapp: true,
         push: true
       });
       setNotifications(notifCh);
 
-      const templatesVal = await settingsService.getSettingByKey('notifications.templates', {
+      const templatesVal = pick('notifications.templates', {
         quotation_sent: 'Dear {client_name}, your quotation {quotation_number} has been issued successfully. Grand Total: {total_incl_vat} AED.',
         po_approved: 'LPO Reference {po_number} has been authorized and issued to your supply queue.',
         ticket_assigned: 'A reactive service ticket {ticket_number} at site {site_name} has been allocated to your profile.'
@@ -385,51 +389,51 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
       setDocTemplates(docTemplatesVal);
 
       // 11. Integrations
-      const smtp = await settingsService.getSettingByKey('integrations.smtp_config', {
+      const smtp = pick('integrations.smtp_config', {
         host: 'smtp.mailgun.org',
         port: 587,
         user: 'postmaster@jeetmep.ae'
       });
       setSmtpConfig(smtp);
 
-      const wa = await settingsService.getSettingByKey('integrations.whatsapp_gateway', {
+      const wa = pick('integrations.whatsapp_gateway', {
         url: 'https://api.whatsapp.com/v1/messages',
         token: 'WA_TOKEN_DEFAULT_83918'
       });
       setWhatsappGateway(wa);
 
       // 12. System Admin
-      const appMVal = await settingsService.getSettingByKey<'development' | 'production' | 'maintenance'>('system.app_mode', 'production');
+      const appMVal = pick('system.app_mode', 'production');
       setAppMode(appMVal);
 
-      const logLVal = await settingsService.getSettingByKey<'debug' | 'info' | 'warn' | 'error'>('system.log_level', 'info');
+      const logLVal = pick('system.log_level', 'info');
       setLogLevel(logLVal);
 
-      const densityVal = await settingsService.getSettingByKey<'compact' | 'comfortable'>('system.default_density', 'comfortable');
+      const densityVal = pick('system.default_density', 'comfortable');
       setDefaultDensity(densityVal);
 
       // 13. Audit & Security
-      const pwVal = await settingsService.getSettingByKey('security.password_rules', {
+      const pwVal = pick('security.password_rules', {
         min_length: 8,
         require_special: true
       });
       setPasswordRules(pwVal);
 
-      const timeoutVal = await settingsService.getSettingByKey('security.session_timeout', 30);
+      const timeoutVal = pick('security.session_timeout', 30);
       setSessionTimeout(Number(timeoutVal));
 
       const logs = await auditService.getLogs();
       setAuditLogs(logs);
 
       // 14. Backup
-      const backVal = await settingsService.getSettingByKey('backup.settings', {
+      const backVal = pick('backup.settings', {
         schedule: 'daily',
         retention: 30
       });
       setBackupConfig(backVal);
 
       // 15. Module Control
-      const enabledModulesVal = await settingsService.getSettingByKey('system.enabled_modules', {});
+      const enabledModulesVal = pick('system.enabled_modules', {});
       setEnabledModulesState(enabledModulesVal);
       try {
         localStorage.setItem('erp-enabled-modules', JSON.stringify(enabledModulesVal));
@@ -1178,13 +1182,13 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
 
           {/* Feedback alerts */}
           {successMsg && (
-            <div className="p-3.5 bg-[var(--status-success-bg)] border border-[var(--status-success-border)] rounded-xl text-xs text-[var(--status-success-text)] flex items-center gap-2 font-semibold animate-fadeIn ">
+            <div className="p-3.5 bg-[var(--status-success-bg)] border border-[var(--status-success-border)] rounded-xl text-xs text-[var(--status-success-text)] flex items-center gap-2 font-semibold animate-fadeIn">
               <CheckCircle size={15} className="shrink-0 text-[var(--status-success-text)]" /> 
               <span>{successMsg}</span>
             </div>
           )}
           {errorMsg && (
-            <div className="p-3.5 bg-[var(--status-danger-bg)] border border-[var(--status-danger-border)] rounded-xl text-xs text-[var(--status-danger-text)] flex items-center gap-2 font-semibold animate-fadeIn ">
+            <div className="p-3.5 bg-[var(--status-danger-bg)] border border-[var(--status-danger-border)] rounded-xl text-xs text-[var(--status-danger-text)] flex items-center gap-2 font-semibold animate-fadeIn">
               <AlertTriangle size={15} className="shrink-0 text-[var(--status-danger-text)]" />
               <span>{errorMsg}</span>
             </div>
@@ -1198,7 +1202,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
               {loading ? (
                 <div className="py-24 flex flex-col items-center justify-center">
                   <div className="h-8 w-8 rounded-full border-2 border-primary border-t-transparent animate-spin mb-3"></div>
-                  <p className="text-xs text-text-muted font-mono uppercase tracking-wider">Querying settings store...</p>
+                  <p className="text-xs text-text-muted">Loading settings…</p>
                 </div>
               ) : (
                 <div className="flex flex-col gap-6">
@@ -1206,7 +1210,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                   {activeTab === 'COMPANY' && (
                     <div className="flex flex-col gap-6">
                       <div className="border-b border-border-color/85 pb-3">
-                        <h3 className="text-sm font-bold tracking-wider uppercase text-text-secondary flex items-center gap-1.5 font-heading">
+                        <h3 className="text-sm font-bold text-text-secondary flex items-center gap-1.5 font-heading">
                           <Building size={15} className="text-primary" /> Company Profile Specifications
                         </h3>
                         <p className="text-xs text-text-muted mt-1 font-sans">
@@ -1218,7 +1222,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                         {/* Left Side: Form */}
                         <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">Company Registered Title</label>
+                            <label className="block text-[10px] text-text-muted font-bold mb-1.5">Company Registered Title</label>
                             <input 
                               type="text" 
                               value={companyName}
@@ -1227,17 +1231,17 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                             />
                           </div>
                           <div>
-                            <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">Tax Registration Number (TRN)</label>
+                            <label className="block text-[10px] text-text-muted font-bold mb-1.5">Tax Registration Number (TRN)</label>
                             <input 
                               type="text" 
                               value={trn}
                               onChange={(e) => setTrn(e.target.value)}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-mono font-semibold"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
                               placeholder="e.g. 100293849500003"
                             />
                           </div>
                           <div>
-                            <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">Trade License Number</label>
+                            <label className="block text-[10px] text-text-muted font-bold mb-1.5">Trade License Number</label>
                             <input 
                               type="text" 
                               value={tradeLicense}
@@ -1246,26 +1250,26 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                             />
                           </div>
                           <div>
-                            <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">Website URL</label>
+                            <label className="block text-[10px] text-text-muted font-bold mb-1.5">Website URL</label>
                             <input 
                               type="text" 
                               value={website}
                               onChange={(e) => setWebsite(e.target.value)}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-mono font-semibold"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
                               placeholder="e.g. https://jeetmep.ae"
                             />
                           </div>
                           <div className="md:col-span-2">
-                            <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">Branded Logo URL</label>
+                            <label className="block text-[10px] text-text-muted font-bold mb-1.5">Branded Logo URL</label>
                             <input 
                               type="text" 
                               value={logoUrl}
                               onChange={(e) => setLogoUrl(e.target.value)}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-mono font-semibold"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
                             />
                           </div>
                           <div>
-                            <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">Corporate Email Address</label>
+                            <label className="block text-[10px] text-text-muted font-bold mb-1.5">Corporate Email Address</label>
                             <input 
                               type="text" 
                               value={email}
@@ -1274,16 +1278,16 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                             />
                           </div>
                           <div>
-                            <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">Corporate Telephone</label>
+                            <label className="block text-[10px] text-text-muted font-bold mb-1.5">Corporate Telephone</label>
                             <input 
                               type="text" 
                               value={phone}
                               onChange={(e) => setPhone(e.target.value)}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-mono font-semibold"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
                             />
                           </div>
                           <div className="md:col-span-2">
-                            <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">Registered Site Address</label>
+                            <label className="block text-[10px] text-text-muted font-bold mb-1.5">Registered Site Address</label>
                             <input 
                               type="text" 
                               value={address}
@@ -1295,7 +1299,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
 
                         {/* Right Side: Live Branding Card */}
                         <div className="w-full lg:w-72 flex flex-col gap-4">
-                          <label className="block text-[10px] font-mono text-text-muted uppercase font-bold tracking-wider">Brand Verification Preview</label>
+                          <label className="block text-[10px] text-text-muted font-bold">Brand Verification Preview</label>
                           <div className="p-6 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col items-center justify-center text-center gap-4 relative overflow-hidden group shadow-sm">
                             {/* Card Glow Background */}
                             <div className="absolute -right-20 -top-20 w-40 h-40 bg-[var(--surface-active)] blur-3xl rounded-full transition-all duration-700 group-hover:bg-[var(--surface-active)]" />
@@ -1320,17 +1324,17 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                               <h4 className="text-xs font-bold text-text-primary truncate w-full px-2" title={companyName || 'Registered Title'}>
                                 {companyName || 'JEET ERP Platform'}
                               </h4>
-                              <p className="text-[10px] text-text-muted font-mono">
+                              <p className="text-[10px] text-text-muted">
                                 TRN: {trn || '100XXXXXXXXXXXX'}
                               </p>
                               {website && (
-                                <span className="text-[9px] text-primary/80 font-mono truncate w-full px-2">
+                                <span className="text-[9px] text-primary/80 truncate w-full px-2">
                                   {website}
                                 </span>
                               )}
                             </div>
                             
-                            <div className="w-full border-t border-border-color/60 pt-3 flex items-center justify-center gap-1.5 text-[9px] font-mono text-text-muted uppercase tracking-wider z-10">
+                            <div className="w-full border-t border-border-color/60 pt-3 flex items-center justify-center gap-1.5 text-[9px] text-text-muted z-10">
                               <span className="h-1.5 w-1.5 rounded-full bg-[var(--surface-active)] animate-pulse" /> BRANDING ACCEPTS PDFS
                             </div>
                           </div>
@@ -1403,7 +1407,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                         return (
                           <>
                             <div className="border-b border-border-color/85 pb-3">
-                              <h3 className="text-sm font-bold tracking-wider uppercase text-text-secondary flex items-center gap-1.5 font-heading">
+                              <h3 className="text-sm font-bold text-text-secondary flex items-center gap-1.5 font-heading">
                                 <Sliders size={15} className="text-primary" /> Module Configuration & Feature Switches
                               </h3>
                               <p className="text-xs text-text-muted mt-1 font-sans">
@@ -1415,7 +1419,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                               <div className="p-4.5 bg-[var(--surface)] border border-border-color rounded-xl flex items-center justify-between shadow-sm">
                                 <div>
-                                  <span className="text-[10px] font-mono text-text-muted uppercase font-bold tracking-wider">Active Modules</span>
+                                  <span className="text-[10px] text-text-muted font-bold">Active Modules</span>
                                   <h4 className="text-xl font-bold text-primary mt-1 font-heading">{activeCount}</h4>
                                 </div>
                                 <div className="h-8.5 w-8.5 rounded-xl bg-[var(--surface-active)] border border-[var(--border)] flex items-center justify-center text-primary font-bold text-[11px] select-none">
@@ -1424,7 +1428,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                               </div>
                               <div className="p-4.5 bg-[var(--surface)] border border-border-color rounded-xl flex items-center justify-between shadow-sm">
                                 <div>
-                                  <span className="text-[10px] font-mono text-text-muted uppercase font-bold tracking-wider">Disabled Modules</span>
+                                  <span className="text-[10px] text-text-muted font-bold">Disabled Modules</span>
                                   <h4 className="text-xl font-bold text-[var(--status-danger-text)] mt-1 font-heading">{disabledCount}</h4>
                                 </div>
                                 <div className="h-8.5 w-8.5 rounded-xl bg-[var(--status-danger-bg)] border border-[var(--status-danger-border)] flex items-center justify-center text-[var(--status-danger-text)] font-bold text-[11px] select-none">
@@ -1433,7 +1437,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                               </div>
                               <div className="p-4.5 bg-[var(--surface)] border border-border-color rounded-xl flex items-center justify-between shadow-sm">
                                 <div>
-                                  <span className="text-[10px] font-mono text-text-muted uppercase font-bold tracking-wider">Total Modules</span>
+                                  <span className="text-[10px] text-text-muted font-bold">Total Modules</span>
                                   <h4 className="text-xl font-bold text-text-secondary mt-1 font-heading">{totalModules}</h4>
                                 </div>
                                 <div className="h-8.5 w-8.5 rounded-xl bg-bg-card border border-border-color/60 flex items-center justify-center text-text-muted font-bold text-[11px] select-none">
@@ -1463,7 +1467,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                     }`}
                                   >
                                     <span>{cat.name}</span>
-                                    <span className={`text-[9px] font-mono px-2 py-0.5 rounded-full ${isSelected ? 'bg-[var(--surface-active)] text-primary' : 'bg-[var(--surface-hover)] text-text-muted'}`}>
+                                    <span className={`text-[9px]  px-2 py-0.5 rounded-full ${isSelected ? 'bg-[var(--surface-active)] text-primary' : 'bg-[var(--surface-hover)] text-text-muted'}`}>
                                       {cat.count}
                                     </span>
                                   </button>
@@ -1476,8 +1480,8 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                 <div key={section.id} className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-3.5 relative overflow-hidden group shadow-sm transition-all duration-300 hover:border-[var(--border)]">
                                   <div className="absolute -right-12 -top-12 w-24 h-24 bg-[var(--surface-active)] blur-2xl rounded-full" />
                                   <div className="flex items-center justify-between border-b border-border-color/65 pb-2.5">
-                                    <h4 className="text-xs font-bold text-text-secondary uppercase tracking-wider font-mono">{section.label}</h4>
-                                    <span className="text-[9px] font-bold text-primary font-mono tracking-wider">
+                                    <h4 className="text-xs font-bold text-text-secondary">{section.label}</h4>
+                                    <span className="text-[9px] font-bold text-primary">
                                       {section.items.filter(item => enabledModules[item.href] !== false).length} / {section.items.length} ACTIVE
                                     </span>
                                   </div>
@@ -1495,13 +1499,13 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                               <span className="text-xs font-bold text-text-primary flex items-center gap-1.5">
                                                 {item.label}
                                                 {isDashboardOrSettings && (
-                                                  <span className="text-[8px] font-bold font-mono px-1.5 py-0.5 rounded bg-[var(--surface-hover)] text-text-muted border border-border-color">SYSTEM CORE</span>
+                                                  <span className="text-[8px] font-bold px-1.5 py-0.5 rounded bg-[var(--surface-hover)] text-text-muted border border-border-color">SYSTEM CORE</span>
                                                 )}
                                               </span>
                                               <p className="text-[10px] text-text-muted leading-relaxed mt-0.5 whitespace-normal pr-1 max-w-sm">
                                                 {MODULE_DESCRIPTIONS[item.href] || 'Feature module capabilities configuration.'}
                                               </p>
-                                              <span className="text-[8px] font-mono text-text-muted/60 mt-1">{item.href}</span>
+                                              <span className="text-[8px] text-text-muted/60 mt-1">{item.href}</span>
                                             </div>
                                           </div>
                                           <button
@@ -1546,7 +1550,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                     <div className="flex flex-col gap-6 animate-fadeIn">
                       {/* Sub tab navigation */}
                       <div className="border-b border-border-color/85 pb-3">
-                        <h3 className="text-sm font-bold tracking-wider uppercase text-text-secondary flex items-center gap-1.5 font-heading">
+                        <h3 className="text-sm font-bold text-text-secondary flex items-center gap-1.5 font-heading">
                           <Users size={15} className="text-primary" /> Users & Permissions Manager
                         </h3>
                         <p className="text-xs text-text-muted mt-1 font-sans">
@@ -1558,7 +1562,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                       <div className="flex flex-col gap-4">
                         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-[var(--surface)] border border-border-color p-5 rounded-xl shadow-sm">
                           <div>
-                            <h4 className="text-xs font-bold uppercase tracking-wider text-text-primary">User Directory Catalog</h4>
+                            <h4 className="text-xs font-bold text-text-primary">User Directory Catalog</h4>
                             <p className="text-[10px] text-text-muted mt-0.5">Manage administrative credentials, system roles, and audit access permissions.</p>
                           </div>
                           <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
@@ -1567,7 +1571,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                               placeholder="Filter by name or email..."
                               value={userSearch}
                               onChange={(e) => setUserSearch(e.target.value)}
-                              className="bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-[var(--border)] transition-all font-mono"
+                              className="bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-[var(--border)] transition-all"
                             />
                             <button
                               onClick={handleOpenAddUser}
@@ -1581,7 +1585,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                         <div className="overflow-x-auto border border-border-color rounded-xl bg-[var(--surface)] shadow-xl">
                           <table className="w-full text-left border-collapse">
                             <thead>
-                              <tr className="bg-[var(--surface)] text-[10px] font-mono text-text-muted uppercase border-b border-border-color select-none">
+                              <tr className="bg-[var(--surface)] text-[10px] text-text-muted border-b border-border-color select-none">
                                 <th className="p-3.5 pl-4">Member Specifications</th>
                                 <th className="p-3.5">Email Address</th>
                                 <th className="p-3.5">Primary legacy role</th>
@@ -1593,24 +1597,24 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                               {filteredUsers.map(user => (
                                 <tr key={user.id} className="border-b border-border-color/40 last:border-0 hover:bg-[var(--surface-hover)] text-xs text-text-secondary font-sans transition-all group">
                                   <td className="p-3.5 pl-4 flex items-center gap-3">
-                                    <div className="w-9 h-9 rounded-xl bg-[var(--surface-active)] border border-[var(--border)] flex items-center justify-center text-[10px] font-bold text-primary font-mono shadow-sm group-hover:border-[var(--border)] transition-colors duration-300 select-none">
+                                    <div className="w-9 h-9 rounded-xl bg-[var(--surface-active)] border border-[var(--border)] flex items-center justify-center text-[10px] font-bold text-primary shadow-sm group-hover:border-[var(--border)] transition-colors duration-300 select-none">
                                       {user.full_name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'U'}
                                     </div>
                                     <div className="flex flex-col">
                                       <span className="font-semibold text-text-primary group-hover:text-text-primary transition-colors leading-snug">{user.full_name}</span>
-                                      <span className="text-[9px] font-mono text-text-muted md:hidden mt-0.5">{user.email}</span>
+                                      <span className="text-[9px] text-text-muted md:hidden mt-0.5">{user.email}</span>
                                     </div>
                                   </td>
-                                  <td className="p-3.5 font-mono text-text-secondary">{user.email}</td>
+                                  <td className="p-3.5 text-text-secondary">{user.email}</td>
                                   <td className="p-3.5">
-                                    <span className="bg-[var(--bg-card)] text-[9px] font-bold text-text-muted px-2.5 py-1 rounded-lg border border-border-color/80 font-mono uppercase">
+                                    <span className="bg-[var(--bg-card)] text-[9px] font-bold text-text-muted px-2.5 py-1 rounded-lg border border-border-color/80">
                                       {user.role}
                                     </span>
                                   </td>
                                   <td className="p-3.5">
                                     <div className="flex flex-wrap gap-1.5 max-w-xs">
                                       {user.roles.map(r => (
-                                        <span key={r.id} className="bg-[var(--surface-active)] text-primary text-[9px] font-bold px-2 py-0.5 rounded-lg border border-[var(--border)] font-mono tracking-wide">
+                                        <span key={r.id} className="bg-[var(--surface-active)] text-primary text-[9px] font-bold px-2 py-0.5 rounded-lg border border-[var(--border)] tracking-wide">
                                           {r.name}
                                         </span>
                                       ))}
@@ -1709,12 +1713,12 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                           {loadingAudit ? (
                             <div className="py-8 flex items-center justify-center gap-2">
                               <div className="h-4 w-4 rounded-full border border-secondary border-t-transparent animate-spin"></div>
-                              <span className="text-xs text-text-muted font-mono uppercase tracking-wider">Calculating Access Matrix...</span>
+                              <span className="text-xs text-text-muted">Calculating Access Matrix...</span>
                             </div>
                           ) : (
                             <div className="flex flex-col gap-4">
                               <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3">
-                                <span className="text-[10px] text-text-muted font-mono uppercase tracking-wider">Assigned Roles: {auditingUser.roles.map(r => r.name).join(', ') || 'None'}</span>
+                                <span className="text-[10px] text-text-muted">Assigned Roles: {auditingUser.roles.map(r => r.name).join(', ') || 'None'}</span>
                                 <input
                                   type="text"
                                   placeholder="Filter permissions..."
@@ -1726,7 +1730,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                               
                               <div className="max-h-[240px] overflow-y-auto border border-border-color rounded-xl shadow-inner bg-[var(--bg-card)]">
                                 <table className="w-full text-left border-collapse">
-                                  <thead className="bg-bg-card sticky top-0 border-b border-border-color text-[9px] font-mono text-text-muted uppercase">
+                                  <thead className="bg-bg-card sticky top-0 border-b border-border-color text-[9px] text-text-muted">
                                     <tr>
                                       <th className="p-2.5 pl-3">Module</th>
                                       <th className="p-2.5">Permission Key</th>
@@ -1744,11 +1748,11 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                         const scope = auditedPermissions[p.permission_key] || 'NONE';
                                         return (
                                           <tr key={p.id} className="border-b border-border-color/40 last:border-0 hover:bg-[var(--surface-hover)] text-xs text-text-secondary">
-                                            <td className="p-2.5 pl-3 font-mono text-[9px] text-primary">{p.module}</td>
-                                            <td className="p-2.5 font-mono text-[10px] text-text-secondary">{p.permission_key}</td>
+                                            <td className="p-2.5 pl-3 text-[9px] text-primary">{p.module}</td>
+                                            <td className="p-2.5 text-[10px] text-text-secondary">{p.permission_key}</td>
                                             <td className="p-2.5 text-[11px] text-text-muted">{p.description}</td>
                                             <td className="p-2.5 pr-3">
-                                              <span className={`px-2 py-0.5 rounded-lg text-[9px] font-bold font-mono border ${
+                                              <span className={`px-2 py-0.5 rounded-lg text-[9px] font-bold  border ${
                                                 scope === 'ALL' ? 'bg-[var(--surface-active)] text-primary border-[var(--border)]' :
                                                 scope === 'TEAM' ? 'bg-secondary/10 text-secondary border-secondary/20' :
                                                 scope === 'ASSIGNED' ? 'bg-accent/10 text-accent border-accent/20' :
@@ -1773,7 +1777,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                       <div className="flex flex-col gap-4 border-t border-border-color/80 pt-6">
                         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                           <div>
-                            <h4 className="text-xs font-bold uppercase tracking-wider text-text-primary">Roles Activation & Permission Matrix</h4>
+                            <h4 className="text-xs font-bold text-text-primary">Roles Activation & Permission Matrix</h4>
                             <p className="text-[10px] text-text-muted mt-0.5">Edit fine-grained scopes dynamically mapped to permissions database triggers.</p>
                           </div>
                           <div className="flex items-center gap-2">
@@ -1838,12 +1842,12 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                     className="w-full flex items-center justify-between p-4 bg-[var(--bg-card)] hover:bg-[var(--surface-hover)] text-left transition-colors font-sans select-none"
                                   >
                                     <div className="flex items-center gap-2">
-                                      <span className="text-xs font-bold text-text-primary font-mono tracking-wider">{mod}</span>
-                                      <span className="text-[9px] font-bold text-primary px-2 py-0.5 rounded-full bg-[var(--surface-active)] border border-[var(--border)] font-mono">
+                                      <span className="text-xs font-bold text-text-primary">{mod}</span>
+                                      <span className="text-[9px] font-bold text-primary px-2 py-0.5 rounded-full bg-[var(--surface-active)] border border-[var(--border)]">
                                         {activeCount} / {permsList.length} CONFIGURED
                                       </span>
                                     </div>
-                                    <span className="text-text-muted text-xs font-bold font-mono">
+                                    <span className="text-text-muted text-xs font-bold">
                                       {isExpanded ? 'Collapse ▲' : 'Expand ▼'}
                                     </span>
                                   </button>
@@ -1852,7 +1856,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                     <div className="border-t border-border-color/40 overflow-x-auto bg-[var(--bg-card)]">
                                       <table className="w-full text-left border-collapse">
                                         <thead>
-                                          <tr className="bg-[var(--bg-card)] text-[9px] font-mono text-text-muted uppercase border-b border-border-color/30">
+                                          <tr className="bg-[var(--bg-card)] text-[9px] text-text-muted border-b border-border-color/30">
                                             <th className="p-3 pl-4">Permission Key</th>
                                             <th className="p-3">Description</th>
                                             <th className="p-3 pr-4 text-right">Assigned Scope / Matrix Rule</th>
@@ -1863,7 +1867,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                             const currentScope = matrixPermissions[perm.permission_key] || 'NONE';
                                             return (
                                               <tr key={perm.id} className="border-b border-border-color/30 last:border-0 hover:bg-[var(--surface-hover)] text-xs text-text-secondary">
-                                                <td className="p-3 pl-4 font-mono text-text-secondary text-[10px]">{perm.permission_key}</td>
+                                                <td className="p-3 pl-4 text-text-secondary text-[10px]">{perm.permission_key}</td>
                                                 <td className="p-3 text-text-muted leading-relaxed max-w-sm">{perm.description}</td>
                                                 <td className="p-3 pr-4 text-right">
                                                   <select
@@ -1872,7 +1876,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                                       ...matrixPermissions,
                                                       [perm.permission_key]: e.target.value as any
                                                     })}
-                                                    className={`bg-[var(--bg-card)] border text-[11px] font-mono font-bold rounded-xl px-3 py-1.5 focus:outline-none transition-all duration-300 ${
+                                                    className={`bg-[var(--bg-card)] border text-[11px]  font-bold rounded-xl px-3 py-1.5 focus:outline-none transition-all duration-300 ${
                                                       currentScope === 'NONE' ? 'border-border-color text-text-muted hover:border-text-muted/45' :
                                                       currentScope === 'ALL' ? 'border-[var(--border)] text-primary bg-[var(--surface-active)] ' :
                                                       currentScope === 'TEAM' ? 'border-secondary/40 text-secondary bg-secondary/5' :
@@ -1911,10 +1915,10 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 border-t border-border-color/80 pt-6">
                           {/* Custom Role Creation */}
                           <form onSubmit={handleCreateCustomRole} className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm">
-                            <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider flex items-center gap-1.5"><Shield size={13} className="text-primary" /> Create Custom Role</h4>
+                            <h4 className="text-xs font-bold text-text-primary flex items-center gap-1.5"><Shield size={13} className="text-primary" /> Create Custom Role</h4>
                             <div className="grid grid-cols-2 gap-2.5">
                               <div>
-                                <label className="block text-[9px] font-mono text-text-muted uppercase font-bold mb-1.5">Role Name</label>
+                                <label className="block text-[9px] text-text-muted font-bold mb-1.5">Role Name</label>
                                 <input
                                   type="text"
                                   placeholder="e.g. Sales Consultant"
@@ -1924,29 +1928,29 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                 />
                               </div>
                               <div>
-                                <label className="block text-[9px] font-mono text-text-muted uppercase font-bold mb-1.5">Role Slug Key</label>
+                                <label className="block text-[9px] text-text-muted font-bold mb-1.5">Role Slug Key</label>
                                 <input
                                   type="text"
                                   placeholder="e.g. sales_consultant"
                                   value={newRoleKey}
                                   onChange={(e) => setNewRoleKey(e.target.value)}
-                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary font-mono focus:outline-none focus:border-[var(--border)]"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)]"
                                 />
                               </div>
                             </div>
                             <div>
-                              <label className="block text-[9px] font-mono text-text-muted uppercase font-bold mb-1.5">Hierarchy Level (1-100)</label>
+                              <label className="block text-[9px] text-text-muted font-bold mb-1.5">Hierarchy Level (1-100)</label>
                               <input
                                   type="number"
                                   min="1"
                                   max="100"
                                   value={newRoleHierarchy}
                                   onChange={(e) => setNewRoleHierarchy(Number(e.target.value))}
-                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary font-mono focus:outline-none focus:border-[var(--border)] font-semibold"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] font-semibold"
                                 />
                             </div>
                             <div>
-                              <label className="block text-[9px] font-mono text-text-muted uppercase font-bold mb-1.5">Description</label>
+                              <label className="block text-[9px] text-text-muted font-bold mb-1.5">Description</label>
                               <textarea
                                 rows={2}
                                 placeholder="Role duties and capabilities..."
@@ -1966,31 +1970,31 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
 
                           {/* Custom Permission Catalog Entry */}
                           <form onSubmit={handleCreateCustomPermission} className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm">
-                            <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider flex items-center gap-1.5"><Key size={13} className="text-primary" /> Catalog New Permission</h4>
+                            <h4 className="text-xs font-bold text-text-primary flex items-center gap-1.5"><Key size={13} className="text-primary" /> Catalog New Permission</h4>
                             <div className="grid grid-cols-2 gap-2.5">
                               <div>
-                                <label className="block text-[9px] font-mono text-text-muted uppercase font-bold mb-1.5">Permission Slug Key</label>
+                                <label className="block text-[9px] text-text-muted font-bold mb-1.5">Permission Slug Key</label>
                                 <input
                                   type="text"
                                   placeholder="e.g. tenders.approve"
                                   value={newPermKey}
                                   onChange={(e) => setNewPermKey(e.target.value)}
-                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary font-mono focus:outline-none focus:border-[var(--border)]"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)]"
                                 />
                               </div>
                               <div>
-                                <label className="block text-[9px] font-mono text-text-muted uppercase font-bold mb-1.5">Module / Category</label>
+                                <label className="block text-[9px] text-text-muted font-bold mb-1.5">Module / Category</label>
                                 <input
                                   type="text"
                                   placeholder="e.g. SALES"
                                   value={newPermModule}
                                   onChange={(e) => setNewPermModule(e.target.value)}
-                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary font-mono focus:outline-none focus:border-[var(--border)]"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)]"
                                 />
                               </div>
                             </div>
                             <div>
-                              <label className="block text-[9px] font-mono text-text-muted uppercase font-bold mb-1.5">Capability Description</label>
+                              <label className="block text-[9px] text-text-muted font-bold mb-1.5">Capability Description</label>
                               <textarea
                                 rows={2}
                                 placeholder="Describe what access this permission control regulates..."
@@ -2087,7 +2091,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                       </div>
                                     </td>
                                     <td>
-                                      <span className="font-mono text-xs text-[var(--text-secondary)]">
+                                      <span className="text-xs text-[var(--text-secondary)]">
                                         {u.last_sign_in_at
                                           ? new Date(u.last_sign_in_at).toLocaleString('en-AE', { dateStyle: 'medium', timeStyle: 'short' })
                                           : 'Never'}
@@ -2151,7 +2155,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                   {activeTab === 'FINANCE' && (
                     <div className="flex flex-col gap-6 animate-fadeIn">
                       <div className="border-b border-border-color/85 pb-3">
-                        <h3 className="text-sm font-bold tracking-wider uppercase text-text-secondary flex items-center gap-1.5 font-heading">
+                        <h3 className="text-sm font-bold text-text-secondary flex items-center gap-1.5 font-heading">
                           <DollarSign size={15} className="text-primary" /> Financial Calibration & Tax settings
                         </h3>
                         <p className="text-xs text-text-muted mt-1 font-sans">
@@ -2162,10 +2166,10 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                         {/* Tax & Filing Card */}
                         <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm">
-                          <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono border-b border-border-color/60 pb-2">VAT Compliance & Filing</h4>
+                          <h4 className="text-xs font-bold text-text-primary border-b border-border-color/60 pb-2">VAT Compliance & Filing</h4>
                           <div className="flex flex-col gap-3.5">
                             <div>
-                              <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">Standard VAT percentage (%)</label>
+                              <label className="block text-[10px] text-text-muted font-bold mb-1.5">Standard VAT percentage (%)</label>
                               <div className="relative">
                                 <input 
                                   type="number" 
@@ -2174,11 +2178,11 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                   onChange={(e) => setVatRate(Number(e.target.value))}
                                   className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-4 pr-10 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
                                 />
-                                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-mono font-bold text-text-muted">%</span>
+                                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-text-muted">%</span>
                               </div>
                             </div>
                             <div>
-                              <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">VAT Filing period (Months)</label>
+                              <label className="block text-[10px] text-text-muted font-bold mb-1.5">VAT Filing period (Months)</label>
                               <div className="relative">
                                 <input 
                                   type="number" 
@@ -2186,7 +2190,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                   onChange={(e) => setVatPeriodMonths(Number(e.target.value))}
                                   className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-4 pr-16 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
                                 />
-                                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-mono font-bold text-text-muted uppercase">Months</span>
+                                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-bold text-text-muted">Months</span>
                               </div>
                             </div>
                           </div>
@@ -2194,27 +2198,27 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
 
                         {/* Authorization & Base Currency */}
                         <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm">
-                          <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono border-b border-border-color/60 pb-2">Authority Thresholds</h4>
+                          <h4 className="text-xs font-bold text-text-primary border-b border-border-color/60 pb-2">Authority Thresholds</h4>
                           <div className="flex flex-col gap-3.5">
                             <div>
-                              <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">Quote approval limit (Requires GM Approval)</label>
+                              <label className="block text-[10px] text-text-muted font-bold mb-1.5">Quote approval limit (Requires GM Approval)</label>
                               <div className="relative">
-                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[9px] font-mono font-bold text-text-muted uppercase">{currency}</span>
+                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[9px] font-bold text-text-muted">{currency}</span>
                                 <input 
                                   type="number" 
                                   value={thresholdQuote}
                                   onChange={(e) => setThresholdQuote(Number(e.target.value))}
-                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-12 pr-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-12 pr-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
                                 />
                               </div>
                             </div>
                             <div>
-                              <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">Base currency code</label>
+                              <label className="block text-[10px] text-text-muted font-bold mb-1.5">Base currency code</label>
                               <input 
                                 type="text" 
                                 value={currency}
                                 onChange={(e) => setCurrency(e.target.value)}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold uppercase"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
                               />
                             </div>
                           </div>
@@ -2235,7 +2239,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                   {activeTab === 'PROCUREMENT' && (
                     <div className="flex flex-col gap-6 animate-fadeIn">
                       <div className="border-b border-border-color/85 pb-3">
-                        <h3 className="text-sm font-bold tracking-wider uppercase text-text-secondary flex items-center gap-1.5 font-heading">
+                        <h3 className="text-sm font-bold text-text-secondary flex items-center gap-1.5 font-heading">
                           <Sliders size={15} className="text-primary" /> Procurement & Sourcing Parameters
                         </h3>
                         <p className="text-xs text-text-muted mt-1 font-sans">
@@ -2247,25 +2251,25 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                         {/* Limits Card */}
                         <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm justify-between">
                           <div>
-                            <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono border-b border-border-color/60 pb-2 mb-3">LPO Sign-off Matrix</h4>
-                            <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">Purchase Order limit (Requires GM Approval)</label>
+                            <h4 className="text-xs font-bold text-text-primary border-b border-border-color/60 pb-2 mb-3">LPO Sign-off Matrix</h4>
+                            <label className="block text-[10px] text-text-muted font-bold mb-1.5">Purchase Order limit (Requires GM Approval)</label>
                             <div className="relative">
-                              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[9px] font-mono font-bold text-text-muted uppercase">{currency}</span>
+                              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[9px] font-bold text-text-muted">{currency}</span>
                               <input
                                 type="number"
                                 value={thresholdPO}
                                 onChange={(e) => setThresholdPO(Number(e.target.value))}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-12 pr-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-12 pr-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
                               />
                             </div>
-                            <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5 mt-4">Direct Purchase Limit (PR without LPO)</label>
+                            <label className="block text-[10px] text-text-muted font-bold mb-1.5 mt-4">Direct Purchase Limit (PR without LPO)</label>
                             <div className="relative">
-                              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[9px] font-mono font-bold text-text-muted uppercase">{currency}</span>
+                              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[9px] font-bold text-text-muted">{currency}</span>
                               <input
                                 type="number"
                                 value={directPurchaseThreshold}
                                 onChange={(e) => setDirectPurchaseThreshold(Number(e.target.value))}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-12 pr-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-12 pr-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
                               />
                             </div>
                             <p className="text-[10px] text-text-muted mt-1.5 leading-relaxed">PRs at or below this value can be purchased directly without raising an LPO; larger ones must convert to an LPO.</p>
@@ -2276,7 +2280,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                         <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm justify-between">
                           <div className="flex items-center justify-between gap-4">
                             <div className="flex-1">
-                              <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono border-b border-border-color/60 pb-2 mb-2">Automated Comparisons</h4>
+                              <h4 className="text-xs font-bold text-text-primary border-b border-border-color/60 pb-2 mb-2">Automated Comparisons</h4>
                               <span className="text-xs font-semibold text-text-secondary">Auto Rank Supplier Comparisons</span>
                               <p className="text-[10px] text-text-muted mt-1 leading-relaxed">Enable automatic ranking based on historical price weight scales and response dispatch speeds.</p>
                             </div>
@@ -2308,7 +2312,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                   {activeTab === 'INVENTORY' && (
                     <div className="flex flex-col gap-6 animate-fadeIn">
                       <div className="border-b border-border-color/85 pb-3">
-                        <h3 className="text-sm font-bold tracking-wider uppercase text-text-secondary flex items-center gap-1.5 font-heading">
+                        <h3 className="text-sm font-bold text-text-secondary flex items-center gap-1.5 font-heading">
                           <Layers size={15} className="text-primary" /> Inventory & Capital Assets Calibration
                         </h3>
                         <p className="text-xs text-text-muted mt-1 font-sans">
@@ -2320,7 +2324,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                         {/* Approval Toggle */}
                         <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex items-center justify-between gap-4 shadow-sm">
                           <div className="flex-1">
-                            <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono border-b border-border-color/60 pb-2 mb-2">MRF Workflow Control</h4>
+                            <h4 className="text-xs font-bold text-text-primary border-b border-border-color/60 pb-2 mb-2">MRF Workflow Control</h4>
                             <span className="text-xs font-semibold text-text-secondary">MRF Approval Check Required</span>
                             <p className="text-[10px] text-text-muted mt-1 leading-relaxed">Requires Site Engineer material requests to be approved by Project Manager before store issues.</p>
                           </div>
@@ -2339,16 +2343,16 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                         {/* Stock limit card */}
                         <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm justify-between">
                           <div>
-                            <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono border-b border-border-color/60 pb-2 mb-3">Reorder Alert Limits</h4>
-                            <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">Low Stock Warning Threshold</label>
+                            <h4 className="text-xs font-bold text-text-primary border-b border-border-color/60 pb-2 mb-3">Reorder Alert Limits</h4>
+                            <label className="block text-[10px] text-text-muted font-bold mb-1.5">Low Stock Warning Threshold</label>
                             <div className="relative">
                               <input 
                                 type="number" 
                                 value={lowStockThreshold}
                                 onChange={(e) => setLowStockThreshold(Number(e.target.value))}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-4 pr-14 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-4 pr-14 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
                               />
-                              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-mono font-bold text-text-muted uppercase">Items</span>
+                              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-bold text-text-muted">Items</span>
                             </div>
                           </div>
                         </div>
@@ -2356,11 +2360,11 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
 
                       {/* Straight Line Depreciation category values */}
                       <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm">
-                        <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono border-b border-border-color/60 pb-2">Straight-Line Depreciation Lifetimes (Months)</h4>
+                        <h4 className="text-xs font-bold text-text-primary border-b border-border-color/60 pb-2">Straight-Line Depreciation Lifetimes (Months)</h4>
                         <div className="grid grid-cols-2 sm:grid-cols-5 gap-3.5">
                           {Object.entries(usefulLives).map(([category, months]) => (
                             <div key={category} className="p-3.5 bg-[var(--bg-card)] border border-border-color/80 rounded-xl flex flex-col gap-2 relative overflow-hidden group">
-                              <label className="block text-[9px] font-mono text-text-muted uppercase font-bold tracking-wide truncate" title={category.replace('_', ' ')}>{category.replace('_', ' ')}</label>
+                              <label className="block text-[9px] text-text-muted font-bold tracking-wide truncate" title={category.replace('_', ' ')}>{category.replace('_', ' ')}</label>
                               <div className="relative">
                                 <input 
                                   type="number" 
@@ -2371,7 +2375,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                   })}
                                   className="w-full bg-[var(--bg-card)] border border-border-color/70 rounded-lg pl-2.5 pr-8 py-1.5 text-xs text-text-primary font-bold focus:outline-none focus:border-[var(--border)] transition-all"
                                 />
-                                <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[8px] font-mono font-bold text-text-muted">M</span>
+                                <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[8px] font-bold text-text-muted">M</span>
                               </div>
                             </div>
                           ))}
@@ -2392,7 +2396,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                   {activeTab === 'PROJECTS' && (
                     <div className="flex flex-col gap-6 animate-fadeIn">
                       <div className="border-b border-border-color/85 pb-3">
-                        <h3 className="text-sm font-bold tracking-wider uppercase text-text-secondary flex items-center gap-1.5 font-heading">
+                        <h3 className="text-sm font-bold text-text-secondary flex items-center gap-1.5 font-heading">
                           <Cpu size={15} className="text-primary" /> Projects & Operations calibration
                         </h3>
                         <p className="text-xs text-text-muted mt-1 font-sans">
@@ -2402,11 +2406,11 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
 
                       {/* Project Stages Management */}
                       <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm">
-                        <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono border-b border-border-color/60 pb-2">Default Project Execution Stages</h4>
+                        <h4 className="text-xs font-bold text-text-primary border-b border-border-color/60 pb-2">Default Project Execution Stages</h4>
                         <div className="flex flex-wrap gap-2.5 p-4.5 bg-[var(--bg-card)] border border-border-color/60 rounded-xl min-h-[60px] items-center">
                           {defaultStages.map((stage, idx) => (
                             <div key={stage} className="flex items-center gap-2">
-                              <span className="bg-[var(--bg-card)] text-text-secondary text-[10px] font-semibold px-2.5 py-1.5 rounded-xl border border-border-color/80 flex items-center gap-2 font-mono tracking-wide">
+                              <span className="bg-[var(--bg-card)] text-text-secondary text-[10px] font-semibold px-2.5 py-1.5 rounded-xl border border-border-color/80 flex items-center gap-2 tracking-wide">
                                 <span className="h-1.5 w-1.5 rounded-full bg-primary" />
                                 {stage}
                                 <button 
@@ -2432,7 +2436,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                             placeholder="Add stage name (e.g. Subcontractor Bid)..."
                             value={newStageInput}
                             onChange={(e) => setNewStageInput(e.target.value)}
-                            className="bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] w-64 font-mono font-semibold"
+                            className="bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] w-64 font-semibold"
                           />
                           <button 
                             onClick={addProjectStage}
@@ -2446,15 +2450,15 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm justify-between">
                           <div>
-                            <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono border-b border-border-color/60 pb-2 mb-3">Variation Orders Limits</h4>
-                            <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">VO Limit (Requires GM Approval)</label>
+                            <h4 className="text-xs font-bold text-text-primary border-b border-border-color/60 pb-2 mb-3">Variation Orders Limits</h4>
+                            <label className="block text-[10px] text-text-muted font-bold mb-1.5">VO Limit (Requires GM Approval)</label>
                             <div className="relative">
-                              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[9px] font-mono font-bold text-text-muted uppercase">{currency}</span>
+                              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[9px] font-bold text-text-muted">{currency}</span>
                               <input 
                                 type="number" 
                                 value={voThreshold}
                                 onChange={(e) => setVoThreshold(Number(e.target.value))}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-12 pr-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-12 pr-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
                               />
                             </div>
                           </div>
@@ -2475,7 +2479,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                   {activeTab === 'MAINTENANCE' && (
                     <div className="flex flex-col gap-6 animate-fadeIn">
                       <div className="border-b border-border-color/85 pb-3">
-                        <h3 className="text-sm font-bold tracking-wider uppercase text-text-secondary flex items-center gap-1.5 font-heading">
+                        <h3 className="text-sm font-bold text-text-secondary flex items-center gap-1.5 font-heading">
                           <Clock size={15} className="text-primary" /> Maintenance Slots & SLA response speeds
                         </h3>
                         <p className="text-xs text-text-muted mt-1 font-sans">
@@ -2485,10 +2489,10 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
 
                       {/* PPM Timeslot Manager */}
                       <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm">
-                        <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono border-b border-border-color/60 pb-2">PPM Visits Timings Slots</h4>
+                        <h4 className="text-xs font-bold text-text-primary border-b border-border-color/60 pb-2">PPM Visits Timings Slots</h4>
                         <div className="flex flex-wrap gap-2.5 p-4.5 bg-[var(--bg-card)] border border-border-color/60 rounded-xl min-h-[60px] items-center">
                           {maintenanceSlots.map(slot => (
-                            <span key={slot} className="bg-[var(--bg-card)] text-text-secondary text-[10px] font-semibold px-2.5 py-1.5 rounded-xl border border-border-color/80 flex items-center gap-2 font-mono">
+                            <span key={slot} className="bg-[var(--bg-card)] text-text-secondary text-[10px] font-semibold px-2.5 py-1.5 rounded-xl border border-border-color/80 flex items-center gap-2">
                               <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
                               {slot}
                               <button 
@@ -2507,7 +2511,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                             placeholder="e.g. 18:00 - 20:00"
                             value={newSlotInput}
                             onChange={(e) => setNewSlotInput(e.target.value)}
-                            className="bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] w-48 font-mono font-semibold"
+                            className="bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] w-48 font-semibold"
                           />
                           <button 
                             onClick={addMaintSlot}
@@ -2520,7 +2524,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
 
                       {/* SLA categories */}
                       <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm">
-                        <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono border-b border-border-color/60 pb-2">SLA Target Resolution Timings (Hours)</h4>
+                        <h4 className="text-xs font-bold text-text-primary border-b border-border-color/60 pb-2">SLA Target Resolution Timings (Hours)</h4>
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                           {Object.entries(slaCategories).map(([category, hours]) => {
                             const isCritical = category === 'CRITICAL';
@@ -2534,7 +2538,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                     isHigh ? 'bg-[var(--status-warning-bg)]' :
                                     isMedium ? 'bg-secondary' : 'bg-success'
                                   }`} />
-                                  <label className="block text-[10px] font-mono font-bold uppercase tracking-wider text-text-secondary">{category}</label>
+                                  <label className="block text-[10px] font-bold text-text-secondary">{category}</label>
                                 </div>
                                 <div className="relative mt-1">
                                   <input 
@@ -2544,9 +2548,9 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                       ...slaCategories,
                                       [category]: Number(e.target.value)
                                     })}
-                                    className="w-full bg-[var(--bg-card)] border border-border-color/60 rounded-xl pl-3 pr-14 py-2 text-xs text-text-primary font-mono font-bold focus:outline-none focus:border-[var(--border)] transition-all"
+                                    className="w-full bg-[var(--bg-card)] border border-border-color/60 rounded-xl pl-3 pr-14 py-2 text-xs text-text-primary font-bold focus:outline-none focus:border-[var(--border)] transition-all"
                                   />
-                                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[9px] font-mono font-bold text-text-muted uppercase">Hours</span>
+                                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[9px] font-bold text-text-muted">Hours</span>
                                 </div>
                               </div>
                             );
@@ -2568,7 +2572,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                   {activeTab === 'HR' && (
                     <div className="flex flex-col gap-6 animate-fadeIn">
                       <div className="border-b border-border-color/85 pb-3">
-                        <h3 className="text-sm font-bold tracking-wider uppercase text-text-secondary flex items-center gap-1.5 font-heading">
+                        <h3 className="text-sm font-bold text-text-secondary flex items-center gap-1.5 font-heading">
                           <Clock size={15} className="text-primary" /> HR Calendars & Gratuity entitlement
                         </h3>
                         <p className="text-xs text-text-muted mt-1 font-sans">
@@ -2578,24 +2582,24 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
 
                       {/* Business Hours */}
                       <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm">
-                        <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono border-b border-border-color/60 pb-2">Shift Operating Timings</h4>
+                        <h4 className="text-xs font-bold text-text-primary border-b border-border-color/60 pb-2">Shift Operating Timings</h4>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">Shift Start Time</label>
+                            <label className="block text-[10px] text-text-muted font-bold mb-1.5">Shift Start Time</label>
                             <input 
                               type="time" 
                               value={businessHours.start}
                               onChange={(e) => setBusinessHours({ ...businessHours, start: e.target.value })}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-[var(--border)]"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)]"
                             />
                           </div>
                           <div>
-                            <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">Shift End Time</label>
+                            <label className="block text-[10px] text-text-muted font-bold mb-1.5">Shift End Time</label>
                             <input 
                               type="time" 
                               value={businessHours.end}
                               onChange={(e) => setBusinessHours({ ...businessHours, end: e.target.value })}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-[var(--border)]"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)]"
                             />
                           </div>
                         </div>
@@ -2603,7 +2607,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
 
                       {/* Working Days */}
                       <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm">
-                        <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono border-b border-border-color/60 pb-2">Weekly Working Days</h4>
+                        <h4 className="text-xs font-bold text-text-primary border-b border-border-color/60 pb-2">Weekly Working Days</h4>
                         <div className="flex flex-wrap gap-2">
                           {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map((day, idx) => {
                             const isSelected = businessHours.working_days.includes(idx);
@@ -2639,10 +2643,10 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
 
                       {/* Gratuity brackets */}
                       <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm">
-                        <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono border-b border-border-color/60 pb-2">UAE Gratuity Entitlement Accrual Rates</h4>
+                        <h4 className="text-xs font-bold text-text-primary border-b border-border-color/60 pb-2">UAE Gratuity Entitlement Accrual Rates</h4>
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                           <div>
-                            <label className="block text-[9px] font-mono text-text-muted uppercase font-bold mb-1.5">Under 1 Year Service</label>
+                            <label className="block text-[9px] text-text-muted font-bold mb-1.5">Under 1 Year Service</label>
                             <div className="relative">
                               <input 
                                 type="number" 
@@ -2651,13 +2655,13 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                   ...gratuityEntitlement,
                                   under_1yr: Number(e.target.value)
                                 })}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-3.5 pr-14 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-[var(--border)]"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-3.5 pr-14 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)]"
                               />
-                              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[8px] font-mono font-bold text-text-muted uppercase">Days</span>
+                              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[8px] font-bold text-text-muted">Days</span>
                             </div>
                           </div>
                           <div>
-                            <label className="block text-[9px] font-mono text-text-muted uppercase font-bold mb-1.5">1 to 5 Years Service</label>
+                            <label className="block text-[9px] text-text-muted font-bold mb-1.5">1 to 5 Years Service</label>
                             <div className="relative">
                               <input 
                                 type="number" 
@@ -2666,13 +2670,13 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                   ...gratuityEntitlement,
                                   '1to5yr': Number(e.target.value)
                                 })}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-3.5 pr-14 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-[var(--border)]"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-3.5 pr-14 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)]"
                               />
-                              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[8px] font-mono font-bold text-text-muted uppercase">Days</span>
+                              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[8px] font-bold text-text-muted">Days</span>
                             </div>
                           </div>
                           <div>
-                            <label className="block text-[9px] font-mono text-text-muted uppercase font-bold mb-1.5">Above 5 Years Service</label>
+                            <label className="block text-[9px] text-text-muted font-bold mb-1.5">Above 5 Years Service</label>
                             <div className="relative">
                               <input 
                                 type="number" 
@@ -2681,9 +2685,9 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                   ...gratuityEntitlement,
                                   above5yr: Number(e.target.value)
                                 })}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-3.5 pr-14 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-[var(--border)]"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-3.5 pr-14 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)]"
                               />
-                              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[8px] font-mono font-bold text-text-muted uppercase">Days</span>
+                              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[8px] font-bold text-text-muted">Days</span>
                             </div>
                           </div>
                         </div>
@@ -2702,7 +2706,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                   {activeTab === 'NOTIFICATIONS' && (
                     <div className="flex flex-col gap-6 animate-fadeIn">
                       <div className="border-b border-border-color/85 pb-3">
-                        <h3 className="text-sm font-bold tracking-wider uppercase text-text-secondary flex items-center gap-1.5 font-heading">
+                        <h3 className="text-sm font-bold text-text-secondary flex items-center gap-1.5 font-heading">
                           <Bell size={15} className="text-primary" /> Notifications & Communications Control
                         </h3>
                         <p className="text-xs text-text-muted mt-1 font-sans">
@@ -2736,18 +2740,18 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                       {/* Msg text templates */}
                       <div className="flex flex-col gap-4">
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-border-color/60 pb-2 gap-2">
-                          <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono">Message Text Templates</h4>
+                          <h4 className="text-xs font-bold text-text-primary">Message Text Templates</h4>
                           <div className="flex flex-wrap items-center gap-1.5">
-                            <span className="text-[9px] font-mono text-text-muted uppercase font-bold">Variables:</span>
+                            <span className="text-[9px] text-text-muted font-bold">Variables:</span>
                             {['{client_name}', '{number}', '{total_incl_vat}', '{site_name}'].map(v => (
-                              <code key={v} className="text-[9px] font-mono font-bold bg-[var(--bg-card)] border border-border-color/60 text-primary px-1.5 py-0.5 rounded select-all">{v}</code>
+                              <code key={v} className="text-[9px] font-bold bg-[var(--bg-card)] border border-border-color/60 text-primary px-1.5 py-0.5 rounded select-all">{v}</code>
                             ))}
                           </div>
                         </div>
                         
                         <div className="flex flex-col gap-4 bg-[var(--surface)] border border-border-color p-5 rounded-xl shadow-sm">
                           <div>
-                            <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-2">Quotation Sent Message</label>
+                            <label className="block text-[10px] text-text-muted font-bold mb-2">Quotation Sent Message</label>
                             <textarea
                               rows={2.5}
                               value={notifTemplates.quotation_sent}
@@ -2756,7 +2760,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                             />
                           </div>
                           <div>
-                            <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-2">Purchase Order Approved Message</label>
+                            <label className="block text-[10px] text-text-muted font-bold mb-2">Purchase Order Approved Message</label>
                             <textarea
                               rows={2.5}
                               value={notifTemplates.po_approved}
@@ -2765,7 +2769,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                             />
                           </div>
                           <div>
-                            <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-2">Ticket Assigned SMS/WhatsApp Body</label>
+                            <label className="block text-[10px] text-text-muted font-bold mb-2">Ticket Assigned SMS/WhatsApp Body</label>
                             <textarea
                               rows={2.5}
                               value={notifTemplates.ticket_assigned}
@@ -2790,7 +2794,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                   {activeTab === 'TEMPLATES' && (
                     <div className="flex flex-col gap-6 animate-fadeIn">
                       <div className="border-b border-border-color/85 pb-3">
-                        <h3 className="text-sm font-bold tracking-wider uppercase text-text-secondary flex items-center gap-1.5 font-heading">
+                        <h3 className="text-sm font-bold text-text-secondary flex items-center gap-1.5 font-heading">
                           <FileCheck size={15} className="text-primary" /> Branded PDF & Document Style Presets
                         </h3>
                         <p className="text-xs text-text-muted mt-1 font-sans">
@@ -2800,10 +2804,10 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm">
-                          <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono border-b border-border-color/60 pb-2">Header Identifiers</h4>
+                          <h4 className="text-xs font-bold text-text-primary border-b border-border-color/60 pb-2">Header Identifiers</h4>
                           <div className="flex flex-col gap-3.5">
                             <div>
-                              <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">PDF Main Header Title</label>
+                              <label className="block text-[10px] text-text-muted font-bold mb-1.5">PDF Main Header Title</label>
                               <input 
                                 type="text" 
                                 value={docTemplates.header_title}
@@ -2812,7 +2816,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                               />
                             </div>
                             <div>
-                              <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">PDF Header Subtext Description</label>
+                              <label className="block text-[10px] text-text-muted font-bold mb-1.5">PDF Header Subtext Description</label>
                               <input 
                                 type="text" 
                                 value={docTemplates.header_subtitle}
@@ -2824,9 +2828,9 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                         </div>
                         
                         <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm">
-                          <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono border-b border-border-color/60 pb-2">Accent Styling</h4>
+                          <h4 className="text-xs font-bold text-text-primary border-b border-border-color/60 pb-2">Accent Styling</h4>
                           <div>
-                            <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-2.5">Document Theme Accent Palette</label>
+                            <label className="block text-[10px] text-text-muted font-bold mb-2.5">Document Theme Accent Palette</label>
                             <div className="flex flex-wrap items-center gap-2.5">
                               {[
                                 { id: 'slate', name: 'Slate Dark', bg: 'bg-[var(--bg-card)]', text: 'text-[var(--text-secondary)]' },
@@ -2857,7 +2861,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
 
                         {/* Live PDF Header Mockup */}
                         <div className="md:col-span-2 p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-3.5 shadow-sm">
-                          <label className="block text-[10px] font-mono text-text-muted uppercase font-bold tracking-wide">PDF Live Accent Preview</label>
+                          <label className="block text-[10px] text-text-muted font-bold tracking-wide">PDF Live Accent Preview</label>
                           <div className="bg-[var(--bg-card)] text-text-primary p-6 rounded-xl border border-border-color/80 shadow flex justify-between items-start font-sans relative overflow-hidden group">
                             {/* Accent Glow backdrop */}
                             <div className={`absolute right-0 top-0 w-48 h-48 blur-[80px] rounded-full opacity-10 transition-all duration-500 ${
@@ -2867,7 +2871,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                             }`} />
                             
                             <div className="flex flex-col gap-1 relative z-10">
-                              <h4 className={`text-base font-extrabold uppercase tracking-tight transition-colors duration-300 ${
+                              <h4 className={`text-base font-extrabold  tracking-tight transition-colors duration-300 ${
                                 docTemplates.accent_color === 'mint' ? 'text-primary' :
                                 docTemplates.accent_color === 'gold' ? 'text-[var(--status-warning-text)]' :
                                 docTemplates.accent_color === 'red' ? 'text-[var(--status-danger-text)]' : 'text-[var(--text-secondary)]'
@@ -2881,7 +2885,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                               docTemplates.accent_color === 'gold' ? 'border-[var(--status-warning-border)] text-[var(--status-warning-text)] bg-[var(--status-warning-bg)]' :
                               docTemplates.accent_color === 'red' ? 'border-[var(--status-danger-border)] text-[var(--status-danger-text)] bg-[var(--status-danger-bg)]' : 'border-[var(--border)] text-[var(--text-secondary)] bg-[var(--surface-hover)]'
                             }`}>
-                              <span className="text-[10px] font-extrabold font-mono tracking-wider">TAX INVOICE</span>
+                              <span className="text-[10px] font-extrabold">TAX INVOICE</span>
                             </div>
                           </div>
                         </div>
@@ -2889,42 +2893,42 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
 
                       {/* Footer terms for different documents */}
                       <div className="flex flex-col gap-4 border-t border-border-color/60 pt-5 mt-2">
-                        <h4 className="text-xs font-bold text-text-secondary uppercase tracking-wider font-mono">Footers & Disclaimer terms for generated PDFs</h4>
+                        <h4 className="text-xs font-bold text-text-secondary">Footers & Disclaimer terms for generated PDFs</h4>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-[var(--surface)] border border-border-color p-5 rounded-xl shadow-sm">
                           <div>
-                            <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-2">Tax Invoice Footer Terms</label>
+                            <label className="block text-[10px] text-text-muted font-bold mb-2">Tax Invoice Footer Terms</label>
                             <textarea
                               rows={2.5}
                               value={docTemplates.invoice_disclaimer}
                               onChange={(e) => setDocTemplates({ ...docTemplates, invoice_disclaimer: e.target.value })}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-mono leading-relaxed"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all leading-relaxed"
                             />
                           </div>
                           <div>
-                            <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-2">Project Handover Closeout Disclaimer</label>
+                            <label className="block text-[10px] text-text-muted font-bold mb-2">Project Handover Closeout Disclaimer</label>
                             <textarea
                               rows={2.5}
                               value={docTemplates.handover_disclaimer}
                               onChange={(e) => setDocTemplates({ ...docTemplates, handover_disclaimer: e.target.value })}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-mono leading-relaxed"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all leading-relaxed"
                             />
                           </div>
                           <div>
-                            <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-2">PPM Maintenance Visit report Disclaimer</label>
+                            <label className="block text-[10px] text-text-muted font-bold mb-2">PPM Maintenance Visit report Disclaimer</label>
                             <textarea
                               rows={2.5}
                               value={docTemplates.ppm_disclaimer}
                               onChange={(e) => setDocTemplates({ ...docTemplates, ppm_disclaimer: e.target.value })}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-mono leading-relaxed"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all leading-relaxed"
                             />
                           </div>
                           <div>
-                            <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-2">Variation Order Sheet disclaimer</label>
+                            <label className="block text-[10px] text-text-muted font-bold mb-2">Variation Order Sheet disclaimer</label>
                             <textarea
                               rows={2.5}
                               value={docTemplates.vo_disclaimer}
                               onChange={(e) => setDocTemplates({ ...docTemplates, vo_disclaimer: e.target.value })}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-mono leading-relaxed"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all leading-relaxed"
                             />
                           </div>
                         </div>
@@ -2944,7 +2948,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                   {activeTab === 'INTEGRATIONS' && (
                     <div className="flex flex-col gap-6 animate-fadeIn">
                       <div className="border-b border-border-color/85 pb-3">
-                        <h3 className="text-sm font-bold tracking-wider uppercase text-text-secondary flex items-center gap-1.5 font-heading">
+                        <h3 className="text-sm font-bold text-text-secondary flex items-center gap-1.5 font-heading">
                           <Share2 size={15} className="text-primary" /> Integrations & API Credentials
                         </h3>
                         <p className="text-xs text-text-muted mt-1 font-sans">
@@ -2956,17 +2960,17 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                         {/* SMTP Card */}
                         <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm">
                           <div className="flex items-center justify-between border-b border-border-color/60 pb-2">
-                            <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono flex items-center gap-1.5">
+                            <h4 className="text-xs font-bold text-text-primary flex items-center gap-1.5">
                               <Building size={13} className="text-primary" /> SMTP Mail Host settings
                             </h4>
-                            <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[8px] font-bold font-mono bg-[var(--surface-active)] text-primary border border-[var(--border)]">
+                            <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[8px] font-bold bg-[var(--surface-active)] text-primary border border-[var(--border)]">
                               <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" /> ACTIVE
                             </span>
                           </div>
                           
                           <div className="flex flex-col gap-3.5">
                             <div>
-                              <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">SMTP Server IP/Host</label>
+                              <label className="block text-[10px] text-text-muted font-bold mb-1.5">SMTP Server IP/Host</label>
                               <input 
                                 type="text" 
                                 value={smtpConfig.host}
@@ -2976,16 +2980,16 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                               <div>
-                                <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">SMTP TLS/SSL Port</label>
+                                <label className="block text-[10px] text-text-muted font-bold mb-1.5">SMTP TLS/SSL Port</label>
                                 <input 
                                   type="number" 
                                   value={smtpConfig.port}
                                   onChange={(e) => setSmtpConfig({ ...smtpConfig, port: Number(e.target.value) })}
-                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-mono font-semibold"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
                                 />
                               </div>
                               <div>
-                                <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">SMTP Login user</label>
+                                <label className="block text-[10px] text-text-muted font-bold mb-1.5">SMTP Login user</label>
                                 <input 
                                   type="text" 
                                   value={smtpConfig.user}
@@ -3000,37 +3004,37 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                         {/* WhatsApp Gateway Card */}
                         <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm">
                           <div className="flex items-center justify-between border-b border-border-color/60 pb-2">
-                            <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono flex items-center gap-1.5">
+                            <h4 className="text-xs font-bold text-text-primary flex items-center gap-1.5">
                               <Sparkles size={13} className="text-primary" /> WhatsApp API Gateway
                             </h4>
-                            <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[8px] font-bold font-mono bg-[var(--surface-active)] text-primary border border-[var(--border)]">
+                            <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[8px] font-bold bg-[var(--surface-active)] text-primary border border-[var(--border)]">
                               <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" /> CONNECTED
                             </span>
                           </div>
 
                           <div className="flex flex-col gap-3.5">
                             <div>
-                              <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">API Dispatch Gateway URL</label>
+                              <label className="block text-[10px] text-text-muted font-bold mb-1.5">API Dispatch Gateway URL</label>
                               <input 
                                 type="text" 
                                 value={whatsappGateway.url}
                                 onChange={(e) => setWhatsappGateway({ ...whatsappGateway, url: e.target.value })}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-mono font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
                               />
                             </div>
                             <div>
-                              <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">JWT Auth Bearer Token</label>
+                              <label className="block text-[10px] text-text-muted font-bold mb-1.5">JWT Auth Bearer Token</label>
                               <div className="relative">
                                 <input 
                                   type={showWAToken ? "text" : "password"} 
                                   value={whatsappGateway.token}
                                   onChange={(e) => setWhatsappGateway({ ...whatsappGateway, token: e.target.value })}
-                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-4 pr-16 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-mono font-semibold"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-4 pr-16 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
                                 />
                                 <button
                                   type="button"
                                   onClick={() => setShowWAToken(!showWAToken)}
-                                  className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary text-[9px] font-mono font-bold tracking-wide transition-colors"
+                                  className="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary text-[9px] font-bold tracking-wide transition-colors"
                                 >
                                   {showWAToken ? "HIDE" : "SHOW"}
                                 </button>
@@ -3054,7 +3058,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                   {activeTab === 'SYSTEM_ADMIN' && (
                     <div className="flex flex-col gap-6 animate-fadeIn">
                       <div className="border-b border-border-color/85 pb-3">
-                        <h3 className="text-sm font-bold tracking-wider uppercase text-text-secondary flex items-center gap-1.5 font-heading">
+                        <h3 className="text-sm font-bold text-text-secondary flex items-center gap-1.5 font-heading">
                           <Sliders size={15} className="text-primary" /> System administration preferences
                         </h3>
                         <p className="text-xs text-text-muted mt-1 font-sans">
@@ -3063,10 +3067,10 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                       </div>
 
                       {appMode === 'maintenance' && (
-                        <div className="p-4 bg-[var(--status-warning-bg)] border border-[var(--status-warning-border)] rounded-xl text-xs text-[var(--status-warning-text)] flex items-start gap-3  animate-pulse">
+                        <div className="p-4 bg-[var(--status-warning-bg)] border border-[var(--status-warning-border)] rounded-xl text-xs text-[var(--status-warning-text)] flex items-start gap-3 animate-pulse">
                           <AlertTriangle className="shrink-0 mt-0.5 text-[var(--status-warning-text)] animate-bounce" size={16} />
                           <div>
-                            <span className="font-bold uppercase tracking-wider font-mono">Maintenance Mode Triggered:</span>
+                            <span className="font-bold">Maintenance Mode Triggered:</span>
                             <p className="text-[10px] text-[var(--status-warning-text)] mt-1 leading-relaxed">
                               Database write locks are enabled. Live client interfaces will be locked with an operational maintenance screen. Administrative consoles remain accessible.
                             </p>
@@ -3076,7 +3080,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
 
                       {/* App mode selections */}
                       <div className="flex flex-col gap-2.5">
-                        <label className="block text-[10px] font-mono text-text-muted uppercase font-bold">Application running mode</label>
+                        <label className="block text-[10px] text-text-muted font-bold">Application running mode</label>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                           {[
                             { id: 'production', name: 'Production Mode', desc: 'High-speed caching & optimization for live operations.', badge: 'RECOMMENDED', badgeColor: 'bg-[var(--surface-active)] text-primary border border-[var(--border)]' },
@@ -3097,7 +3101,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                               >
                                 <div className="flex items-center justify-between w-full">
                                   <span className={`text-xs font-bold transition-colors ${isSelected ? 'text-primary' : 'text-text-secondary group-hover:text-text-primary'}`}>{mode.name}</span>
-                                  <span className={`text-[8px] font-mono font-bold px-2 py-0.5 rounded-full ${mode.badgeColor}`}>
+                                  <span className={`text-[8px]  font-bold px-2 py-0.5 rounded-full ${mode.badgeColor}`}>
                                     {mode.badge}
                                   </span>
                                 </div>
@@ -3112,7 +3116,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm">
-                          <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1">Logger Verbosity level</label>
+                          <label className="block text-[10px] text-text-muted font-bold mb-1">Logger Verbosity level</label>
                           <div className="grid grid-cols-2 gap-2.5">
                             {[
                               { id: 'debug', name: 'DEBUG', desc: 'Verbose trace stacks' },
@@ -3132,7 +3136,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                       : 'bg-[var(--bg-card)] border-border-color text-text-muted hover:border-text-muted/50 hover:text-text-secondary'
                                   }`}
                                 >
-                                  <span className="text-[10px] font-mono font-bold">{item.name}</span>
+                                  <span className="text-[10px] font-bold">{item.name}</span>
                                   <span className="text-[8px] opacity-80 leading-none mt-0.5">{item.desc}</span>
                                 </button>
                               );
@@ -3142,7 +3146,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
 
                         <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm justify-between">
                           <div className="flex flex-col gap-4">
-                            <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1">Default Spacing Density</label>
+                            <label className="block text-[10px] text-text-muted font-bold mb-1">Default Spacing Density</label>
                             <div className="grid grid-cols-2 gap-2.5">
                               {[
                                 { id: 'comfortable', name: 'Comfortable', desc: 'Sleek spacing theme' },
@@ -3160,7 +3164,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                         : 'bg-[var(--bg-card)] border-border-color text-text-muted hover:border-text-muted/50 hover:text-text-secondary'
                                     }`}
                                   >
-                                    <span className="text-[10px] font-mono font-bold">{item.name}</span>
+                                    <span className="text-[10px] font-bold">{item.name}</span>
                                     <span className="text-[8px] opacity-80 leading-none mt-0.5">{item.desc}</span>
                                   </button>
                                 );
@@ -3184,7 +3188,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                   {activeTab === 'SECURITY' && (
                     <div className="flex flex-col gap-6 animate-fadeIn">
                       <div className="border-b border-border-color/85 pb-3">
-                        <h3 className="text-sm font-bold tracking-wider uppercase text-text-secondary flex items-center gap-1.5 font-heading">
+                        <h3 className="text-sm font-bold text-text-secondary flex items-center gap-1.5 font-heading">
                           <Shield size={15} className="text-primary" /> Security Controls & Forensic Audit Logs
                         </h3>
                         <p className="text-xs text-text-muted mt-1 font-sans">
@@ -3195,15 +3199,15 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                         <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm justify-between">
                           <div>
-                            <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">Min Password length</label>
+                            <label className="block text-[10px] text-text-muted font-bold mb-1.5">Min Password length</label>
                             <div className="relative">
                               <input 
                                 type="number" 
                                 value={passwordRules.min_length}
                                 onChange={(e) => setPasswordRules({ ...passwordRules, min_length: Number(e.target.value) })}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-mono font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
                               />
-                              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-mono font-bold text-text-muted uppercase">Chars</span>
+                              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-bold text-text-muted">Chars</span>
                             </div>
                           </div>
                         </div>
@@ -3228,15 +3232,15 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
 
                         <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm justify-between">
                           <div>
-                            <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">Session Timeout limit</label>
+                            <label className="block text-[10px] text-text-muted font-bold mb-1.5">Session Timeout limit</label>
                             <div className="relative">
                               <input 
                                 type="number" 
                                 value={sessionTimeout}
                                 onChange={(e) => setSessionTimeout(Number(e.target.value))}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-mono font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
                               />
-                              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-mono font-bold text-text-muted uppercase">Mins</span>
+                              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-bold text-text-muted">Mins</span>
                             </div>
                           </div>
                         </div>
@@ -3252,13 +3256,13 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
 
                       {/* Forensic Audit Log list */}
                       <div className="border-t border-border-color/60 pt-6">
-                        <h4 className="text-xs font-bold uppercase tracking-wider text-text-secondary mb-3.5 flex items-center gap-1.5 font-mono">
+                        <h4 className="text-xs font-bold text-text-secondary mb-3.5 flex items-center gap-1.5">
                           <Lock size={13} className="text-[var(--status-danger-text)] animate-pulse" /> Immutable Forensic Audit Trail
                         </h4>
                         <div className="overflow-x-auto border border-border-color/80 rounded-xl bg-[var(--surface)] shadow-sm max-h-[340px]">
                           <table className="w-full text-left border-collapse">
                             <thead>
-                              <tr className="bg-[var(--bg-card)] text-[9px] font-mono text-text-muted uppercase border-b border-border-color sticky top-0 select-none">
+                              <tr className="bg-[var(--bg-card)] text-[9px] text-text-muted border-b border-border-color sticky top-0 select-none">
                                 <th className="p-3.5 pl-5">Occurred At</th>
                                 <th className="p-3.5">Actor specifications</th>
                                 <th className="p-3.5">Action Code</th>
@@ -3272,16 +3276,16 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                 const isDelete = log.action === 'DELETE' || log.action === 'PURGE' || log.action === 'REMOVE';
                                 const isUpdate = log.action === 'UPDATE' || log.action === 'RESET' || log.action === 'EDIT';
                                 return (
-                                  <tr key={log.id} className="border-b border-border-color/40 hover:bg-[var(--surface-hover)] text-xs text-text-secondary font-mono transition-colors">
+                                  <tr key={log.id} className="border-b border-border-color/40 hover:bg-[var(--surface-hover)] text-xs text-text-secondary transition-colors">
                                     <td className="p-3.5 pl-5 whitespace-nowrap text-text-muted/80">{new Date(log.occurred_at).toLocaleString('en-AE', { hour12: false })}</td>
                                     <td className="p-3.5">
                                       <div className="flex flex-col gap-0.5">
                                         <span className="text-[11px] font-sans font-bold text-text-primary">{log.actor_name}</span>
-                                        <span className="text-[8px] font-mono text-text-muted uppercase tracking-wider">{log.actor_role || 'System Agent'}</span>
+                                        <span className="text-[8px] text-text-muted">{log.actor_role || 'System Agent'}</span>
                                       </div>
                                     </td>
                                     <td className="p-3.5">
-                                      <span className={`px-2 py-0.5 rounded-lg text-[9px] font-bold font-mono tracking-wider ${
+                                      <span className={`px-2 py-0.5 rounded-lg text-[9px] font-bold   ${
                                         isCreate ? 'bg-[var(--surface-active)] text-primary border border-[var(--border)]' :
                                         isDelete ? 'bg-[var(--status-danger-bg)] text-[var(--status-danger-text)] border border-[var(--status-danger-border)]' :
                                         isUpdate ? 'bg-[var(--status-warning-bg)] text-[var(--status-warning-text)] border border-[var(--status-warning-border)]' :
@@ -3291,7 +3295,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                       </span>
                                     </td>
                                     <td className="p-3.5">
-                                      <span className="bg-[var(--bg-card)] text-[9px] font-bold text-text-muted px-2 py-0.5 rounded-lg border border-border-color/60 uppercase font-mono tracking-wider">
+                                      <span className="bg-[var(--bg-card)] text-[9px] font-bold text-text-muted px-2 py-0.5 rounded-lg border border-border-color/60">
                                         {log.module}
                                       </span>
                                     </td>
@@ -3319,7 +3323,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                   {activeTab === 'BACKUP' && (
                     <div className="flex flex-col gap-6 animate-fadeIn">
                       <div className="border-b border-border-color/85 pb-3">
-                        <h3 className="text-sm font-bold tracking-wider uppercase text-text-secondary flex items-center gap-1.5 font-heading">
+                        <h3 className="text-sm font-bold text-text-secondary flex items-center gap-1.5 font-heading">
                           <Database size={15} className="text-primary" /> Database Backup & disaster Recovery
                         </h3>
                         <p className="text-xs text-text-muted mt-1 font-sans">
@@ -3330,7 +3334,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                       {/* Backup Schedule & Retention Settings */}
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                         <div className="col-span-1 md:col-span-2 flex flex-col gap-2.5">
-                          <label className="block text-[10px] font-mono text-text-muted uppercase font-bold">Backup cron schedule frequency</label>
+                          <label className="block text-[10px] text-text-muted font-bold">Backup cron schedule frequency</label>
                           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                             {[
                               { id: 'daily', name: 'Daily Snapshot', desc: 'Secure database dump run every 24 hours.' },
@@ -3359,15 +3363,15 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
 
                         <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm justify-between">
                           <div>
-                            <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">Retention duration limit</label>
+                            <label className="block text-[10px] text-text-muted font-bold mb-1.5">Retention duration limit</label>
                             <div className="relative">
                               <input 
                                 type="number" 
                                 value={backupConfig.retention}
                                 onChange={(e) => setBackupConfig({ ...backupConfig, retention: Number(e.target.value) })}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-mono font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
                               />
-                              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-mono font-bold text-text-muted uppercase">Days</span>
+                              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-bold text-text-muted">Days</span>
                             </div>
                           </div>
                         </div>
@@ -3385,7 +3389,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                       <div className="mt-2 p-5 border border-border-color rounded-xl bg-[var(--surface)] shadow-sm flex flex-col gap-4">
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                           <div>
-                            <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono">Trigger Immediate Database Schema Backup</h4>
+                            <h4 className="text-xs font-bold text-text-primary">Trigger Immediate Database Schema Backup</h4>
                             <p className="text-[10px] text-text-muted mt-0.5">Launches secure SQL snapshot dump compilation and archives it in secure backups buckets.</p>
                           </div>
                           <button
@@ -3405,12 +3409,12 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                         {(backupRunning || backupLogs.length > 0) && (
                           <div className="p-4 bg-[var(--bg-card)] border border-border-color/80 rounded-xl flex flex-col gap-3 shadow-inner animate-fadeIn">
                             {backupRunning && (
-                              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[10px] font-mono font-bold">
+                              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[10px] font-bold">
                                 <span className="text-primary animate-pulse flex items-center gap-1">
                                   <span className="h-1.5 w-1.5 rounded-full bg-primary animate-ping" />
                                   Running Secure Backup Job...
                                 </span>
-                                <span className="text-text-muted uppercase">{backupStep}</span>
+                                <span className="text-text-muted">{backupStep}</span>
                               </div>
                             )}
                             {backupRunning && (
@@ -3420,7 +3424,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                             )}
 
                             {/* Retro Terminal Logs View */}
-                            <div className="bg-[var(--bg-card)] p-4 rounded-xl border border-border-color/60 font-mono text-[10px] text-primary/90 flex flex-col gap-1.5 max-h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-900">
+                            <div className="bg-[var(--bg-card)] p-4 rounded-xl border border-border-color/60 text-[10px] text-primary/90 flex flex-col gap-1.5 max-h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-slate-900">
                               <div className="text-text-muted border-b border-border-color/40 pb-1.5 mb-1.5 flex items-center justify-between">
                                 <span>SYSTEM LOG TERMINAL (JEET_ERP_BACKUP_DAEMON v1.0.4)</span>
                                 <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
@@ -3449,14 +3453,14 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
             <div className="w-full max-w-md bg-bg-dark border border-border-color rounded-xl p-6 flex flex-col gap-4 shadow-sm animate-fadeIn relative overflow-hidden">
               <div className="absolute -right-20 -top-20 w-40 h-40 bg-[var(--surface-active)] blur-3xl rounded-full" />
               <div className="flex justify-between items-center border-b border-border-color pb-3 relative z-10">
-                <h3 className="text-sm font-bold text-text-primary flex items-center gap-1.5 font-heading uppercase tracking-wider">
+                <h3 className="text-sm font-bold text-text-primary flex items-center gap-1.5 font-heading">
                   <Users size={16} className="text-primary" /> Register New Account
                 </h3>
                 <button onClick={() => setIsAddModalOpen(false)} className="text-text-muted hover:text-text-primary text-xl transition-colors">×</button>
               </div>
               <form onSubmit={handleAddUserSubmit} className="flex flex-col gap-4 relative z-10">
                 <div>
-                  <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">Full Name *</label>
+                  <label className="block text-[10px] text-text-muted font-bold mb-1.5">Full Name *</label>
                   <input
                     type="text"
                     required
@@ -3467,7 +3471,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">Email Address *</label>
+                  <label className="block text-[10px] text-text-muted font-bold mb-1.5">Email Address *</label>
                   <input
                     type="email"
                     required
@@ -3478,18 +3482,18 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">Temporary Password *</label>
+                  <label className="block text-[10px] text-text-muted font-bold mb-1.5">Temporary Password *</label>
                   <input
                     type="password"
                     required
                     placeholder="••••••••"
                     value={newUserPassword}
                     onChange={(e) => setNewUserPassword(e.target.value)}
-                    className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-mono font-semibold"
+                    className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">Employee Department *</label>
+                  <label className="block text-[10px] text-text-muted font-bold mb-1.5">Employee Department *</label>
                   <select
                     required
                     value={newUserDepartment}
@@ -3508,7 +3512,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">Assign Dynamic Roles</label>
+                  <label className="block text-[10px] text-text-muted font-bold mb-1.5">Assign Dynamic Roles</label>
                   <div className="grid grid-cols-2 gap-2 max-h-[120px] overflow-y-auto p-2 border border-border-color rounded-xl bg-[var(--bg-card)]">
                     {roles.map(r => {
                       const isChecked = newUserRoleIds.includes(r.id);
@@ -3562,14 +3566,14 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
             <div className="w-full max-w-md bg-bg-dark border border-border-color rounded-xl p-6 flex flex-col gap-4 shadow-sm animate-fadeIn relative overflow-hidden">
               <div className="absolute -right-20 -top-20 w-40 h-40 bg-[var(--surface-active)] blur-3xl rounded-full" />
               <div className="flex justify-between items-center border-b border-border-color pb-3 relative z-10">
-                <h3 className="text-sm font-bold text-text-primary flex items-center gap-1.5 font-heading uppercase tracking-wider">
+                <h3 className="text-sm font-bold text-text-primary flex items-center gap-1.5 font-heading">
                   <Users size={16} className="text-primary" /> Update Account Settings
                 </h3>
                 <button onClick={() => setIsEditModalOpen(false)} className="text-text-muted hover:text-text-primary text-xl transition-colors">×</button>
               </div>
               <form onSubmit={handleEditUserSubmit} className="flex flex-col gap-4 relative z-10">
                 <div>
-                  <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">Full Name *</label>
+                  <label className="block text-[10px] text-text-muted font-bold mb-1.5">Full Name *</label>
                   <input
                     type="text"
                     required
@@ -3580,7 +3584,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">Email Address *</label>
+                  <label className="block text-[10px] text-text-muted font-bold mb-1.5">Email Address *</label>
                   <input
                     type="email"
                     required
@@ -3591,7 +3595,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                   />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">Employee Department *</label>
+                  <label className="block text-[10px] text-text-muted font-bold mb-1.5">Employee Department *</label>
                   <select
                     required
                     value={editUserDepartment}
@@ -3610,7 +3614,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">Assign Dynamic Roles</label>
+                  <label className="block text-[10px] text-text-muted font-bold mb-1.5">Assign Dynamic Roles</label>
                   <div className="grid grid-cols-2 gap-2 max-h-[120px] overflow-y-auto p-2 border border-border-color rounded-xl bg-[var(--bg-card)]">
                     {roles.map(r => {
                       const isChecked = editUserRoleIds.includes(r.id);
@@ -3664,7 +3668,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
             <div className="w-full max-w-sm bg-bg-dark border border-[var(--status-danger-border)] rounded-xl p-6 flex flex-col gap-4 shadow-sm animate-fadeIn relative overflow-hidden">
               <div className="absolute -right-20 -top-20 w-40 h-40 bg-[var(--status-danger-bg)] blur-3xl rounded-full" />
               <div className="flex justify-between items-center border-b border-border-color pb-3 relative z-10">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--status-danger-text)] flex items-center gap-1.5 font-heading">
+                <h3 className="text-xs font-bold text-[var(--status-danger-text)] flex items-center gap-1.5 font-heading">
                   <AlertTriangle size={15} /> Confirm Account Purge
                 </h3>
                 <button onClick={() => setIsDeleteModalOpen(false)} className="text-text-muted hover:text-text-primary text-xl transition-colors">×</button>
