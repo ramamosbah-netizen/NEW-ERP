@@ -131,8 +131,12 @@ Engineer / `technician` Field Technician (L100) · `viewer` Auditor (L200).
 | IN_PROGRESS | RESOLVE | anyone | 48h |
 | RESOLVED | CLOSE / REOPEN | manager (close) | — |
 
-### 8. Leave Request `LEAVE` — Leave Request Approval
+### 8. Leave Request `LEAVE` — Leave Request Approval  *(`WorkflowPanel` wired — `/hr/leave/[id]`)*
 **Submitted (Employee)** → **Manager Review (Manager)** → **HR Confirmation (HR Manager)** → **Approved** *(reject at any stage)*
+
+> The leave-request detail page (`/hr/leave/[id]`) carries the panel plus
+> Approve/Reject actions, and is linked from *My Workspace → Approvals*. With this,
+> **all 14 engine workflows now have a `WorkflowPanel` on their record page.**
 
 | Stage | → action | Allowed roles | SLA |
 |-------|----------|---------------|-----|

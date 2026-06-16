@@ -79,7 +79,7 @@ export default function ApprovalsPage() {
         const eids = [...new Set([...leaveRows.map((r: any) => r.employee_id), ...tsRows.map((r: any) => r.employee_id)].filter(Boolean))] as string[];
         const nameMap = new Map<string, string>();
         if (eids.length) { const { data: em } = await supabase.from('employees').select('id, full_name_en').in('id', eids); (em || []).forEach((x: any) => nameMap.set(x.id, x.full_name_en)); }
-        leaveRows.forEach((r: any) => add('HR', 'Leave Request', `${r.leave_type} (${r.days}d)`, 0, r.created_at, `/hr/approvals`, null, r.employee_id, nameMap.get(r.employee_id) || ''));
+        leaveRows.forEach((r: any) => add('HR', 'Leave Request', `${r.leave_type} (${r.days}d)`, 0, r.created_at, `/hr/leave/${r.id}`, null, r.employee_id, nameMap.get(r.employee_id) || ''));
         tsRows.forEach((r: any) => add('HR', 'Timesheet', `Week ${r.week_start}`, 0, r.created_at, `/timesheets/approvals`, null, r.employee_id, nameMap.get(r.employee_id) || ''));
         setItems(out.sort((a, b) => new Date(a.date || 0).getTime() - new Date(b.date || 0).getTime()));
       } finally { setLoading(false); }
