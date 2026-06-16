@@ -16,7 +16,7 @@ import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianG
 import {
   Activity, Users, ShieldCheck, KeySquare, GitCompare, FileText, FileCode2,
   Hash, SlidersHorizontal, Layers, ScrollText, ChevronRight, ShieldAlert, Clock,
-  Building2, Bell, Cpu,
+  Building2, Bell, Cpu, DollarSign, Package, FolderKanban, Wrench, Calendar, Share2, Database, Shield,
 } from 'lucide-react';
 
 interface Tile { href: string; label: string; desc: string; icon: React.ComponentType<{ size?: number | string; className?: string }>; }
@@ -27,12 +27,25 @@ const ANALYTICS: Tile[] = [
   { href: '/admin/workflows/analytics', label: 'Workflow & Approvals', desc: 'Pending, SLA breaches, cycle time', icon: GitCompare },
   { href: '/admin/configuration', label: 'Configuration Audit', desc: 'Workflows, forms, templates, rules', icon: SlidersHorizontal },
 ];
+const SETTINGS: Tile[] = [
+  { href: '/admin/settings', label: 'Company & Branding', desc: 'Company profile & identity', icon: Building2 },
+  { href: '/admin/settings/modules', label: 'Module Toggles', desc: 'Enable / disable modules', icon: SlidersHorizontal },
+  { href: '/admin/settings/users', label: 'Users, Roles & Perms', desc: 'Accounts, roles & permissions', icon: Users },
+  { href: '/admin/settings/sessions', label: 'Sessions & Access', desc: 'Active sessions & access', icon: KeySquare },
+  { href: '/admin/settings/finance', label: 'Financial & Tax', desc: 'Finance, VAT & tax', icon: DollarSign },
+  { href: '/admin/settings/procurement', label: 'Procurement', desc: 'Thresholds & approvals', icon: Package },
+  { href: '/admin/settings/inventory', label: 'Inventory & Assets', desc: 'Stock & asset parameters', icon: Layers },
+  { href: '/admin/settings/projects', label: 'Projects & Ops', desc: 'Project parameters', icon: FolderKanban },
+  { href: '/admin/settings/maintenance', label: 'Maintenance & SLA', desc: 'Schedules & SLAs', icon: Wrench },
+  { href: '/admin/settings/hr', label: 'HR & Workforce', desc: 'HR & payroll parameters', icon: Calendar },
+  { href: '/admin/settings/notifications', label: 'Notifications & Alerts', desc: 'Channels & alert rules', icon: Bell },
+  { href: '/admin/settings/pdf-templates', label: 'Document Templates', desc: 'PDF / document settings', icon: FileText },
+  { href: '/admin/settings/integrations', label: 'Integrations', desc: 'Third-party config', icon: Share2 },
+  { href: '/admin/settings/system', label: 'System Administration', desc: 'System-level controls', icon: Cpu },
+  { href: '/admin/settings/security', label: 'Audit & Security', desc: 'Audit & security policy', icon: Shield },
+  { href: '/admin/settings/backup', label: 'Backup & Recovery', desc: 'Backups & recovery', icon: Database },
+];
 const CONFIG: Tile[] = [
-  { href: '/admin/settings', label: 'General Config', desc: 'Company, branding & module toggles', icon: Building2 },
-  { href: '/admin/settings/access', label: 'Access Control', desc: 'Users, roles, permissions & sessions', icon: ShieldCheck },
-  { href: '/admin/settings/operational', label: 'Operational Scales', desc: 'Finance, procurement, inventory, projects, HR', icon: SlidersHorizontal },
-  { href: '/admin/settings/alerts', label: 'Templates & Alerts', desc: 'Notifications, templates & integrations', icon: Bell },
-  { href: '/admin/settings/system', label: 'System & Advanced', desc: 'System admin, audit/security & backup', icon: Cpu },
   { href: '/admin/workflows', label: 'Workflow Designer', desc: 'Statuses & transitions per module', icon: GitCompare },
   { href: '/admin/forms', label: 'Form Builder', desc: 'Dynamic form definitions', icon: FileCode2 },
   { href: '/admin/templates', label: 'Document Templates', desc: 'Printable document templates', icon: FileText },
@@ -209,7 +222,11 @@ export default function AdminHubPage() {
         {tileGrid(ANALYTICS)}
       </div>
       <div>
-        <div className="text-sm font-semibold text-[var(--text-primary)] mb-2">Configuration</div>
+        <div className="text-sm font-semibold text-[var(--text-primary)] mb-2">Settings</div>
+        {tileGrid(SETTINGS)}
+      </div>
+      <div>
+        <div className="text-sm font-semibold text-[var(--text-primary)] mb-2">Configuration & builders</div>
         {tileGrid(CONFIG)}
       </div>
     </div>

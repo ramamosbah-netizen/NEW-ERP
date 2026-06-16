@@ -87,7 +87,9 @@ import {
   FileCode2,
   Hash,
   ScrollText,
-  ShieldCheck
+  ShieldCheck,
+  Database,
+  Share2
 } from 'lucide-react';
 
 // Navigation structure: grouped sections
@@ -304,11 +306,6 @@ const NAV_SECTIONS = [
       { href: '/admin/permissions', label: 'Permissions Matrix', icon: KeySquare },
       { href: '/admin/workflows/analytics', label: 'Workflow Analytics', icon: Activity },
       { href: '/admin/configuration', label: 'Configuration Audit', icon: SlidersHorizontal },
-      { href: '/admin/settings', label: 'General Config', icon: Building2 },
-      { href: '/admin/settings/access', label: 'Access Control', icon: ShieldCheck },
-      { href: '/admin/settings/operational', label: 'Operational Scales', icon: SlidersHorizontal },
-      { href: '/admin/settings/alerts', label: 'Templates & Alerts', icon: Bell },
-      { href: '/admin/settings/system', label: 'System & Advanced', icon: Cpu },
       { href: '/admin/workflows', label: 'Workflow Designer', icon: GitCompare },
       { href: '/admin/forms', label: 'Form Builder', icon: FileCode2 },
       { href: '/admin/templates', label: 'Document Templates', icon: FileText },
@@ -316,6 +313,28 @@ const NAV_SECTIONS = [
       { href: '/admin/numbering', label: 'Numbering', icon: Hash },
       { href: '/admin/audit', label: 'Audit Log', icon: ScrollText },
       { href: '/admin', label: 'Admin Center', icon: Layers },
+    ],
+  },
+  {
+    id: 'settings',
+    label: 'Settings',
+    items: [
+      { href: '/admin/settings', label: 'Company & Branding', icon: Building2 },
+      { href: '/admin/settings/modules', label: 'Module Toggles', icon: SlidersHorizontal },
+      { href: '/admin/settings/users', label: 'Users, Roles & Perms', icon: Users },
+      { href: '/admin/settings/sessions', label: 'Sessions & Access', icon: KeySquare },
+      { href: '/admin/settings/finance', label: 'Financial & Tax', icon: DollarSign },
+      { href: '/admin/settings/procurement', label: 'Procurement', icon: Package },
+      { href: '/admin/settings/inventory', label: 'Inventory & Assets', icon: Layers },
+      { href: '/admin/settings/projects', label: 'Projects & Ops', icon: FolderKanban },
+      { href: '/admin/settings/maintenance', label: 'Maintenance & SLA', icon: Wrench },
+      { href: '/admin/settings/hr', label: 'HR & Workforce', icon: Calendar },
+      { href: '/admin/settings/notifications', label: 'Notifications & Alerts', icon: Bell },
+      { href: '/admin/settings/pdf-templates', label: 'Document Templates', icon: FileText },
+      { href: '/admin/settings/integrations', label: 'Integrations', icon: Share2 },
+      { href: '/admin/settings/system', label: 'System Administration', icon: Cpu },
+      { href: '/admin/settings/security', label: 'Audit & Security', icon: Shield },
+      { href: '/admin/settings/backup', label: 'Backup & Recovery', icon: Database },
     ],
   },
 ];

@@ -1,6 +1,5 @@
 import SettingsWorkspace from './SettingsWorkspace';
 
-// /admin/settings — General Configuration section
-export default function GeneralSettingsPage() {
-  return <SettingsWorkspace group="general" />;
+export default function CompanySettingsPage() {
+  return <SettingsWorkspace tab="COMPANY" />;
 }

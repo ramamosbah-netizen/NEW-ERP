@@ -1,6 +1,5 @@
 import SettingsWorkspace from '../SettingsWorkspace';
 
-// /admin/settings/system — System & Advanced (system admin, audit & security, backup)
-export default function SystemAdvancedPage() {
-  return <SettingsWorkspace group="system" />;
+export default function SystemAdminSettingsPage() {
+  return <SettingsWorkspace tab="SYSTEM_ADMIN" />;
 }

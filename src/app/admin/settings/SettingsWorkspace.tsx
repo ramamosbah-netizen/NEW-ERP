@@ -42,61 +42,42 @@ import {
   Trash2
 } from 'lucide-react';
 
-export type SettingsGroupId = 'general' | 'access' | 'operational' | 'alerts' | 'system';
-const GROUP_TABS: Record<SettingsGroupId, { id: string; label: string; icon: any }[]> = {
-  general: [
-    { id: 'COMPANY', label: 'Company & Branding', icon: Building },
-    { id: 'MODULE_CONTROL', label: 'Module Toggles', icon: Sliders },
-  ],
-  access: [
-    { id: 'USERS_ROLES', label: 'Users, Roles & Perms', icon: Users },
-    { id: 'SESSIONS', label: 'Sessions & Access', icon: Key },
-  ],
-  operational: [
-    { id: 'FINANCE', label: 'Financial & Tax', icon: DollarSign },
-    { id: 'PROCUREMENT', label: 'Procurement', icon: Sliders },
-    { id: 'INVENTORY', label: 'Inventory & Assets', icon: Layers },
-    { id: 'PROJECTS', label: 'Projects & Ops', icon: Cpu },
-    { id: 'MAINTENANCE', label: 'Maintenance & SLA', icon: Clock },
-    { id: 'HR', label: 'HR & Workforce', icon: Clock },
-  ],
-  alerts: [
-    { id: 'NOTIFICATIONS', label: 'Notifications & Alerts', icon: Bell },
-    { id: 'TEMPLATES', label: 'Document Templates', icon: FileCheck },
-    { id: 'INTEGRATIONS', label: 'Integrations', icon: Share2 },
-  ],
-  system: [
-    { id: 'SYSTEM_ADMIN', label: 'System Administration', icon: Sliders },
-    { id: 'SECURITY', label: 'Audit & Security', icon: Shield },
-    { id: 'BACKUP', label: 'Backup & Recovery', icon: Database },
-  ],
-};
-const GROUP_META: Record<SettingsGroupId, { title: string; subtitle: string }> = {
-  general: { title: 'General Configuration', subtitle: 'Company profile, branding and module toggles' },
-  access: { title: 'Access Control', subtitle: 'Users, roles, permissions and active sessions' },
-  operational: { title: 'Operational Scales', subtitle: 'Finance, procurement, inventory, projects, maintenance and HR parameters' },
-  alerts: { title: 'Templates & Alerts', subtitle: 'Notifications, document templates and integrations' },
-  system: { title: 'System & Advanced', subtitle: 'System administration, audit & security and backup' },
+// Each settings section is its own standalone page (no in-page tab bar).
+export type SettingsTabId =
+  | 'COMPANY' | 'MODULE_CONTROL' | 'USERS_ROLES' | 'SESSIONS' | 'FINANCE' | 'PROCUREMENT'
+  | 'INVENTORY' | 'PROJECTS' | 'MAINTENANCE' | 'HR' | 'NOTIFICATIONS' | 'TEMPLATES'
+  | 'INTEGRATIONS' | 'SYSTEM_ADMIN' | 'SECURITY' | 'BACKUP';
+
+const TAB_META: Record<SettingsTabId, { title: string; subtitle: string }> = {
+  COMPANY: { title: 'Company & Branding', subtitle: 'Company profile, identity and branding' },
+  MODULE_CONTROL: { title: 'Module Toggles', subtitle: 'Enable or disable features and modules across the ERP' },
+  USERS_ROLES: { title: 'Users, Roles & Permissions', subtitle: 'Manage user accounts, roles and access permissions' },
+  SESSIONS: { title: 'Sessions & Account Access', subtitle: 'Active sessions and account-access controls' },
+  FINANCE: { title: 'Financial & Tax', subtitle: 'Finance, VAT and tax parameters' },
+  PROCUREMENT: { title: 'Procurement Settings', subtitle: 'Procurement thresholds and approval scales' },
+  INVENTORY: { title: 'Inventory & Assets', subtitle: 'Inventory, stock and asset parameters' },
+  PROJECTS: { title: 'Projects & Operations', subtitle: 'Project and operational parameters' },
+  MAINTENANCE: { title: 'Maintenance & SLA', subtitle: 'Maintenance schedules and SLA thresholds' },
+  HR: { title: 'HR & Workforce', subtitle: 'HR, payroll and workforce parameters' },
+  NOTIFICATIONS: { title: 'Notifications & Alerts', subtitle: 'Notification channels and alert rules' },
+  TEMPLATES: { title: 'Document Templates', subtitle: 'PDF and document template settings' },
+  INTEGRATIONS: { title: 'Integrations', subtitle: 'Third-party integration configuration' },
+  SYSTEM_ADMIN: { title: 'System Administration', subtitle: 'System-level administration controls' },
+  SECURITY: { title: 'Audit & Security', subtitle: 'Audit logging and security policy' },
+  BACKUP: { title: 'Backup & Recovery', subtitle: 'Backup schedules and recovery options' },
 };
 
-export default function SettingsWorkspace({ group }: { group: SettingsGroupId }) {
+export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
   const [loading, setLoading] = useState<boolean>(true);
   const [saving, setSaving] = useState<boolean>(false);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  // Tab State — scoped to the tabs that belong to this section/page
-  const groupTabs = GROUP_TABS[group];
-  const [activeTab, setActiveTab] = useState<
-    'COMPANY' | 'USERS_ROLES' | 'SESSIONS' | 'MODULE_CONTROL' | 'FINANCE' | 'PROCUREMENT' | 'INVENTORY' |
-    'PROJECTS' | 'MAINTENANCE' | 'HR' | 'NOTIFICATIONS' | 'TEMPLATES' |
-    'INTEGRATIONS' | 'SYSTEM_ADMIN' | 'SECURITY' | 'BACKUP'
-  >(GROUP_TABS[group][0].id as any);
+  // This page renders exactly one section — fixed to the route's tab.
+  const [activeTab] = useState<SettingsTabId>(tab);
 
   // --- Module Control State ---
   const [enabledModules, setEnabledModulesState] = useState<Record<string, boolean>>({});
-
-  const selectTab = (id: string) => setActiveTab(id as any);
 
   // --- Sessions Tab State ---
   type SessionUser = {
@@ -1179,8 +1160,8 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
         <div className="flex-1 flex flex-col gap-6 w-full z-10 relative">
           {/* Header — consistent with the other Admin Center pages */}
           <PageHeader
-            title={GROUP_META[group].title}
-            subtitle={GROUP_META[group].subtitle}
+            title={TAB_META[tab].title}
+            subtitle={TAB_META[tab].subtitle}
             breadcrumbs={[{ label: 'Admin', href: '/admin' }, { label: 'Settings' }]}
             actions={
               saving ? (
@@ -1211,136 +1192,6 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
 
           {/* Core Layout Workspace */}
           <div className="flex flex-col gap-4">
-            {/* Sidebar Tabs Selector */}
-            <div className="w-full flex flex-row gap-1.5 bg-[var(--bg-card)] p-2 border border-[var(--border)] rounded-xl overflow-x-auto scrollbar-none">
-              {/* Single horizontal tab bar (was a second vertical sidebar) */}
-              <div className="flex flex-row gap-1.5 w-full">
-                {groupTabs.map(tab => {
-                  const IconComponent = tab.icon;
-                  const isSelected = activeTab === tab.id;
-                  return (
-                    <button
-                      key={tab.id}
-                      onClick={() => selectTab(tab.id)}
-                      className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-200 ${
-                        isSelected
-                          ? 'bg-[var(--surface-active)] border border-[var(--border)] text-primary font-bold '
-                          : 'text-text-muted border border-transparent hover:bg-[var(--surface-hover)] hover:text-text-primary'
-                      }`}
-                    >
-                      <IconComponent size={13} className="shrink-0" />
-                      <span>{tab.label}</span>
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Former vertical grouped nav + Platform Builder links — these now
-                  live in the main app sidebar (Administration group); hidden here
-                  to remove the second sidebar. */}
-              <div className="hidden">
-                {[
-                  {
-                    group: 'General Config',
-                    items: [
-                      { id: 'COMPANY', label: 'Company & Branding', icon: Building },
-                      { id: 'MODULE_CONTROL', label: 'Module Toggles', icon: Sliders },
-                    ]
-                  },
-                  {
-                    group: 'Access Control',
-                    items: [
-                      { id: 'USERS_ROLES', label: 'Users, Roles & Perms', icon: Users },
-                      { id: 'SESSIONS', label: 'Sessions & Account Access', icon: Key },
-                    ]
-                  },
-                  {
-                    group: 'Operational Scales',
-                    items: [
-                      { id: 'FINANCE', label: 'Financial & Tax', icon: DollarSign },
-                      { id: 'PROCUREMENT', label: 'Procurement Settings', icon: Sliders },
-                      { id: 'INVENTORY', label: 'Inventory & Assets', icon: Layers },
-                      { id: 'PROJECTS', label: 'Projects & Operations', icon: Cpu },
-                      { id: 'MAINTENANCE', label: 'Maintenance & SLA', icon: Clock },
-                      { id: 'HR', label: 'HR & Workforce', icon: Clock },
-                    ]
-                  },
-                  {
-                    group: 'Templates & Alerts',
-                    items: [
-                      { id: 'NOTIFICATIONS', label: 'Notifications & Alerts', icon: Bell },
-                      { id: 'TEMPLATES', label: 'Document Templates', icon: FileCheck },
-                      { id: 'INTEGRATIONS', label: 'Integrations Config', icon: Share2 },
-                    ]
-                  },
-                  {
-                    group: 'System & Advanced',
-                    items: [
-                      { id: 'SYSTEM_ADMIN', label: 'System Administration', icon: Sliders },
-                      { id: 'SECURITY', label: 'Audit & Security', icon: Shield },
-                      { id: 'BACKUP', label: 'Backup & Recovery', icon: Database },
-                    ]
-                  }
-                ].map((section, sIdx) => (
-                  <div key={sIdx} className="flex flex-col gap-1.5">
-                    <span className="text-[9px] font-bold text-text-muted tracking-widest uppercase font-mono px-2 mb-1">
-                      {section.group}
-                    </span>
-                    <div className="flex flex-col gap-1">
-                      {section.items.map(tab => {
-                        const IconComponent = tab.icon;
-                        const isSelected = activeTab === tab.id;
-                        return (
-                          <button
-                            key={tab.id}
-                            onClick={() => selectTab(tab.id)}
-                            className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold w-full transition-all duration-300 text-left relative overflow-hidden group ${
-                              isSelected
-                                ? 'bg-[var(--surface-active)] border border-[var(--border)] text-primary  font-bold after:absolute after:left-0 after:top-1/4 after:h-1/2 after:w-1 after:bg-primary after:rounded-r-md'
-                                : 'text-text-secondary border border-transparent hover:bg-[var(--surface-hover)] hover:text-text-primary'
-                            }`}
-                          >
-                            <IconComponent size={14} className={`shrink-0 transition-transform duration-300 ${isSelected ? 'scale-110 text-primary' : 'group-hover:scale-110 text-text-muted'}`} />
-                            <span className="truncate">{tab.label}</span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                ))}
-
-                {/* Platform Builder — dedicated Admin Center pages */}
-                <div className="flex flex-col gap-1.5">
-                  <span className="text-[9px] font-bold text-text-muted tracking-widest uppercase font-mono px-2 mb-1">
-                    Platform Builder
-                  </span>
-                  <div className="flex flex-col gap-1">
-                    {[
-                      { href: '/admin/workflows', label: 'Workflow Builder', icon: Share2 },
-                      { href: '/admin/rules', label: 'Business Rules', icon: Sliders },
-                      { href: '/admin/numbering', label: 'Document Numbering', icon: Key },
-                      { href: '/admin/forms', label: 'Forms Builder', icon: FileCheck },
-                      { href: '/admin/templates', label: 'Document Templates', icon: FileText },
-                    ].map(link => {
-                      const IconComponent = link.icon;
-                      return (
-                        <Link
-                          key={link.href}
-                          href={link.href}
-                          className="flex items-center justify-between gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold w-full text-left text-text-secondary border border-transparent hover:bg-[var(--surface-hover)] hover:text-text-primary transition-all no-underline group"
-                        >
-                          <span className="flex items-center gap-2.5 min-w-0">
-                            <IconComponent size={14} className="shrink-0 text-text-muted group-hover:scale-110 transition-transform" />
-                            <span className="truncate">{link.label}</span>
-                          </span>
-                          <ArrowUpRight size={11} className="shrink-0 text-text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
-                        </Link>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            </div>
 
             {/* Tab Details Form Container */}
             <div className="flex-1 w-full bg-[var(--surface)] border border-border-color rounded-xl p-8 min-w-0 shadow-sm relative">
