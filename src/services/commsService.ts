@@ -258,8 +258,79 @@ export const commsService = {
     return (data || []).map((r: any) => ({ ...r, user_name: nm.get(r.user_id) || 'Unknown User' }));
   },
 
-  // ---- calls ----
-  async endCall(callId: string): Promise<void> {
-    await supabase.from('comm_calls').update({ status: 'ended', ended_at: new Date().toISOString() }).eq('id', callId);
+  // ---- meetings / calls lifecycle ----
+  async getMeetingByRoom(roomName: string): Promise<any | null> {
+    const { data } = await supabase.from('comm_calls').select('*').eq('room_name', roomName).in('status', ['ringing', 'ongoing', 'active']).order('started_at', { ascending: false }).limit(1);
+    return data?.[0] || null;
+  },
+
+  async startMeeting(p: { roomName: string; type: 'voice' | 'video'; conversationId?: string | null; startedBy: string; title?: string }): Promise<any | null> {
+    const { data, error } = await supabase.from('comm_calls').insert({
+      conversation_id: p.conversationId || null, type: p.type, room_name: p.roomName,
+      room_url: `/comms/meeting/${p.roomName}`, started_by: p.startedBy, title: p.title || null,
+      status: 'active', participant_count: 0, last_activity_at: new Date().toISOString(),
+    }).select().single();
+    if (error) return null;
+    return data;
+  },
+
+  // join existing live meeting for this room, or start a fresh one
+  async getOrStartMeeting(roomName: string, p: { type: 'voice' | 'video'; conversationId?: string | null; startedBy: string; title?: string }): Promise<any | null> {
+    const existing = await this.getMeetingByRoom(roomName);
+    if (existing) return existing;
+    return this.startMeeting({ roomName, ...p });
+  },
+
+  async recordParticipantJoin(callId: string, userId: string, displayName?: string): Promise<void> {
+    await supabase.from('comm_call_participants').upsert({ call_id: callId, user_id: userId, display_name: displayName || null, joined_at: new Date().toISOString(), left_at: null }, { onConflict: 'call_id,user_id' }).then(() => {}, () => {});
+    await supabase.from('comm_calls').update({ last_activity_at: new Date().toISOString() }).eq('id', callId).then(() => {}, () => {});
+  },
+
+  async recordParticipantLeave(callId: string, userId: string): Promise<void> {
+    const { data } = await supabase.from('comm_call_participants').select('joined_at').eq('call_id', callId).eq('user_id', userId).limit(1);
+    const joined = data?.[0]?.joined_at;
+    const dur = joined ? Math.max(0, Math.round((Date.now() - new Date(joined).getTime()) / 1000)) : null;
+    await supabase.from('comm_call_participants').update({ left_at: new Date().toISOString(), duration_seconds: dur }).eq('call_id', callId).eq('user_id', userId).then(() => {}, () => {});
+  },
+
+  async updateMeetingActivity(callId: string, count: number): Promise<void> {
+    const patch: any = { participant_count: count, last_activity_at: new Date().toISOString() };
+    const { data } = await supabase.from('comm_calls').select('peak_participants').eq('id', callId).limit(1);
+    const peak = data?.[0]?.peak_participants || 0;
+    if (count > peak) patch.peak_participants = count;
+    await supabase.from('comm_calls').update(patch).eq('id', callId).then(() => {}, () => {});
+  },
+
+  async updateMeetingStatus(callId: string, status: string): Promise<void> {
+    await supabase.from('comm_calls').update({ status }).eq('id', callId).then(() => {}, () => {});
+  },
+
+  async endMeeting(callId: string): Promise<void> {
+    const { data } = await supabase.from('comm_calls').select('started_at, status').eq('id', callId).limit(1);
+    if (!data?.[0] || data[0].status === 'completed' || data[0].status === 'ended') return;
+    const started = data[0].started_at;
+    const dur = started ? Math.max(0, Math.round((Date.now() - new Date(started).getTime()) / 1000)) : null;
+    const now = new Date().toISOString();
+    await supabase.from('comm_calls').update({ status: 'completed', ended_at: now, duration_seconds: dur, participant_count: 0 }).eq('id', callId);
+    // close any still-open attendance rows
+    await supabase.from('comm_call_participants').update({ left_at: now }).eq('call_id', callId).is('left_at', null).then(() => {}, () => {});
+  },
+
+  // back-compat alias
+  async endCall(callId: string): Promise<void> { return this.endMeeting(callId); },
+
+  async getMeetings(limit = 100): Promise<any[]> {
+    const { data, error } = await supabase.from('comm_calls').select('*').order('started_at', { ascending: false }).limit(limit);
+    if (error) return [];
+    const rows = data || [];
+    const nm = await nameMap(rows.map((r: any) => r.started_by));
+    return rows.map((r: any) => ({ ...r, host_name: r.started_by ? nm.get(r.started_by) : undefined }));
+  },
+
+  async getMeetingAttendance(callId: string): Promise<any[]> {
+    const { data } = await supabase.from('comm_call_participants').select('*').eq('call_id', callId).order('joined_at');
+    const rows = data || [];
+    const nm = await nameMap(rows.map((r: any) => r.user_id));
+    return rows.map((r: any) => ({ ...r, user_name: r.user_id ? nm.get(r.user_id) : (r.display_name || 'Guest') }));
   },
 };
