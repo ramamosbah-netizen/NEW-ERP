@@ -90,7 +90,8 @@ import {
   ScrollText,
   ShieldCheck,
   Database,
-  Share2
+  Share2,
+  Video
 } from 'lucide-react';
 
 // Navigation structure: grouped sections
@@ -297,6 +298,7 @@ const NAV_SECTIONS = [
       { href: '/comms', label: 'Messenger', icon: MessageSquare },
       { href: '/comms/announcements', label: 'Announcements', icon: Megaphone },
       { href: '/comms/documents', label: 'Shared Documents', icon: FileText },
+      { href: '/comms/meetings', label: 'Meetings', icon: Video },
       { href: '/comms/notifications', label: 'Notifications', icon: Bell },
       { href: '/comms/admin', label: 'Settings', icon: SlidersHorizontal },
       { href: '/whatsapp', label: 'WhatsApp', icon: MessageSquare },
@@ -456,6 +458,8 @@ export default function AppSidebar({ mobileOpen = false, onMobileClose }: AppSid
     if (href === '/admin') return pathname === '/admin';
     // Settings General is the base route; don't let it match its sub-sections
     if (href === '/admin/settings') return pathname === '/admin/settings';
+    // Messenger is the base route; don't let it match /comms/* sub-pages
+    if (href === '/comms') return pathname === '/comms';
     return pathname === href || (pathname?.startsWith(href + '/') ?? false);
   };
 
