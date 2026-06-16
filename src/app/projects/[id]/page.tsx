@@ -26,6 +26,7 @@ import ProjectVOTab from '@/app/projects/tabs/ProjectVOTab';
 import ProjectFileTab from '@/app/projects/tabs/ProjectFileTab';
 import WorkflowPanel from '@/components/workflow/WorkflowPanel';
 import ProjectDocumentRegister from '@/components/projects/ProjectDocumentRegister';
+import ProjectBudgetCard from '@/components/finance/ProjectBudgetCard';
 
 import { 
   ArrowLeft, 
@@ -314,6 +315,12 @@ export default function ProjectDetailPage({ params }: Props) {
           onStatusChange={() => refetch()}
           className="mb-6"
         />
+
+        {/* Budget status (read-only; renders only when a budget exists + the
+            guard migration 20260616221000 is applied). Additive. */}
+        <div style={{ marginBottom: '1.5rem' }}>
+          <ProjectBudgetCard projectId={projectId} />
+        </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem', alignItems: 'start' }}>
           

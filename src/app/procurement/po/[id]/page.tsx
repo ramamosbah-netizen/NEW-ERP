@@ -33,6 +33,7 @@ import {
   Upload
 } from 'lucide-react';
 import WorkflowPanel from '@/components/workflow/WorkflowPanel';
+import ProjectBudgetCard from '@/components/finance/ProjectBudgetCard';
 import '@/app/procurement/comparisons/comparisons.css';
 
 const fmtAED = (v: number) => {
@@ -719,6 +720,15 @@ export default function PODetailPage({ params }: PageProps) {
               )}
             </div>
           </div>
+
+          {/* Budget impact of approving this PO (renders only when the project
+              has a budget + the guard migration is applied). Additive, read-only. */}
+          <ProjectBudgetCard
+            projectId={(po as any).project_id}
+            previewAmount={Number(po.total) || 0}
+            excludePoId={poId}
+            previewLabel="If this PO is approved"
+          />
 
           {/* Configurable workflow (Admin Center → Workflows). Renders only
               when an active workflow is configured for the PO module. */}
