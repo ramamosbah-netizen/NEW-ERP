@@ -49,6 +49,7 @@ import {
 } from '@/lib/boq-calculations';
 import { exportBOQToPDF, exportBOQToExcel } from '@/lib/boq-export';
 import { PageHeader } from '@/components/ui/PageHeader';
+import WorkflowPanel from '@/components/workflow/WorkflowPanel';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { StatusChip } from '@/components/ui/StatusChip';
@@ -1212,6 +1213,15 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
         breadcrumbs={breadcrumbs}
         actions={actions}
       />
+
+      {/* Configurable BOQ workflow (Admin Center → Workflows): Estimator draft → Procurement cost-review → Commercial/Manager approve → feeds Quotation */}
+      {boqId && (
+        <WorkflowPanel
+          moduleKey="BOQ"
+          entityId={boqId}
+          context={{ status: boqStatus }}
+        />
+      )}
 
       {/* Messages */}
       {errorMsg && (

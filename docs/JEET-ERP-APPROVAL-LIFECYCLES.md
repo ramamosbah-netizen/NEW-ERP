@@ -25,18 +25,33 @@ Engineer / `technician` Field Technician (L100) · `viewer` Auditor (L200).
 
 ---
 
-## A. Engine-enforced workflows (8) — exact, from the seed
+## A. Engine-enforced workflows (9) — exact, from the seed
 
-### 1. Tender `TND` — Tender Lifecycle
-**Registered (estimator)** → **Qualification** → **Evaluation (Commercial Mgr / GM)** → **Bid Submitted (GM approval)** → **Awarded / Lost**
+### 1. Tender `TND` — Tender Lifecycle  *(simplified — `20260616210000`)*
+**Draft (Estimator)** → **Engineer Revision (Site Engineer)** → **Manager Approval (Manager)** → **Approved to Bid → Bid Submitted → Awarded / Lost**
 
 | Stage | → action | Allowed roles | SLA |
 |-------|----------|---------------|-----|
-| DRAFT *(Registered)* | QUALIFY | anyone | — |
-| QUALIFICATION | EVALUATE | manager · commercial_mgr · gm | 120h |
-| QUALIFICATION | NO_BID → Archived | manager · gm | — |
-| EVALUATION | SUBMIT_BID *(SINGLE: gm)* | manager · commercial_mgr · gm | — |
+| DRAFT | SUBMIT_REVISION | anyone | — |
+| ENGINEER_REVISION | SUBMIT_APPROVAL | engineer · site_eng · estimator | 48h |
+| ENGINEER_REVISION | REVISION_RETURN → Draft | engineer · site_eng · manager | — |
+| PENDING_APPROVAL | APPROVE *(SINGLE: manager)* | manager · gm | 48h |
+| PENDING_APPROVAL | REJECT → Draft | manager · gm | — |
+| APPROVED | SUBMIT_BID | anyone | — |
 | SUBMITTED | AWARD / LOSE | anyone | — |
+
+### 1b. BOQ `BOQ` — BOQ Approval  *(new — `20260616210000`)*
+**Draft (Estimator / Engineer)** → **Procurement Cost Review (Procurement)** → **Commercial Approval (Commercial Mgr / Manager)** → **Approved → Linked to Quotation**
+
+| Stage | → action | Allowed roles | SLA |
+|-------|----------|---------------|-----|
+| DRAFT | SUBMIT_REVIEW | estimator · engineer · site_eng | — |
+| COST_REVIEW | COST_APPROVE *(SINGLE: procurement)* | procurement · manager | 48h |
+| COST_REVIEW | COST_RETURN → Draft | procurement · manager | — |
+| PENDING_APPROVAL | APPROVE *(SINGLE: commercial_mgr)* | commercial_mgr · manager · gm | 48h |
+| PENDING_APPROVAL | REJECT | commercial_mgr · manager | — |
+| REJECTED | REVISE → Draft | estimator · engineer · site_eng | — |
+| APPROVED | LINK_QUOTE → Quotation | estimator · commercial_mgr · manager | — |
 
 ### 2. Quotation `QTN` — Quotation Approval
 **Draft (estimator)** → **Commercial Review (Commercial Manager)** → **GM Approval (General Manager)** → **Approved → Sent → Client Accept/Reject**
@@ -133,8 +148,8 @@ the **operating convention** (enforced in-app, not all DB-enforced yet).
 | **Testing & Commissioning** | Package → EXECUTE *(calibrated tool gate)* → WITNESS → PASS/FAIL→snag | executed by **Technician / Site Engineer** → witnessed by **Client / Consultant** |
 | **Payroll Run** | DRAFT → Calculated → **APPROVED** → SIF/WPS → Paid | prepared by **Accountant / HR** → approved by **GM** |
 
-### Not yet modelled — recommended chain
-- **BOQ (Bill of Quantities)** — no formal workflow today. **Recommended:** Draft (**Estimator / Site Engineer**) → Cost review (**Procurement**) → Approve (**Commercial Manager / Manager**) → feeds the Quotation `QTN` flow. I can seed this as a `BOQ` workflow if you want it engine-enforced.
+*(BOQ is now an engine-enforced workflow — see §1b above. WorkflowPanel is wired
+onto the BOQ workspace page and the Tender detail page.)*
 
 ---
 
