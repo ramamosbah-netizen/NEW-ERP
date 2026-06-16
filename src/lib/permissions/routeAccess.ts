@@ -15,7 +15,7 @@
 // Personal productivity surface — available to EVERY role.
 const WORKSPACE_ROUTES = [
   '/', '/dashboard', '/profile', '/myday', '/tasks', '/meetings',
-  '/notifications', '/workspace',
+  '/notifications', '/workspace', '/comms', '/whatsapp',
 ];
 
 // role (lowercased) → allowed module route prefixes (workspace added automatically)
