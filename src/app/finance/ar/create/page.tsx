@@ -37,6 +37,7 @@ export default function InvoiceCreatePage() {
   const [advanceRecoveryRate, setAdvanceRecoveryRate] = useState(0); // e.g. 0.20 for 20%
   const [retentionRate, setRetentionRate] = useState(0); // e.g. 0.10 for 10%
   const [certifiedAmount, setCertifiedAmount] = useState<string>(''); // Consultant certified gross claim
+  const [advanceIssued, setAdvanceIssued] = useState(0); // Real advance base = sum of ADVANCE invoices already issued for the project
 
   // Invoice Items
   const [items, setItems] = useState<Array<{
@@ -75,6 +76,24 @@ export default function InvoiceCreatePage() {
     }
   }, [projectId, projects]);
 
+  // Load the REAL advance base: sum of ADVANCE invoices already issued for this project.
+  // Drives advance-recovery math (replaces a hardcoded 20%-of-contract assumption that
+  // recovered advance even when none was ever issued).
+  useEffect(() => {
+    if (!projectId) { setAdvanceIssued(0); return; }
+    supabase
+      .from('client_invoices')
+      .select('gross_claim, taxable_amount, status')
+      .eq('project_id', projectId)
+      .eq('invoice_type', 'ADVANCE')
+      .then(({ data }) => {
+        const base = (data || [])
+          .filter((r: any) => r.status !== 'CANCELLED' && r.status !== 'WRITTEN_OFF')
+          .reduce((sum: number, r: any) => sum + (Number(r.gross_claim) || Number(r.taxable_amount) || 0), 0);
+        setAdvanceIssued(round2(base));
+      }, () => setAdvanceIssued(0));
+  }, [projectId]);
+
   // Item Updates
   const handleItemChange = (index: number, key: string, val: any) => {
     const updated = [...items];
@@ -104,7 +123,7 @@ export default function InvoiceCreatePage() {
       vat_rate: Number(item.vat_rate) || 5.00
     })),
     contract_value: selectedContractVal,
-    total_advance_amount: selectedContractVal ? (selectedContractVal * 0.20) : 0, // Mock 20% advance base
+    total_advance_amount: advanceIssued, // Real advance base = sum of ADVANCE invoices issued for this project
     advance_recovery_rate: advanceRecoveryRate,
     retention_rate: retentionRate,
     gross_claim_override: certifiedAmount !== '' ? Number(certifiedAmount) : undefined
@@ -430,6 +449,14 @@ export default function InvoiceCreatePage() {
                       </span>
                     </div>
                   </>
+                )}
+                {advanceIssued > 0 && (
+                  <div className="flex justify-between border-t border-[var(--border)] pt-1.5">
+                    <span className="text-[var(--text-secondary)]">Advance Issued:</span>
+                    <span className="font-mono text-[var(--text-secondary)]">
+                      {advanceIssued.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} AED
+                    </span>
+                  </div>
                 )}
               </div>
             )}
