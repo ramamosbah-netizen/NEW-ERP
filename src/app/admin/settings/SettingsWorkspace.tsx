@@ -1160,7 +1160,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
     <div className="min-h-screen bg-bg-dark text-text-primary flex flex-col font-body theme-transition relative overflow-hidden">
       {/* Background Glowing Abstract Blobs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-        <div className="glow-blob blob-1 absolute -top-40 -right-40 w-96 h-96 bg-primary/20 rounded-full blur-[120px]" />
+        <div className="glow-blob blob-1 absolute -top-40 -right-40 w-96 h-96 bg-[var(--surface-active)] rounded-full blur-[120px]" />
         <div className="glow-blob blob-2 absolute -bottom-40 -left-40 w-96 h-96 bg-secondary/20 rounded-full blur-[120px]" />
       </div>
 
@@ -1168,7 +1168,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
         perform="settings.manage"
         fallback={
           <div className="flex-1 flex flex-col items-center justify-center p-6 text-center z-10 relative">
-            <AlertTriangle className="text-error mb-2 animate-pulse" size={48} />
+            <AlertTriangle className="text-[var(--status-danger-text)] mb-2 animate-pulse" size={48} />
             <h1 className="text-xl font-bold font-heading text-text-primary">Access Denied</h1>
             <p className="text-xs text-text-muted max-w-sm mt-1 leading-relaxed">
               Your account permissions do not authorize access to the Unified Settings Hub. Please contact a system administrator.
@@ -1197,14 +1197,14 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
 
           {/* Feedback alerts */}
           {successMsg && (
-            <div className="p-3.5 bg-success/10 border border-success/30 rounded-xl text-xs text-success flex items-center gap-2 font-semibold animate-fadeIn shadow-[0_4px_20px_var(--success-glow)]">
-              <CheckCircle size={15} className="shrink-0 text-success" /> 
+            <div className="p-3.5 bg-[var(--status-success-bg)] border border-[var(--status-success-border)] rounded-xl text-xs text-[var(--status-success-text)] flex items-center gap-2 font-semibold animate-fadeIn ">
+              <CheckCircle size={15} className="shrink-0 text-[var(--status-success-text)]" /> 
               <span>{successMsg}</span>
             </div>
           )}
           {errorMsg && (
-            <div className="p-3.5 bg-error/10 border border-error/30 rounded-xl text-xs text-error flex items-center gap-2 font-semibold animate-fadeIn shadow-[0_4px_20px_var(--error-glow)]">
-              <AlertTriangle size={15} className="shrink-0 text-error" />
+            <div className="p-3.5 bg-[var(--status-danger-bg)] border border-[var(--status-danger-border)] rounded-xl text-xs text-[var(--status-danger-text)] flex items-center gap-2 font-semibold animate-fadeIn ">
+              <AlertTriangle size={15} className="shrink-0 text-[var(--status-danger-text)]" />
               <span>{errorMsg}</span>
             </div>
           )}
@@ -1224,8 +1224,8 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                       onClick={() => selectTab(tab.id)}
                       className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-200 ${
                         isSelected
-                          ? 'bg-primary/15 border border-primary/35 text-primary font-bold shadow-[0_0_12px_var(--primary-glow)]'
-                          : 'text-text-muted border border-transparent hover:bg-bg-card-hover/40 hover:text-text-primary'
+                          ? 'bg-[var(--surface-active)] border border-[var(--border)] text-primary font-bold '
+                          : 'text-text-muted border border-transparent hover:bg-[var(--surface-hover)] hover:text-text-primary'
                       }`}
                     >
                       <IconComponent size={13} className="shrink-0" />
@@ -1296,8 +1296,8 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                             onClick={() => selectTab(tab.id)}
                             className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold w-full transition-all duration-300 text-left relative overflow-hidden group ${
                               isSelected
-                                ? 'bg-gradient-to-r from-primary/15 to-primary/5 border border-primary/30 text-primary shadow-[0_0_15px_var(--primary-glow)] font-bold after:absolute after:left-0 after:top-1/4 after:h-1/2 after:w-1 after:bg-primary after:rounded-r-md'
-                                : 'text-text-secondary border border-transparent hover:bg-bg-card-hover/30 hover:text-text-primary'
+                                ? 'bg-[var(--surface-active)] border border-[var(--border)] text-primary  font-bold after:absolute after:left-0 after:top-1/4 after:h-1/2 after:w-1 after:bg-primary after:rounded-r-md'
+                                : 'text-text-secondary border border-transparent hover:bg-[var(--surface-hover)] hover:text-text-primary'
                             }`}
                           >
                             <IconComponent size={14} className={`shrink-0 transition-transform duration-300 ${isSelected ? 'scale-110 text-primary' : 'group-hover:scale-110 text-text-muted'}`} />
@@ -1327,7 +1327,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                         <Link
                           key={link.href}
                           href={link.href}
-                          className="flex items-center justify-between gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold w-full text-left text-text-secondary border border-transparent hover:bg-bg-card-hover/30 hover:text-text-primary transition-all no-underline group"
+                          className="flex items-center justify-between gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold w-full text-left text-text-secondary border border-transparent hover:bg-[var(--surface-hover)] hover:text-text-primary transition-all no-underline group"
                         >
                           <span className="flex items-center gap-2.5 min-w-0">
                             <IconComponent size={14} className="shrink-0 text-text-muted group-hover:scale-110 transition-transform" />
@@ -1343,7 +1343,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
             </div>
 
             {/* Tab Details Form Container */}
-            <div className="flex-1 w-full bg-bg-card/25 backdrop-blur-xl border border-border-color rounded-2xl p-8 min-w-0 shadow-2xl relative">
+            <div className="flex-1 w-full bg-[var(--surface)] border border-border-color rounded-xl p-8 min-w-0 shadow-sm relative">
               {loading ? (
                 <div className="py-24 flex flex-col items-center justify-center">
                   <div className="h-8 w-8 rounded-full border-2 border-primary border-t-transparent animate-spin mb-3"></div>
@@ -1372,7 +1372,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                               type="text" 
                               value={companyName}
                               onChange={(e) => setCompanyName(e.target.value)}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-sans font-semibold"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-sans font-semibold"
                             />
                           </div>
                           <div>
@@ -1381,7 +1381,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                               type="text" 
                               value={trn}
                               onChange={(e) => setTrn(e.target.value)}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono font-semibold"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-mono font-semibold"
                               placeholder="e.g. 100293849500003"
                             />
                           </div>
@@ -1391,7 +1391,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                               type="text" 
                               value={tradeLicense}
                               onChange={(e) => setTradeLicense(e.target.value)}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-sans font-semibold"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-sans font-semibold"
                             />
                           </div>
                           <div>
@@ -1400,7 +1400,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                               type="text" 
                               value={website}
                               onChange={(e) => setWebsite(e.target.value)}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono font-semibold"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-mono font-semibold"
                               placeholder="e.g. https://jeetmep.ae"
                             />
                           </div>
@@ -1410,7 +1410,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                               type="text" 
                               value={logoUrl}
                               onChange={(e) => setLogoUrl(e.target.value)}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono font-semibold"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-mono font-semibold"
                             />
                           </div>
                           <div>
@@ -1419,7 +1419,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                               type="text" 
                               value={email}
                               onChange={(e) => setEmail(e.target.value)}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-sans font-semibold"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-sans font-semibold"
                             />
                           </div>
                           <div>
@@ -1428,7 +1428,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                               type="text" 
                               value={phone}
                               onChange={(e) => setPhone(e.target.value)}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono font-semibold"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-mono font-semibold"
                             />
                           </div>
                           <div className="md:col-span-2">
@@ -1437,7 +1437,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                               type="text" 
                               value={address}
                               onChange={(e) => setAddress(e.target.value)}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-sans font-semibold"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-sans font-semibold"
                             />
                           </div>
                         </div>
@@ -1445,11 +1445,11 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                         {/* Right Side: Live Branding Card */}
                         <div className="w-full lg:w-72 flex flex-col gap-4">
                           <label className="block text-[10px] font-mono text-text-muted uppercase font-bold tracking-wider">Brand Verification Preview</label>
-                          <div className="p-6 bg-bg-card/40 backdrop-blur-md border border-border-color rounded-2xl flex flex-col items-center justify-center text-center gap-4 relative overflow-hidden group shadow-2xl shadow-black/40">
+                          <div className="p-6 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col items-center justify-center text-center gap-4 relative overflow-hidden group shadow-sm">
                             {/* Card Glow Background */}
-                            <div className="absolute -right-20 -top-20 w-40 h-40 bg-primary/5 blur-3xl rounded-full transition-all duration-700 group-hover:bg-primary/10" />
+                            <div className="absolute -right-20 -top-20 w-40 h-40 bg-[var(--surface-active)] blur-3xl rounded-full transition-all duration-700 group-hover:bg-[var(--surface-active)]" />
                             
-                            <div className="w-24 h-24 rounded-2xl bg-[var(--bg-card)] border border-border-color flex items-center justify-center overflow-hidden shadow-inner relative group-hover:border-primary/30 transition-colors duration-300">
+                            <div className="w-24 h-24 rounded-xl bg-[var(--bg-card)] border border-border-color flex items-center justify-center overflow-hidden shadow-inner relative group-hover:border-[var(--border)] transition-colors duration-300">
                               {logoUrl ? (
                                 <img 
                                   src={logoUrl} 
@@ -1480,7 +1480,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                             </div>
                             
                             <div className="w-full border-t border-border-color/60 pt-3 flex items-center justify-center gap-1.5 text-[9px] font-mono text-text-muted uppercase tracking-wider z-10">
-                              <span className="h-1.5 w-1.5 rounded-full bg-primary/45 animate-pulse" /> BRANDING ACCEPTS PDFS
+                              <span className="h-1.5 w-1.5 rounded-full bg-[var(--surface-active)] animate-pulse" /> BRANDING ACCEPTS PDFS
                             </div>
                           </div>
                         </div>
@@ -1489,7 +1489,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                       <button
                         onClick={saveCompanyProfile}
                         disabled={saving}
-                        className="bg-gradient-to-r from-primary to-primary-hover text-bg-dark font-extrabold px-5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5 ml-auto mt-2 shadow-lg hover:shadow-[0_0_15px_var(--primary-glow)] active:scale-98 select-none"
+                        className="bg-[var(--primary)] text-bg-dark font-extrabold px-5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5 ml-auto mt-2 shadow-sm hover: active:scale-98 select-none"
                       >
                         <Save size={13} /> Save Company Profile
                       </button>
@@ -1562,25 +1562,25 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
 
                             {/* Summary Statistics Cards */}
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                              <div className="p-4.5 bg-bg-card/45 border border-border-color rounded-2xl flex items-center justify-between shadow-lg">
+                              <div className="p-4.5 bg-[var(--surface)] border border-border-color rounded-xl flex items-center justify-between shadow-sm">
                                 <div>
                                   <span className="text-[10px] font-mono text-text-muted uppercase font-bold tracking-wider">Active Modules</span>
                                   <h4 className="text-xl font-bold text-primary mt-1 font-heading">{activeCount}</h4>
                                 </div>
-                                <div className="h-8.5 w-8.5 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold text-[11px] select-none">
+                                <div className="h-8.5 w-8.5 rounded-xl bg-[var(--surface-active)] border border-[var(--border)] flex items-center justify-center text-primary font-bold text-[11px] select-none">
                                   ✓
                                 </div>
                               </div>
-                              <div className="p-4.5 bg-bg-card/45 border border-border-color rounded-2xl flex items-center justify-between shadow-lg">
+                              <div className="p-4.5 bg-[var(--surface)] border border-border-color rounded-xl flex items-center justify-between shadow-sm">
                                 <div>
                                   <span className="text-[10px] font-mono text-text-muted uppercase font-bold tracking-wider">Disabled Modules</span>
-                                  <h4 className="text-xl font-bold text-error mt-1 font-heading">{disabledCount}</h4>
+                                  <h4 className="text-xl font-bold text-[var(--status-danger-text)] mt-1 font-heading">{disabledCount}</h4>
                                 </div>
-                                <div className="h-8.5 w-8.5 rounded-xl bg-error/10 border border-error/20 flex items-center justify-center text-error font-bold text-[11px] select-none">
+                                <div className="h-8.5 w-8.5 rounded-xl bg-[var(--status-danger-bg)] border border-[var(--status-danger-border)] flex items-center justify-center text-[var(--status-danger-text)] font-bold text-[11px] select-none">
                                   ✕
                                 </div>
                               </div>
-                              <div className="p-4.5 bg-bg-card/45 border border-border-color rounded-2xl flex items-center justify-between shadow-lg">
+                              <div className="p-4.5 bg-[var(--surface)] border border-border-color rounded-xl flex items-center justify-between shadow-sm">
                                 <div>
                                   <span className="text-[10px] font-mono text-text-muted uppercase font-bold tracking-wider">Total Modules</span>
                                   <h4 className="text-xl font-bold text-text-secondary mt-1 font-heading">{totalModules}</h4>
@@ -1607,12 +1607,12 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                     onClick={() => setModuleCategoryFilter(cat.id as any)}
                                     className={`px-3.5 py-1.5 rounded-xl border transition-all text-xs font-semibold flex items-center gap-2 ${
                                       isSelected
-                                        ? 'bg-[var(--surface-hover)] border-primary/45 text-text-primary shadow-[0_0_12px_var(--primary-glow)]'
+                                        ? 'bg-[var(--surface-hover)] border-[var(--border)] text-text-primary '
                                         : 'bg-[var(--bg-card)] border-border-color text-text-muted hover:border-text-secondary hover:text-text-secondary'
                                     }`}
                                   >
                                     <span>{cat.name}</span>
-                                    <span className={`text-[9px] font-mono px-2 py-0.5 rounded-full ${isSelected ? 'bg-primary/10 text-primary' : 'bg-[var(--surface-hover)] text-text-muted'}`}>
+                                    <span className={`text-[9px] font-mono px-2 py-0.5 rounded-full ${isSelected ? 'bg-[var(--surface-active)] text-primary' : 'bg-[var(--surface-hover)] text-text-muted'}`}>
                                       {cat.count}
                                     </span>
                                   </button>
@@ -1622,8 +1622,8 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                               {filteredSections.map((section) => (
-                                <div key={section.id} className="p-5 bg-bg-card/25 border border-border-color rounded-2xl flex flex-col gap-3.5 relative overflow-hidden group shadow-lg transition-all duration-300 hover:border-primary/25">
-                                  <div className="absolute -right-12 -top-12 w-24 h-24 bg-primary/5 blur-2xl rounded-full" />
+                                <div key={section.id} className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-3.5 relative overflow-hidden group shadow-sm transition-all duration-300 hover:border-[var(--border)]">
+                                  <div className="absolute -right-12 -top-12 w-24 h-24 bg-[var(--surface-active)] blur-2xl rounded-full" />
                                   <div className="flex items-center justify-between border-b border-border-color/65 pb-2.5">
                                     <h4 className="text-xs font-bold text-text-secondary uppercase tracking-wider font-mono">{section.label}</h4>
                                     <span className="text-[9px] font-bold text-primary font-mono tracking-wider">
@@ -1637,7 +1637,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                       return (
                                         <div key={item.href} className="flex items-start justify-between p-3.5 bg-[var(--bg-card)] border border-border-color/60 rounded-xl hover:border-border-color transition-all duration-200 group/item">
                                           <div className="flex items-start gap-3">
-                                            <span className={`p-2 rounded-xl bg-[var(--surface-hover)] border border-border-color/65 shrink-0 transition-colors duration-300 ${isEnabled ? 'text-primary border-primary/25' : 'text-text-muted'}`}>
+                                            <span className={`p-2 rounded-xl bg-[var(--surface-hover)] border border-border-color/65 shrink-0 transition-colors duration-300 ${isEnabled ? 'text-primary border-[var(--border)]' : 'text-text-muted'}`}>
                                               <item.icon size={15} />
                                             </span>
                                             <div className="flex flex-col truncate pr-2">
@@ -1662,8 +1662,8 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                               });
                                             }}
                                             className={`w-10 h-6 rounded-full p-1 transition-all duration-300 focus:outline-none relative flex items-center shrink-0 ${
-                                              isDashboardOrSettings ? 'bg-primary/20 opacity-55 cursor-not-allowed border border-transparent' :
-                                              isEnabled ? 'bg-primary shadow-[0_0_12px_var(--primary-glow)]' : 'bg-[var(--bg-card)] border border-border-color'
+                                              isDashboardOrSettings ? 'bg-[var(--surface-active)] opacity-55 cursor-not-allowed border border-transparent' :
+                                              isEnabled ? 'bg-primary ' : 'bg-[var(--bg-card)] border border-border-color'
                                             }`}
                                           >
                                             <div className={`w-4 h-4 rounded-full shadow transform transition-transform duration-300 ${
@@ -1684,7 +1684,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                       <button
                         onClick={saveModuleSettings}
                         disabled={saving}
-                        className="bg-gradient-to-r from-primary to-primary-hover text-bg-dark font-extrabold px-5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5 ml-auto mt-2 shadow-lg hover:shadow-[0_0_15px_var(--primary-glow)] active:scale-98 select-none"
+                        className="bg-[var(--primary)] text-bg-dark font-extrabold px-5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5 ml-auto mt-2 shadow-sm hover: active:scale-98 select-none"
                       >
                         <Save size={13} /> Save Module Switches
                       </button>
@@ -1705,7 +1705,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
 
                       {/* User Registry List */}
                       <div className="flex flex-col gap-4">
-                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-bg-card/40 border border-border-color p-5 rounded-2xl shadow-lg">
+                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-[var(--surface)] border border-border-color p-5 rounded-xl shadow-sm">
                           <div>
                             <h4 className="text-xs font-bold uppercase tracking-wider text-text-primary">User Directory Catalog</h4>
                             <p className="text-[10px] text-text-muted mt-0.5">Manage administrative credentials, system roles, and audit access permissions.</p>
@@ -1716,21 +1716,21 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                               placeholder="Filter by name or email..."
                               value={userSearch}
                               onChange={(e) => setUserSearch(e.target.value)}
-                              className="bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-primary/50 transition-all font-mono"
+                              className="bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-[var(--border)] transition-all font-mono"
                             />
                             <button
                               onClick={handleOpenAddUser}
-                              className="bg-gradient-to-r from-primary to-primary-hover text-bg-dark font-extrabold px-4 py-2 rounded-xl text-xs whitespace-nowrap flex items-center gap-1.5 shadow-md hover:shadow-[0_0_12px_var(--primary-glow)] active:scale-98 transition-all select-none"
+                              className="bg-[var(--primary)] text-bg-dark font-extrabold px-4 py-2 rounded-xl text-xs whitespace-nowrap flex items-center gap-1.5 shadow-md hover: active:scale-98 transition-all select-none"
                             >
                               <Plus size={13} /> Add Account
                             </button>
                           </div>
                         </div>
 
-                        <div className="overflow-x-auto border border-border-color rounded-2xl bg-bg-card/15 shadow-xl">
+                        <div className="overflow-x-auto border border-border-color rounded-xl bg-[var(--surface)] shadow-xl">
                           <table className="w-full text-left border-collapse">
                             <thead>
-                              <tr className="bg-bg-card/60 text-[10px] font-mono text-text-muted uppercase border-b border-border-color select-none">
+                              <tr className="bg-[var(--surface)] text-[10px] font-mono text-text-muted uppercase border-b border-border-color select-none">
                                 <th className="p-3.5 pl-4">Member Specifications</th>
                                 <th className="p-3.5">Email Address</th>
                                 <th className="p-3.5">Primary legacy role</th>
@@ -1740,9 +1740,9 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                             </thead>
                             <tbody>
                               {filteredUsers.map(user => (
-                                <tr key={user.id} className="border-b border-border-color/40 last:border-0 hover:bg-bg-card-hover/20 text-xs text-text-secondary font-sans transition-all group">
+                                <tr key={user.id} className="border-b border-border-color/40 last:border-0 hover:bg-[var(--surface-hover)] text-xs text-text-secondary font-sans transition-all group">
                                   <td className="p-3.5 pl-4 flex items-center gap-3">
-                                    <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-primary/15 to-primary/5 border border-primary/20 flex items-center justify-center text-[10px] font-bold text-primary font-mono shadow-sm group-hover:border-primary/40 transition-colors duration-300 select-none">
+                                    <div className="w-9 h-9 rounded-xl bg-[var(--surface-active)] border border-[var(--border)] flex items-center justify-center text-[10px] font-bold text-primary font-mono shadow-sm group-hover:border-[var(--border)] transition-colors duration-300 select-none">
                                       {user.full_name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'U'}
                                     </div>
                                     <div className="flex flex-col">
@@ -1759,7 +1759,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                   <td className="p-3.5">
                                     <div className="flex flex-wrap gap-1.5 max-w-xs">
                                       {user.roles.map(r => (
-                                        <span key={r.id} className="bg-primary/5 text-primary text-[9px] font-bold px-2 py-0.5 rounded-lg border border-primary/20 font-mono tracking-wide">
+                                        <span key={r.id} className="bg-[var(--surface-active)] text-primary text-[9px] font-bold px-2 py-0.5 rounded-lg border border-[var(--border)] font-mono tracking-wide">
                                           {r.name}
                                         </span>
                                       ))}
@@ -1779,7 +1779,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                       </button>
                                       <button 
                                         onClick={() => handleOpenUserReassign(user)}
-                                        className="px-2.5 py-1.5 rounded-xl bg-primary/10 border border-primary/20 text-primary hover:bg-primary/20 hover:border-primary/30 transition-all font-semibold flex items-center gap-1 text-[10px]"
+                                        className="px-2.5 py-1.5 rounded-xl bg-[var(--surface-active)] border border-[var(--border)] text-primary hover:bg-[var(--surface-active)] hover:border-[var(--border)] transition-all font-semibold flex items-center gap-1 text-[10px]"
                                       >
                                         Roles
                                       </button>
@@ -1791,7 +1791,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                       </button>
                                       <button 
                                         onClick={() => handleOpenDeleteUser(user)}
-                                        className="px-2.5 py-1.5 rounded-xl bg-error/10 border border-error/20 text-error hover:bg-error/20 hover:border-error/30 transition-all font-semibold flex items-center gap-1 text-[10px]"
+                                        className="px-2.5 py-1.5 rounded-xl bg-[var(--status-danger-bg)] border border-[var(--status-danger-border)] text-[var(--status-danger-text)] hover:bg-[var(--status-danger-bg)] hover:border-[var(--status-danger-border)] transition-all font-semibold flex items-center gap-1 text-[10px]"
                                       >
                                         Delete
                                       </button>
@@ -1806,7 +1806,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
 
                       {/* Modal overlay for user role editing */}
                       {selectedUser && (
-                        <div className="p-5 border border-border-color bg-bg-card/75 backdrop-blur-md rounded-2xl flex flex-col gap-4 shadow-xl">
+                        <div className="p-5 border border-border-color bg-[var(--surface)] rounded-xl flex flex-col gap-4 shadow-xl">
                           <div className="flex justify-between items-center border-b border-border-color pb-2">
                             <span className="text-xs font-bold text-text-primary">Reassign Roles for {selectedUser.full_name}</span>
                             <button onClick={() => setSelectedUser(null)} className="text-text-muted hover:text-text-secondary text-xs">Cancel</button>
@@ -1826,7 +1826,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                   }}
                                   className={`p-2.5 border text-left rounded-xl text-xs transition-all ${
                                     isChecked
-                                      ? 'bg-primary/10 border-primary/30 text-primary font-bold shadow-[0_0_10px_var(--primary-glow)]'
+                                      ? 'bg-[var(--surface-active)] border-[var(--border)] text-primary font-bold '
                                       : 'bg-[var(--surface-hover)] border-border-color text-text-secondary hover:border-text-muted'
                                   }`}
                                 >
@@ -1837,7 +1837,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                           </div>
                           <button
                             onClick={saveUserRolesReassignment}
-                            className="bg-gradient-to-r from-primary to-primary-hover text-bg-dark font-extrabold px-4 py-2 rounded-xl text-xs self-end active:scale-98 select-none transition-all"
+                            className="bg-[var(--primary)] text-bg-dark font-extrabold px-4 py-2 rounded-xl text-xs self-end active:scale-98 select-none transition-all"
                           >
                             Save Role Changes
                           </button>
@@ -1846,7 +1846,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
 
                       {/* Permissions Auditor Sub-panel */}
                       {auditingUser && (
-                        <div className="p-5 border border-secondary/20 bg-bg-card/65 backdrop-blur-md rounded-2xl flex flex-col gap-4 animate-fadeIn shadow-2xl shadow-black/30">
+                        <div className="p-5 border border-secondary/20 bg-[var(--surface)] rounded-xl flex flex-col gap-4 animate-fadeIn shadow-sm">
                           <div className="flex justify-between items-center border-b border-border-color pb-2.5">
                             <div className="flex items-center gap-1.5">
                               <Shield size={14} className="text-secondary" />
@@ -1892,13 +1892,13 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                       .map(p => {
                                         const scope = auditedPermissions[p.permission_key] || 'NONE';
                                         return (
-                                          <tr key={p.id} className="border-b border-border-color/40 last:border-0 hover:bg-bg-card-hover/20 text-xs text-text-secondary">
+                                          <tr key={p.id} className="border-b border-border-color/40 last:border-0 hover:bg-[var(--surface-hover)] text-xs text-text-secondary">
                                             <td className="p-2.5 pl-3 font-mono text-[9px] text-primary">{p.module}</td>
                                             <td className="p-2.5 font-mono text-[10px] text-text-secondary">{p.permission_key}</td>
                                             <td className="p-2.5 text-[11px] text-text-muted">{p.description}</td>
                                             <td className="p-2.5 pr-3">
                                               <span className={`px-2 py-0.5 rounded-lg text-[9px] font-bold font-mono border ${
-                                                scope === 'ALL' ? 'bg-primary/10 text-primary border-primary/20' :
+                                                scope === 'ALL' ? 'bg-[var(--surface-active)] text-primary border-[var(--border)]' :
                                                 scope === 'TEAM' ? 'bg-secondary/10 text-secondary border-secondary/20' :
                                                 scope === 'ASSIGNED' ? 'bg-accent/10 text-accent border-accent/20' :
                                                 scope === 'OWN' ? 'bg-[var(--status-warning-bg)] text-[var(--status-warning-text)] border-[var(--status-warning-border)]' :
@@ -1930,7 +1930,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                             <select
                               value={selectedRoleForMatrix}
                               onChange={(e) => setSelectedRoleForMatrix(e.target.value)}
-                              className="bg-[var(--bg-card)] border border-border-color text-text-secondary rounded-xl px-3 py-1.5 text-xs font-semibold focus:outline-none focus:border-primary/50"
+                              className="bg-[var(--bg-card)] border border-border-color text-text-secondary rounded-xl px-3 py-1.5 text-xs font-semibold focus:outline-none focus:border-[var(--border)]"
                             >
                               {roles.map(r => (
                                 <option key={r.id} value={r.id}>{r.name}</option>
@@ -1941,7 +1941,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
 
                         {/* Toggle active state of selected role */}
                         {selectedRoleForMatrix && (
-                          <div className="flex items-center justify-between p-4 bg-bg-card/45 border border-border-color rounded-2xl shadow-lg">
+                          <div className="flex items-center justify-between p-4 bg-[var(--surface)] border border-border-color rounded-xl shadow-sm">
                             <div>
                               <span className="text-xs font-bold text-text-primary">Role Active Status</span>
                               <p className="text-[10px] text-text-muted">Deactivated roles prevent allocated users from gaining corresponding scope rights.</p>
@@ -1953,8 +1953,8 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                               }}
                               className={`px-3.5 py-1.5 rounded-xl text-xs font-bold border transition-all duration-300 active:scale-98 ${
                                 roles.find(r => r.id === selectedRoleForMatrix)?.is_active
-                                  ? 'bg-primary/10 border-primary/30 text-primary shadow-[0_0_10px_var(--primary-glow)]'
-                                  : 'bg-error/10 border-error/30 text-error'
+                                  ? 'bg-[var(--surface-active)] border-[var(--border)] text-primary '
+                                  : 'bg-[var(--status-danger-bg)] border-[var(--status-danger-border)] text-[var(--status-danger-text)]'
                               }`}
                             >
                               {roles.find(r => r.id === selectedRoleForMatrix)?.is_active ? 'Active' : 'Disabled'}
@@ -1977,7 +1977,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                               const isExpanded = expandedModules[mod];
                               const activeCount = permsList.filter(p => (matrixPermissions[p.permission_key] || 'NONE') !== 'NONE').length;
                               return (
-                                <div key={mod} className="border border-border-color bg-[var(--bg-card)] rounded-2xl overflow-hidden transition-all shadow-inner">
+                                <div key={mod} className="border border-border-color bg-[var(--bg-card)] rounded-xl overflow-hidden transition-all shadow-inner">
                                   <button
                                     type="button"
                                     onClick={() => setExpandedModules({
@@ -1988,7 +1988,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                   >
                                     <div className="flex items-center gap-2">
                                       <span className="text-xs font-bold text-text-primary font-mono tracking-wider">{mod}</span>
-                                      <span className="text-[9px] font-bold text-primary px-2 py-0.5 rounded-full bg-primary/10 border border-primary/20 font-mono">
+                                      <span className="text-[9px] font-bold text-primary px-2 py-0.5 rounded-full bg-[var(--surface-active)] border border-[var(--border)] font-mono">
                                         {activeCount} / {permsList.length} CONFIGURED
                                       </span>
                                     </div>
@@ -2011,7 +2011,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                           {permsList.map(perm => {
                                             const currentScope = matrixPermissions[perm.permission_key] || 'NONE';
                                             return (
-                                              <tr key={perm.id} className="border-b border-border-color/30 last:border-0 hover:bg-bg-card-hover/20 text-xs text-text-secondary">
+                                              <tr key={perm.id} className="border-b border-border-color/30 last:border-0 hover:bg-[var(--surface-hover)] text-xs text-text-secondary">
                                                 <td className="p-3 pl-4 font-mono text-text-secondary text-[10px]">{perm.permission_key}</td>
                                                 <td className="p-3 text-text-muted leading-relaxed max-w-sm">{perm.description}</td>
                                                 <td className="p-3 pr-4 text-right">
@@ -2023,7 +2023,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                                     })}
                                                     className={`bg-[var(--bg-card)] border text-[11px] font-mono font-bold rounded-xl px-3 py-1.5 focus:outline-none transition-all duration-300 ${
                                                       currentScope === 'NONE' ? 'border-border-color text-text-muted hover:border-text-muted/45' :
-                                                      currentScope === 'ALL' ? 'border-primary/40 text-primary bg-primary/5 shadow-[0_0_10px_var(--primary-glow)]' :
+                                                      currentScope === 'ALL' ? 'border-[var(--border)] text-primary bg-[var(--surface-active)] ' :
                                                       currentScope === 'TEAM' ? 'border-secondary/40 text-secondary bg-secondary/5' :
                                                       'border-accent/40 text-accent bg-accent/5'
                                                     }`}
@@ -2051,7 +2051,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                         <button
                           onClick={savePermissionsMatrix}
                           disabled={saving}
-                          className="bg-gradient-to-r from-primary to-primary-hover text-bg-dark font-extrabold px-5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5 ml-auto mt-2 shadow-lg hover:shadow-[0_0_15px_var(--primary-glow)] active:scale-98 select-none"
+                          className="bg-[var(--primary)] text-bg-dark font-extrabold px-5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5 ml-auto mt-2 shadow-sm hover: active:scale-98 select-none"
                         >
                           <Save size={13} /> Save Permissions Matrix
                         </button>
@@ -2059,7 +2059,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                         {/* Create Custom Roles & Custom Permissions forms */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 border-t border-border-color/80 pt-6">
                           {/* Custom Role Creation */}
-                          <form onSubmit={handleCreateCustomRole} className="p-5 bg-bg-card/35 border border-border-color rounded-2xl flex flex-col gap-4 shadow-lg">
+                          <form onSubmit={handleCreateCustomRole} className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm">
                             <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider flex items-center gap-1.5"><Shield size={13} className="text-primary" /> Create Custom Role</h4>
                             <div className="grid grid-cols-2 gap-2.5">
                               <div>
@@ -2069,7 +2069,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                   placeholder="e.g. Sales Consultant"
                                   value={newRoleName}
                                   onChange={(e) => setNewRoleName(e.target.value)}
-                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary focus:outline-none focus:border-primary/50"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)]"
                                 />
                               </div>
                               <div>
@@ -2079,7 +2079,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                   placeholder="e.g. sales_consultant"
                                   value={newRoleKey}
                                   onChange={(e) => setNewRoleKey(e.target.value)}
-                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary font-mono focus:outline-none focus:border-[var(--border)]"
                                 />
                               </div>
                             </div>
@@ -2091,7 +2091,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                   max="100"
                                   value={newRoleHierarchy}
                                   onChange={(e) => setNewRoleHierarchy(Number(e.target.value))}
-                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50 font-semibold"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary font-mono focus:outline-none focus:border-[var(--border)] font-semibold"
                                 />
                             </div>
                             <div>
@@ -2101,7 +2101,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                 placeholder="Role duties and capabilities..."
                                 value={newRoleDesc}
                                 onChange={(e) => setNewRoleDesc(e.target.value)}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary focus:outline-none focus:border-primary/50"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)]"
                               />
                             </div>
                             <button
@@ -2114,7 +2114,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                           </form>
 
                           {/* Custom Permission Catalog Entry */}
-                          <form onSubmit={handleCreateCustomPermission} className="p-5 bg-bg-card/35 border border-border-color rounded-2xl flex flex-col gap-4 shadow-lg">
+                          <form onSubmit={handleCreateCustomPermission} className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm">
                             <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider flex items-center gap-1.5"><Key size={13} className="text-primary" /> Catalog New Permission</h4>
                             <div className="grid grid-cols-2 gap-2.5">
                               <div>
@@ -2124,7 +2124,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                   placeholder="e.g. tenders.approve"
                                   value={newPermKey}
                                   onChange={(e) => setNewPermKey(e.target.value)}
-                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary font-mono focus:outline-none focus:border-[var(--border)]"
                                 />
                               </div>
                               <div>
@@ -2134,7 +2134,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                   placeholder="e.g. SALES"
                                   value={newPermModule}
                                   onChange={(e) => setNewPermModule(e.target.value)}
-                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary font-mono focus:outline-none focus:border-[var(--border)]"
                                 />
                               </div>
                             </div>
@@ -2145,7 +2145,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                 placeholder="Describe what access this permission control regulates..."
                                 value={newPermDesc}
                                 onChange={(e) => setNewPermDesc(e.target.value)}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary focus:outline-none focus:border-primary/50"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)]"
                               />
                             </div>
                             <button
@@ -2310,7 +2310,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                         {/* Tax & Filing Card */}
-                        <div className="p-5 bg-bg-card/35 border border-border-color rounded-2xl flex flex-col gap-4 shadow-lg">
+                        <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm">
                           <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono border-b border-border-color/60 pb-2">VAT Compliance & Filing</h4>
                           <div className="flex flex-col gap-3.5">
                             <div>
@@ -2321,7 +2321,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                   step="0.01"
                                   value={vatRate}
                                   onChange={(e) => setVatRate(Number(e.target.value))}
-                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-4 pr-10 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-4 pr-10 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
                                 />
                                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-mono font-bold text-text-muted">%</span>
                               </div>
@@ -2333,7 +2333,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                   type="number" 
                                   value={vatPeriodMonths}
                                   onChange={(e) => setVatPeriodMonths(Number(e.target.value))}
-                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-4 pr-16 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-4 pr-16 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
                                 />
                                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-mono font-bold text-text-muted uppercase">Months</span>
                               </div>
@@ -2342,7 +2342,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                         </div>
 
                         {/* Authorization & Base Currency */}
-                        <div className="p-5 bg-bg-card/35 border border-border-color rounded-2xl flex flex-col gap-4 shadow-lg">
+                        <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm">
                           <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono border-b border-border-color/60 pb-2">Authority Thresholds</h4>
                           <div className="flex flex-col gap-3.5">
                             <div>
@@ -2353,7 +2353,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                   type="number" 
                                   value={thresholdQuote}
                                   onChange={(e) => setThresholdQuote(Number(e.target.value))}
-                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-12 pr-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-12 pr-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
                                 />
                               </div>
                             </div>
@@ -2363,7 +2363,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                 type="text" 
                                 value={currency}
                                 onChange={(e) => setCurrency(e.target.value)}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold uppercase"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold uppercase"
                               />
                             </div>
                           </div>
@@ -2373,7 +2373,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                       <button
                         onClick={saveFinancials}
                         disabled={saving}
-                        className="bg-gradient-to-r from-primary to-primary-hover text-bg-dark font-extrabold px-5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5 ml-auto mt-2 shadow-lg hover:shadow-[0_0_15px_var(--primary-glow)] active:scale-98 select-none"
+                        className="bg-[var(--primary)] text-bg-dark font-extrabold px-5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5 ml-auto mt-2 shadow-sm hover: active:scale-98 select-none"
                       >
                         <Save size={13} /> Save Financial Settings
                       </button>
@@ -2394,7 +2394,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                         {/* Limits Card */}
-                        <div className="p-5 bg-bg-card/35 border border-border-color rounded-2xl flex flex-col gap-4 shadow-lg justify-between">
+                        <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm justify-between">
                           <div>
                             <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono border-b border-border-color/60 pb-2 mb-3">LPO Sign-off Matrix</h4>
                             <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">Purchase Order limit (Requires GM Approval)</label>
@@ -2404,7 +2404,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                 type="number"
                                 value={thresholdPO}
                                 onChange={(e) => setThresholdPO(Number(e.target.value))}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-12 pr-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-12 pr-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
                               />
                             </div>
                             <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5 mt-4">Direct Purchase Limit (PR without LPO)</label>
@@ -2414,7 +2414,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                 type="number"
                                 value={directPurchaseThreshold}
                                 onChange={(e) => setDirectPurchaseThreshold(Number(e.target.value))}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-12 pr-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-12 pr-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
                               />
                             </div>
                             <p className="text-[10px] text-text-muted mt-1.5 leading-relaxed">PRs at or below this value can be purchased directly without raising an LPO; larger ones must convert to an LPO.</p>
@@ -2422,7 +2422,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                         </div>
 
                         {/* Comparisons Settings */}
-                        <div className="p-5 bg-bg-card/35 border border-border-color rounded-2xl flex flex-col gap-4 shadow-lg justify-between">
+                        <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm justify-between">
                           <div className="flex items-center justify-between gap-4">
                             <div className="flex-1">
                               <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono border-b border-border-color/60 pb-2 mb-2">Automated Comparisons</h4>
@@ -2432,7 +2432,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                             <button
                               onClick={() => setAutoRank(!autoRank)}
                               className={`w-10 h-6 rounded-full p-1 transition-all duration-300 focus:outline-none relative flex items-center shrink-0 self-center ${
-                                autoRank ? 'bg-primary shadow-[0_0_12px_var(--primary-glow)]' : 'bg-[var(--bg-card)] border border-border-color'
+                                autoRank ? 'bg-primary ' : 'bg-[var(--bg-card)] border border-border-color'
                               }`}
                             >
                               <div className={`w-4 h-4 rounded-full shadow transform transition-transform duration-300 ${
@@ -2446,7 +2446,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                       <button
                         onClick={saveProcurement}
                         disabled={saving}
-                        className="bg-gradient-to-r from-primary to-primary-hover text-bg-dark font-extrabold px-5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5 ml-auto mt-2 shadow-lg hover:shadow-[0_0_15px_var(--primary-glow)] active:scale-98 select-none"
+                        className="bg-[var(--primary)] text-bg-dark font-extrabold px-5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5 ml-auto mt-2 shadow-sm hover: active:scale-98 select-none"
                       >
                         <Save size={13} /> Save Procurement Settings
                       </button>
@@ -2467,7 +2467,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pb-2">
                         {/* Approval Toggle */}
-                        <div className="p-5 bg-bg-card/35 border border-border-color rounded-2xl flex items-center justify-between gap-4 shadow-lg">
+                        <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex items-center justify-between gap-4 shadow-sm">
                           <div className="flex-1">
                             <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono border-b border-border-color/60 pb-2 mb-2">MRF Workflow Control</h4>
                             <span className="text-xs font-semibold text-text-secondary">MRF Approval Check Required</span>
@@ -2476,7 +2476,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                           <button
                             onClick={() => setMrfApprovalRequired(!mrfApprovalRequired)}
                             className={`w-10 h-6 rounded-full p-1 transition-all duration-300 focus:outline-none relative flex items-center shrink-0 self-center ${
-                              mrfApprovalRequired ? 'bg-primary shadow-[0_0_12px_var(--primary-glow)]' : 'bg-[var(--bg-card)] border border-border-color'
+                              mrfApprovalRequired ? 'bg-primary ' : 'bg-[var(--bg-card)] border border-border-color'
                             }`}
                           >
                             <div className={`w-4 h-4 rounded-full shadow transform transition-transform duration-300 ${
@@ -2486,7 +2486,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                         </div>
 
                         {/* Stock limit card */}
-                        <div className="p-5 bg-bg-card/35 border border-border-color rounded-2xl flex flex-col gap-4 shadow-lg justify-between">
+                        <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm justify-between">
                           <div>
                             <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono border-b border-border-color/60 pb-2 mb-3">Reorder Alert Limits</h4>
                             <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">Low Stock Warning Threshold</label>
@@ -2495,7 +2495,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                 type="number" 
                                 value={lowStockThreshold}
                                 onChange={(e) => setLowStockThreshold(Number(e.target.value))}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-4 pr-14 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-4 pr-14 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
                               />
                               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-mono font-bold text-text-muted uppercase">Items</span>
                             </div>
@@ -2504,7 +2504,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                       </div>
 
                       {/* Straight Line Depreciation category values */}
-                      <div className="p-5 bg-bg-card/35 border border-border-color rounded-2xl flex flex-col gap-4 shadow-lg">
+                      <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm">
                         <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono border-b border-border-color/60 pb-2">Straight-Line Depreciation Lifetimes (Months)</h4>
                         <div className="grid grid-cols-2 sm:grid-cols-5 gap-3.5">
                           {Object.entries(usefulLives).map(([category, months]) => (
@@ -2518,7 +2518,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                     ...usefulLives,
                                     [category]: Number(e.target.value)
                                   })}
-                                  className="w-full bg-[var(--bg-card)] border border-border-color/70 rounded-lg pl-2.5 pr-8 py-1.5 text-xs text-text-primary font-bold focus:outline-none focus:border-primary/50 transition-all"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color/70 rounded-lg pl-2.5 pr-8 py-1.5 text-xs text-text-primary font-bold focus:outline-none focus:border-[var(--border)] transition-all"
                                 />
                                 <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[8px] font-mono font-bold text-text-muted">M</span>
                               </div>
@@ -2530,7 +2530,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                       <button
                         onClick={saveInventoryAssets}
                         disabled={saving}
-                        className="bg-gradient-to-r from-primary to-primary-hover text-bg-dark font-extrabold px-5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5 ml-auto mt-2 shadow-lg hover:shadow-[0_0_15px_var(--primary-glow)] active:scale-98 select-none"
+                        className="bg-[var(--primary)] text-bg-dark font-extrabold px-5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5 ml-auto mt-2 shadow-sm hover: active:scale-98 select-none"
                       >
                         <Save size={13} /> Save Inventory Settings
                       </button>
@@ -2550,7 +2550,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                       </div>
 
                       {/* Project Stages Management */}
-                      <div className="p-5 bg-bg-card/35 border border-border-color rounded-2xl flex flex-col gap-4 shadow-lg">
+                      <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm">
                         <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono border-b border-border-color/60 pb-2">Default Project Execution Stages</h4>
                         <div className="flex flex-wrap gap-2.5 p-4.5 bg-[var(--bg-card)] border border-border-color/60 rounded-xl min-h-[60px] items-center">
                           {defaultStages.map((stage, idx) => (
@@ -2560,7 +2560,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                 {stage}
                                 <button 
                                   onClick={() => removeProjectStage(stage)} 
-                                  className="text-error hover:text-error-glow font-bold transition-colors ml-0.5 text-xs hover:scale-110 active:scale-95"
+                                  className="text-[var(--status-danger-text)] hover:text-[var(--status-danger-text)]-glow font-bold transition-colors ml-0.5 text-xs hover:scale-110 active:scale-95"
                                   title="Delete Stage"
                                 >
                                   ×
@@ -2581,7 +2581,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                             placeholder="Add stage name (e.g. Subcontractor Bid)..."
                             value={newStageInput}
                             onChange={(e) => setNewStageInput(e.target.value)}
-                            className="bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2 text-xs text-text-primary focus:outline-none focus:border-primary/50 w-64 font-mono font-semibold"
+                            className="bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] w-64 font-mono font-semibold"
                           />
                           <button 
                             onClick={addProjectStage}
@@ -2593,7 +2593,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <div className="p-5 bg-bg-card/35 border border-border-color rounded-2xl flex flex-col gap-4 shadow-lg justify-between">
+                        <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm justify-between">
                           <div>
                             <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono border-b border-border-color/60 pb-2 mb-3">Variation Orders Limits</h4>
                             <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">VO Limit (Requires GM Approval)</label>
@@ -2603,7 +2603,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                 type="number" 
                                 value={voThreshold}
                                 onChange={(e) => setVoThreshold(Number(e.target.value))}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-12 pr-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-12 pr-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
                               />
                             </div>
                           </div>
@@ -2613,7 +2613,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                       <button
                         onClick={saveProjects}
                         disabled={saving}
-                        className="bg-gradient-to-r from-primary to-primary-hover text-bg-dark font-extrabold px-5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5 ml-auto mt-2 shadow-lg hover:shadow-[0_0_15px_var(--primary-glow)] active:scale-98 select-none"
+                        className="bg-[var(--primary)] text-bg-dark font-extrabold px-5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5 ml-auto mt-2 shadow-sm hover: active:scale-98 select-none"
                       >
                         <Save size={13} /> Save Project Settings
                       </button>
@@ -2633,7 +2633,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                       </div>
 
                       {/* PPM Timeslot Manager */}
-                      <div className="p-5 bg-bg-card/35 border border-border-color rounded-2xl flex flex-col gap-4 shadow-lg">
+                      <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm">
                         <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono border-b border-border-color/60 pb-2">PPM Visits Timings Slots</h4>
                         <div className="flex flex-wrap gap-2.5 p-4.5 bg-[var(--bg-card)] border border-border-color/60 rounded-xl min-h-[60px] items-center">
                           {maintenanceSlots.map(slot => (
@@ -2642,7 +2642,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                               {slot}
                               <button 
                                 onClick={() => removeMaintSlot(slot)} 
-                                className="text-error hover:text-error-glow font-bold transition-colors ml-0.5 text-xs hover:scale-110 active:scale-95"
+                                className="text-[var(--status-danger-text)] hover:text-[var(--status-danger-text)]-glow font-bold transition-colors ml-0.5 text-xs hover:scale-110 active:scale-95"
                                 title="Delete Slot"
                               >
                                 ×
@@ -2656,7 +2656,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                             placeholder="e.g. 18:00 - 20:00"
                             value={newSlotInput}
                             onChange={(e) => setNewSlotInput(e.target.value)}
-                            className="bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2 text-xs text-text-primary focus:outline-none focus:border-primary/50 w-48 font-mono font-semibold"
+                            className="bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] w-48 font-mono font-semibold"
                           />
                           <button 
                             onClick={addMaintSlot}
@@ -2668,7 +2668,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                       </div>
 
                       {/* SLA categories */}
-                      <div className="p-5 bg-bg-card/35 border border-border-color rounded-2xl flex flex-col gap-4 shadow-lg">
+                      <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm">
                         <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono border-b border-border-color/60 pb-2">SLA Target Resolution Timings (Hours)</h4>
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                           {Object.entries(slaCategories).map(([category, hours]) => {
@@ -2693,7 +2693,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                       ...slaCategories,
                                       [category]: Number(e.target.value)
                                     })}
-                                    className="w-full bg-[var(--bg-card)] border border-border-color/60 rounded-xl pl-3 pr-14 py-2 text-xs text-text-primary font-mono font-bold focus:outline-none focus:border-primary/50 transition-all"
+                                    className="w-full bg-[var(--bg-card)] border border-border-color/60 rounded-xl pl-3 pr-14 py-2 text-xs text-text-primary font-mono font-bold focus:outline-none focus:border-[var(--border)] transition-all"
                                   />
                                   <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[9px] font-mono font-bold text-text-muted uppercase">Hours</span>
                                 </div>
@@ -2706,7 +2706,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                       <button
                         onClick={saveMaintenance}
                         disabled={saving}
-                        className="bg-gradient-to-r from-primary to-primary-hover text-bg-dark font-extrabold px-5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5 ml-auto mt-2 shadow-lg hover:shadow-[0_0_15px_var(--primary-glow)] active:scale-98 select-none"
+                        className="bg-[var(--primary)] text-bg-dark font-extrabold px-5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5 ml-auto mt-2 shadow-sm hover: active:scale-98 select-none"
                       >
                         <Save size={13} /> Save Maintenance SLA
                       </button>
@@ -2726,7 +2726,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                       </div>
 
                       {/* Business Hours */}
-                      <div className="p-5 bg-bg-card/35 border border-border-color rounded-2xl flex flex-col gap-4 shadow-lg">
+                      <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm">
                         <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono border-b border-border-color/60 pb-2">Shift Operating Timings</h4>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
@@ -2735,7 +2735,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                               type="time" 
                               value={businessHours.start}
                               onChange={(e) => setBusinessHours({ ...businessHours, start: e.target.value })}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-[var(--border)]"
                             />
                           </div>
                           <div>
@@ -2744,14 +2744,14 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                               type="time" 
                               value={businessHours.end}
                               onChange={(e) => setBusinessHours({ ...businessHours, end: e.target.value })}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-[var(--border)]"
                             />
                           </div>
                         </div>
                       </div>
 
                       {/* Working Days */}
-                      <div className="p-5 bg-bg-card/35 border border-border-color rounded-2xl flex flex-col gap-4 shadow-lg">
+                      <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm">
                         <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono border-b border-border-color/60 pb-2">Weekly Working Days</h4>
                         <div className="flex flex-wrap gap-2">
                           {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map((day, idx) => {
@@ -2775,7 +2775,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                 }}
                                 className={`px-4 py-2 rounded-xl text-xs font-semibold border transition-all active:scale-95 select-none ${
                                   isSelected
-                                    ? 'bg-primary/10 border-primary/30 text-primary font-bold shadow-[0_0_12px_var(--primary-glow)]'
+                                    ? 'bg-[var(--surface-active)] border-[var(--border)] text-primary font-bold '
                                     : 'bg-[var(--bg-card)] border-border-color text-text-muted hover:text-text-secondary hover:border-text-muted/50'
                                 }`}
                               >
@@ -2787,7 +2787,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                       </div>
 
                       {/* Gratuity brackets */}
-                      <div className="p-5 bg-bg-card/35 border border-border-color rounded-2xl flex flex-col gap-4 shadow-lg">
+                      <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm">
                         <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono border-b border-border-color/60 pb-2">UAE Gratuity Entitlement Accrual Rates</h4>
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                           <div>
@@ -2800,7 +2800,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                   ...gratuityEntitlement,
                                   under_1yr: Number(e.target.value)
                                 })}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-3.5 pr-14 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-3.5 pr-14 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-[var(--border)]"
                               />
                               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[8px] font-mono font-bold text-text-muted uppercase">Days</span>
                             </div>
@@ -2815,7 +2815,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                   ...gratuityEntitlement,
                                   '1to5yr': Number(e.target.value)
                                 })}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-3.5 pr-14 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-3.5 pr-14 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-[var(--border)]"
                               />
                               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[8px] font-mono font-bold text-text-muted uppercase">Days</span>
                             </div>
@@ -2830,7 +2830,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                   ...gratuityEntitlement,
                                   above5yr: Number(e.target.value)
                                 })}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-3.5 pr-14 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-primary/50"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-3.5 pr-14 py-2.5 text-xs text-text-primary font-mono focus:outline-none focus:border-[var(--border)]"
                               />
                               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[8px] font-mono font-bold text-text-muted uppercase">Days</span>
                             </div>
@@ -2841,7 +2841,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                       <button
                         onClick={saveHrWorkforce}
                         disabled={saving}
-                        className="bg-gradient-to-r from-primary to-primary-hover text-bg-dark font-extrabold px-5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5 ml-auto mt-2 shadow-lg hover:shadow-[0_0_15px_var(--primary-glow)] active:scale-98 select-none"
+                        className="bg-[var(--primary)] text-bg-dark font-extrabold px-5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5 ml-auto mt-2 shadow-sm hover: active:scale-98 select-none"
                       >
                         <Save size={13} /> Save HR Workforce Settings
                       </button>
@@ -2860,7 +2860,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                       </div>
 
                       {/* Channels list toggles */}
-                      <div className="flex flex-col gap-3.5 bg-bg-card/35 border border-border-color rounded-2xl p-5 shadow-lg">
+                      <div className="flex flex-col gap-3.5 bg-[var(--surface)] border border-border-color rounded-xl p-5 shadow-sm">
                         {Object.entries(notifications).map(([channel, active]) => (
                           <div key={channel} className="flex items-center justify-between border-b border-border-color/40 last:border-b-0 pb-3.5 last:pb-0 first:pt-0 pt-3.5">
                             <div>
@@ -2871,7 +2871,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                               type="button"
                               onClick={() => setNotifications({ ...notifications, [channel]: !active })}
                               className={`w-10 h-6 rounded-full p-1 transition-all duration-300 focus:outline-none relative flex items-center shrink-0 ${
-                                active ? 'bg-primary shadow-[0_0_12px_var(--primary-glow)]' : 'bg-[var(--bg-card)] border border-border-color'
+                                active ? 'bg-primary ' : 'bg-[var(--bg-card)] border border-border-color'
                               }`}
                             >
                               <div className={`w-4 h-4 rounded-full shadow transform transition-transform duration-300 ${
@@ -2894,14 +2894,14 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                           </div>
                         </div>
                         
-                        <div className="flex flex-col gap-4 bg-bg-card/35 border border-border-color p-5 rounded-2xl shadow-lg">
+                        <div className="flex flex-col gap-4 bg-[var(--surface)] border border-border-color p-5 rounded-xl shadow-sm">
                           <div>
                             <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-2">Quotation Sent Message</label>
                             <textarea
                               rows={2.5}
                               value={notifTemplates.quotation_sent}
                               onChange={(e) => setNotifTemplates({ ...notifTemplates, quotation_sent: e.target.value })}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-sans font-semibold leading-relaxed"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-sans font-semibold leading-relaxed"
                             />
                           </div>
                           <div>
@@ -2910,7 +2910,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                               rows={2.5}
                               value={notifTemplates.po_approved}
                               onChange={(e) => setNotifTemplates({ ...notifTemplates, po_approved: e.target.value })}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-sans font-semibold leading-relaxed"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-sans font-semibold leading-relaxed"
                             />
                           </div>
                           <div>
@@ -2919,7 +2919,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                               rows={2.5}
                               value={notifTemplates.ticket_assigned}
                               onChange={(e) => setNotifTemplates({ ...notifTemplates, ticket_assigned: e.target.value })}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-sans font-semibold leading-relaxed"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-sans font-semibold leading-relaxed"
                             />
                           </div>
                         </div>
@@ -2928,7 +2928,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                       <button
                         onClick={saveNotifications}
                         disabled={saving}
-                        className="bg-gradient-to-r from-primary to-primary-hover text-bg-dark font-extrabold px-5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5 ml-auto mt-2 shadow-lg hover:shadow-[0_0_15px_var(--primary-glow)] active:scale-98 select-none"
+                        className="bg-[var(--primary)] text-bg-dark font-extrabold px-5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5 ml-auto mt-2 shadow-sm hover: active:scale-98 select-none"
                       >
                         <Save size={13} /> Save Notifications Templates
                       </button>
@@ -2948,7 +2948,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <div className="p-5 bg-bg-card/35 border border-border-color rounded-2xl flex flex-col gap-4 shadow-lg">
+                        <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm">
                           <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono border-b border-border-color/60 pb-2">Header Identifiers</h4>
                           <div className="flex flex-col gap-3.5">
                             <div>
@@ -2957,7 +2957,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                 type="text" 
                                 value={docTemplates.header_title}
                                 onChange={(e) => setDocTemplates({ ...docTemplates, header_title: e.target.value })}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
                               />
                             </div>
                             <div>
@@ -2966,13 +2966,13 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                 type="text" 
                                 value={docTemplates.header_subtitle}
                                 onChange={(e) => setDocTemplates({ ...docTemplates, header_subtitle: e.target.value })}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
                               />
                             </div>
                           </div>
                         </div>
                         
-                        <div className="p-5 bg-bg-card/35 border border-border-color rounded-2xl flex flex-col gap-4 shadow-lg">
+                        <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm">
                           <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono border-b border-border-color/60 pb-2">Accent Styling</h4>
                           <div>
                             <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-2.5">Document Theme Accent Palette</label>
@@ -2991,7 +2991,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                     onClick={() => setDocTemplates({ ...docTemplates, accent_color: color.id })}
                                     className={`flex items-center gap-2 px-3.5 py-2 rounded-xl border transition-all text-xs font-bold active:scale-95 ${
                                       isSelected
-                                        ? 'bg-primary/10 border-primary/45 text-primary shadow-[0_0_12px_var(--primary-glow)] font-bold'
+                                        ? 'bg-[var(--surface-active)] border-[var(--border)] text-primary  font-bold'
                                         : 'bg-[var(--bg-card)] border-border-color text-text-muted hover:border-text-muted/50 hover:text-text-secondary'
                                     }`}
                                   >
@@ -3005,7 +3005,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                         </div>
 
                         {/* Live PDF Header Mockup */}
-                        <div className="md:col-span-2 p-5 bg-bg-card/35 border border-border-color rounded-2xl flex flex-col gap-3.5 shadow-lg">
+                        <div className="md:col-span-2 p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-3.5 shadow-sm">
                           <label className="block text-[10px] font-mono text-text-muted uppercase font-bold tracking-wide">PDF Live Accent Preview</label>
                           <div className="bg-[var(--bg-card)] text-text-primary p-6 rounded-xl border border-border-color/80 shadow flex justify-between items-start font-sans relative overflow-hidden group">
                             {/* Accent Glow backdrop */}
@@ -3026,7 +3026,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                               <p className="text-[10px] text-text-muted font-medium transition-colors duration-300">{docTemplates.header_subtitle || 'Dubai Branch, United Arab Emirates'}</p>
                             </div>
                             <div className={`text-right border-t-2 py-1.5 px-3 transition-all duration-300 relative z-10 ${
-                              docTemplates.accent_color === 'mint' ? 'border-primary text-primary bg-primary/5' :
+                              docTemplates.accent_color === 'mint' ? 'border-primary text-primary bg-[var(--surface-active)]' :
                               docTemplates.accent_color === 'gold' ? 'border-[var(--status-warning-border)] text-[var(--status-warning-text)] bg-[var(--status-warning-bg)]' :
                               docTemplates.accent_color === 'red' ? 'border-[var(--status-danger-border)] text-[var(--status-danger-text)] bg-[var(--status-danger-bg)]' : 'border-[var(--border)] text-[var(--text-secondary)] bg-[var(--surface-hover)]'
                             }`}>
@@ -3039,14 +3039,14 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                       {/* Footer terms for different documents */}
                       <div className="flex flex-col gap-4 border-t border-border-color/60 pt-5 mt-2">
                         <h4 className="text-xs font-bold text-text-secondary uppercase tracking-wider font-mono">Footers & Disclaimer terms for generated PDFs</h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-bg-card/35 border border-border-color p-5 rounded-2xl shadow-lg">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-[var(--surface)] border border-border-color p-5 rounded-xl shadow-sm">
                           <div>
                             <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-2">Tax Invoice Footer Terms</label>
                             <textarea
                               rows={2.5}
                               value={docTemplates.invoice_disclaimer}
                               onChange={(e) => setDocTemplates({ ...docTemplates, invoice_disclaimer: e.target.value })}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono leading-relaxed"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-mono leading-relaxed"
                             />
                           </div>
                           <div>
@@ -3055,7 +3055,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                               rows={2.5}
                               value={docTemplates.handover_disclaimer}
                               onChange={(e) => setDocTemplates({ ...docTemplates, handover_disclaimer: e.target.value })}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono leading-relaxed"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-mono leading-relaxed"
                             />
                           </div>
                           <div>
@@ -3064,7 +3064,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                               rows={2.5}
                               value={docTemplates.ppm_disclaimer}
                               onChange={(e) => setDocTemplates({ ...docTemplates, ppm_disclaimer: e.target.value })}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono leading-relaxed"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-mono leading-relaxed"
                             />
                           </div>
                           <div>
@@ -3073,7 +3073,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                               rows={2.5}
                               value={docTemplates.vo_disclaimer}
                               onChange={(e) => setDocTemplates({ ...docTemplates, vo_disclaimer: e.target.value })}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono leading-relaxed"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-mono leading-relaxed"
                             />
                           </div>
                         </div>
@@ -3082,7 +3082,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                       <button
                         onClick={saveTemplates}
                         disabled={saving}
-                        className="bg-gradient-to-r from-primary to-primary-hover text-bg-dark font-extrabold px-5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5 ml-auto mt-2 shadow-lg hover:shadow-[0_0_15px_var(--primary-glow)] active:scale-98 select-none"
+                        className="bg-[var(--primary)] text-bg-dark font-extrabold px-5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5 ml-auto mt-2 shadow-sm hover: active:scale-98 select-none"
                       >
                         <Save size={13} /> Save PDF Styling Templates
                       </button>
@@ -3103,12 +3103,12 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                         {/* SMTP Card */}
-                        <div className="p-5 bg-bg-card/35 border border-border-color rounded-2xl flex flex-col gap-4 shadow-lg">
+                        <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm">
                           <div className="flex items-center justify-between border-b border-border-color/60 pb-2">
                             <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono flex items-center gap-1.5">
                               <Building size={13} className="text-primary" /> SMTP Mail Host settings
                             </h4>
-                            <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[8px] font-bold font-mono bg-primary/10 text-primary border border-primary/20">
+                            <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[8px] font-bold font-mono bg-[var(--surface-active)] text-primary border border-[var(--border)]">
                               <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" /> ACTIVE
                             </span>
                           </div>
@@ -3120,7 +3120,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                 type="text" 
                                 value={smtpConfig.host}
                                 onChange={(e) => setSmtpConfig({ ...smtpConfig, host: e.target.value })}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
                               />
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
@@ -3130,7 +3130,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                   type="number" 
                                   value={smtpConfig.port}
                                   onChange={(e) => setSmtpConfig({ ...smtpConfig, port: Number(e.target.value) })}
-                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono font-semibold"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-mono font-semibold"
                                 />
                               </div>
                               <div>
@@ -3139,7 +3139,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                   type="text" 
                                   value={smtpConfig.user}
                                   onChange={(e) => setSmtpConfig({ ...smtpConfig, user: e.target.value })}
-                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
                                 />
                               </div>
                             </div>
@@ -3147,12 +3147,12 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                         </div>
 
                         {/* WhatsApp Gateway Card */}
-                        <div className="p-5 bg-bg-card/35 border border-border-color rounded-2xl flex flex-col gap-4 shadow-lg">
+                        <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm">
                           <div className="flex items-center justify-between border-b border-border-color/60 pb-2">
                             <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono flex items-center gap-1.5">
                               <Sparkles size={13} className="text-primary" /> WhatsApp API Gateway
                             </h4>
-                            <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[8px] font-bold font-mono bg-primary/10 text-primary border border-primary/20">
+                            <span className="flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[8px] font-bold font-mono bg-[var(--surface-active)] text-primary border border-[var(--border)]">
                               <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" /> CONNECTED
                             </span>
                           </div>
@@ -3164,7 +3164,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                 type="text" 
                                 value={whatsappGateway.url}
                                 onChange={(e) => setWhatsappGateway({ ...whatsappGateway, url: e.target.value })}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-mono font-semibold"
                               />
                             </div>
                             <div>
@@ -3174,7 +3174,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                   type={showWAToken ? "text" : "password"} 
                                   value={whatsappGateway.token}
                                   onChange={(e) => setWhatsappGateway({ ...whatsappGateway, token: e.target.value })}
-                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-4 pr-16 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono font-semibold"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-4 pr-16 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-mono font-semibold"
                                 />
                                 <button
                                   type="button"
@@ -3192,7 +3192,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                       <button
                         onClick={saveIntegrations}
                         disabled={saving}
-                        className="bg-gradient-to-r from-primary to-primary-hover text-bg-dark font-extrabold px-5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5 ml-auto mt-2 shadow-lg hover:shadow-[0_0_15px_var(--primary-glow)] active:scale-98 select-none"
+                        className="bg-[var(--primary)] text-bg-dark font-extrabold px-5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5 ml-auto mt-2 shadow-sm hover: active:scale-98 select-none"
                       >
                         <Save size={13} /> Save Integrations Credentials
                       </button>
@@ -3212,7 +3212,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                       </div>
 
                       {appMode === 'maintenance' && (
-                        <div className="p-4 bg-[var(--status-warning-bg)] border border-[var(--status-warning-border)] rounded-xl text-xs text-[var(--status-warning-text)] flex items-start gap-3 shadow-[0_0_15px_rgba(245,158,11,0.06)] animate-pulse">
+                        <div className="p-4 bg-[var(--status-warning-bg)] border border-[var(--status-warning-border)] rounded-xl text-xs text-[var(--status-warning-text)] flex items-start gap-3  animate-pulse">
                           <AlertTriangle className="shrink-0 mt-0.5 text-[var(--status-warning-text)] animate-bounce" size={16} />
                           <div>
                             <span className="font-bold uppercase tracking-wider font-mono">Maintenance Mode Triggered:</span>
@@ -3228,7 +3228,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                         <label className="block text-[10px] font-mono text-text-muted uppercase font-bold">Application running mode</label>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                           {[
-                            { id: 'production', name: 'Production Mode', desc: 'High-speed caching & optimization for live operations.', badge: 'RECOMMENDED', badgeColor: 'bg-primary/10 text-primary border border-primary/20' },
+                            { id: 'production', name: 'Production Mode', desc: 'High-speed caching & optimization for live operations.', badge: 'RECOMMENDED', badgeColor: 'bg-[var(--surface-active)] text-primary border border-[var(--border)]' },
                             { id: 'development', name: 'Development Mode', desc: 'Detailed error tracing and hot-reloading for testing.', badge: 'DEBUGGING', badgeColor: 'bg-[var(--surface-hover)] text-[var(--accent)] border border-[var(--border)]' },
                             { id: 'maintenance', name: 'Maintenance Mode', desc: 'Locks database writes and shows maintenance screen to users.', badge: 'WRITE LOCKS', badgeColor: 'bg-[var(--status-warning-bg)] text-[var(--status-warning-text)] border border-[var(--status-warning-border)]' }
                           ].map((mode) => {
@@ -3238,10 +3238,10 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                 key={mode.id}
                                 type="button"
                                 onClick={() => setAppMode(mode.id as any)}
-                                className={`p-5 rounded-2xl border text-left flex flex-col gap-2.5 transition-all relative overflow-hidden group active:scale-98 ${
+                                className={`p-5 rounded-xl border text-left flex flex-col gap-2.5 transition-all relative overflow-hidden group active:scale-98 ${
                                   isSelected
-                                    ? 'bg-primary/5 border-primary/50 text-text-primary shadow-[0_0_20px_rgba(16,185,129,0.05)]'
-                                    : 'bg-bg-card/35 border-border-color text-text-muted hover:border-text-muted/50 hover:text-text-secondary'
+                                    ? 'bg-[var(--surface-active)] border-[var(--border)] text-text-primary '
+                                    : 'bg-[var(--surface)] border-border-color text-text-muted hover:border-text-muted/50 hover:text-text-secondary'
                                 }`}
                               >
                                 <div className="flex items-center justify-between w-full">
@@ -3260,7 +3260,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <div className="p-5 bg-bg-card/35 border border-border-color rounded-2xl flex flex-col gap-4 shadow-lg">
+                        <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm">
                           <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1">Logger Verbosity level</label>
                           <div className="grid grid-cols-2 gap-2.5">
                             {[
@@ -3277,7 +3277,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                   onClick={() => setLogLevel(item.id as any)}
                                   className={`p-3.5 rounded-xl border text-left flex flex-col gap-0.5 transition-all active:scale-98 ${
                                     isSelected
-                                      ? 'bg-primary/10 border-primary/45 text-primary font-bold shadow-[0_0_12px_var(--primary-glow)]'
+                                      ? 'bg-[var(--surface-active)] border-[var(--border)] text-primary font-bold '
                                       : 'bg-[var(--bg-card)] border-border-color text-text-muted hover:border-text-muted/50 hover:text-text-secondary'
                                   }`}
                                 >
@@ -3289,7 +3289,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                           </div>
                         </div>
 
-                        <div className="p-5 bg-bg-card/35 border border-border-color rounded-2xl flex flex-col gap-4 shadow-lg justify-between">
+                        <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm justify-between">
                           <div className="flex flex-col gap-4">
                             <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1">Default Spacing Density</label>
                             <div className="grid grid-cols-2 gap-2.5">
@@ -3305,7 +3305,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                     onClick={() => setDefaultDensity(item.id as any)}
                                     className={`p-4 rounded-xl border text-left flex flex-col gap-0.5 transition-all active:scale-98 ${
                                       isSelected
-                                        ? 'bg-primary/10 border-primary/45 text-primary font-bold shadow-[0_0_12px_var(--primary-glow)]'
+                                        ? 'bg-[var(--surface-active)] border-[var(--border)] text-primary font-bold '
                                         : 'bg-[var(--bg-card)] border-border-color text-text-muted hover:border-text-muted/50 hover:text-text-secondary'
                                     }`}
                                   >
@@ -3322,7 +3322,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                       <button
                         onClick={saveSystemAdmin}
                         disabled={saving}
-                        className="bg-gradient-to-r from-primary to-primary-hover text-bg-dark font-extrabold px-5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5 ml-auto mt-2 shadow-lg hover:shadow-[0_0_15px_var(--primary-glow)] active:scale-98 select-none"
+                        className="bg-[var(--primary)] text-bg-dark font-extrabold px-5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5 ml-auto mt-2 shadow-sm hover: active:scale-98 select-none"
                       >
                         <Save size={13} /> Save System Settings
                       </button>
@@ -3342,7 +3342,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                        <div className="p-5 bg-bg-card/35 border border-border-color rounded-2xl flex flex-col gap-4 shadow-lg justify-between">
+                        <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm justify-between">
                           <div>
                             <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">Min Password length</label>
                             <div className="relative">
@@ -3350,14 +3350,14 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                 type="number" 
                                 value={passwordRules.min_length}
                                 onChange={(e) => setPasswordRules({ ...passwordRules, min_length: Number(e.target.value) })}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-mono font-semibold"
                               />
                               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-mono font-bold text-text-muted uppercase">Chars</span>
                             </div>
                           </div>
                         </div>
 
-                        <div className="p-5 bg-bg-card/35 border border-border-color rounded-2xl flex items-center justify-between gap-4 shadow-lg">
+                        <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex items-center justify-between gap-4 shadow-sm">
                           <div className="flex-1">
                             <span className="text-xs font-semibold text-text-secondary">Require Special Character</span>
                             <p className="text-[10px] text-text-muted mt-0.5 leading-relaxed">Require symbols during resets.</p>
@@ -3366,7 +3366,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                             type="button"
                             onClick={() => setPasswordRules({ ...passwordRules, require_special: !passwordRules.require_special })}
                             className={`w-10 h-6 rounded-full p-1 transition-all duration-300 focus:outline-none relative flex items-center shrink-0 self-center ${
-                              passwordRules.require_special ? 'bg-primary shadow-[0_0_12px_var(--primary-glow)]' : 'bg-[var(--bg-card)] border border-border-color'
+                              passwordRules.require_special ? 'bg-primary ' : 'bg-[var(--bg-card)] border border-border-color'
                             }`}
                           >
                             <div className={`w-4 h-4 rounded-full shadow transform transition-transform duration-300 ${
@@ -3375,7 +3375,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                           </button>
                         </div>
 
-                        <div className="p-5 bg-bg-card/35 border border-border-color rounded-2xl flex flex-col gap-4 shadow-lg justify-between">
+                        <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm justify-between">
                           <div>
                             <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">Session Timeout limit</label>
                             <div className="relative">
@@ -3383,7 +3383,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                 type="number" 
                                 value={sessionTimeout}
                                 onChange={(e) => setSessionTimeout(Number(e.target.value))}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-mono font-semibold"
                               />
                               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-mono font-bold text-text-muted uppercase">Mins</span>
                             </div>
@@ -3394,7 +3394,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                       <button
                         onClick={saveSecurity}
                         disabled={saving}
-                        className="bg-gradient-to-r from-primary to-primary-hover text-bg-dark font-extrabold px-5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5 ml-auto mt-1 shadow-lg hover:shadow-[0_0_15px_var(--primary-glow)] active:scale-98 select-none"
+                        className="bg-[var(--primary)] text-bg-dark font-extrabold px-5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5 ml-auto mt-1 shadow-sm hover: active:scale-98 select-none"
                       >
                         <Save size={13} /> Save Security Parameters
                       </button>
@@ -3402,12 +3402,12 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                       {/* Forensic Audit Log list */}
                       <div className="border-t border-border-color/60 pt-6">
                         <h4 className="text-xs font-bold uppercase tracking-wider text-text-secondary mb-3.5 flex items-center gap-1.5 font-mono">
-                          <Lock size={13} className="text-error animate-pulse" /> Immutable Forensic Audit Trail
+                          <Lock size={13} className="text-[var(--status-danger-text)] animate-pulse" /> Immutable Forensic Audit Trail
                         </h4>
-                        <div className="overflow-x-auto border border-border-color/80 rounded-2xl bg-bg-card/10 shadow-lg max-h-[340px]">
+                        <div className="overflow-x-auto border border-border-color/80 rounded-xl bg-[var(--surface)] shadow-sm max-h-[340px]">
                           <table className="w-full text-left border-collapse">
                             <thead>
-                              <tr className="bg-[var(--bg-card)] text-[9px] font-mono text-text-muted uppercase border-b border-border-color sticky top-0 backdrop-blur-md select-none">
+                              <tr className="bg-[var(--bg-card)] text-[9px] font-mono text-text-muted uppercase border-b border-border-color sticky top-0 select-none">
                                 <th className="p-3.5 pl-5">Occurred At</th>
                                 <th className="p-3.5">Actor specifications</th>
                                 <th className="p-3.5">Action Code</th>
@@ -3431,7 +3431,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                     </td>
                                     <td className="p-3.5">
                                       <span className={`px-2 py-0.5 rounded-lg text-[9px] font-bold font-mono tracking-wider ${
-                                        isCreate ? 'bg-primary/10 text-primary border border-primary/20' :
+                                        isCreate ? 'bg-[var(--surface-active)] text-primary border border-[var(--border)]' :
                                         isDelete ? 'bg-[var(--status-danger-bg)] text-[var(--status-danger-text)] border border-[var(--status-danger-border)]' :
                                         isUpdate ? 'bg-[var(--status-warning-bg)] text-[var(--status-warning-text)] border border-[var(--status-warning-border)]' :
                                         'bg-[var(--surface-hover)] text-[var(--accent)] border border-[var(--border)]'
@@ -3492,10 +3492,10 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                   key={item.id}
                                   type="button"
                                   onClick={() => setBackupConfig({ ...backupConfig, schedule: item.id })}
-                                  className={`p-4 rounded-2xl border text-left flex flex-col gap-1.5 transition-all active:scale-98 ${
+                                  className={`p-4 rounded-xl border text-left flex flex-col gap-1.5 transition-all active:scale-98 ${
                                     isSelected
-                                      ? 'bg-primary/5 border-primary/50 text-text-primary shadow-[0_0_15px_rgba(16,185,129,0.05)]'
-                                      : 'bg-bg-card/35 border-border-color text-text-muted hover:border-text-muted/50 hover:text-text-secondary'
+                                      ? 'bg-[var(--surface-active)] border-[var(--border)] text-text-primary '
+                                      : 'bg-[var(--surface)] border-border-color text-text-muted hover:border-text-muted/50 hover:text-text-secondary'
                                   }`}
                                 >
                                   <span className={`text-xs font-bold transition-colors ${isSelected ? 'text-primary' : 'text-text-secondary'}`}>{item.name}</span>
@@ -3506,7 +3506,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                           </div>
                         </div>
 
-                        <div className="p-5 bg-bg-card/35 border border-border-color rounded-2xl flex flex-col gap-4 shadow-lg justify-between">
+                        <div className="p-5 bg-[var(--surface)] border border-border-color rounded-xl flex flex-col gap-4 shadow-sm justify-between">
                           <div>
                             <label className="block text-[10px] font-mono text-text-muted uppercase font-bold mb-1.5">Retention duration limit</label>
                             <div className="relative">
@@ -3514,7 +3514,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                                 type="number" 
                                 value={backupConfig.retention}
                                 onChange={(e) => setBackupConfig({ ...backupConfig, retention: Number(e.target.value) })}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-mono font-semibold"
                               />
                               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-mono font-bold text-text-muted uppercase">Days</span>
                             </div>
@@ -3525,13 +3525,13 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                       <button
                         onClick={saveBackup}
                         disabled={saving}
-                        className="bg-gradient-to-r from-primary to-primary-hover text-bg-dark font-extrabold px-5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5 ml-auto mt-1 shadow-lg hover:shadow-[0_0_15px_var(--primary-glow)] active:scale-98 select-none"
+                        className="bg-[var(--primary)] text-bg-dark font-extrabold px-5 py-2.5 rounded-xl text-xs transition-all flex items-center gap-1.5 ml-auto mt-1 shadow-sm hover: active:scale-98 select-none"
                       >
                         <Save size={13} /> Save Backup Schedules
                       </button>
 
                       {/* Manual trigger segment */}
-                      <div className="mt-2 p-5 border border-border-color rounded-2xl bg-bg-card/35 shadow-lg flex flex-col gap-4">
+                      <div className="mt-2 p-5 border border-border-color rounded-xl bg-[var(--surface)] shadow-sm flex flex-col gap-4">
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                           <div>
                             <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider font-mono">Trigger Immediate Database Schema Backup</h4>
@@ -3544,7 +3544,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                             className={`px-4 py-2 rounded-xl text-xs flex items-center gap-1.5 font-bold transition-all shrink-0 active:scale-98 border select-none ${
                               backupRunning
                                 ? 'bg-[var(--surface-hover)] border-border-color text-text-muted cursor-not-allowed'
-                                : 'bg-primary/10 border-primary/30 text-primary shadow-md hover:shadow-[0_0_12px_var(--primary-glow)] active:scale-95'
+                                : 'bg-[var(--surface-active)] border-[var(--border)] text-primary shadow-md hover: active:scale-95'
                             }`}
                           >
                             <Download size={13} /> Execute backup
@@ -3552,7 +3552,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                         </div>
 
                         {(backupRunning || backupLogs.length > 0) && (
-                          <div className="p-4 bg-[var(--bg-card)] border border-border-color/80 rounded-2xl flex flex-col gap-3 shadow-inner animate-fadeIn">
+                          <div className="p-4 bg-[var(--bg-card)] border border-border-color/80 rounded-xl flex flex-col gap-3 shadow-inner animate-fadeIn">
                             {backupRunning && (
                               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[10px] font-mono font-bold">
                                 <span className="text-primary animate-pulse flex items-center gap-1">
@@ -3594,9 +3594,9 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
 
         {/* Add User Modal */}
         {isAddModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
-            <div className="w-full max-w-md bg-bg-dark border border-border-color rounded-2xl p-6 flex flex-col gap-4 shadow-2xl animate-fadeIn relative overflow-hidden">
-              <div className="absolute -right-20 -top-20 w-40 h-40 bg-primary/5 blur-3xl rounded-full" />
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
+            <div className="w-full max-w-md bg-bg-dark border border-border-color rounded-xl p-6 flex flex-col gap-4 shadow-sm animate-fadeIn relative overflow-hidden">
+              <div className="absolute -right-20 -top-20 w-40 h-40 bg-[var(--surface-active)] blur-3xl rounded-full" />
               <div className="flex justify-between items-center border-b border-border-color pb-3 relative z-10">
                 <h3 className="text-sm font-bold text-text-primary flex items-center gap-1.5 font-heading uppercase tracking-wider">
                   <Users size={16} className="text-primary" /> Register New Account
@@ -3612,7 +3612,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                     placeholder="e.g. John Doe"
                     value={newUserFullName}
                     onChange={(e) => setNewUserFullName(e.target.value)}
-                    className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-sans font-semibold"
+                    className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-sans font-semibold"
                   />
                 </div>
                 <div>
@@ -3623,7 +3623,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                     placeholder="e.g. john@jeetmep.ae"
                     value={newUserEmail}
                     onChange={(e) => setNewUserEmail(e.target.value)}
-                    className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-sans font-semibold"
+                    className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-sans font-semibold"
                   />
                 </div>
                 <div>
@@ -3634,7 +3634,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                     placeholder="••••••••"
                     value={newUserPassword}
                     onChange={(e) => setNewUserPassword(e.target.value)}
-                    className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-mono font-semibold"
+                    className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-mono font-semibold"
                   />
                 </div>
                 <div>
@@ -3643,7 +3643,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                     required
                     value={newUserDepartment}
                     onChange={(e) => setNewUserDepartment(e.target.value)}
-                    className="w-full bg-[var(--bg-card)] border border-border-color text-text-secondary rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
+                    className="w-full bg-[var(--bg-card)] border border-border-color text-text-secondary rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
                   >
                     <option value="">Select Department...</option>
                     <option value="MANAGEMENT">Management</option>
@@ -3674,7 +3674,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                           }}
                           className={`p-2 border text-left rounded-xl text-[10px] truncate transition-all active:scale-95 ${
                             isChecked
-                              ? 'bg-primary/10 border-primary/45 text-primary font-bold shadow-[0_0_8px_var(--primary-glow)]'
+                              ? 'bg-[var(--surface-active)] border-[var(--border)] text-primary font-bold '
                               : 'bg-[var(--surface-hover)] border-border-color text-text-muted hover:text-text-secondary hover:border-text-muted/50'
                           }`}
                         >
@@ -3695,7 +3695,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                   <button
                     type="submit"
                     disabled={saving}
-                    className="bg-gradient-to-r from-primary to-primary-hover text-bg-dark font-extrabold px-5 py-2 rounded-xl text-xs transition-all flex items-center gap-1.5 shadow-lg hover:shadow-[0_0_12px_var(--primary-glow)] active:scale-98 select-none"
+                    className="bg-[var(--primary)] text-bg-dark font-extrabold px-5 py-2 rounded-xl text-xs transition-all flex items-center gap-1.5 shadow-sm hover: active:scale-98 select-none"
                   >
                     {saving ? 'Processing...' : 'Register User'}
                   </button>
@@ -3707,9 +3707,9 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
 
         {/* Edit User Modal */}
         {isEditModalOpen && editingUser && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
-            <div className="w-full max-w-md bg-bg-dark border border-border-color rounded-2xl p-6 flex flex-col gap-4 shadow-2xl animate-fadeIn relative overflow-hidden">
-              <div className="absolute -right-20 -top-20 w-40 h-40 bg-primary/5 blur-3xl rounded-full" />
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
+            <div className="w-full max-w-md bg-bg-dark border border-border-color rounded-xl p-6 flex flex-col gap-4 shadow-sm animate-fadeIn relative overflow-hidden">
+              <div className="absolute -right-20 -top-20 w-40 h-40 bg-[var(--surface-active)] blur-3xl rounded-full" />
               <div className="flex justify-between items-center border-b border-border-color pb-3 relative z-10">
                 <h3 className="text-sm font-bold text-text-primary flex items-center gap-1.5 font-heading uppercase tracking-wider">
                   <Users size={16} className="text-primary" /> Update Account Settings
@@ -3725,7 +3725,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                     placeholder="e.g. John Doe"
                     value={editUserFullName}
                     onChange={(e) => setEditUserFullName(e.target.value)}
-                    className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-sans font-semibold"
+                    className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-sans font-semibold"
                   />
                 </div>
                 <div>
@@ -3736,7 +3736,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                     placeholder="e.g. john@jeetmep.ae"
                     value={editUserEmail}
                     onChange={(e) => setEditUserEmail(e.target.value)}
-                    className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-sans font-semibold"
+                    className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-sans font-semibold"
                   />
                 </div>
                 <div>
@@ -3745,7 +3745,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                     required
                     value={editUserDepartment}
                     onChange={(e) => setEditUserDepartment(e.target.value)}
-                    className="w-full bg-[var(--bg-card)] border border-border-color text-text-secondary rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/10 transition-all font-semibold"
+                    className="w-full bg-[var(--bg-card)] border border-border-color text-text-secondary rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
                   >
                     <option value="">Select Department...</option>
                     <option value="MANAGEMENT">Management</option>
@@ -3776,7 +3776,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                           }}
                           className={`p-2 border text-left rounded-xl text-[10px] truncate transition-all active:scale-95 ${
                             isChecked
-                              ? 'bg-primary/10 border-primary/45 text-primary font-bold shadow-[0_0_8px_var(--primary-glow)]'
+                              ? 'bg-[var(--surface-active)] border-[var(--border)] text-primary font-bold '
                               : 'bg-[var(--surface-hover)] border-border-color text-text-muted hover:text-text-secondary hover:border-text-muted/50'
                           }`}
                         >
@@ -3797,7 +3797,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                   <button
                     type="submit"
                     disabled={saving}
-                    className="bg-gradient-to-r from-primary to-primary-hover text-bg-dark font-extrabold px-5 py-2 rounded-xl text-xs transition-all flex items-center gap-1.5 shadow-lg hover:shadow-[0_0_12px_var(--primary-glow)] active:scale-98 select-none"
+                    className="bg-[var(--primary)] text-bg-dark font-extrabold px-5 py-2 rounded-xl text-xs transition-all flex items-center gap-1.5 shadow-sm hover: active:scale-98 select-none"
                   >
                     {saving ? 'Saving...' : 'Save Updates'}
                   </button>
@@ -3809,11 +3809,11 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
 
         {/* Delete User Confirm Modal */}
         {isDeleteModalOpen && deletingUser && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
-            <div className="w-full max-w-sm bg-bg-dark border border-error/30 rounded-2xl p-6 flex flex-col gap-4 shadow-2xl animate-fadeIn relative overflow-hidden">
-              <div className="absolute -right-20 -top-20 w-40 h-40 bg-error/5 blur-3xl rounded-full" />
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
+            <div className="w-full max-w-sm bg-bg-dark border border-[var(--status-danger-border)] rounded-xl p-6 flex flex-col gap-4 shadow-sm animate-fadeIn relative overflow-hidden">
+              <div className="absolute -right-20 -top-20 w-40 h-40 bg-[var(--status-danger-bg)] blur-3xl rounded-full" />
               <div className="flex justify-between items-center border-b border-border-color pb-3 relative z-10">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-error flex items-center gap-1.5 font-heading">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--status-danger-text)] flex items-center gap-1.5 font-heading">
                   <AlertTriangle size={15} /> Confirm Account Purge
                 </h3>
                 <button onClick={() => setIsDeleteModalOpen(false)} className="text-text-muted hover:text-text-primary text-xl transition-colors">×</button>
@@ -3822,7 +3822,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                 <p className="text-xs text-text-secondary leading-relaxed">
                   You are permanently deleting the user <strong className="text-text-primary font-bold">{deletingUser.full_name}</strong> (<code>{deletingUser.email}</code>).
                 </p>
-                <p className="text-[11px] text-error font-semibold">
+                <p className="text-[11px] text-[var(--status-danger-text)] font-semibold">
                   Warning: This action will permanently remove their authentication credentials and wipe out their employee profile card. This cannot be undone.
                 </p>
               </div>
@@ -3837,7 +3837,7 @@ export default function SettingsWorkspace({ group }: { group: SettingsGroupId })
                 <button
                   onClick={handleDeleteUserConfirm}
                   disabled={saving}
-                  className="bg-gradient-to-r from-error to-error/90 hover:from-error/90 hover:to-error text-text-primary border border-error/20 font-bold px-5 py-2 rounded-xl text-xs shadow-lg shadow-error/20 active:scale-98 transition-all select-none"
+                  className="bg-gradient-to-r from-error to-error/90 hover:from-error/90 hover:to-error text-text-primary border border-[var(--status-danger-border)] font-bold px-5 py-2 rounded-xl text-xs shadow-sm shadow-error/20 active:scale-98 transition-all select-none"
                 >
                   {saving ? 'Purging...' : 'Confirm Purge'}
                 </button>
