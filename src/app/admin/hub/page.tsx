@@ -12,6 +12,7 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Card } from '@/components/ui/Card';
+import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import {
   Activity, Users, ShieldCheck, KeySquare, GitCompare, FileText, FileCode2,
   Hash, SlidersHorizontal, Layers, ScrollText, ChevronRight, ShieldAlert, Clock,
@@ -41,21 +42,33 @@ const CONFIG: Tile[] = [
   { href: '/admin', label: 'Admin Center', desc: 'Configuration launcher', icon: Layers },
 ];
 
+const ACTION_COLOR: Record<string, string> = { CREATE: 'var(--status-success-text)', UPDATE: 'var(--status-info-text)', DELETE: 'var(--status-danger-text)', APPROVE: 'var(--accent)', REJECT: 'var(--status-danger-text)', CHECK_IN: '#a855f7' };
+const fmtAgo = (iso: string) => {
+  if (!iso) return '';
+  const diff = Date.now() - new Date(iso).getTime();
+  const m = Math.floor(diff / 60000), h = Math.floor(m / 60), d = Math.floor(h / 24);
+  return d > 0 ? `${d}d ago` : h > 0 ? `${h}h ago` : m > 0 ? `${m}m ago` : 'just now';
+};
+
 export default function AdminHubPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [s, setS] = useState({ users: 0, roles: 0, activeRoles: 0, perms: 0, grants: 0, events30: 0, sensitive: 0, wfDefs: 0, wfActive: 0, pending: 0, slaBreach: 0, templates: 0, forms: 0, rules: 0 });
+  const [chart, setChart] = useState<{ day: string; value: number }[]>([]);
+  const [recent, setRecent] = useState<any[]>([]);
+  const [nameMap, setNameMap] = useState<Map<string, string>>(new Map());
 
   useEffect(() => {
     (async () => {
       try {
-        const d30 = new Date(Date.now() - 30 * 864e5).toISOString();
+        const now = Date.now();
+        const d30 = new Date(now - 30 * 864e5).toISOString();
         const [usr, rol, perm, rp, aud, wfd, wfi, tpl, frm, rul] = await Promise.all([
           supabase.from('profiles').select('id', { count: 'exact', head: true }),
           supabase.from('roles').select('is_active'),
           supabase.from('permissions').select('id', { count: 'exact', head: true }),
           supabase.from('role_permissions').select('role_id', { count: 'exact', head: true }),
-          supabase.from('audit_log').select('action, occurred_at').gte('occurred_at', d30),
+          supabase.from('audit_log').select('occurred_at, action, module, actor_user_id, actor_role, entity_label, summary').order('occurred_at', { ascending: false }).limit(400),
           supabase.from('workflow_definitions').select('is_active'),
           supabase.from('workflow_instances').select('pending_approvals, sla_due_at, current_status_key'),
           supabase.from('document_templates').select('id', { count: 'exact', head: true }),
@@ -63,12 +76,25 @@ export default function AdminHubPage() {
           supabase.from('business_rules').select('id', { count: 'exact', head: true }),
         ]);
         const roles = rol.data || [];
-        const aevents = aud.data || [];
+        const allEvents = (aud.data || []) as any[];
+        const aevents = allEvents.filter(e => e.occurred_at >= d30);
         const wdefs = wfd.data || [];
         const winst = wfi.data || [];
-        const now = Date.now();
         const pending = winst.filter((w: any) => Array.isArray(w.pending_approvals) ? w.pending_approvals.length > 0 : !!w.pending_approvals && Object.keys(w.pending_approvals || {}).length > 0).length;
         const slaBreach = winst.filter((w: any) => w.sla_due_at && new Date(w.sla_due_at).getTime() < now).length;
+
+        // 14-day activity sparkline
+        const dayMap = new Map<string, number>();
+        for (let i = 13; i >= 0; i--) dayMap.set(new Date(now - i * 864e5).toISOString().slice(0, 10), 0);
+        allEvents.forEach(e => { const k = (e.occurred_at || '').slice(0, 10); if (dayMap.has(k)) dayMap.set(k, (dayMap.get(k) || 0) + 1); });
+        setChart([...dayMap.entries()].map(([d, v]) => ({ day: d.slice(5), value: v })));
+
+        // recent feed + actor names
+        const rec = allEvents.slice(0, 7);
+        setRecent(rec);
+        const ids = [...new Set(rec.map(e => e.actor_user_id).filter(Boolean))] as string[];
+        if (ids.length) { const { data: p } = await supabase.from('profiles').select('id, full_name').in('id', ids); setNameMap(new Map((p || []).map((x: any) => [x.id, x.full_name]))); }
+
         setS({
           users: usr.count || 0,
           roles: roles.length,
@@ -139,6 +165,43 @@ export default function AdminHubPage() {
             <div className="text-[11px] text-[var(--text-tertiary)] mt-0.5">{k.sub}</div>
           </Card>
         ))}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+        <Card className="p-4 lg:col-span-2">
+          <div className="text-sm font-semibold text-[var(--text-primary)] mb-3">Platform activity — last 14 days</div>
+          <div style={{ width: '100%', height: 200 }}>
+            <ResponsiveContainer>
+              <AreaChart data={chart}>
+                <defs><linearGradient id="ahFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="var(--accent)" stopOpacity={0.3} /><stop offset="100%" stopColor="var(--accent)" stopOpacity={0} /></linearGradient></defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+                <XAxis dataKey="day" tick={{ fontSize: 10, fill: 'var(--text-tertiary)' }} interval={2} />
+                <YAxis tick={{ fontSize: 11, fill: 'var(--text-tertiary)' }} allowDecimals={false} width={28} />
+                <Tooltip />
+                <Area dataKey="value" stroke="var(--accent)" fill="url(#ahFill)" strokeWidth={2} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </Card>
+        <Card className="p-0 overflow-hidden">
+          <div className="p-3 text-sm font-semibold text-[var(--text-primary)] border-b border-[var(--border)] flex items-center justify-between">
+            <span>Recent activity</span>
+            <button onClick={() => router.push('/admin/audit/analytics')} className="text-xs text-[var(--accent)]">View all</button>
+          </div>
+          <div className="divide-y divide-[var(--border)]">
+            {recent.length === 0 ? (
+              <div className="p-4 text-xs text-[var(--text-tertiary)]">{loading ? 'Loading…' : 'No recent activity.'}</div>
+            ) : recent.map((e, i) => (
+              <div key={i} className="px-3 py-2 flex items-start gap-2">
+                <span className="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0" style={{ background: ACTION_COLOR[e.action] || 'var(--text-tertiary)' }} />
+                <div className="min-w-0 flex-1">
+                  <div className="text-xs text-[var(--text-primary)] truncate">{e.entity_label || e.summary || e.action}</div>
+                  <div className="text-[10px] text-[var(--text-tertiary)] truncate">{(e.actor_user_id ? (nameMap.get(e.actor_user_id) || e.actor_role || '') : (e.actor_role || ''))} · {e.action} · {(e.module || '—').toUpperCase()} · {fmtAgo(e.occurred_at)}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
       </div>
 
       <div>
