@@ -13,7 +13,8 @@ import { supabase } from '@/lib/supabase';
 import { NAV_SECTIONS } from '@/components/layout/AppSidebar';
 import { PageHeader } from '@/components/ui/PageHeader';
 import Link from 'next/link';
-import { 
+import './settings.css';
+import {
   Settings, 
   Building, 
   DollarSign, 
@@ -1196,11 +1197,21 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
           <div className="flex flex-col gap-4">
 
             {/* Tab Details Form Container */}
-            <div className="flex-1 w-full bg-[var(--surface)] border border-border-color rounded-xl p-8 min-w-0 shadow-sm relative">
+            <div className="settings-surface flex-1 w-full bg-[var(--surface)] border border-border-color rounded-xl p-8 min-w-0 shadow-sm relative">
               {loading ? (
-                <div className="py-24 flex flex-col items-center justify-center">
-                  <div className="h-8 w-8 rounded-full border-2 border-primary border-t-transparent animate-spin mb-3"></div>
-                  <p className="text-xs text-text-muted">Loading settings…</p>
+                <div className="flex flex-col gap-5">
+                  <div className="flex flex-col gap-2">
+                    <div className="settings-skel h-5 w-56" />
+                    <div className="settings-skel h-3 w-80 max-w-full" />
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-1">
+                    {Array.from({ length: 6 }).map((_, i) => (
+                      <div key={i} className="flex flex-col gap-1.5">
+                        <div className="settings-skel h-2.5 w-24" />
+                        <div className="settings-skel h-10 w-full" />
+                      </div>
+                    ))}
+                  </div>
                 </div>
               ) : (
                 <div className="flex flex-col gap-6">
@@ -1225,7 +1236,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                               type="text" 
                               value={companyName}
                               onChange={(e) => setCompanyName(e.target.value)}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-sans font-semibold"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none transition-all font-sans font-semibold"
                             />
                           </div>
                           <div>
@@ -1234,7 +1245,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                               type="text" 
                               value={trn}
                               onChange={(e) => setTrn(e.target.value)}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none transition-all font-semibold"
                               placeholder="e.g. 100293849500003"
                             />
                           </div>
@@ -1244,7 +1255,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                               type="text" 
                               value={tradeLicense}
                               onChange={(e) => setTradeLicense(e.target.value)}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-sans font-semibold"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none transition-all font-sans font-semibold"
                             />
                           </div>
                           <div>
@@ -1253,7 +1264,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                               type="text" 
                               value={website}
                               onChange={(e) => setWebsite(e.target.value)}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none transition-all font-semibold"
                               placeholder="e.g. https://jeetmep.ae"
                             />
                           </div>
@@ -1263,7 +1274,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                               type="text" 
                               value={logoUrl}
                               onChange={(e) => setLogoUrl(e.target.value)}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none transition-all font-semibold"
                             />
                           </div>
                           <div>
@@ -1272,7 +1283,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                               type="text" 
                               value={email}
                               onChange={(e) => setEmail(e.target.value)}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-sans font-semibold"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none transition-all font-sans font-semibold"
                             />
                           </div>
                           <div>
@@ -1281,7 +1292,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                               type="text" 
                               value={phone}
                               onChange={(e) => setPhone(e.target.value)}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none transition-all font-semibold"
                             />
                           </div>
                           <div className="md:col-span-2">
@@ -1290,7 +1301,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                               type="text" 
                               value={address}
                               onChange={(e) => setAddress(e.target.value)}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-sans font-semibold"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted focus:outline-none transition-all font-sans font-semibold"
                             />
                           </div>
                         </div>
@@ -1569,7 +1580,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                               placeholder="Filter by name or email..."
                               value={userSearch}
                               onChange={(e) => setUserSearch(e.target.value)}
-                              className="bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary placeholder-text-muted focus:outline-none focus:border-[var(--border)] transition-all"
+                              className="bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary placeholder-text-muted focus:outline-none transition-all"
                             />
                             <button
                               onClick={handleOpenAddUser}
@@ -1783,7 +1794,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                             <select
                               value={selectedRoleForMatrix}
                               onChange={(e) => setSelectedRoleForMatrix(e.target.value)}
-                              className="bg-[var(--bg-card)] border border-border-color text-text-secondary rounded-xl px-3 py-1.5 text-xs font-semibold focus:outline-none focus:border-[var(--border)]"
+                              className="bg-[var(--bg-card)] border border-border-color text-text-secondary rounded-xl px-3 py-1.5 text-xs font-semibold focus:outline-none"
                             >
                               {roles.map(r => (
                                 <option key={r.id} value={r.id}>{r.name}</option>
@@ -1922,7 +1933,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                   placeholder="e.g. Sales Consultant"
                                   value={newRoleName}
                                   onChange={(e) => setNewRoleName(e.target.value)}
-                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)]"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary focus:outline-none"
                                 />
                               </div>
                               <div>
@@ -1932,7 +1943,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                   placeholder="e.g. sales_consultant"
                                   value={newRoleKey}
                                   onChange={(e) => setNewRoleKey(e.target.value)}
-                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)]"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary focus:outline-none"
                                 />
                               </div>
                             </div>
@@ -1944,7 +1955,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                   max="100"
                                   value={newRoleHierarchy}
                                   onChange={(e) => setNewRoleHierarchy(Number(e.target.value))}
-                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] font-semibold"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary focus:outline-none font-semibold"
                                 />
                             </div>
                             <div>
@@ -1954,7 +1965,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                 placeholder="Role duties and capabilities..."
                                 value={newRoleDesc}
                                 onChange={(e) => setNewRoleDesc(e.target.value)}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)]"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary focus:outline-none"
                               />
                             </div>
                             <button
@@ -1977,7 +1988,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                   placeholder="e.g. tenders.approve"
                                   value={newPermKey}
                                   onChange={(e) => setNewPermKey(e.target.value)}
-                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)]"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary focus:outline-none"
                                 />
                               </div>
                               <div>
@@ -1987,7 +1998,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                   placeholder="e.g. SALES"
                                   value={newPermModule}
                                   onChange={(e) => setNewPermModule(e.target.value)}
-                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)]"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary focus:outline-none"
                                 />
                               </div>
                             </div>
@@ -1998,7 +2009,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                 placeholder="Describe what access this permission control regulates..."
                                 value={newPermDesc}
                                 onChange={(e) => setNewPermDesc(e.target.value)}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)]"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-3.5 py-1.5 text-xs text-text-primary focus:outline-none"
                               />
                             </div>
                             <button
@@ -2174,7 +2185,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                   step="0.01"
                                   value={vatRate}
                                   onChange={(e) => setVatRate(Number(e.target.value))}
-                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-4 pr-10 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-4 pr-10 py-2.5 text-xs text-text-primary focus:outline-none transition-all font-semibold"
                                 />
                                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-text-muted">%</span>
                               </div>
@@ -2186,7 +2197,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                   type="number" 
                                   value={vatPeriodMonths}
                                   onChange={(e) => setVatPeriodMonths(Number(e.target.value))}
-                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-4 pr-16 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-4 pr-16 py-2.5 text-xs text-text-primary focus:outline-none transition-all font-semibold"
                                 />
                                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-bold text-text-muted">Months</span>
                               </div>
@@ -2206,7 +2217,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                   type="number" 
                                   value={thresholdQuote}
                                   onChange={(e) => setThresholdQuote(Number(e.target.value))}
-                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-12 pr-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-12 pr-4 py-2.5 text-xs text-text-primary focus:outline-none transition-all font-semibold"
                                 />
                               </div>
                             </div>
@@ -2216,7 +2227,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                 type="text" 
                                 value={currency}
                                 onChange={(e) => setCurrency(e.target.value)}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none transition-all font-semibold"
                               />
                             </div>
                           </div>
@@ -2257,7 +2268,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                 type="number"
                                 value={thresholdPO}
                                 onChange={(e) => setThresholdPO(Number(e.target.value))}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-12 pr-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-12 pr-4 py-2.5 text-xs text-text-primary focus:outline-none transition-all font-semibold"
                               />
                             </div>
                             <label className="block text-[10px] text-text-muted font-bold mb-1.5 mt-4">Direct Purchase Limit (PR without LPO)</label>
@@ -2267,7 +2278,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                 type="number"
                                 value={directPurchaseThreshold}
                                 onChange={(e) => setDirectPurchaseThreshold(Number(e.target.value))}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-12 pr-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-12 pr-4 py-2.5 text-xs text-text-primary focus:outline-none transition-all font-semibold"
                               />
                             </div>
                             <p className="text-[10px] text-text-muted mt-1.5 leading-relaxed">PRs at or below this value can be purchased directly without raising an LPO; larger ones must convert to an LPO.</p>
@@ -2348,7 +2359,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                 type="number" 
                                 value={lowStockThreshold}
                                 onChange={(e) => setLowStockThreshold(Number(e.target.value))}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-4 pr-14 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-4 pr-14 py-2.5 text-xs text-text-primary focus:outline-none transition-all font-semibold"
                               />
                               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-bold text-text-muted">Items</span>
                             </div>
@@ -2371,7 +2382,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                     ...usefulLives,
                                     [category]: Number(e.target.value)
                                   })}
-                                  className="w-full bg-[var(--bg-card)] border border-border-color/70 rounded-lg pl-2.5 pr-8 py-1.5 text-xs text-text-primary font-bold focus:outline-none focus:border-[var(--border)] transition-all"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color/70 rounded-lg pl-2.5 pr-8 py-1.5 text-xs text-text-primary font-bold focus:outline-none transition-all"
                                 />
                                 <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[8px] font-bold text-text-muted">M</span>
                               </div>
@@ -2434,7 +2445,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                             placeholder="Add stage name (e.g. Subcontractor Bid)..."
                             value={newStageInput}
                             onChange={(e) => setNewStageInput(e.target.value)}
-                            className="bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] w-64 font-semibold"
+                            className="bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2 text-xs text-text-primary focus:outline-none w-64 font-semibold"
                           />
                           <button 
                             onClick={addProjectStage}
@@ -2456,7 +2467,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                 type="number" 
                                 value={voThreshold}
                                 onChange={(e) => setVoThreshold(Number(e.target.value))}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-12 pr-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-12 pr-4 py-2.5 text-xs text-text-primary focus:outline-none transition-all font-semibold"
                               />
                             </div>
                           </div>
@@ -2509,7 +2520,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                             placeholder="e.g. 18:00 - 20:00"
                             value={newSlotInput}
                             onChange={(e) => setNewSlotInput(e.target.value)}
-                            className="bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] w-48 font-semibold"
+                            className="bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2 text-xs text-text-primary focus:outline-none w-48 font-semibold"
                           />
                           <button 
                             onClick={addMaintSlot}
@@ -2546,7 +2557,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                       ...slaCategories,
                                       [category]: Number(e.target.value)
                                     })}
-                                    className="w-full bg-[var(--bg-card)] border border-border-color/60 rounded-xl pl-3 pr-14 py-2 text-xs text-text-primary font-bold focus:outline-none focus:border-[var(--border)] transition-all"
+                                    className="w-full bg-[var(--bg-card)] border border-border-color/60 rounded-xl pl-3 pr-14 py-2 text-xs text-text-primary font-bold focus:outline-none transition-all"
                                   />
                                   <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[9px] font-bold text-text-muted">Hours</span>
                                 </div>
@@ -2588,7 +2599,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                               type="time" 
                               value={businessHours.start}
                               onChange={(e) => setBusinessHours({ ...businessHours, start: e.target.value })}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)]"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none"
                             />
                           </div>
                           <div>
@@ -2597,7 +2608,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                               type="time" 
                               value={businessHours.end}
                               onChange={(e) => setBusinessHours({ ...businessHours, end: e.target.value })}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)]"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none"
                             />
                           </div>
                         </div>
@@ -2653,7 +2664,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                   ...gratuityEntitlement,
                                   under_1yr: Number(e.target.value)
                                 })}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-3.5 pr-14 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)]"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-3.5 pr-14 py-2.5 text-xs text-text-primary focus:outline-none"
                               />
                               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[8px] font-bold text-text-muted">Days</span>
                             </div>
@@ -2668,7 +2679,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                   ...gratuityEntitlement,
                                   '1to5yr': Number(e.target.value)
                                 })}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-3.5 pr-14 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)]"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-3.5 pr-14 py-2.5 text-xs text-text-primary focus:outline-none"
                               />
                               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[8px] font-bold text-text-muted">Days</span>
                             </div>
@@ -2683,7 +2694,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                   ...gratuityEntitlement,
                                   above5yr: Number(e.target.value)
                                 })}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-3.5 pr-14 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)]"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-3.5 pr-14 py-2.5 text-xs text-text-primary focus:outline-none"
                               />
                               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[8px] font-bold text-text-muted">Days</span>
                             </div>
@@ -2754,7 +2765,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                               rows={2.5}
                               value={notifTemplates.quotation_sent}
                               onChange={(e) => setNotifTemplates({ ...notifTemplates, quotation_sent: e.target.value })}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-sans font-semibold leading-relaxed"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none transition-all font-sans font-semibold leading-relaxed"
                             />
                           </div>
                           <div>
@@ -2763,7 +2774,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                               rows={2.5}
                               value={notifTemplates.po_approved}
                               onChange={(e) => setNotifTemplates({ ...notifTemplates, po_approved: e.target.value })}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-sans font-semibold leading-relaxed"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none transition-all font-sans font-semibold leading-relaxed"
                             />
                           </div>
                           <div>
@@ -2772,7 +2783,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                               rows={2.5}
                               value={notifTemplates.ticket_assigned}
                               onChange={(e) => setNotifTemplates({ ...notifTemplates, ticket_assigned: e.target.value })}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-sans font-semibold leading-relaxed"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none transition-all font-sans font-semibold leading-relaxed"
                             />
                           </div>
                         </div>
@@ -2810,7 +2821,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                 type="text" 
                                 value={docTemplates.header_title}
                                 onChange={(e) => setDocTemplates({ ...docTemplates, header_title: e.target.value })}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none transition-all font-semibold"
                               />
                             </div>
                             <div>
@@ -2819,7 +2830,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                 type="text" 
                                 value={docTemplates.header_subtitle}
                                 onChange={(e) => setDocTemplates({ ...docTemplates, header_subtitle: e.target.value })}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none transition-all font-semibold"
                               />
                             </div>
                           </div>
@@ -2899,7 +2910,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                               rows={2.5}
                               value={docTemplates.invoice_disclaimer}
                               onChange={(e) => setDocTemplates({ ...docTemplates, invoice_disclaimer: e.target.value })}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all leading-relaxed"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary focus:outline-none transition-all leading-relaxed"
                             />
                           </div>
                           <div>
@@ -2908,7 +2919,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                               rows={2.5}
                               value={docTemplates.handover_disclaimer}
                               onChange={(e) => setDocTemplates({ ...docTemplates, handover_disclaimer: e.target.value })}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all leading-relaxed"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary focus:outline-none transition-all leading-relaxed"
                             />
                           </div>
                           <div>
@@ -2917,7 +2928,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                               rows={2.5}
                               value={docTemplates.ppm_disclaimer}
                               onChange={(e) => setDocTemplates({ ...docTemplates, ppm_disclaimer: e.target.value })}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all leading-relaxed"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary focus:outline-none transition-all leading-relaxed"
                             />
                           </div>
                           <div>
@@ -2926,7 +2937,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                               rows={2.5}
                               value={docTemplates.vo_disclaimer}
                               onChange={(e) => setDocTemplates({ ...docTemplates, vo_disclaimer: e.target.value })}
-                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all leading-relaxed"
+                              className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-3 text-xs text-text-primary focus:outline-none transition-all leading-relaxed"
                             />
                           </div>
                         </div>
@@ -2973,7 +2984,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                 type="text" 
                                 value={smtpConfig.host}
                                 onChange={(e) => setSmtpConfig({ ...smtpConfig, host: e.target.value })}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none transition-all font-semibold"
                               />
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
@@ -2983,7 +2994,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                   type="number" 
                                   value={smtpConfig.port}
                                   onChange={(e) => setSmtpConfig({ ...smtpConfig, port: Number(e.target.value) })}
-                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none transition-all font-semibold"
                                 />
                               </div>
                               <div>
@@ -2992,7 +3003,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                   type="text" 
                                   value={smtpConfig.user}
                                   onChange={(e) => setSmtpConfig({ ...smtpConfig, user: e.target.value })}
-                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none transition-all font-semibold"
                                 />
                               </div>
                             </div>
@@ -3017,7 +3028,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                 type="text" 
                                 value={whatsappGateway.url}
                                 onChange={(e) => setWhatsappGateway({ ...whatsappGateway, url: e.target.value })}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none transition-all font-semibold"
                               />
                             </div>
                             <div>
@@ -3027,7 +3038,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                   type={showWAToken ? "text" : "password"} 
                                   value={whatsappGateway.token}
                                   onChange={(e) => setWhatsappGateway({ ...whatsappGateway, token: e.target.value })}
-                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-4 pr-16 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
+                                  className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl pl-4 pr-16 py-2.5 text-xs text-text-primary focus:outline-none transition-all font-semibold"
                                 />
                                 <button
                                   type="button"
@@ -3203,7 +3214,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                 type="number" 
                                 value={passwordRules.min_length}
                                 onChange={(e) => setPasswordRules({ ...passwordRules, min_length: Number(e.target.value) })}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none transition-all font-semibold"
                               />
                               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-bold text-text-muted">Chars</span>
                             </div>
@@ -3236,7 +3247,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                 type="number" 
                                 value={sessionTimeout}
                                 onChange={(e) => setSessionTimeout(Number(e.target.value))}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none transition-all font-semibold"
                               />
                               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-bold text-text-muted">Mins</span>
                             </div>
@@ -3367,7 +3378,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                                 type="number" 
                                 value={backupConfig.retention}
                                 onChange={(e) => setBackupConfig({ ...backupConfig, retention: Number(e.target.value) })}
-                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
+                                className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none transition-all font-semibold"
                               />
                               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-bold text-text-muted">Days</span>
                             </div>
@@ -3465,7 +3476,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                     placeholder="e.g. John Doe"
                     value={newUserFullName}
                     onChange={(e) => setNewUserFullName(e.target.value)}
-                    className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-sans font-semibold"
+                    className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none transition-all font-sans font-semibold"
                   />
                 </div>
                 <div>
@@ -3476,7 +3487,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                     placeholder="e.g. john@jeetmep.ae"
                     value={newUserEmail}
                     onChange={(e) => setNewUserEmail(e.target.value)}
-                    className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-sans font-semibold"
+                    className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none transition-all font-sans font-semibold"
                   />
                 </div>
                 <div>
@@ -3487,7 +3498,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                     placeholder="••••••••"
                     value={newUserPassword}
                     onChange={(e) => setNewUserPassword(e.target.value)}
-                    className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
+                    className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary focus:outline-none transition-all font-semibold"
                   />
                 </div>
                 <div>
@@ -3496,7 +3507,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                     required
                     value={newUserDepartment}
                     onChange={(e) => setNewUserDepartment(e.target.value)}
-                    className="w-full bg-[var(--bg-card)] border border-border-color text-text-secondary rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
+                    className="w-full bg-[var(--bg-card)] border border-border-color text-text-secondary rounded-xl px-4 py-2.5 text-xs focus:outline-none transition-all font-semibold"
                   >
                     <option value="">Select Department...</option>
                     <option value="MANAGEMENT">Management</option>
@@ -3578,7 +3589,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                     placeholder="e.g. John Doe"
                     value={editUserFullName}
                     onChange={(e) => setEditUserFullName(e.target.value)}
-                    className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-sans font-semibold"
+                    className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none transition-all font-sans font-semibold"
                   />
                 </div>
                 <div>
@@ -3589,7 +3600,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                     placeholder="e.g. john@jeetmep.ae"
                     value={editUserEmail}
                     onChange={(e) => setEditUserEmail(e.target.value)}
-                    className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-sans font-semibold"
+                    className="w-full bg-[var(--bg-card)] border border-border-color rounded-xl px-4 py-2.5 text-xs text-text-primary placeholder-text-muted/50 focus:outline-none transition-all font-sans font-semibold"
                   />
                 </div>
                 <div>
@@ -3598,7 +3609,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
                     required
                     value={editUserDepartment}
                     onChange={(e) => setEditUserDepartment(e.target.value)}
-                    className="w-full bg-[var(--bg-card)] border border-border-color text-text-secondary rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-[var(--border)] focus:ring-4 focus:ring-[var(--accent)] transition-all font-semibold"
+                    className="w-full bg-[var(--bg-card)] border border-border-color text-text-secondary rounded-xl px-4 py-2.5 text-xs focus:outline-none transition-all font-semibold"
                   >
                     <option value="">Select Department...</option>
                     <option value="MANAGEMENT">Management</option>
