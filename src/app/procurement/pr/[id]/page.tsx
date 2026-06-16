@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import prService from '@/services/prService';
 import { PageHeader } from '@/components/ui/PageHeader';
+import WorkflowPanel from '@/components/workflow/WorkflowPanel';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { StatusChip } from '@/components/ui/StatusChip';
@@ -91,6 +92,9 @@ export default function PRDetailPage({ params }: { params: Promise<{ id: string 
           </div>
         }
       />
+
+      {/* Configurable workflow (Admin Center → Workflows) */}
+      <WorkflowPanel moduleKey="PR" entityId={id} context={{ status: pr.status, total: Number(pr.estimated_total) || 0 }} />
 
       {error && (
         <div className="flex items-center justify-between gap-3 bg-[var(--status-danger-bg)] border border-[var(--status-danger-border)] rounded-lg p-3 text-xs text-[var(--status-danger-text)]">

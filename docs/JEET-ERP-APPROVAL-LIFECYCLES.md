@@ -25,14 +25,16 @@ Engineer / `technician` Field Technician (L100) · `viewer` Auditor (L200).
 
 ---
 
-## A. Engine-enforced workflows (11) — exact, from the seed
+## A. Engine-enforced workflows (14) — exact, from the seed
 
-> *(Purchase Order `PO` and Supplier Invoice `SINV` added in `20260616211000` — their
-> record pages already render the panel. PO approval is additionally **threshold-gated**
-> in `poApprovalService` via the `has_permission()` RPC.)*
+> *(Added: `PO`, `SINV` in `20260616211000`; `PR`, `SNAG`, `TC` in `20260616212000`.
+> All have a `WorkflowPanel` wired onto their record page.)*
 >
-> - **PO:** Draft (Procurement) → Pending Approval → **Approved (Manager/GM)** → Sent → Receiving → Closed
-> - **SINV:** Expected/Draft → Registered (**3-way match**) → Approved (Accountant) → Paid *(Exception → Override/Reject)*
+> - **PO** (`/procurement/po/[id]`): Draft (Procurement) → Pending Approval → **Approved (Manager/GM)** → Sent → Receiving → Closed *(also threshold-gated in `poApprovalService.has_permission()`)*
+> - **SINV** (`/finance/ap/match/[id]`): Expected → Registered (**3-way match**) → Approved (Accountant) → Paid *(Exception → Override/Reject)*
+> - **PR** (`/procurement/pr/[id]`): Draft (Site Engineer) → Pending Approval → **Approved (PM/Manager)** → Converted to RFQ/PO / Direct Purchase
+> - **SNAG / NCR** (`/snags` detail): Open → In Progress (Technician) → Fixed → **Verified (PM)** / Waived
+> - **T&C** (`/tc/[id]`): Draft → Testing (Technician) → Complete → Witnessed → **Approved (Manager)** *(Failures → Re-test)*
 
 
 ### 1. Tender `TND` — Tender Lifecycle  *(simplified — `20260616210000`)*

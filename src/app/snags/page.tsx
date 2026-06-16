@@ -25,6 +25,7 @@ import {
 import { supabase } from '@/lib/supabase';
 import { useProjects } from '@/hooks/useProjects';
 import { useSnags } from '@/hooks/useSnags';
+import WorkflowPanel from '@/components/workflow/WorkflowPanel';
 import { Snag, SnagSeverity, SnagStatus, SnagSource } from '@/types/snag.types';
 import './snags.css';
 
@@ -387,7 +388,12 @@ export default function SnagsRegistryPage() {
               <span style={{ fontSize: '0.8rem', fontFamily: 'var(--font-mono)', color: 'var(--secondary)', fontWeight: 600 }}>{selectedSnag.snag_number}</span>
               <h2 style={{ fontSize: '1.3rem', fontWeight: 700, margin: '0.2rem 0' }}>Snag Item Details</h2>
               <span className={getSeverityBadgeClass(selectedSnag.severity)}>{selectedSnag.severity} Severity</span>
-              
+
+              {/* Configurable workflow (Admin Center → Workflows) */}
+              <div style={{ margin: '1rem 0' }}>
+                <WorkflowPanel moduleKey="SNAG" entityId={selectedSnag.id} context={{ status: (selectedSnag as any).status }} />
+              </div>
+
               <div style={{ margin: '1.25rem 0', display: 'flex', flexDirection: 'column', gap: '0.8rem', fontSize: '0.85rem' }}>
                 <div style={{ background: 'var(--surface-hover)', padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
                   <span style={{ color: 'var(--text-muted)', fontSize: '0.7rem', display: 'block', textTransform: 'uppercase' }}>Defect Description</span>

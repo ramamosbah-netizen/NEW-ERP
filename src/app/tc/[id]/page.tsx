@@ -22,6 +22,7 @@ import {
   Check
 } from 'lucide-react';
 import { useTCExecution } from '@/hooks/useTCExecution';
+import WorkflowPanel from '@/components/workflow/WorkflowPanel';
 import { supabase } from '@/lib/supabase';
 import { TCDevice, TCTestScript } from '@/types/tc.types';
 import '../tc.css';
@@ -196,6 +197,11 @@ export default function TCPackageWorkspacePage({ params }: PageProps) {
             <Play size={14} /> Start Tester execution
           </Link>
         </div>
+      </div>
+
+      {/* Configurable workflow (Admin Center → Workflows) */}
+      <div style={{ marginBottom: '1.5rem' }}>
+        <WorkflowPanel moduleKey="TC" entityId={packageId} context={{ status: (pkg as any).status }} />
       </div>
 
       {/* Package Specs Dashboard */}
