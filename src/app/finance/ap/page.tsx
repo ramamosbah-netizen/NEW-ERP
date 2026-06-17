@@ -20,7 +20,8 @@ import {
   MATCH_STATUS_COLORS,
   SUPPLIER_INVOICE_TYPE_LABELS
 } from '@/constants/finance.constants';
-import { Search, Plus, ArrowRight, ShieldAlert, Receipt, CheckCircle, X, Paperclip } from 'lucide-react';
+import { Plus, ArrowRight, ShieldAlert, Receipt, CheckCircle, X, Paperclip } from 'lucide-react';
+import { PageHeader, Card, Button, Toolbar, SearchInput, SelectFilter } from '@/components/ui';
 
 export default function SupplierInvoicesListPage() {
   const [filters, setFilters] = useState<SupplierInvoiceFilters>({
@@ -114,69 +115,45 @@ export default function SupplierInvoicesListPage() {
   });
 
   return (
-    <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex flex-col font-sans">
-<main className="flex-1 max-w-7xl w-full mx-auto px-6 py-8 flex flex-col gap-6">
-        {/* Breadcrumb & Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <div className="text-[10px] text-[var(--text-muted)] font-mono uppercase tracking-widest">
-              <Link href="/finance" className="hover:text-[var(--accent)]">Finance</Link> &gt; <span className="text-[var(--text-secondary)]">Payables</span>
-            </div>
-            <h1 className="font-heading font-extrabold text-2xl tracking-tight text-[var(--text-primary)] uppercase mt-1">
-              Supplier Bills & Invoices (AP)
-            </h1>
-          </div>
-          <div className="flex items-center gap-2">
-            <Link
-              href="/finance/ap/expenses"
-              className="flex items-center gap-1.5 px-4 py-2 border border-[var(--accent)] text-[var(--accent)] text-xs font-bold rounded hover:bg-[var(--accent-glow)] transition-all uppercase tracking-wider"
-            >
-              <Receipt size={14} /> Expenses & Accounts
+    <div className="flex flex-col gap-5">
+      <PageHeader
+        title="Payables (AP)"
+        subtitle="Supplier bills — 3-way match, exceptions & disbursements"
+        breadcrumbs={[{ label: 'Finance', href: '/finance' }, { label: 'Payables' }]}
+        actions={
+          <>
+            <Link href="/finance/ap/expenses" className="no-underline">
+              <Button variant="secondary" size="sm" icon={Receipt}>Expenses & Accounts</Button>
             </Link>
-            <Link
-              href="/finance/ap/register"
-              className="flex items-center gap-1.5 px-4 py-2 bg-[var(--accent)] text-[var(--text-primary)] text-xs font-bold rounded hover:bg-[var(--accent)] transition-all uppercase tracking-wider"
-            >
-              <Plus size={14} /> Register Supplier Invoice
+            <Link href="/finance/ap/register" className="no-underline">
+              <Button variant="primary" size="sm" icon={Plus}>Register Supplier Invoice</Button>
             </Link>
-          </div>
-        </div>
+          </>
+        }
+      />
 
-        {/* Filters Panel */}
-        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4 flex flex-col md:flex-row gap-4 items-center">
-          {/* Search bar */}
-          <div className="relative flex-1 w-full">
-            <Search className="absolute left-3 top-2.5 text-[var(--text-muted)]" size={14} />
-            <input
-              type="text"
-              placeholder="Search by supplier name, invoice # or internal reference..."
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 pl-9 pr-4 text-xs text-[var(--text-secondary)] placeholder-[var(--text-tertiary)] focus:outline-none focus:border-[var(--accent)]"
-            />
-          </div>
+      <Toolbar>
+        <SearchInput
+          placeholder="Search supplier, invoice # or internal ref…"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          containerClassName="flex-1"
+          className="w-full"
+        />
+        <SelectFilter value={filters.status} onChange={e => setFilters(prev => ({ ...prev, status: e.target.value }))}>
+          <option value="">All Statuses</option>
+          {Object.entries(SUPPLIER_INVOICE_STATUS_LABELS).map(([k, v]) => (
+            <option key={k} value={k}>{v}</option>
+          ))}
+        </SelectFilter>
+      </Toolbar>
 
-          {/* Status select */}
-          <div className="w-full md:w-48">
-            <select
-              value={filters.status}
-              onChange={e => setFilters(prev => ({ ...prev, status: e.target.value }))}
-              className="w-full bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent)]"
-            >
-              <option value="">All Statuses</option>
-              {Object.entries(SUPPLIER_INVOICE_STATUS_LABELS).map(([k, v]) => (
-                <option key={k} value={k}>{v}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        {/* Table List */}
-        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded overflow-hidden">
+      {/* Table List */}
+      <Card padding={false}>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-left text-xs">
               <thead>
-                <tr className="bg-[var(--bg-card)] border-b border-[var(--border)] text-[var(--text-secondary)] font-mono uppercase tracking-wider text-[10px]">
+                <tr className="border-b border-[var(--border-color)] text-[var(--text-muted)] font-mono uppercase tracking-wider text-[10px]">
                   <th className="py-3.5 px-4">Ref ID</th>
                   <th className="py-3.5 px-4">Supplier / Vendor</th>
                   <th className="py-3.5 px-4">Bill Number</th>
@@ -268,8 +245,7 @@ export default function SupplierInvoicesListPage() {
               </tbody>
             </table>
           </div>
-        </div>
-      </main>
+      </Card>
 
       {/* Quick-validate a DRAFT bill */}
       {vBill && (
