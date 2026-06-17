@@ -138,8 +138,8 @@ function PaymentRecordPageContent() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex flex-col font-sans">
-<main className="flex-1 max-w-4xl w-full mx-auto px-6 py-8 flex flex-col gap-6">
+    <div className="flex flex-col">
+<main className="flex flex-col gap-5">
         {/* Header */}
         <div>
           <div className="text-[10px] text-[var(--text-muted)] font-mono uppercase tracking-widest flex items-center gap-1">
@@ -315,7 +315,7 @@ function PaymentRecordPageContent() {
 
 export default function PaymentRecordPage() {
   return (
-    <React.Suspense fallback={<div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex items-center justify-center font-mono text-xs text-[var(--accent)]">Loading...</div>}>
+    <React.Suspense fallback={<div className="flex items-center justify-center py-24 font-mono text-xs text-[var(--accent)]">Loading...</div>}>
       <PaymentRecordPageContent />
     </React.Suspense>
   );

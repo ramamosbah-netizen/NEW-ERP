@@ -108,8 +108,8 @@ function ClientStatementPageContent() {
   const selectedClientName = clients.find(c => c.id === selectedClientId)?.name || 'Select Client';
 
   return (
-    <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex flex-col font-sans">
-<main className="flex-1 max-w-5xl w-full mx-auto px-6 py-8 flex flex-col gap-6">
+    <div className="flex flex-col">
+<main className="flex flex-col gap-5">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
@@ -213,7 +213,7 @@ function ClientStatementPageContent() {
 
 export default function ClientStatementPage() {
   return (
-    <React.Suspense fallback={<div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex items-center justify-center font-mono text-xs text-[var(--accent)]">Loading...</div>}>
+    <React.Suspense fallback={<div className="flex items-center justify-center py-24 font-mono text-xs text-[var(--accent)]">Loading...</div>}>
       <ClientStatementPageContent />
     </React.Suspense>
   );

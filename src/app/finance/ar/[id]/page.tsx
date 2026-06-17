@@ -28,7 +28,7 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex flex-col font-sans">
+      <div className="flex flex-col">
 <div className="flex-1 flex items-center justify-center font-mono text-[var(--text-muted)]">
           Loading invoice details...
         </div>
@@ -38,7 +38,7 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
 
   if (!invoice) {
     return (
-      <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex flex-col font-sans">
+      <div className="flex flex-col">
 <div className="flex-1 flex items-center justify-center font-mono text-[var(--text-muted)]">
           Invoice not found or has been deleted.
         </div>
@@ -49,8 +49,8 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
   const statusColor = INVOICE_STATUS_COLORS[invoice.status] || { bg: 'var(--surface-hover)', text: '#fff', border: 'transparent' };
 
   return (
-    <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex flex-col font-sans">
-<main className="flex-1 max-w-5xl w-full mx-auto px-6 py-8 flex flex-col gap-6">
+    <div className="flex flex-col">
+<main className="flex flex-col gap-5">
         {/* Breadcrumb & Navigation */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
