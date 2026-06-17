@@ -337,6 +337,18 @@ export const workflowService = {
     const fromStatus = workflow.statuses.find(s => s.id === transition.from_status_id)!;
     const toStatus = workflow.statuses.find(s => s.id === transition.to_status_id)!;
 
+    // Maker-checker: the user who created/started this record cannot also approve
+    // it. A separate user must perform any approval-bearing transition.
+    if (transition.approval && transition.approval.mode !== 'NONE') {
+      const starter =
+        (instance.history || []).find(h => h.action === 'START') || (instance.history || [])[0];
+      if (starter?.by && starter.by === me.id) {
+        throw new Error(
+          'Maker-checker: you cannot approve a record you created. A different user must approve it.',
+        );
+      }
+    }
+
     // Approval handling
     let pending = instance.pending_approvals?.length
       ? instance.pending_approvals
