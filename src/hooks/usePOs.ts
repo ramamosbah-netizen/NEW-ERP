@@ -1,9 +1,8 @@
 // ============================================================
-// JEET ERP — Purchase Order (LPO) React Hooks
+// Aura ERP — Purchase Order (LPO) React Hooks (React Query)
 // ============================================================
 
-import { logger } from '@/lib/logger';
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { poService } from '@/services/poService';
 import { poApprovalService } from '@/services/poApprovalService';
 import type { PurchaseOrder, POStatus } from '@/types/po.types';
@@ -15,114 +14,74 @@ export interface POFilters {
   search?: string;
 }
 
-/**
- * Hook to retrieve and filter the list of Purchase Orders.
- */
+const poKeys = {
+  lists: ['pos', 'list'] as const,
+  list: (f: POFilters) => ['pos', 'list', f] as const,
+  detail: (id: string) => ['pos', 'detail', id] as const,
+};
+
+/** List + filter Purchase Orders. */
 export function usePOs(filters: POFilters = {}) {
-  const [pos, setPos] = useState<PurchaseOrder[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-
-  const fetchList = useCallback(async () => {
-    try {
-      setLoading(true);
-      const data = await poService.getPOs(filters);
-      setPos(data);
-      setError(null);
-    } catch (err: any) {
-      logger.error('Error in usePOs hook:', err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [JSON.stringify(filters)]);
-
-  useEffect(() => {
-    fetchList();
-  }, [fetchList]);
-
-  return { pos, loading, error, refetch: fetchList };
+  const q = useQuery({ queryKey: poKeys.list(filters), queryFn: () => poService.getPOs(filters) });
+  return {
+    pos: q.data ?? [],
+    loading: q.isPending,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
+  };
 }
 
-/**
- * Hook to retrieve a single PO's detailed view and perform workflow actions.
- */
+/** Single PO detail + workflow actions. */
 export function usePO(id: string) {
-  const [po, setPo] = useState<PurchaseOrder | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+  const qc = useQueryClient();
+  const q = useQuery({ queryKey: poKeys.detail(id), queryFn: () => poService.getPODetail(id), enabled: !!id });
 
-  const fetchDetail = useCallback(async () => {
-    if (!id) return;
-    try {
-      setLoading(true);
-      const data = await poService.getPODetail(id);
-      setPo(data);
-      setError(null);
-    } catch (err: any) {
-      logger.error(`Error in usePO hook for ${id}:`, err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [id]);
+  const invalidate = async () => {
+    await Promise.all([
+      qc.invalidateQueries({ queryKey: poKeys.detail(id) }),
+      qc.invalidateQueries({ queryKey: poKeys.lists }),
+    ]);
+  };
 
-  useEffect(() => {
-    fetchDetail();
-  }, [fetchDetail]);
-
-  // Workflow Actions
   const submitForApproval = async (actorUserId?: string) => {
     await poApprovalService.submitForApproval(id, actorUserId);
-    await fetchDetail();
+    await invalidate();
   };
 
   const processApproval = async (
     stage: 'COMMERCIAL' | 'GM',
     action: 'APPROVED' | 'REJECTED',
     comment: string | null,
-    actorUserId: string
+    actorUserId: string,
   ) => {
     await poApprovalService.processApproval(id, stage, action, comment, actorUserId);
-    await fetchDetail();
+    await invalidate();
   };
 
-  const cancelPO = async (reason: string) => {
-    await poService.cancelPO(id, reason);
-    await fetchDetail();
-  };
-
-  const closeShortPO = async (reason: string) => {
-    await poService.closeShortPO(id, reason);
-    await fetchDetail();
-  };
-
+  const cancelPO = async (reason: string) => { await poService.cancelPO(id, reason); await invalidate(); };
+  const closeShortPO = async (reason: string) => { await poService.closeShortPO(id, reason); await invalidate(); };
   const revisePO = async (): Promise<string> => {
     const newPoId = await poService.revisePO(id);
-    return newPoId; // returns new draft ID for redirection
+    await qc.invalidateQueries({ queryKey: poKeys.lists });
+    return newPoId;
   };
-
-  const sendPO = async () => {
-    await poService.sendPO(id);
-    await fetchDetail();
-  };
-
+  const sendPO = async () => { await poService.sendPO(id); await invalidate(); };
   const acknowledgePO = async (ackReference: string, ackDate?: string) => {
     await poService.acknowledgePO(id, ackReference, ackDate);
-    await fetchDetail();
+    await invalidate();
   };
 
   return {
-    po,
-    loading,
-    error,
-    refetch: fetchDetail,
+    po: q.data ?? null,
+    loading: q.isPending,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
     submitForApproval,
     processApproval,
     cancelPO,
     closeShortPO,
     revisePO,
     sendPO,
-    acknowledgePO
+    acknowledgePO,
   };
 }

@@ -177,7 +177,7 @@ export default function PORegistryPage() {
             ))}
           </select>
 
-          <button className="quote-btn quote-btn-secondary" onClick={refetch}>
+          <button className="quote-btn quote-btn-secondary" onClick={() => refetch()}>
             <RefreshCw size={14} /> Refresh
           </button>
         </div>
