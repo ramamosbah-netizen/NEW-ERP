@@ -11,6 +11,7 @@ import { usePermissions } from '@/lib/permissions/usePermissions';
 import { isRouteAllowed } from '@/lib/permissions/routeAccess';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { HUBS, findHub } from './hubs';
 import {
   Layers,
   LayoutDashboard,
@@ -420,12 +421,11 @@ export default function AppSidebar({ mobileOpen = false, onMobileClose }: AppSid
     };
   }, []);
 
-  // Filter navigation sections based on enabled modules
-  const visibleSections = NAV_SECTIONS.map(section => {
-    const visibleItems = section.items.filter(item =>
-      enabledModules[item.href] !== false && isRouteAllowed(role, item.href));
-    return { ...section, items: visibleItems };
-  }).filter(section => section.items.length > 0);
+  // Hub-based navigation: only top-level business hubs in the sidebar.
+  // Sub-pages are reached via the in-hub header tabs (see HubHeader).
+  const visibleHubs = HUBS.filter(hub =>
+    enabledModules[hub.href] !== false && isRouteAllowed(role, hub.href));
+  const activeHubId = findHub(pathname)?.id ?? null;
 
   // Persist collapsed state
   useEffect(() => {
@@ -493,50 +493,26 @@ export default function AppSidebar({ mobileOpen = false, onMobileClose }: AppSid
           </div>
         </div>
 
-        {/* Nav Sections */}
-        <nav className="sidebar-nav">
-          {visibleSections.map((section, sIdx) => (
-            <div key={section.id} className="sidebar-section">
-              {/* Section Header */}
-              {!collapsed && (
-                <div 
-                  className="sidebar-section-header" 
-                  onClick={() => toggleSection(section.id)}
-                >
-                  <span className="sidebar-section-label">{section.label}</span>
-                  <ChevronRight 
-                    size={12} 
-                    className={`sidebar-section-chevron ${openSections[section.id] ? 'open' : ''}`} 
-                  />
-                </div>
-              )}
-
-              {/* Collapsed: show divider between groups */}
-              {collapsed && sIdx > 0 && <div className="sidebar-divider" />}
-
-              {/* Section Items */}
-              <div className={`sidebar-section-items ${collapsed || openSections[section.id] ? 'open' : 'closed'}`}>
-                {section.items.map(item => {
-                  const Icon = item.icon;
-                  const active = isActive(item.href);
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className={`sidebar-item ${active ? 'active' : ''}`}
-                      data-tooltip={item.label}
-                      id={`nav-${item.href.replace(/\//g, '-').replace(/^-/, '')}`}
-                    >
-                      <span className="sidebar-item-icon">
-                        <Icon size={16} />
-                      </span>
-                      <span className="sidebar-item-label">{item.label}</span>
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-          ))}
+        {/* Hub navigation — flat list of business hubs */}
+        <nav className="sidebar-nav sidebar-nav-hubs">
+          {visibleHubs.map(hub => {
+            const Icon = hub.icon;
+            const active = activeHubId === hub.id;
+            return (
+              <Link
+                key={hub.id}
+                href={hub.href}
+                className={`sidebar-item ${active ? 'active' : ''}`}
+                data-tooltip={hub.label}
+                id={`nav-hub-${hub.id}`}
+              >
+                <span className="sidebar-item-icon">
+                  <Icon size={17} />
+                </span>
+                <span className="sidebar-item-label">{hub.label}</span>
+              </Link>
+            );
+          })}
         </nav>
 
         {/* Collapse Toggle */}

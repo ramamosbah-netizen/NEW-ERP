@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { AlertTriangle } from 'lucide-react';
 import AppSidebar, { NAV_SECTIONS } from './AppSidebar';
 import AppTopbar from './AppTopbar';
+import HubHeader from './HubHeader';
 import { CommandPalette } from '@/components/ui/CommandPalette';
 import settingsService from '@/services/settingsService';
 import { usePermissions } from '@/lib/permissions/usePermissions';
@@ -202,6 +203,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         }`}
       >
         <AppTopbar onMobileMenuToggle={handleMobileToggle} />
+        <HubHeader />
         <main className="erp-shell-content">
           {children}
         </main>

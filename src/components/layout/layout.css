@@ -443,3 +443,91 @@ body.theme-dark .erp-sidebar {
 body.theme-dark .sidebar-item.active::before {
   background: #f59e0b;
 }
+
+/* ============================================================
+   HUB NAVIGATION (slim sidebar + header tabs)
+   ============================================================ */
+.sidebar-nav-hubs { padding: 0.625rem 0; }
+.sidebar-nav-hubs .sidebar-item {
+  margin: 2px 0.5rem;
+  padding: 0.5625rem 0.75rem;
+  font-size: 0.8275rem;
+}
+
+/* Hub header strip — module title + section tabs, below the topbar */
+.hub-header {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  height: 46px;
+  min-height: 46px;
+  padding: 0 1.75rem;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 52px;
+  z-index: 35;
+}
+
+.hub-header-title {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  padding-right: 0.9rem;
+  margin-right: 0.35rem;
+  border-right: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.hub-header-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+}
+
+.hub-tabs {
+  display: flex;
+  align-items: stretch;
+  gap: 0.1rem;
+  flex: 1;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  height: 100%;
+}
+
+.hub-tabs::-webkit-scrollbar { height: 3px; }
+.hub-tabs::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 99px; }
+
+.hub-tab {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 0.7rem;
+  font-size: 0.765rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: color 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+}
+
+.hub-tab:hover {
+  color: var(--text-primary);
+  background: var(--bg-card-hover);
+}
+
+.hub-tab.active {
+  color: var(--text-primary);
+  font-weight: 600;
+  border-bottom-color: var(--accent);
+}
+
+@media (max-width: 768px) {
+  .hub-header { padding: 0 1rem; }
+  .hub-header-title { display: none; }
+}
