@@ -86,8 +86,8 @@ export default function VOApprovalQueuePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex flex-col font-sans">
-<main className="flex-1 max-w-6xl w-full mx-auto px-6 py-8 flex flex-col gap-6">
+    <div className="text-[var(--text-primary)] flex flex-col font-sans">
+<main className="flex flex-col gap-5">
         
         {/* Title Block */}
         <div className="flex justify-between items-center">

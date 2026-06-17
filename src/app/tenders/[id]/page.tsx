@@ -269,7 +269,7 @@ export default function TenderDetail({ params }: { params: Promise<{ id: string 
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[var(--bg-dark)] flex flex-col items-center justify-center text-center p-6">
+      <div className="flex flex-col items-center justify-center py-24 text-center p-6">
         <div className="h-10 w-10 border-2 border-[var(--accent)] border-t-transparent animate-spin rounded-full mb-3"></div>
         <h2 className="text-sm font-bold font-mono text-[var(--text-secondary)] uppercase tracking-widest">Retrieving Tender Profile...</h2>
       </div>

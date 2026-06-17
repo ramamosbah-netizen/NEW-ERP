@@ -129,7 +129,7 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[var(--bg-dark)] flex flex-col items-center justify-center gap-3">
+      <div className="flex flex-col items-center justify-center py-24 gap-3">
         <div className="h-8 w-8 border-2 border-[var(--border-color)] border-t-[var(--text-primary)] animate-spin rounded-full" />
         <p className="text-sm text-[var(--text-muted)]">Loading dashboard…</p>
       </div>

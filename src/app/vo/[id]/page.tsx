@@ -112,7 +112,7 @@ export default function VODetailPage({ params }: VODetailPageProps) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex flex-col font-sans">
+      <div className="text-[var(--text-primary)] flex flex-col font-sans">
 <div className="flex-1 flex flex-col items-center justify-center py-20 text-[var(--text-muted)] font-mono text-xs gap-3">
           <div className="animate-spin rounded-full h-5 w-5 border border-[var(--border)] border-t-emerald-400"></div>
           <span>Loading Variation Order parameters & historical events...</span>
@@ -123,7 +123,7 @@ export default function VODetailPage({ params }: VODetailPageProps) {
 
   if (error || !vo) {
     return (
-      <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex flex-col font-sans">
+      <div className="text-[var(--text-primary)] flex flex-col font-sans">
 <main className="flex-1 max-w-4xl w-full mx-auto px-6 py-12">
           <div className="bg-[var(--status-danger-bg)] border border-[var(--status-danger-border)] text-[var(--status-danger-text)] p-6 rounded font-mono text-xs flex items-start gap-3">
             <ShieldAlert size={20} className="shrink-0" />
@@ -148,8 +148,8 @@ export default function VODetailPage({ params }: VODetailPageProps) {
   const colors = VO_STATUS_COLORS[vo.status] || { bg: 'rgba(0,0,0,0.1)', text: '#fff', border: 'rgba(0,0,0,0.2)' };
 
   return (
-    <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex flex-col font-sans">
-<main className="flex-1 max-w-7xl w-full mx-auto px-6 py-8 flex flex-col gap-6">
+    <div className="text-[var(--text-primary)] flex flex-col font-sans">
+<main className="flex flex-col gap-5">
         
         {/* Header Navigation */}
         <div className="flex justify-between items-start">

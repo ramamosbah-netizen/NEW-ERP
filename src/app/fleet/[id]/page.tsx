@@ -139,7 +139,7 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex items-center justify-center font-mono text-xs">
+      <div className="text-[var(--text-primary)] flex items-center justify-center font-mono text-xs">
         Loading vehicle workspace...
       </div>
     );
@@ -147,7 +147,7 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
 
   if (!vehicle) {
     return (
-      <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex flex-col items-center justify-center gap-4">
+      <div className="text-[var(--text-primary)] flex flex-col items-center justify-center gap-4">
         <span className="text-xs font-mono text-[var(--text-muted)]">Vehicle record not found or deleted.</span>
         <Link href="/fleet" className="text-xs text-[var(--primary)] font-bold flex items-center gap-1.5">
           <ArrowLeft size={14} /> Back to Fleet Directory
@@ -269,7 +269,7 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
   const activeAssignment = assignments.find(a => !a.to_date);
 
   return (
-    <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)]">
+    <div className="text-[var(--text-primary)]">
 <main className="max-w-[1600px] mx-auto px-6 py-8">
         
         {/* BACK TO DIRECTORY */}

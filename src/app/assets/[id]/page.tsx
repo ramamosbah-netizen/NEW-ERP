@@ -56,7 +56,7 @@ export default function AssetDetailPage({ params }: { params: Promise<{ id: stri
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex items-center justify-center font-mono text-xs">
+      <div className="text-[var(--text-primary)] flex items-center justify-center font-mono text-xs">
         Loading asset ledger...
       </div>
     );
@@ -64,7 +64,7 @@ export default function AssetDetailPage({ params }: { params: Promise<{ id: stri
 
   if (!asset) {
     return (
-      <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex flex-col items-center justify-center gap-4">
+      <div className="text-[var(--text-primary)] flex flex-col items-center justify-center gap-4">
         <span className="text-xs font-mono text-[var(--text-muted)]">Asset record not found.</span>
         <Link href="/assets" className="text-xs text-[var(--primary)] font-bold flex items-center gap-1.5">
           <ArrowLeft size={14} /> Back to Register
@@ -97,7 +97,7 @@ export default function AssetDetailPage({ params }: { params: Promise<{ id: stri
   const pendingMonths = schedule.filter(r => !r.posted).length;
 
   return (
-    <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)]">
+    <div className="text-[var(--text-primary)]">
 <main className="max-w-[1600px] mx-auto px-6 py-8">
         
         {/* BACK */}
