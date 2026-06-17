@@ -1,9 +1,8 @@
 // ============================================================
-// JEET ERP — Service Tickets React Hooks
+// Aura ERP — Service Tickets React Hooks (React Query)
 // ============================================================
 
-import { logger } from '@/lib/logger';
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { ticketService } from '@/services/ticketService';
 import type { ServiceTicket, TicketPartItem, TicketEvent } from '@/types/ticket.types';
 
@@ -14,195 +13,83 @@ export interface TicketFilters {
   search?: string;
 }
 
-/**
- * Hook to retrieve and filter the list of service tickets.
- */
+const tKeys = {
+  lists: ['tickets', 'list'] as const,
+  list: (f: TicketFilters) => ['tickets', 'list', f] as const,
+  detail: (id: string) => ['tickets', 'detail', id] as const,
+};
+
 export function useTickets(filters: TicketFilters = {}) {
-  const [tickets, setTickets] = useState<ServiceTicket[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-
-  const fetchList = useCallback(async () => {
-    try {
-      setLoading(true);
-      const data = await ticketService.fetchTickets(filters);
-      setTickets(data);
-      setError(null);
-    } catch (err: any) {
-      logger.error('Error in useTickets hook:', err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [JSON.stringify(filters)]);
-
-  useEffect(() => {
-    fetchList();
-  }, [fetchList]);
-
-  return { tickets, loading, error, refetch: fetchList };
+  const q = useQuery({ queryKey: tKeys.list(filters), queryFn: () => ticketService.fetchTickets(filters) });
+  return {
+    tickets: q.data ?? [],
+    loading: q.isPending,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
+  };
 }
 
-/**
- * Hook to retrieve a single service ticket and execute operational state changes.
- */
 export function useTicket(id?: string) {
-  const [ticket, setTicket] = useState<ServiceTicket | null>(null);
-  const [loading, setLoading] = useState(!!id);
-  const [error, setError] = useState<Error | null>(null);
+  const qc = useQueryClient();
+  const q = useQuery({ queryKey: tKeys.detail(id ?? ''), queryFn: () => ticketService.fetchTicketById(id!), enabled: !!id });
 
-  const fetchDetail = useCallback(async () => {
-    if (!id) return;
-    try {
-      setLoading(true);
-      const data = await ticketService.fetchTicketById(id);
-      setTicket(data);
-      setError(null);
-    } catch (err: any) {
-      logger.error(`Error in useTicket hook for ID ${id}:`, err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [id]);
-
-  useEffect(() => {
-    fetchDetail();
-  }, [fetchDetail]);
-
-  const logTicket = async (data: Omit<Partial<ServiceTicket>, 'id' | 'ticket_number' | 'created_at'>): Promise<ServiceTicket> => {
-    try {
-      setLoading(true);
-      const res = await ticketService.createTicket(data);
-      setError(null);
-      return res;
-    } catch (err: any) {
-      setError(err);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
+  const inv = async () => {
+    await Promise.all([
+      qc.invalidateQueries({ queryKey: tKeys.detail(id ?? '') }),
+      qc.invalidateQueries({ queryKey: tKeys.lists }),
+    ]);
   };
 
-  const assign = async (technicianId: string): Promise<ServiceTicket> => {
+  const createTicket = async (data: Omit<Partial<ServiceTicket>, 'id' | 'ticket_number' | 'created_at'>): Promise<ServiceTicket> => {
+    const res = await ticketService.createTicket(data);
+    await qc.invalidateQueries({ queryKey: tKeys.lists });
+    return res;
+  };
+  const assignTicket = async (technicianId: string): Promise<ServiceTicket> => {
     if (!id) throw new Error('Ticket ID is required');
-    try {
-      setLoading(true);
-      const res = await ticketService.assignTicket(id, technicianId);
-      await fetchDetail();
-      return res;
-    } catch (err: any) {
-      setError(err);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
+    const res = await ticketService.assignTicket(id, technicianId); await inv(); return res;
   };
-
-  const dispatch = async (): Promise<ServiceTicket> => {
+  const dispatchTicket = async (): Promise<ServiceTicket> => {
     if (!id) throw new Error('Ticket ID is required');
-    try {
-      setLoading(true);
-      const res = await ticketService.dispatchTechnician(id);
-      await fetchDetail();
-      return res;
-    } catch (err: any) {
-      setError(err);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
+    const res = await ticketService.dispatchTechnician(id); await inv(); return res;
   };
-
-  const pauseForParts = async (reason: string): Promise<ServiceTicket> => {
+  const pauseTicketForParts = async (reason: string): Promise<ServiceTicket> => {
     if (!id) throw new Error('Ticket ID is required');
-    try {
-      setLoading(true);
-      const res = await ticketService.pauseTicketForParts(id, reason);
-      await fetchDetail();
-      return res;
-    } catch (err: any) {
-      setError(err);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
+    const res = await ticketService.pauseTicketForParts(id, reason); await inv(); return res;
   };
-
-  const resume = async (): Promise<ServiceTicket> => {
+  const resumeTicket = async (): Promise<ServiceTicket> => {
     if (!id) throw new Error('Ticket ID is required');
-    try {
-      setLoading(true);
-      const res = await ticketService.resumeTicketFromHold(id);
-      await fetchDetail();
-      return res;
-    } catch (err: any) {
-      setError(err);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
+    const res = await ticketService.resumeTicketFromHold(id); await inv(); return res;
   };
-
-  const resolve = async (
-    resolutionSummary: string,
-    partsUsed: TicketPartItem[],
-    clientSignName?: string
-  ): Promise<ServiceTicket> => {
+  const resolveTicket = async (resolutionSummary: string, partsUsed: TicketPartItem[], clientSignName?: string): Promise<ServiceTicket> => {
     if (!id) throw new Error('Ticket ID is required');
-    try {
-      setLoading(true);
-      const res = await ticketService.resolveTicket(id, resolutionSummary, partsUsed, clientSignName);
-      await fetchDetail();
-      return res;
-    } catch (err: any) {
-      setError(err);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
+    const res = await ticketService.resolveTicket(id, resolutionSummary, partsUsed, clientSignName); await inv(); return res;
   };
-
-  const close = async (): Promise<ServiceTicket> => {
+  const closeTicket = async (): Promise<ServiceTicket> => {
     if (!id) throw new Error('Ticket ID is required');
-    try {
-      setLoading(true);
-      const res = await ticketService.closeTicket(id);
-      await fetchDetail();
-      return res;
-    } catch (err: any) {
-      setError(err);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
+    const res = await ticketService.closeTicket(id); await inv(); return res;
   };
-
   const addComment = async (commentText: string): Promise<TicketEvent> => {
     if (!id) throw new Error('Ticket ID is required');
-    try {
-      const comment = await ticketService.addTicketComment(id, commentText);
-      await fetchDetail();
-      return comment;
-    } catch (err: any) {
-      setError(err);
-      throw err;
-    }
+    const comment = await ticketService.addTicketComment(id, commentText);
+    await qc.invalidateQueries({ queryKey: tKeys.detail(id) });
+    return comment;
   };
 
   return {
-    ticket,
-    loading,
-    error,
-    refetch: fetchDetail,
-    createTicket: logTicket,
-    assignTicket: assign,
-    dispatchTicket: dispatch,
-    pauseTicketForParts: pauseForParts,
-    resumeTicket: resume,
-    resolveTicket: resolve,
-    closeTicket: close,
-    addComment
+    ticket: q.data ?? null,
+    loading: q.isLoading,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
+    createTicket,
+    assignTicket,
+    dispatchTicket,
+    pauseTicketForParts,
+    resumeTicket,
+    resolveTicket,
+    closeTicket,
+    addComment,
   };
 }
+
 export default useTickets;

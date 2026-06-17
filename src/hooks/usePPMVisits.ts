@@ -1,11 +1,10 @@
 // ============================================================
-// JEET ERP — PPM Visits React Hooks
+// Aura ERP — PPM Visits React Hooks (React Query)
 // ============================================================
 
-import { logger } from '@/lib/logger';
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { visitService } from '@/services/visitService';
-import type { PPMVisit, PPMVisitChecklistResult, ChecklistTemplate } from '@/types/ppm.types';
+import type { PPMVisit, PPMVisitChecklistResult } from '@/types/ppm.types';
 
 export interface PPMVisitFilters {
   status?: string;
@@ -13,156 +12,72 @@ export interface PPMVisitFilters {
   date?: string;
 }
 
-/**
- * Hook to retrieve the list of PPM maintenance visits.
- */
+const ppmKeys = {
+  lists: ['ppm-visits', 'list'] as const,
+  list: (f: PPMVisitFilters) => ['ppm-visits', 'list', f] as const,
+  detail: (id: string) => ['ppm-visits', 'detail', id] as const,
+};
+
 export function usePPMVisits(filters: PPMVisitFilters = {}) {
-  const [visits, setVisits] = useState<PPMVisit[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-
-  const fetchList = useCallback(async () => {
-    try {
-      setLoading(true);
-      const data = await visitService.fetchPPMVisits(filters);
-      setVisits(data);
-      setError(null);
-    } catch (err: any) {
-      logger.error('Error in usePPMVisits hook:', err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [JSON.stringify(filters)]);
-
-  useEffect(() => {
-    fetchList();
-  }, [fetchList]);
-
-  return { visits, loading, error, refetch: fetchList };
+  const q = useQuery({ queryKey: ppmKeys.list(filters), queryFn: () => visitService.fetchPPMVisits(filters) });
+  return {
+    visits: q.data ?? [],
+    loading: q.isPending,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
+  };
 }
 
-/**
- * Hook to retrieve a single PPM visit and manage checklist submissions & completion workflows.
- */
 export function usePPMVisit(id?: string) {
-  const [visit, setVisit] = useState<PPMVisit | null>(null);
-  const [loading, setLoading] = useState(!!id);
-  const [error, setError] = useState<Error | null>(null);
-  const [checklistTemplate, setChecklistTemplate] = useState<ChecklistTemplate | null>(null);
-
-  const fetchDetail = useCallback(async () => {
-    if (!id) return;
-    try {
-      setLoading(true);
-      const data = await visitService.fetchPPMVisitById(id);
-      setVisit(data);
-      
-      if (data && data.amc_contracts?.systems?.length) {
-        // Fetch checklist template matched with first system
-        const template = await visitService.fetchChecklistTemplateBySystem(data.amc_contracts.systems[0]);
-        setChecklistTemplate(template);
+  const qc = useQueryClient();
+  const q = useQuery({
+    queryKey: ppmKeys.detail(id ?? ''),
+    enabled: !!id,
+    queryFn: async () => {
+      const visit = await visitService.fetchPPMVisitById(id!);
+      let checklistTemplate = null;
+      if (visit && visit.amc_contracts?.systems?.length) {
+        checklistTemplate = await visitService.fetchChecklistTemplateBySystem(visit.amc_contracts.systems[0]);
       }
-      setError(null);
-    } catch (err: any) {
-      logger.error(`Error in usePPMVisit hook for ${id}:`, err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [id]);
+      return { visit, checklistTemplate };
+    },
+  });
 
-  useEffect(() => {
-    fetchDetail();
-  }, [fetchDetail]);
-
-  const scheduleVisit = async (
-    scheduledDate: string,
-    scheduledSlot: 'AM' | 'PM',
-    technicianId: string,
-    secondTechnicianId?: string
-  ): Promise<PPMVisit> => {
-    if (!id) throw new Error('Visit ID is required');
-    try {
-      setLoading(true);
-      const res = await visitService.schedulePPMVisit(
-        id,
-        scheduledDate,
-        scheduledSlot,
-        technicianId,
-        secondTechnicianId
-      );
-      await fetchDetail();
-      return res;
-    } catch (err: any) {
-      setError(err);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
+  const inv = async () => {
+    await Promise.all([
+      qc.invalidateQueries({ queryKey: ppmKeys.detail(id ?? '') }),
+      qc.invalidateQueries({ queryKey: ppmKeys.lists }),
+    ]);
   };
 
+  const scheduleVisit = async (scheduledDate: string, scheduledSlot: 'AM' | 'PM', technicianId: string, secondTechnicianId?: string): Promise<PPMVisit> => {
+    if (!id) throw new Error('Visit ID is required');
+    const res = await visitService.schedulePPMVisit(id, scheduledDate, scheduledSlot, technicianId, secondTechnicianId); await inv(); return res;
+  };
   const startVisit = async (): Promise<PPMVisit> => {
     if (!id) throw new Error('Visit ID is required');
-    try {
-      setLoading(true);
-      const res = await visitService.startPPMVisit(id);
-      await fetchDetail();
-      return res;
-    } catch (err: any) {
-      setError(err);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
+    const res = await visitService.startPPMVisit(id); await inv(); return res;
   };
-
-  const logChecklistResult = async (
-    resultData: Omit<PPMVisitChecklistResult, 'id' | 'visit_id' | 'created_at'>
-  ): Promise<PPMVisitChecklistResult> => {
+  const logChecklistResult = async (resultData: Omit<PPMVisitChecklistResult, 'id' | 'visit_id' | 'created_at'>): Promise<PPMVisitChecklistResult> => {
     if (!id) throw new Error('Visit ID is required');
-    try {
-      const res = await visitService.saveChecklistResult({
-        ...resultData,
-        visit_id: id
-      });
-      return res;
-    } catch (err: any) {
-      setError(err);
-      throw err;
-    }
+    return visitService.saveChecklistResult({ ...resultData, visit_id: id });
   };
-
   const completeVisit = async (completeData: {
-    signaturePath: string;
-    clientSignName: string;
-    clientSignDesignation: string;
-    summary: string;
-    recommendations: string;
+    signaturePath: string; clientSignName: string; clientSignDesignation: string; summary: string; recommendations: string;
   }): Promise<PPMVisit> => {
     if (!id) throw new Error('Visit ID is required');
-    try {
-      setLoading(true);
-      const res = await visitService.completePPMVisit(id, completeData);
-      await fetchDetail();
-      return res;
-    } catch (err: any) {
-      setError(err);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
+    const res = await visitService.completePPMVisit(id, completeData); await inv(); return res;
   };
 
   return {
-    visit,
-    checklistTemplate,
-    loading,
-    error,
-    refetch: fetchDetail,
+    visit: q.data?.visit ?? null,
+    checklistTemplate: q.data?.checklistTemplate ?? null,
+    loading: q.isLoading,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
     scheduleVisit,
     startVisit,
     logChecklistResult,
-    completeVisit
+    completeVisit,
   };
 }

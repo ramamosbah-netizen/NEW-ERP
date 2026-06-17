@@ -1,167 +1,93 @@
 // ============================================================
-// JEET ERP — Timesheets React Hook
+// Aura ERP — Timesheets React Hooks (React Query)
 // ============================================================
 
-import { logger } from '@/lib/logger';
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { timesheetService } from '@/services/timesheetService';
 import type { Timesheet, TimesheetEntry } from '@/types/timesheet.types';
 
+const tsKeys = {
+  detail: (employeeId: string, weekStart: string) => ['timesheet', employeeId, weekStart] as const,
+  approvals: ['timesheet', 'approvals'] as const,
+};
+
 export function useTimesheet(employeeId?: string, weekStart?: string) {
-  const [timesheet, setTimesheet] = useState<Timesheet | null>(null);
-  const [entries, setEntries] = useState<TimesheetEntry[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
+  const qc = useQueryClient();
+  const enabled = !!employeeId && !!weekStart;
+  const key = tsKeys.detail(employeeId ?? '', weekStart ?? '');
 
-  const fetchTimesheet = useCallback(async () => {
-    if (!employeeId || !weekStart) return;
-    try {
-      setLoading(true);
-      setError(null);
-      
-      const { timesheet: ts, entries: ent } = await timesheetService.getTimesheet(employeeId, weekStart);
-      setTimesheet(ts);
-      setEntries(ent);
-    } catch (err: any) {
-      logger.error('Failed to fetch timesheet:', err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [employeeId, weekStart]);
+  const q = useQuery({
+    queryKey: key,
+    enabled,
+    queryFn: () => timesheetService.getTimesheet(employeeId!, weekStart!),
+  });
 
-  useEffect(() => {
-    fetchTimesheet();
-  }, [fetchTimesheet]);
+  const timesheet = q.data?.timesheet ?? null;
+  const entries = q.data?.entries ?? [];
 
   const initTimesheet = async () => {
-    if (!employeeId || !weekStart) return;
-    try {
-      setLoading(true);
-      const ts = await timesheetService.getOrCreateTimesheet(employeeId, weekStart);
-      setTimesheet(ts);
-      setEntries([]);
-      return ts;
-    } catch (err: any) {
-      logger.error('Failed to create timesheet:', err);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
+    if (!enabled) return;
+    const ts = await timesheetService.getOrCreateTimesheet(employeeId!, weekStart!);
+    await qc.invalidateQueries({ queryKey: key });
+    return ts;
   };
 
   const saveEntries = async (newEntries: Omit<TimesheetEntry, 'id' | 'timesheet_id' | 'created_at'>[]) => {
     let tsId = timesheet?.id;
     if (!tsId) {
-      const ts = await initTimesheet();
+      const ts = await timesheetService.getOrCreateTimesheet(employeeId!, weekStart!);
       tsId = ts?.id;
     }
     if (!tsId) return;
-
-    try {
-      setLoading(true);
-      const saved = await timesheetService.saveEntries(tsId, newEntries);
-      setEntries(saved);
-      // Reload timesheet header to get updated totals
-      const { timesheet: updatedTs } = await timesheetService.getTimesheet(employeeId!, weekStart!);
-      setTimesheet(updatedTs);
-      return saved;
-    } catch (err: any) {
-      logger.error('Failed to save entries:', err);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
+    const saved = await timesheetService.saveEntries(tsId, newEntries);
+    await qc.invalidateQueries({ queryKey: key });
+    return saved;
   };
 
   const submit = async () => {
     if (!timesheet?.id) return;
-    try {
-      setLoading(true);
-      const updated = await timesheetService.submitTimesheet(timesheet.id);
-      setTimesheet(updated);
-      return updated;
-    } catch (err: any) {
-      logger.error('Failed to submit timesheet:', err);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
+    const updated = await timesheetService.submitTimesheet(timesheet.id);
+    await qc.invalidateQueries({ queryKey: key });
+    return updated;
   };
 
   const getSuggestions = async () => {
-    if (!employeeId || !weekStart) return [];
-    return timesheetService.getPrefillSuggestions(employeeId, weekStart);
+    if (!enabled) return [];
+    return timesheetService.getPrefillSuggestions(employeeId!, weekStart!);
   };
 
   return {
     timesheet,
     entries,
-    loading,
-    error,
-    refetch: fetchTimesheet,
+    loading: q.isLoading,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
     initTimesheet,
     saveEntries,
     submit,
-    getSuggestions
+    getSuggestions,
   };
 }
 
 export function useTimesheetApprovals() {
-  const [queue, setQueue] = useState<Timesheet[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
-
-  const fetchQueue = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await timesheetService.getApprovalsQueue();
-      setQueue(data);
-    } catch (err: any) {
-      logger.error('Failed to load approvals queue:', err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchQueue();
-  }, [fetchQueue]);
+  const qc = useQueryClient();
+  const q = useQuery({ queryKey: tsKeys.approvals, queryFn: () => timesheetService.getApprovalsQueue() });
 
   const approve = async (timesheetId: string) => {
-    try {
-      setLoading(true);
-      await timesheetService.approveTimesheet(timesheetId);
-      await fetchQueue();
-    } catch (err: any) {
-      logger.error('Failed to approve timesheet:', err);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
+    await timesheetService.approveTimesheet(timesheetId);
+    await qc.invalidateQueries({ queryKey: tsKeys.approvals });
   };
-
   const reject = async (timesheetId: string, reason: string) => {
-    try {
-      setLoading(true);
-      await timesheetService.rejectTimesheet(timesheetId, reason);
-      await fetchQueue();
-    } catch (err: any) {
-      logger.error('Failed to reject timesheet:', err);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
+    await timesheetService.rejectTimesheet(timesheetId, reason);
+    await qc.invalidateQueries({ queryKey: tsKeys.approvals });
   };
 
   return {
-    queue,
-    loading,
-    error,
-    refetch: fetchQueue,
+    queue: q.data ?? [],
+    loading: q.isPending,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
     approve,
-    reject
+    reject,
   };
 }
