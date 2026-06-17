@@ -10,6 +10,8 @@ import { calculateInvoiceTotals } from './invoiceMathService';
 import { invoicePDFService } from './invoicePDFService';
 import { eventService } from './eventService';
 import { validateInvoiceCeiling } from './voContractImpactService';
+import { validate, ValidationError } from '@/lib/validation/validate';
+import { invoiceDraftSchema, invoiceItemDraftSchema } from '@/lib/validation/finance.schemas';
 
 export const invoiceService = {
   /** Completed (DONE) milestones for a project that can be billed now. */
@@ -148,6 +150,14 @@ export const invoiceService = {
   ): Promise<ClientInvoice> {
     const user = (await supabase.auth.getUser()).data.user;
     if (!user) throw new Error('Authentication required');
+
+    // Validate the inbound payload at the write boundary (mirrors DB constraints
+    // with friendlier errors — rejects nothing Postgres would otherwise accept).
+    validate(invoiceDraftSchema, invoiceData, 'invoice');
+    if (!itemsData || itemsData.length === 0) {
+      throw new ValidationError('Invalid invoice: at least one line item is required', []);
+    }
+    itemsData.forEach((item, i) => validate(invoiceItemDraftSchema, item, `line ${i + 1}`));
 
     // Fetch client details if client_name is not provided
     let clientName = invoiceData.client_name || '';
