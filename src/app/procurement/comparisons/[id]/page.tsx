@@ -555,7 +555,7 @@ export default function ComparisonMatrixPage({ params }: { params: Promise<{ id:
           <button className="quote-btn quote-btn-secondary" onClick={handleExportPDF}>
             <Download size={14} /> Export PDF
           </button>
-          <button className="quote-btn quote-btn-secondary" onClick={refetch}>
+          <button className="quote-btn quote-btn-secondary" onClick={() => refetch()}>
             <RefreshCw size={14} /> Refresh
           </button>
         </div>

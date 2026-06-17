@@ -1,203 +1,83 @@
 // ============================================================
-// JEET ERP — Supplier Comparison Sheet React Hooks
-// Hooks for data fetching, scoring recomputations, and state updates
+// Aura ERP — Supplier Comparison Sheet React Hooks (React Query)
+// Data hooks use TanStack Query; the debounced scoring hook stays a pure
+// client-side compute (no fetching).
 // ============================================================
 
-import { logger } from '@/lib/logger';
-import { useState, useEffect, useCallback } from 'react';
+import { useEffect, useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
-import { 
-  comparisonService, 
-  type ComparisonFilters 
-} from '@/lib/comparison-service';
+import { comparisonService, type ComparisonFilters } from '@/lib/comparison-service';
 import { scoreOffers } from '@/lib/comparison-scoring';
 
-// 1. Fetch Comparison Registry List
+const cmpKeys = {
+  lists: ['comparisons', 'list'] as const,
+  list: (f: ComparisonFilters) => ['comparisons', 'list', f] as const,
+  detail: (id: string) => ['comparisons', 'detail', id] as const,
+  weights: ['comparisons', 'weights'] as const,
+};
+
+// 1. Comparison registry list
 export function useComparisons(filters: ComparisonFilters = {}) {
-  const [comparisons, setComparisons] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-
-  const fetchList = useCallback(async () => {
-    try {
-      setLoading(true);
-      const data = await comparisonService.fetchComparisons(filters);
-      setComparisons(data);
-      setError(null);
-    } catch (err: any) {
-      logger.error('Error fetching comparisons:', err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [JSON.stringify(filters)]);
-
-  useEffect(() => {
-    fetchList();
-  }, [fetchList]);
-
-  return { comparisons, loading, error, refetch: fetchList };
+  const q = useQuery({ queryKey: cmpKeys.list(filters), queryFn: () => comparisonService.fetchComparisons(filters) });
+  return {
+    comparisons: q.data ?? [],
+    loading: q.isPending,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
+  };
 }
 
-// 2. Fetch Single Comparison Details and Actions
+// 2. Single comparison detail + actions
 export function useComparison(id: string) {
-  const [comparison, setComparison] = useState<any | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+  const qc = useQueryClient();
+  const q = useQuery({ queryKey: cmpKeys.detail(id), queryFn: () => comparisonService.fetchComparisonById(id), enabled: !!id });
 
-  const fetchDetail = useCallback(async () => {
-    if (!id) return;
-    try {
-      setLoading(true);
-      const data = await comparisonService.fetchComparisonById(id);
-      setComparison(data);
-      setError(null);
-    } catch (err: any) {
-      logger.error('Error fetching comparison details:', err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [id]);
-
-  useEffect(() => {
-    fetchDetail();
-  }, [fetchDetail]);
-
-  // Actions
-  const addOffer = async (itemId: string, offerData: any) => {
-    const res = await comparisonService.addOffer(itemId, offerData);
-    await fetchDetail();
-    return res;
+  const inv = async () => {
+    await Promise.all([
+      qc.invalidateQueries({ queryKey: cmpKeys.detail(id) }),
+      qc.invalidateQueries({ queryKey: cmpKeys.lists }),
+    ]);
   };
 
-  const updateOffer = async (offerId: string, offerData: any) => {
-    const res = await comparisonService.updateOffer(offerId, offerData);
-    await fetchDetail();
-    return res;
-  };
-
-  const deleteOffer = async (offerId: string) => {
-    const res = await comparisonService.deleteOffer(offerId);
-    await fetchDetail();
-    return res;
-  };
-
-  const selectSupplier = async (itemId: string, offerId: string | null, overrideReason: string) => {
-    const res = await comparisonService.selectSupplier(itemId, offerId, overrideReason);
-    await fetchDetail();
-    return res;
-  };
-
-  const removeSupplierColumn = async (supplierName: string) => {
-    const res = await comparisonService.removeSupplierColumn(id, supplierName);
-    await fetchDetail();
-    return res;
-  };
-
-  const setItemException = async (itemId: string, isException: boolean, reason: string | null) => {
-    const res = await comparisonService.setItemException(itemId, isException, reason);
-    await fetchDetail();
-    return res;
-  };
-
-  const renameSupplierColumn = async (oldName: string, newName: string) => {
-    const res = await comparisonService.renameSupplierColumn(id, oldName, newName);
-    await fetchDetail();
-    return res;
-  };
-
-  const saveOffers = async (offersToSave: any[]) => {
-    const res = await comparisonService.saveOffers(offersToSave, id);
-    await fetchDetail();
-    return res;
-  };
-
-  const bulkSelectRecommended = async () => {
-    const res = await comparisonService.bulkSelectRecommended(id);
-    await fetchDetail();
-    return res;
-  };
-
-  const recalculateAll = async () => {
-    const res = await comparisonService.recalculateAll(id);
-    await fetchDetail();
-    return res;
-  };
-
-  const submitForReview = async () => {
-    const res = await comparisonService.submitForReview(id);
-    await fetchDetail();
-    return res;
-  };
-
-  const commercialApprove = async (comment: string) => {
-    const res = await comparisonService.commercialApprove(id, comment);
-    await fetchDetail();
-    return res;
-  };
-
-  const commercialReject = async (reason: string) => {
-    const res = await comparisonService.commercialReject(id, reason);
-    await fetchDetail();
-    return res;
-  };
-
-  const gmApprove = async (comment: string) => {
-    const res = await comparisonService.gmApprove(id, comment);
-    await fetchDetail();
-    return res;
-  };
-
-  const gmReject = async (reason: string) => {
-    const res = await comparisonService.gmReject(id, reason);
-    await fetchDetail();
-    return res;
-  };
-
-  const createRevision = async () => {
-    const newId = await comparisonService.createRevision(id);
-    return newId;
-  };
-
-  const pushPricesToCatalog = async () => {
-    const res = await comparisonService.pushPricesToCatalog(id);
-    return res;
-  };
+  const addOffer = async (itemId: string, offerData: any) => { const r = await comparisonService.addOffer(itemId, offerData); await inv(); return r; };
+  const updateOffer = async (offerId: string, offerData: any) => { const r = await comparisonService.updateOffer(offerId, offerData); await inv(); return r; };
+  const deleteOffer = async (offerId: string) => { const r = await comparisonService.deleteOffer(offerId); await inv(); return r; };
+  const selectSupplier = async (itemId: string, offerId: string | null, overrideReason: string) => { const r = await comparisonService.selectSupplier(itemId, offerId, overrideReason); await inv(); return r; };
+  const removeSupplierColumn = async (supplierName: string) => { const r = await comparisonService.removeSupplierColumn(id, supplierName); await inv(); return r; };
+  const setItemException = async (itemId: string, isException: boolean, reason: string | null) => { const r = await comparisonService.setItemException(itemId, isException, reason); await inv(); return r; };
+  const renameSupplierColumn = async (oldName: string, newName: string) => { const r = await comparisonService.renameSupplierColumn(id, oldName, newName); await inv(); return r; };
+  const saveOffers = async (offersToSave: any[]) => { const r = await comparisonService.saveOffers(offersToSave, id); await inv(); return r; };
+  const bulkSelectRecommended = async () => { const r = await comparisonService.bulkSelectRecommended(id); await inv(); return r; };
+  const recalculateAll = async () => { const r = await comparisonService.recalculateAll(id); await inv(); return r; };
+  const submitForReview = async () => { const r = await comparisonService.submitForReview(id); await inv(); return r; };
+  const commercialApprove = async (comment: string) => { const r = await comparisonService.commercialApprove(id, comment); await inv(); return r; };
+  const commercialReject = async (reason: string) => { const r = await comparisonService.commercialReject(id, reason); await inv(); return r; };
+  const gmApprove = async (comment: string) => { const r = await comparisonService.gmApprove(id, comment); await inv(); return r; };
+  const gmReject = async (reason: string) => { const r = await comparisonService.gmReject(id, reason); await inv(); return r; };
+  const createRevision = async () => { const newId = await comparisonService.createRevision(id); await qc.invalidateQueries({ queryKey: cmpKeys.lists }); return newId; };
+  const pushPricesToCatalog = async () => comparisonService.pushPricesToCatalog(id);
 
   return {
-    comparison,
-    loading,
-    error,
-    refetch: fetchDetail,
+    comparison: q.data ?? null,
+    loading: q.isPending,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
     actions: {
-      addOffer,
-      updateOffer,
-      deleteOffer,
-      selectSupplier,
-      removeSupplierColumn,
-      renameSupplierColumn,
-      setItemException,
-      saveOffers,
-      bulkSelectRecommended,
-      recalculateAll,
-      submitForReview,
-      commercialApprove,
-      commercialReject,
-      gmApprove,
-      gmReject,
-      createRevision,
-      pushPricesToCatalog
-    }
+      addOffer, updateOffer, deleteOffer, selectSupplier, removeSupplierColumn,
+      renameSupplierColumn, setItemException, saveOffers, bulkSelectRecommended,
+      recalculateAll, submitForReview, commercialApprove, commercialReject,
+      gmApprove, gmReject, createRevision, pushPricesToCatalog,
+    },
   };
 }
 
-// 3. Debounced scoring computation hook
+// 3. Debounced scoring computation (pure compute — unchanged)
 export function useComparisonScoring(
   offers: any[],
   weights: any,
   histories: Record<string, number>,
-  delay: number = 150
+  delay: number = 150,
 ) {
   const [scoredOffers, setScoredOffers] = useState<any[]>([]);
 
@@ -207,42 +87,25 @@ export function useComparisonScoring(
         setScoredOffers([]);
         return;
       }
-      const scored = scoreOffers(offers, weights, histories);
-      setScoredOffers(scored);
+      setScoredOffers(scoreOffers(offers, weights, histories));
     }, delay);
-
-    return () => {
-      clearTimeout(handler);
-    };
+    return () => clearTimeout(handler);
   }, [offers, weights, histories, delay]);
 
   return scoredOffers;
 }
 
-// 4. Scoring Weights state settings
+// 4. Scoring weights
 export function useScoringWeights() {
-  const [weights, setWeights] = useState<any | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-
-  const fetchWeights = useCallback(async () => {
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('comparison_scoring_weights')
-        .select('*')
-        .single();
-      
+  const qc = useQueryClient();
+  const q = useQuery({
+    queryKey: cmpKeys.weights,
+    queryFn: async () => {
+      const { data, error } = await supabase.from('comparison_scoring_weights').select('*').single();
       if (error) throw error;
-      setWeights(data);
-      setError(null);
-    } catch (err: any) {
-      logger.error('Error fetching scoring weights:', err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+      return data;
+    },
+  });
 
   const saveWeights = async (newWeights: any) => {
     const { error } = await supabase
@@ -253,18 +116,19 @@ export function useScoringWeights() {
         weight_history: newWeights.weight_history,
         weight_payment: newWeights.weight_payment,
         weight_compliance: newWeights.weight_compliance,
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       })
       .eq('id', true);
-
     if (error) throw error;
-    await fetchWeights();
+    await qc.invalidateQueries({ queryKey: cmpKeys.weights });
     return true;
   };
 
-  useEffect(() => {
-    fetchWeights();
-  }, [fetchWeights]);
-
-  return { weights, loading, error, saveWeights, refetch: fetchWeights };
+  return {
+    weights: q.data ?? null,
+    loading: q.isPending,
+    error: (q.error as Error | null) ?? null,
+    saveWeights,
+    refetch: q.refetch,
+  };
 }

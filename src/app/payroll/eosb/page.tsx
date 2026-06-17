@@ -37,7 +37,7 @@ export default function GratuityLiabilityPage() {
           <p className="quote-header-subtitle">Company-wide accrued end-of-service benefits financial ledger</p>
         </div>
         <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'center' }}>
-          <button className="quote-btn quote-btn-secondary" onClick={refetch} disabled={loading}>
+          <button className="quote-btn quote-btn-secondary" onClick={() => refetch()} disabled={loading}>
             <RefreshCw size={14} className={loading ? 'animate-spin' : ''} /> Recalculate
           </button>
         </div>

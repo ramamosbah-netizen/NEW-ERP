@@ -98,7 +98,7 @@ export default function TimesheetApprovalsPage() {
           <p className="quote-header-subtitle">Project Manager queue to audit and approve technician weekly hours allocations</p>
         </div>
         <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'center' }}>
-          <button className="quote-btn quote-btn-secondary" onClick={refetch} disabled={loading}>
+          <button className="quote-btn quote-btn-secondary" onClick={() => refetch()} disabled={loading}>
             <RefreshCw size={14} className={loading ? 'animate-spin' : ''} /> Refresh Board
           </button>
         </div>

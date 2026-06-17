@@ -43,7 +43,7 @@ export default function DocumentReviewQueuePage() {
               <h1 className="quote-header-title">AI Classification Review Queue</h1>
               <p className="quote-header-subtitle">Verify category, expiry dates, or correct values for low-confidence documents</p>
             </div>
-            <button className="quote-btn quote-btn-secondary" onClick={refetch}>
+            <button className="quote-btn quote-btn-secondary" onClick={() => refetch()}>
               <RefreshCw size={14} /> Refresh Queue
             </button>
           </header>

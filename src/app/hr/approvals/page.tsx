@@ -67,7 +67,7 @@ export default function LeaveApprovalsPage() {
           <Link href="/hr/calendar" className="quote-btn quote-btn-secondary" style={{ textDecoration: 'none', display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
             <Calendar size={14} /> Leave Calendar
           </Link>
-          <button className="quote-btn quote-btn-secondary" onClick={refetch} disabled={loading}>
+          <button className="quote-btn quote-btn-secondary" onClick={() => refetch()} disabled={loading}>
             <RefreshCw size={14} className={loading ? 'animate-spin' : ''} /> Refresh Queue
           </button>
         </div>

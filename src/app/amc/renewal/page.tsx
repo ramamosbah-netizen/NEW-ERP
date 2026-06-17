@@ -137,7 +137,7 @@ export default function AMCRenewalPipelinePage() {
           <h1 className="quote-header-title">Renewal Kanban Pipeline</h1>
           <p className="quote-header-subtitle">Audit expiring AMC agreements and set linked renewal drafts</p>
         </div>
-        <button type="button" className="quote-btn quote-btn-secondary" onClick={refetch}>
+        <button type="button" className="quote-btn quote-btn-secondary" onClick={() => refetch()}>
           <RefreshCw size={14} /> Refresh Board
         </button>
       </header>

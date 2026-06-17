@@ -249,7 +249,7 @@ export default function ScoringWeightsPage() {
             <div style={{ display: 'flex', gap: '0.8rem' }}>
               <button 
                 className="quote-btn quote-btn-secondary" 
-                onClick={refetch}
+                onClick={() => refetch()}
               >
                 <RefreshCw size={14} /> Refresh
               </button>
