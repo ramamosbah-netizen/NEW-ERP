@@ -4,6 +4,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
@@ -89,7 +90,7 @@ export default function MyTimesheetPage() {
         if (error) throw error;
         setEmployee(emp);
       } catch (err) {
-        console.error('Error fetching employee profile:', err);
+        logger.error('Error fetching employee profile:', err);
       } finally {
         setEmployeeLoading(false);
       }
@@ -140,7 +141,7 @@ export default function MyTimesheetPage() {
       const list = await timesheetService.getPrefillSuggestions(employee.id, weekStart);
       setSuggestions(list);
     } catch (err) {
-      console.error('Failed to load suggestions:', err);
+      logger.error('Failed to load suggestions:', err);
     } finally {
       setSuggestionsLoading(false);
     }

@@ -4,6 +4,7 @@
 // atomic via the generate_document_number RPC (see migration).
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 import { recordAudit } from '@/lib/audit/recordAudit';
 import type { NumberingRule, ResetPeriod } from '@/types/platform.types';
@@ -86,7 +87,7 @@ export const numberingService = {
       if (error) throw error;
       return data as string;
     } catch (err) {
-      console.warn(`generate_document_number RPC unavailable for ${moduleKey}, using fallback:`, err);
+      logger.warn(`generate_document_number RPC unavailable for ${moduleKey}, using fallback:`, err);
       const now = new Date();
       return `${moduleKey}-${now.getFullYear()}-${String(now.getTime()).slice(-6)}`;
     }

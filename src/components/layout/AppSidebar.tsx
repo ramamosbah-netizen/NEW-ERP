@@ -4,6 +4,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState, useEffect } from 'react';
 import settingsService from '@/services/settingsService';
@@ -400,7 +401,7 @@ export default function AppSidebar({ mobileOpen = false, onMobileClose }: AppSid
         setEnabledModules(globalModules);
         localStorage.setItem('erp-enabled-modules', JSON.stringify(globalModules));
       } catch (err) {
-        console.error('Failed to fetch global modules config:', err);
+        logger.error('Failed to fetch global modules config:', err);
       }
     };
     

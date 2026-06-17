@@ -2,6 +2,7 @@
 // JEET ERP — Client Receipts & Allocations Hook
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { paymentService } from '@/services/paymentService';
 import type { ClientPayment } from '@/types/finance.types';
@@ -18,7 +19,7 @@ export function usePayments(filters: { clientId?: string } = {}) {
       setPayments(data);
       setError(null);
     } catch (err: any) {
-      console.error('Error in usePayments hook:', err);
+      logger.error('Error in usePayments hook:', err);
       setError(err);
     } finally {
       setLoading(false);
@@ -38,7 +39,7 @@ export function usePayments(filters: { clientId?: string } = {}) {
       await fetchList();
       return payment;
     } catch (err: any) {
-      console.error('Error recording payment in hook:', err);
+      logger.error('Error recording payment in hook:', err);
       throw err;
     }
   };

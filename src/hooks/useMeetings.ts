@@ -3,6 +3,7 @@
 // Handles scheduling lists, RSVPs, and action items extraction
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { meetingService } from '@/services/meetingService';
 import type { Meeting, MeetingStatus, AttendeeResponse } from '@/types/meeting.types';
@@ -23,7 +24,7 @@ export function useMeetings(filters: {
       setMeetings(data);
       setError(null);
     } catch (err: any) {
-      console.error('Failed to fetch meetings list:', err);
+      logger.error('Failed to fetch meetings list:', err);
       setError(err);
     } finally {
       setLoading(false);
@@ -83,7 +84,7 @@ export function useMeetingDetail(meetingId: string | null) {
       setMeeting(data);
       setError(null);
     } catch (err: any) {
-      console.error('Failed to load meeting details:', err);
+      logger.error('Failed to load meeting details:', err);
       setError(err);
     } finally {
       setLoading(false);

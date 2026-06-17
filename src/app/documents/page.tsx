@@ -5,6 +5,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -94,7 +95,7 @@ export default function DocumentsHubPage() {
           processedToday: 0 // Simulated
         });
       } catch (err) {
-        console.error('Error fetching DMS stats:', err);
+        logger.error('Error fetching DMS stats:', err);
       }
     };
 

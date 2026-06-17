@@ -3,6 +3,7 @@
 // Data access, CRUD, state machine enforcement, milestones & contacts
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { supabase } from './supabase';
 import { generateProjectNumber } from './project-number-service';
 import { validateTransition } from './project-status-service';
@@ -335,7 +336,7 @@ export const projectService = {
       .from('quotations')
       .update({ linked_project_id: newProject.id })
       .eq('id', quotationId)
-      .then(({ error }) => { if (error) console.warn('Could not set quotation.linked_project_id:', error.message); });
+      .then(({ error }) => { if (error) logger.warn('Could not set quotation.linked_project_id:', error.message); });
 
     // G. Create status history log
     await supabase.from('project_status_history').insert({

@@ -3,6 +3,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
@@ -126,7 +127,7 @@ export const QuickAddTask: React.FC<Props> = ({ onTaskCreated, projectId }) => {
       resetForm();
       setIsOpen(false);
     } catch (err: any) {
-      console.error(err);
+      logger.error(err);
       setError(err.message || 'Failed to create task');
     } finally {
       setLoading(false);

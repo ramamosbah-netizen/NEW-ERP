@@ -4,6 +4,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -47,7 +48,7 @@ export default function TimesheetApprovalsPage() {
       const { entries } = await timesheetService.getTimesheet(ts.employee_id, ts.week_start);
       setDetails(entries);
     } catch (err) {
-      console.error('Failed to load timesheet details:', err);
+      logger.error('Failed to load timesheet details:', err);
     } finally {
       setDetailsLoading(false);
     }

@@ -3,6 +3,7 @@
 // Custom hooks for fetching data and executing transitions
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { 
@@ -25,7 +26,7 @@ export function useQuotations(filters: QuotationFilters = {}) {
       setQuotations(data);
       setError(null);
     } catch (err: any) {
-      console.error('Error fetching quotations:', err);
+      logger.error('Error fetching quotations:', err);
       setError(err);
     } finally {
       setLoading(false);
@@ -61,7 +62,7 @@ export function useQuotation(id: string) {
       setQuotation(data);
       setError(null);
     } catch (err: any) {
-      console.error('Error fetching quotation detail:', err);
+      logger.error('Error fetching quotation detail:', err);
       setError(err);
     } finally {
       setLoading(false);
@@ -175,7 +176,7 @@ export function useQuotationTemplates() {
       setTemplates(data || []);
       setError(null);
     } catch (err: any) {
-      console.error('Error fetching quotation templates:', err);
+      logger.error('Error fetching quotation templates:', err);
       setError(err);
     } finally {
       setLoading(false);

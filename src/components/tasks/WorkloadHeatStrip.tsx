@@ -3,6 +3,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { taskService } from '@/services/taskService';
@@ -28,7 +29,7 @@ export const WorkloadHeatStrip: React.FC = () => {
       const stats = await taskService.fetchWorkloadAnalytics();
       setData(stats);
     } catch (err) {
-      console.error('Failed to load workload analytics:', err);
+      logger.error('Failed to load workload analytics:', err);
     } finally {
       setLoading(false);
     }

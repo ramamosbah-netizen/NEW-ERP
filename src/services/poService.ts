@@ -2,6 +2,7 @@
 // JEET ERP — Purchase Order (LPO) Core Service
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 import { eventService } from './eventService';
 import { supplierPerformanceService } from './supplierPerformanceService';
@@ -55,7 +56,7 @@ export const poService = {
         creator_name: p.profiles?.full_name
       })) as PurchaseOrder[];
     } catch (err) {
-      console.error('Error fetching PO list:', err);
+      logger.error('Error fetching PO list:', err);
       throw err;
     }
   },
@@ -121,7 +122,7 @@ export const poService = {
         approvals: formattedApprovals
       } as PurchaseOrder;
     } catch (err) {
-      console.error(`Error loading PO details for ${poId}:`, err);
+      logger.error(`Error loading PO details for ${poId}:`, err);
       throw err;
     }
   },
@@ -205,7 +206,7 @@ export const poService = {
 
       return po.id;
     } catch (err) {
-      console.error('Error creating Purchase Order:', err);
+      logger.error('Error creating Purchase Order:', err);
       throw err;
     }
   },
@@ -273,7 +274,7 @@ export const poService = {
       }
 
     } catch (err) {
-      console.error(`Error updating PO ${poId}:`, err);
+      logger.error(`Error updating PO ${poId}:`, err);
       throw err;
     }
   },
@@ -313,7 +314,7 @@ export const poService = {
       try {
         await supplierInvoiceService.createExpectedFromPO(poId);
       } catch (apErr) {
-        console.warn('Could not auto-create AP bill for sent LPO:', apErr);
+        logger.warn('Could not auto-create AP bill for sent LPO:', apErr);
       }
 
       // Emit event
@@ -332,7 +333,7 @@ export const poService = {
       );
 
     } catch (err) {
-      console.error(`Error marking PO ${poId} as Sent:`, err);
+      logger.error(`Error marking PO ${poId} as Sent:`, err);
       throw err;
     }
   },
@@ -387,7 +388,7 @@ export const poService = {
       );
 
     } catch (err) {
-      console.error(`Error marking PO ${poId} as Acknowledged:`, err);
+      logger.error(`Error marking PO ${poId} as Acknowledged:`, err);
       throw err;
     }
   },
@@ -441,7 +442,7 @@ export const poService = {
       await supplierPerformanceService.recalculateSupplierPerformance(po.supplier_id);
 
     } catch (err) {
-      console.error(`Error cancelling PO ${poId}:`, err);
+      logger.error(`Error cancelling PO ${poId}:`, err);
       throw err;
     }
   },
@@ -483,7 +484,7 @@ export const poService = {
       await supplierPerformanceService.recalculateSupplierPerformance(po.supplier_id);
 
     } catch (err) {
-      console.error(`Error closing short PO ${poId}:`, err);
+      logger.error(`Error closing short PO ${poId}:`, err);
       throw err;
     }
   },
@@ -627,7 +628,7 @@ export const poService = {
 
       return newPO.id;
     } catch (err) {
-      console.error('Error revising Purchase Order:', err);
+      logger.error('Error revising Purchase Order:', err);
       throw err;
     }
   }

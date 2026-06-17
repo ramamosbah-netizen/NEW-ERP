@@ -2,6 +2,7 @@
 // JEET ERP — Snag / Punch List Service
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 import { Snag, SnagSeverity, SnagStatus, SnagSource } from '@/types/snag.types';
 import { eventService } from './eventService';
@@ -219,7 +220,7 @@ export const snagService = {
       .in('status', ['OPEN', 'IN_PROGRESS', 'READY_FOR_INSPECTION']);
 
     if (error) {
-      console.error('Failed to query open snags:', error);
+      logger.error('Failed to query open snags:', error);
       return false;
     }
 

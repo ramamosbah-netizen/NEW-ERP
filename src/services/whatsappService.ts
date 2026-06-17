@@ -3,6 +3,7 @@
 // Client-side functions for managing chats, messages, and settings
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 
 export interface WhatsAppChat {
@@ -84,7 +85,7 @@ export const whatsappService = {
       .order('last_message_at', { ascending: false });
 
     if (error) {
-      console.error('Error fetching chats:', error);
+      logger.error('Error fetching chats:', error);
       throw error;
     }
 
@@ -105,7 +106,7 @@ export const whatsappService = {
       .order('created_at', { ascending: true });
 
     if (error) {
-      console.error('Error fetching messages:', error);
+      logger.error('Error fetching messages:', error);
       throw error;
     }
 
@@ -121,7 +122,7 @@ export const whatsappService = {
     });
 
     if (error) {
-      console.error('Error invoking send-whatsapp for manual reply:', error);
+      logger.error('Error invoking send-whatsapp for manual reply:', error);
       throw error;
     }
 
@@ -151,7 +152,7 @@ export const whatsappService = {
       .eq('id', chatId);
 
     if (error) {
-      console.error('Error updating chat status:', error);
+      logger.error('Error updating chat status:', error);
       throw error;
     }
 
@@ -175,7 +176,7 @@ export const whatsappService = {
       .eq('id', chatId);
 
     if (error) {
-      console.error('Error linking chat to client:', error);
+      logger.error('Error linking chat to client:', error);
       throw error;
     }
 
@@ -192,7 +193,7 @@ export const whatsappService = {
       .single();
 
     if (error) {
-      console.error('Error fetching settings:', error);
+      logger.error('Error fetching settings:', error);
       throw error;
     }
 
@@ -212,7 +213,7 @@ export const whatsappService = {
       .eq('id', true);
 
     if (error) {
-      console.error('Error saving WhatsApp settings:', error);
+      logger.error('Error saving WhatsApp settings:', error);
       throw error;
     }
 
@@ -229,7 +230,7 @@ export const whatsappService = {
       .order('event_type', { ascending: true });
 
     if (error) {
-      console.error('Error fetching templates:', error);
+      logger.error('Error fetching templates:', error);
       throw error;
     }
 
@@ -246,7 +247,7 @@ export const whatsappService = {
       .eq('id', templateId);
 
     if (error) {
-      console.error('Error updating template mapping:', error);
+      logger.error('Error updating template mapping:', error);
       throw error;
     }
 

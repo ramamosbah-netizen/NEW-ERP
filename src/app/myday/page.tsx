@@ -4,6 +4,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -112,7 +113,7 @@ export default function MyDayPage() {
         assignee_name: profiles.find(u => u.id === matchedAssigneeId)?.full_name || ''
       });
     } catch (err: any) {
-      console.error(err);
+      logger.error(err);
       setAiError(err.message || 'AI failed to parse command. Try creating manually.');
     } finally {
       setParsing(false);
@@ -140,7 +141,7 @@ export default function MyDayPage() {
       setPromptText('');
       refetch();
     } catch (err: any) {
-      console.error(err);
+      logger.error(err);
       setAiError(err.message || 'Failed to save parsed task');
     } finally {
       setParsing(false);

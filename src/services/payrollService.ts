@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 import { UAE_LABOUR_LAW } from '@/constants/uaeLabourLaw.constants';
 import { eventService } from './eventService';
@@ -146,7 +147,7 @@ export const payrollService = {
       .in('timesheet_id', tsIds);
 
     if (error) {
-      console.error('Failed to query OT entries:', error);
+      logger.error('Failed to query OT entries:', error);
       return { weekday: 0, restHoliday: 0 };
     }
 
@@ -183,7 +184,7 @@ export const payrollService = {
       .order('from_date', { ascending: true });
 
     if (error) {
-      console.error('Failed to query leave requests:', error);
+      logger.error('Failed to query leave requests:', error);
       return { unpaidLeaveDays: 0, sickHalfPayDays: 0, sickUnpaidDays: 0 };
     }
 
@@ -294,7 +295,7 @@ export const payrollService = {
     for (const emp of employees || []) {
       const comp = latestCompMap.get(emp.id);
       if (!comp) {
-        console.warn(`Skipping payroll calculation for ${emp.full_name_en}: No compensation record found.`);
+        logger.warn(`Skipping payroll calculation for ${emp.full_name_en}: No compensation record found.`);
         continue;
       }
 
@@ -411,7 +412,7 @@ export const payrollService = {
       .eq('status', 'APPROVED');
 
     if (lockErr) {
-      console.error('Failed to lock timesheets during payroll approval:', lockErr.message);
+      logger.error('Failed to lock timesheets during payroll approval:', lockErr.message);
     }
 
     // Surface this payroll run in AP as DRAFT "workforce" payables (action to
@@ -496,10 +497,10 @@ export const payrollService = {
             notes: `Workforce payroll ${y}-${m} — office / unallocated labour.` });
         }
         const { error: expErr } = await supabase.from('supplier_invoices').insert(rows);
-        if (expErr) console.error('Failed to log payroll payables:', expErr.message);
+        if (expErr) logger.error('Failed to log payroll payables:', expErr.message);
       }
     } catch (payErr: any) {
-      console.error('Payroll → AP allocation failed:', payErr?.message || payErr);
+      logger.error('Payroll → AP allocation failed:', payErr?.message || payErr);
     }
 
     // Emit event: payroll.approved

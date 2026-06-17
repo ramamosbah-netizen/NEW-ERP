@@ -3,6 +3,7 @@
 // Handles task CRUD updates, filtering, and state transitions
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { taskService } from '@/services/taskService';
 import type { Task, TaskStatus, TaskPriority, TaskOrigin } from '@/types/task.types';
@@ -26,7 +27,7 @@ export function useTasks(filters: {
       setTasks(data);
       setError(null);
     } catch (err: any) {
-      console.error('Failed to load tasks list:', err);
+      logger.error('Failed to load tasks list:', err);
       setError(err);
     } finally {
       setLoading(false);
@@ -58,7 +59,7 @@ export function useTasks(filters: {
         } : t)
       );
     } catch (err) {
-      console.error('Failed to update task status:', err);
+      logger.error('Failed to update task status:', err);
       throw err;
     }
   };

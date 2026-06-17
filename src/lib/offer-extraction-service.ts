@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 // ============================================================
 // JEET ERP — Gemini AI Supplier Offer Extraction Service
 // Integrates with Gemini 2.0 Flash for parsing document files
@@ -65,7 +66,7 @@ export const offerExtractionService = {
     const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || '';
 
     if (!apiKey) {
-      console.warn('Gemini API key is not configured. Initializing Procurement Simulation fallback...');
+      logger.warn('Gemini API key is not configured. Initializing Procurement Simulation fallback...');
       await new Promise(resolve => setTimeout(resolve, 1500)); // emulate delay
       return this.generateMockExtraction(file);
     }
@@ -145,7 +146,7 @@ export const offerExtractionService = {
       };
 
     } catch {
-      console.warn('AI extraction unavailable; using manual-entry fallback.');
+      logger.warn('AI extraction unavailable; using manual-entry fallback.');
       return this.generateMockExtraction(file);
     }
   },
@@ -157,7 +158,7 @@ export const offerExtractionService = {
     const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || '';
 
     if (!apiKey) {
-      console.warn('Gemini API key is not configured. Falling back to mock DN extraction...');
+      logger.warn('Gemini API key is not configured. Falling back to mock DN extraction...');
       await new Promise(resolve => setTimeout(resolve, 1000));
       // Extract dummy DN ref from file name, or default
       const match = file.name.match(/\d+/);
@@ -206,7 +207,7 @@ export const offerExtractionService = {
       return contentText ? contentText.trim() : 'DN-UNKNOWN';
 
     } catch (e) {
-      console.warn('AI delivery-note extraction unavailable; using fallback.');
+      logger.warn('AI delivery-note extraction unavailable; using fallback.');
       const match = file.name.match(/\d+/);
       return match ? `DN-${match[0]}` : 'DN-77382';
     }

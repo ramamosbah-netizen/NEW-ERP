@@ -2,6 +2,7 @@
 // JEET ERP — Client Invoice React Hooks
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { invoiceService } from '@/services/invoiceService';
 import type { ClientInvoice, ClientInvoiceItem } from '@/types/finance.types';
@@ -28,7 +29,7 @@ export function useClientInvoices(filters: InvoiceFilters = {}) {
       setInvoices(data);
       setError(null);
     } catch (err: any) {
-      console.error('Error in useClientInvoices hook:', err);
+      logger.error('Error in useClientInvoices hook:', err);
       setError(err);
     } finally {
       setLoading(false);
@@ -58,7 +59,7 @@ export function useClientInvoice(id: string) {
       setInvoice(data);
       setError(null);
     } catch (err: any) {
-      console.error(`Error in useClientInvoice hook for ${id}:`, err);
+      logger.error(`Error in useClientInvoice hook for ${id}:`, err);
       setError(err);
     } finally {
       setLoading(false);

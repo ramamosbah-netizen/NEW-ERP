@@ -2,6 +2,7 @@
 // JEET ERP — Tools & Equipment Register Service
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 import type { Tool, ToolAssignment, ToolMaintenance, ToolStatus, ToolCondition, ToolCategory } from '@/types/tool.types';
 
@@ -211,7 +212,7 @@ export const toolService = {
 
       return newAssign.id;
     } catch (err) {
-      console.error('Error assigning tool:', err);
+      logger.error('Error assigning tool:', err);
       throw err;
     }
   },
@@ -260,7 +261,7 @@ export const toolService = {
         .eq('id', assign.tool_id);
 
     } catch (err) {
-      console.error('Error returning tool:', err);
+      logger.error('Error returning tool:', err);
       throw err;
     }
   },
@@ -351,7 +352,7 @@ export const toolService = {
 
       return data.id;
     } catch (err) {
-      console.error('Error logging tool maintenance:', err);
+      logger.error('Error logging tool maintenance:', err);
       throw err;
     }
   }

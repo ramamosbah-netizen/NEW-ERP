@@ -2,6 +2,7 @@
 // JEET ERP — Goods Receipt Note (GRN) React Hooks
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { grnService } from '@/services/grnService';
 import type { GoodsReceiptNote, GRNReturn, GRNReturnStatus } from '@/types/grn.types';
@@ -27,7 +28,7 @@ export function useGRNs(filters: GRNFilters = {}) {
       setGrns(data);
       setError(null);
     } catch (err: any) {
-      console.error('Error fetching GRN list:', err);
+      logger.error('Error fetching GRN list:', err);
       setError(err);
     } finally {
       setLoading(false);
@@ -57,7 +58,7 @@ export function useGRN(id: string) {
       setGrn(data);
       setError(null);
     } catch (err: any) {
-      console.error(`Error loading GRN ${id} details:`, err);
+      logger.error(`Error loading GRN ${id} details:`, err);
       setError(err);
     } finally {
       setLoading(false);
@@ -86,7 +87,7 @@ export function useGRNReturns(filters?: { status?: GRNReturnStatus; project_id?:
       setReturns(data);
       setError(null);
     } catch (err: any) {
-      console.error('Error loading returns:', err);
+      logger.error('Error loading returns:', err);
       setError(err);
     } finally {
       setLoading(false);

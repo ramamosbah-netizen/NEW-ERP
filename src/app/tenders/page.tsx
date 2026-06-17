@@ -1,4 +1,5 @@
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -104,11 +105,11 @@ export default function TendersDashboard() {
             }
             setProjectMap(pm);
           } catch (enrichErr) {
-            console.warn('Could not enrich tenders with BOQ/project data:', enrichErr);
+            logger.warn('Could not enrich tenders with BOQ/project data:', enrichErr);
           }
         }
       } catch (err: any) {
-        console.error('Error fetching tenders:', err);
+        logger.error('Error fetching tenders:', err);
         setErrorMsg('Failed to load tenders. Ensure the database schemas have been applied.');
       } finally {
         setLoading(false);

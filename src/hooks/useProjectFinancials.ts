@@ -2,6 +2,7 @@
 // JEET ERP — Project Financials React Hook
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { projectFinancialsService } from '@/services/projectFinancialsService';
 
@@ -22,7 +23,7 @@ export function useProjectFinancials(projectId?: string) {
       const data = await projectFinancialsService.computeProjectFinancials(projectId);
       setFinancials(data);
     } catch (err: any) {
-      console.error(`Error in useProjectFinancials for ${projectId}:`, err);
+      logger.error(`Error in useProjectFinancials for ${projectId}:`, err);
       setError(err);
     } finally {
       setLoading(false);

@@ -4,6 +4,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import Link from 'next/link';
@@ -375,7 +376,7 @@ export default function ServiceDeskPage() {
       setAssignModal({ open: false, ticketId: '' });
       refetch();
     } catch (err: any) {
-      console.error('Assignment failed:', err);
+      logger.error('Assignment failed:', err);
       alert('Assignment failed: ' + (err.message || 'Unknown error'));
     } finally {
       setActionLoading(false);
@@ -389,7 +390,7 @@ export default function ServiceDeskPage() {
       await ticketService.dispatchTechnician(ticketId);
       refetch();
     } catch (err: any) {
-      console.error('Dispatch failed:', err);
+      logger.error('Dispatch failed:', err);
       alert('Dispatch failed: ' + (err.message || 'Unknown error'));
     } finally {
       setActionLoading(false);

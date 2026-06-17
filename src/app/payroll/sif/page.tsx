@@ -4,6 +4,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -79,7 +80,7 @@ export default function SifExportPage() {
         setIsValidated(false);
         setErrors([]);
       } catch (err) {
-        console.error('Failed to load payroll lines for SIF:', err);
+        logger.error('Failed to load payroll lines for SIF:', err);
       } finally {
         setLoading(false);
       }

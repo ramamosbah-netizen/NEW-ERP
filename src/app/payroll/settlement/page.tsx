@@ -4,6 +4,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -100,7 +101,7 @@ export default function SettlementPage() {
           leaveBalanceDays: Math.round(remainingLeave * 10) / 10
         }));
       } catch (err) {
-        console.error('Failed to load employee details for settlement:', err);
+        logger.error('Failed to load employee details for settlement:', err);
       } finally {
         setLoadingDetails(false);
       }

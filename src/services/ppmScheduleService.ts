@@ -3,6 +3,7 @@
 // Distributes PPM visits evenly across the contract duration.
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 import type { AMCContract } from '@/types/amc.types';
 import type { PPMVisit } from '@/types/ppm.types';
@@ -46,7 +47,7 @@ export const ppmScheduleService = {
       .select();
 
     if (error) {
-      console.error('Failed to generate PPM visits:', error);
+      logger.error('Failed to generate PPM visits:', error);
       throw error;
     }
 

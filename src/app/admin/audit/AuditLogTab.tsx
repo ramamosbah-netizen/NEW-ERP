@@ -1,4 +1,5 @@
 'use client';
+import { logger } from '@/lib/logger';
 
 // ============================================================
 // JEET ERP — Audit Log (tab of /admin/audit)
@@ -50,7 +51,7 @@ export default function AuditLogTab() {
       const data = await auditService.getLogs(filters);
       setLogs(data);
     } catch (err) {
-      console.error('Error loading audit logs:', err);
+      logger.error('Error loading audit logs:', err);
     } finally {
       setLoading(false);
     }

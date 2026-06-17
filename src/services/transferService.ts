@@ -2,6 +2,7 @@
 // JEET ERP — Stock Transfer Service
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 import { stockTransactionService } from './stockTransactionService';
 
@@ -77,7 +78,7 @@ export const transferService = {
         });
       }
     } catch (err) {
-      console.error('Error in createTransfer service:', err);
+      logger.error('Error in createTransfer service:', err);
       throw err;
     }
   }

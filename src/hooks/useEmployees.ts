@@ -2,6 +2,7 @@
 // JEET ERP — Employee Master React Hook
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { employeeService } from '@/services/employeeService';
 import type { Employee, EmployeeCompensation, EmployeeCertification } from '@/types/hr.types';
@@ -18,7 +19,7 @@ export function useEmployees(filters?: { department?: string; status?: string })
       const data = await employeeService.getEmployees(filters);
       setEmployees(data);
     } catch (err: any) {
-      console.error('Failed to load employees:', err);
+      logger.error('Failed to load employees:', err);
       setError(err);
     } finally {
       setLoading(false);
@@ -63,7 +64,7 @@ export function useEmployee(employeeId?: string) {
       setCertifications(certData);
       setDocuments(docData);
     } catch (err: any) {
-      console.error(`Failed to load employee details for ${employeeId}:`, err);
+      logger.error(`Failed to load employee details for ${employeeId}:`, err);
       setError(err);
     } finally {
       setLoading(false);

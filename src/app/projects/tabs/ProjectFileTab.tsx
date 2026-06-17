@@ -6,6 +6,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -209,7 +210,7 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
       if (docData) setDocuments(docData);
 
     } catch (err: any) {
-      console.error('Error loading project files:', err);
+      logger.error('Error loading project files:', err);
       setError(err.message || 'Error collecting project records.');
     } finally {
       setLoading(false);

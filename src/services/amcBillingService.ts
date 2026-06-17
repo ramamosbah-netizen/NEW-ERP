@@ -3,6 +3,7 @@
 // Manages installment calculations and automated draft invoicing.
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 import { invoiceService } from './invoiceService';
 import { eventService } from './eventService';
@@ -75,7 +76,7 @@ export const amcBillingService = {
       .select();
 
     if (error) {
-      console.error('Failed to save billing schedule:', error);
+      logger.error('Failed to save billing schedule:', error);
       throw error;
     }
 
@@ -99,7 +100,7 @@ export const amcBillingService = {
       .lte('due_date', sevenDaysLater);
 
     if (schedError) {
-      console.error('Failed to query due billing schedules:', schedError);
+      logger.error('Failed to query due billing schedules:', schedError);
       throw schedError;
     }
 
@@ -110,7 +111,7 @@ export const amcBillingService = {
       if (!contract) continue;
 
       try {
-        console.log(`Generating draft invoice for contract ${contract.contract_number}, sequence ${schedule.sequence}`);
+        logger.debug(`Generating draft invoice for contract ${contract.contract_number}, sequence ${schedule.sequence}`);
 
         // 1. Create client invoice draft using the invoiceService
         const invoiceData = {
@@ -165,7 +166,7 @@ export const amcBillingService = {
 
         processedCount++;
       } catch (err) {
-        console.error(`Failed to process schedule ID ${schedule.id}:`, err);
+        logger.error(`Failed to process schedule ID ${schedule.id}:`, err);
       }
     }
 

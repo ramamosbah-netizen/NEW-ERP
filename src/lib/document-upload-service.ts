@@ -3,6 +3,7 @@
 // Client-side file hashing, storage uploads, edge function trigger & status polling
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { supabase } from './supabase';
 import { documentService } from './document-service';
 import { eventService } from '@/services/eventService';
@@ -31,7 +32,7 @@ export async function uploadToStorage(file: File, path: string): Promise<string>
     });
 
   if (error) {
-    console.error('Storage upload failed:', error);
+    logger.error('Storage upload failed:', error);
     throw error;
   }
 
@@ -48,7 +49,7 @@ export async function triggerProcessing(documentId: string): Promise<void> {
 
   if (error) {
     // Non-fatal: AI processing is optional (no Gemini key / edge function not deployed)
-    console.warn('AI document processing unavailable; document kept for manual review.');
+    logger.warn('AI document processing unavailable; document kept for manual review.');
     throw error;
   }
 }
@@ -157,13 +158,13 @@ export async function runUploadPipeline(
       file_size_bytes: documentRecord.file_size_bytes
     },
     user.id
-  ).catch(err => console.error('Failed to emit document.uploaded event:', err));
+  ).catch(err => logger.error('Failed to emit document.uploaded event:', err));
 
   // J. Trigger Edge Function asynchronously
   try {
     await triggerProcessing(documentRecord.id);
   } catch (err) {
-    console.warn('AI document processing unavailable; marking document for manual review.');
+    logger.warn('AI document processing unavailable; marking document for manual review.');
     // Mark as NEEDS_REVIEW so it doesn't get stuck in PROCESSING forever
     await supabase
       .from('documents')

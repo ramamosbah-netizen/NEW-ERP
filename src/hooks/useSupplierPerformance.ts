@@ -2,6 +2,7 @@
 // JEET ERP — Supplier Performance React Hook
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { supplierPerformanceService } from '@/services/supplierPerformanceService';
@@ -28,7 +29,7 @@ export function useSupplierPerformance(supplierId?: string) {
       setPerformance(data || null);
       setError(null);
     } catch (err: any) {
-      console.error(`Error loading performance for supplier ${supplierId}:`, err);
+      logger.error(`Error loading performance for supplier ${supplierId}:`, err);
       setError(err);
     } finally {
       setLoading(false);
@@ -46,7 +47,7 @@ export function useSupplierPerformance(supplierId?: string) {
       await supplierPerformanceService.recalculateSupplierPerformance(supplierId);
       await fetchPerformance();
     } catch (err: any) {
-      console.error('Failed to recalculate performance:', err);
+      logger.error('Failed to recalculate performance:', err);
       setError(err);
       setLoading(false);
     }

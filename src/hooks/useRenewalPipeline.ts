@@ -2,6 +2,7 @@
 // JEET ERP — AMC Renewal Pipeline Kanban Hook
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { amcService } from '@/services/amcService';
 import type { AMCContract } from '@/types/amc.types';
@@ -19,7 +20,7 @@ export function useRenewalPipeline() {
       setContracts(data);
       setError(null);
     } catch (err: any) {
-      console.error('Error in useRenewalPipeline hook:', err);
+      logger.error('Error in useRenewalPipeline hook:', err);
       setError(err);
     } finally {
       setLoading(false);

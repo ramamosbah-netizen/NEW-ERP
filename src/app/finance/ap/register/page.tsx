@@ -5,6 +5,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -173,7 +174,7 @@ export function SupplierInvoiceRegisterPage() {
 
       router.push(`/finance/ap/match/${result.id}`);
     } catch (err: any) {
-      console.error(err);
+      logger.error(err);
       alert('Failed to register invoice: ' + err.message);
     } finally {
       setLoading(false);

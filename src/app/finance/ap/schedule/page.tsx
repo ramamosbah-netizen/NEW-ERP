@@ -5,6 +5,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -78,7 +79,7 @@ export default function DisbursementSchedulingPage() {
         });
         setAllocationAmounts(initialAllocs);
       } catch (err: any) {
-        console.error('Error loading invoices:', err);
+        logger.error('Error loading invoices:', err);
         setError(err.message);
       } finally {
         setLoading(false);
@@ -140,7 +141,7 @@ export default function DisbursementSchedulingPage() {
       alert('Disbursement payment scheduled successfully!');
       router.push('/finance/ap');
     } catch (err: any) {
-      console.error(err);
+      logger.error(err);
       setError(err.message || 'Failed to record disbursement payment.');
     } finally {
       setSaving(false);

@@ -4,6 +4,7 @@
 // Renders premium landscape layouts and signature seals
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { supabase } from './supabase';
@@ -227,7 +228,7 @@ export const comparisonPDFService = {
           doc.addImage(imgBase64, 'PNG', pageWidth - 98, sigY + 12, 35, 12);
         }
       } catch (err) {
-        console.error('Error drawing GM signature in PDF:', err);
+        logger.error('Error drawing GM signature in PDF:', err);
       }
     }
 

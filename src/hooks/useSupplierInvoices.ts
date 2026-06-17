@@ -2,6 +2,7 @@
 // JEET ERP — Supplier Invoices React Hooks
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { supplierInvoiceService } from '@/services/supplierInvoiceService';
 import type { SupplierInvoice, SupplierInvoiceItem } from '@/types/finance.types';
@@ -28,7 +29,7 @@ export function useSupplierInvoices(filters: SupplierInvoiceFilters = {}) {
       setInvoices(data);
       setError(null);
     } catch (err: any) {
-      console.error('Error in useSupplierInvoices hook:', err);
+      logger.error('Error in useSupplierInvoices hook:', err);
       setError(err);
     } finally {
       setLoading(false);
@@ -58,7 +59,7 @@ export function useSupplierInvoice(id: string) {
       setInvoice(data);
       setError(null);
     } catch (err: any) {
-      console.error(`Error in useSupplierInvoice hook for ${id}:`, err);
+      logger.error(`Error in useSupplierInvoice hook for ${id}:`, err);
       setError(err);
     } finally {
       setLoading(false);

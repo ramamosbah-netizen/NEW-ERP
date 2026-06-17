@@ -2,6 +2,7 @@
 // JEET ERP — AMC Contract React Hooks
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { amcService } from '@/services/amcService';
 import type { AMCContract, AMCEquipment } from '@/types/amc.types';
@@ -27,7 +28,7 @@ export function useAMCContracts(filters: AMCFilters = {}) {
       setContracts(data);
       setError(null);
     } catch (err: any) {
-      console.error('Error in useAMCContracts hook:', err);
+      logger.error('Error in useAMCContracts hook:', err);
       setError(err);
     } finally {
       setLoading(false);
@@ -57,7 +58,7 @@ export function useAMCContract(id?: string) {
       setContract(data);
       setError(null);
     } catch (err: any) {
-      console.error(`Error in useAMCContract hook for ID ${id}:`, err);
+      logger.error(`Error in useAMCContract hook for ID ${id}:`, err);
       setError(err);
     } finally {
       setLoading(false);

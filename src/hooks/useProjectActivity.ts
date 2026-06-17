@@ -3,6 +3,7 @@
 // Realtime updates to project status history audits
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import type { ProjectStatusHistory } from '@/types/project.types';
@@ -42,7 +43,7 @@ export function useProjectActivity(projectId: string) {
 
       setActivities(resolved);
     } catch (err) {
-      console.error('Failed to fetch project activities:', err);
+      logger.error('Failed to fetch project activities:', err);
     } finally {
       setLoading(false);
     }

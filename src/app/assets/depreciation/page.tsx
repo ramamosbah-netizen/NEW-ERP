@@ -1,4 +1,5 @@
 'use client';
+import { logger } from '@/lib/logger';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -46,7 +47,7 @@ export default function DepreciationRunPage() {
       if (fetchErr) throw fetchErr;
       setScheduleRows(data || []);
     } catch (err) {
-      console.error('Error fetching schedule rows:', err);
+      logger.error('Error fetching schedule rows:', err);
     } finally {
       setFetching(false);
     }

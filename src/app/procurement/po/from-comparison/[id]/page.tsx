@@ -4,6 +4,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
@@ -73,7 +74,7 @@ export default function POFromComparisonPage({ params }: PageProps) {
         setFormStates(statesMap);
 
       } catch (err: any) {
-        console.error('Failed to generate PO proposals:', err);
+        logger.error('Failed to generate PO proposals:', err);
         setError(err.message || 'Failed to generate PO proposals from the comparison sheet.');
       } finally {
         setLoading(false);
@@ -188,10 +189,10 @@ export default function POFromComparisonPage({ params }: PageProps) {
               })
               .eq('id', newPoId);
             if (dbErr) {
-              console.warn('Proforma uploaded but reference not saved (apply migration 20260613140000):', dbErr.message);
+              logger.warn('Proforma uploaded but reference not saved (apply migration 20260613140000):', dbErr.message);
             }
           } catch (pfErr: any) {
-            console.warn(`Proforma upload failed for ${prop.supplier_name}:`, pfErr.message);
+            logger.warn(`Proforma upload failed for ${prop.supplier_name}:`, pfErr.message);
           }
         }
       }
@@ -199,7 +200,7 @@ export default function POFromComparisonPage({ params }: PageProps) {
       router.push('/procurement/po');
 
     } catch (err: any) {
-      console.error('Failed to generate LPO drafts:', err);
+      logger.error('Failed to generate LPO drafts:', err);
       setError(err.message || 'An error occurred while generating LPO drafts.');
     } finally {
       setSaving(false);

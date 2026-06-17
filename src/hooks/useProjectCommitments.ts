@@ -2,6 +2,7 @@
 // JEET ERP — Cost Commitments React Hook
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { commitmentService, type SystemCostSummary } from '@/services/commitmentService';
 
@@ -18,7 +19,7 @@ export function useProjectCommitments(projectId: string) {
       setCommitments(data);
       setError(null);
     } catch (err: any) {
-      console.error(`Error loading commitments for project ${projectId}:`, err);
+      logger.error(`Error loading commitments for project ${projectId}:`, err);
       setError(err);
     } finally {
       setLoading(false);

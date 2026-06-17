@@ -5,6 +5,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import { useState, useEffect, Suspense, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -104,7 +105,7 @@ function GRNFormContent() {
         const locs = await stockService.getLocations();
         setStockLocations(locs.filter(l => l.is_active));
       } catch (err) {
-        console.error('Failed to load stock locations:', err);
+        logger.error('Failed to load stock locations:', err);
       }
     }
     loadLocations();
@@ -197,12 +198,12 @@ function GRNFormContent() {
                 setDraftRestored(true);
               }
             } catch (e) {
-              console.error('Failed to parse GRN draft:', e);
+              logger.error('Failed to parse GRN draft:', e);
             }
           }
         }
       } catch (err) {
-        console.error('Failed to load active POs:', err);
+        logger.error('Failed to load active POs:', err);
       } finally {
         setLoadingPOs(false);
       }
@@ -282,7 +283,7 @@ function GRNFormContent() {
       setConfirmOverDelivery(false);
       setHasOverDeliveryWarning(false);
     } catch (err) {
-      console.error('Failed to load PO items:', err);
+      logger.error('Failed to load PO items:', err);
     }
   };
 
@@ -409,7 +410,7 @@ function GRNFormContent() {
         setDNExtractedByAI(true);
       }
     } catch (err) {
-      console.error('Failed to extract Delivery Note Ref:', err);
+      logger.error('Failed to extract Delivery Note Ref:', err);
     } finally {
       setExtractingDNRef(false);
     }
@@ -471,7 +472,7 @@ function GRNFormContent() {
           );
           dnDocumentId = doc.id;
         } catch (uploadErr: any) {
-          console.error('DMS delivery note upload failed:', uploadErr);
+          logger.error('DMS delivery note upload failed:', uploadErr);
           setErrorMessages([`DMS file upload failed: ${uploadErr.message || 'Check storage connection'}`]);
           setSaving(false);
           setUploadProgress(false);
@@ -501,7 +502,7 @@ function GRNFormContent() {
               );
               photoPaths.push(doc.storage_path);
             } catch (err: any) {
-              console.error(`Rejection photo upload failed for item ${it.description}:`, err);
+              logger.error(`Rejection photo upload failed for item ${it.description}:`, err);
               // Non-blocking but warn
             }
           }
@@ -549,7 +550,7 @@ function GRNFormContent() {
       router.push('/procurement/grn');
 
     } catch (err: any) {
-      console.error('Error logging GRN:', err);
+      logger.error('Error logging GRN:', err);
       setErrorMessages([err.message || 'An error occurred while saving the goods receipt.']);
     } finally {
       setSaving(false);

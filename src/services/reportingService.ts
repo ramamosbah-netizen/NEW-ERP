@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 import { projectFinancialsService } from './projectFinancialsService';
 
@@ -47,7 +48,7 @@ export const reportingService = {
       .select('total_incl_vat, amount_paid')
       .in('status', ['SENT', 'PARTIALLY_PAID']);
 
-    if (arErr) console.error('Receivables calculation error:', arErr.message);
+    if (arErr) logger.error('Receivables calculation error:', arErr.message);
 
     // Supplier invoices count
     const { data: apData, error: apErr } = await supabase
@@ -55,7 +56,7 @@ export const reportingService = {
       .select('total, amount_paid')
       .in('status', ['APPROVED', 'PARTIALLY_PAID']);
 
-    if (apErr) console.error('Payables calculation error:', apErr.message);
+    if (apErr) logger.error('Payables calculation error:', apErr.message);
 
     // Projects margins sum
     const { data: projData, error: projErr } = await supabase
@@ -64,7 +65,7 @@ export const reportingService = {
       .neq('status', 'SUBMITTED')
       .neq('status', 'LOST');
 
-    if (projErr) console.error('Project financials calculation error:', projErr.message);
+    if (projErr) logger.error('Project financials calculation error:', projErr.message);
 
     let receivables = 0;
     if (arData) {
@@ -94,7 +95,7 @@ export const reportingService = {
             .computeProjectFinancials(p.id)
             .then(f => f.actualCost)
             .catch(e => {
-              console.error(`Failed to calculate actual cost for project ${p.id}:`, e);
+              logger.error(`Failed to calculate actual cost for project ${p.id}:`, e);
               return 0;
             })
         )
@@ -200,7 +201,7 @@ export const reportingService = {
           committed_cost = financials.committedCost;
           actual_cost = financials.actualCost;
         } catch (e) {
-          console.error(`Failed to calculate financials for project ${p.id}:`, e);
+          logger.error(`Failed to calculate financials for project ${p.id}:`, e);
         }
         const budget_cost = p.contract_value || 0;
         const variance = budget_cost - committed_cost;

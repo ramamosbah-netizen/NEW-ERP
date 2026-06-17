@@ -2,6 +2,7 @@
 // JEET ERP — Supplier Performance Writeback Service
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 
 export const supplierPerformanceService = {
@@ -170,7 +171,7 @@ export const supplierPerformanceService = {
       });
 
     } catch (err) {
-      console.error(`Failed to recalculate supplier performance for ${supplierId}:`, err);
+      logger.error(`Failed to recalculate supplier performance for ${supplierId}:`, err);
     }
   },
 
@@ -189,7 +190,7 @@ export const supplierPerformanceService = {
       );
 
     if (error) {
-      console.error('Failed to upsert supplier performance record:', error);
+      logger.error('Failed to upsert supplier performance record:', error);
       throw error;
     }
   }

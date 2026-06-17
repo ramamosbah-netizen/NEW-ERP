@@ -2,6 +2,7 @@
 // JEET ERP — Purchase Order (LPO) React Hooks
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { poService } from '@/services/poService';
 import { poApprovalService } from '@/services/poApprovalService';
@@ -29,7 +30,7 @@ export function usePOs(filters: POFilters = {}) {
       setPos(data);
       setError(null);
     } catch (err: any) {
-      console.error('Error in usePOs hook:', err);
+      logger.error('Error in usePOs hook:', err);
       setError(err);
     } finally {
       setLoading(false);
@@ -59,7 +60,7 @@ export function usePO(id: string) {
       setPo(data);
       setError(null);
     } catch (err: any) {
-      console.error(`Error in usePO hook for ${id}:`, err);
+      logger.error(`Error in usePO hook for ${id}:`, err);
       setError(err);
     } finally {
       setLoading(false);

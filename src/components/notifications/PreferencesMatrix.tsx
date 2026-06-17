@@ -3,6 +3,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
@@ -43,7 +44,7 @@ export const PreferencesMatrix: React.FC = () => {
         const prefs = await notificationService.fetchPreferences(user.id);
         setPreferences(prefs);
       } catch (err) {
-        console.error('Failed to load preferences:', err);
+        logger.error('Failed to load preferences:', err);
       } finally {
         setLoading(false);
       }
@@ -82,7 +83,7 @@ export const PreferencesMatrix: React.FC = () => {
         setSavingState(prev => ({ ...prev, [key]: 'idle' }));
       }, 1500);
     } catch (err) {
-      console.error('Failed to update preference:', err);
+      logger.error('Failed to update preference:', err);
       setSavingState(prev => ({ ...prev, [key]: 'idle' }));
     }
   };

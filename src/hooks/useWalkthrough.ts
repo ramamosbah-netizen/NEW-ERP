@@ -2,6 +2,7 @@
 // JEET ERP — Walkthrough Hook
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState } from 'react';
 import { walkthroughService } from '@/services/walkthroughService';
 import { SnagSeverity } from '@/types/snag.types';
@@ -31,7 +32,7 @@ export function useWalkthrough() {
       const res = await walkthroughService.logWalkthrough(params);
       return res;
     } catch (err: any) {
-      console.error('Failed to log walkthrough:', err);
+      logger.error('Failed to log walkthrough:', err);
       setError(err);
       throw err;
     } finally {

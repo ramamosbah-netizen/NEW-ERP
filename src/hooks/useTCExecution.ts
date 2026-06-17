@@ -2,6 +2,7 @@
 // JEET ERP — Testing & Commissioning Execution Hook
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { tcService } from '@/services/tcService';
 import { deviceImportService } from '@/services/deviceImportService';
@@ -28,7 +29,7 @@ export function useTCExecution(packageId: string) {
       setDevices(deviceData);
       setError(null);
     } catch (err: any) {
-      console.error('Error fetching T&C execution details:', err);
+      logger.error('Error fetching T&C execution details:', err);
       setError(err);
     } finally {
       setLoading(false);
@@ -53,7 +54,7 @@ export function useTCExecution(packageId: string) {
       await fetchDetails();
       return res;
     } catch (err: any) {
-      console.error('Failed to log test result:', err);
+      logger.error('Failed to log test result:', err);
       throw err;
     }
   };
@@ -64,7 +65,7 @@ export function useTCExecution(packageId: string) {
       await fetchDetails();
       return updated;
     } catch (err: any) {
-      console.error('Failed to schedule witness:', err);
+      logger.error('Failed to schedule witness:', err);
       throw err;
     }
   };
@@ -86,7 +87,7 @@ export function useTCExecution(packageId: string) {
       await fetchDetails();
       return res;
     } catch (err: any) {
-      console.error('Failed to submit witness sign-off:', err);
+      logger.error('Failed to submit witness sign-off:', err);
       throw err;
     }
   };
@@ -97,7 +98,7 @@ export function useTCExecution(packageId: string) {
       await fetchDetails();
       return res;
     } catch (err: any) {
-      console.error('Failed to paste-import devices:', err);
+      logger.error('Failed to paste-import devices:', err);
       throw err;
     }
   };
@@ -106,7 +107,7 @@ export function useTCExecution(packageId: string) {
     try {
       return await tcReportPDFService.generateAndFileTCReport(packageId);
     } catch (err: any) {
-      console.error('Failed to compile T&C report PDF:', err);
+      logger.error('Failed to compile T&C report PDF:', err);
       throw err;
     }
   };

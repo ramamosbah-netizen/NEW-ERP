@@ -1,4 +1,5 @@
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState, useEffect } from 'react';
 import settingsService from '@/services/settingsService';
@@ -439,7 +440,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
       } catch {}
 
     } catch (err) {
-      console.error('Failed to load full parameters settings:', err);
+      logger.error('Failed to load full parameters settings:', err);
     } finally {
       setLoading(false);
     }
@@ -462,7 +463,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
         });
         setMatrixPermissions(mapObj);
       } catch (err) {
-        console.error('Failed to load matrix mappings:', err);
+        logger.error('Failed to load matrix mappings:', err);
       }
     };
     fetchMatrix();
@@ -908,7 +909,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
           .maybeSingle();
         if (emp) dept = emp.department || '';
       } catch (err) {
-        console.error('Failed to load department:', err);
+        logger.error('Failed to load department:', err);
       }
       setEditUserDepartment(dept);
       setEditUserRoleIds(user.roles.map(r => r.id));
@@ -1015,7 +1016,7 @@ export default function SettingsWorkspace({ tab }: { tab: SettingsTabId }) {
       });
       setAuditedPermissions(mapObj);
     } catch (err) {
-      console.error('Failed to audit user permissions:', err);
+      logger.error('Failed to audit user permissions:', err);
     } finally {
       setLoadingAudit(false);
     }

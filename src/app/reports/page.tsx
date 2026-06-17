@@ -1,4 +1,5 @@
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState, useEffect } from 'react';
 import reportingService, { 
@@ -56,7 +57,7 @@ export default function ReportsHub() {
       setProjectKPIs(pk);
       setSlaStats(sla);
     } catch (err) {
-      console.error('Failed to compile report summaries:', err);
+      logger.error('Failed to compile report summaries:', err);
     } finally {
       setLoading(false);
     }

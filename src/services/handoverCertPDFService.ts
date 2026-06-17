@@ -2,6 +2,7 @@
 // JEET ERP — Handover Closeout Certificate PDF Service
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { supabase } from '@/lib/supabase';
@@ -68,7 +69,7 @@ export const handoverCertPDFService = {
           goldColor = [197, 160, 89];
         }
       } catch (e) {
-        console.warn('Could not load document templates settings, using defaults:', e);
+        logger.warn('Could not load document templates settings, using defaults:', e);
       }
 
       // --- Decorative Border (Premium Branded Feel) ---
@@ -257,7 +258,7 @@ export const handoverCertPDFService = {
             doc.addImage(imageStr, 'PNG', clientSigStartX + 10, sigY - 22, 45, 18);
           }
         } catch (err) {
-          console.error('Failed to embed client signature in Handover certificate:', err);
+          logger.error('Failed to embed client signature in Handover certificate:', err);
         }
       }
 
@@ -311,7 +312,7 @@ export const handoverCertPDFService = {
 
       return storagePath;
     } catch (error) {
-      console.error('Failed to generate Handover Certificate PDF:', error);
+      logger.error('Failed to generate Handover Certificate PDF:', error);
       throw error;
     }
   }

@@ -2,6 +2,7 @@
 // JEET ERP — Testing & Commissioning Packages Hook
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { tcService } from '@/services/tcService';
@@ -21,7 +22,7 @@ export function useTCPackages(projectId?: string) {
       setPackages(data);
       setError(null);
     } catch (err: any) {
-      console.error('Error fetching T&C packages:', err);
+      logger.error('Error fetching T&C packages:', err);
       setError(err);
     } finally {
       setLoading(false);
@@ -38,7 +39,7 @@ export function useTCPackages(projectId?: string) {
       if (tErr) throw tErr;
       setTemplates(data as TCScriptTemplate[]);
     } catch (err: any) {
-      console.error('Error fetching script templates:', err);
+      logger.error('Error fetching script templates:', err);
     }
   }, []);
 
@@ -66,7 +67,7 @@ export function useTCPackages(projectId?: string) {
       await fetchPackages();
       return newPkg;
     } catch (err: any) {
-      console.error('Failed to create T&C package:', err);
+      logger.error('Failed to create T&C package:', err);
       throw err;
     }
   };

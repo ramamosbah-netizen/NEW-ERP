@@ -1,4 +1,5 @@
 'use client';
+import { logger } from '@/lib/logger';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -61,7 +62,7 @@ export default function FleetDashboardPage() {
       setFuelLogs(fuelData || []);
       setMaintenance(maintData || []);
     } catch (err) {
-      console.error('Error loading fleet dashboard data:', err);
+      logger.error('Error loading fleet dashboard data:', err);
     } finally {
       setLoading(false);
     }

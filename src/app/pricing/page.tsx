@@ -1,4 +1,5 @@
 'use client';
+import { logger } from '@/lib/logger';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
@@ -124,7 +125,7 @@ export default function PricingItemsPage() {
       setTemplates(templatesResult);
       setBrands(brandsResult);
     } catch (err) {
-      console.error('Failed to load pricing data:', err);
+      logger.error('Failed to load pricing data:', err);
       showToast('Failed to load data', 'error');
     } finally {
       setLoading(false);
@@ -218,7 +219,7 @@ export default function PricingItemsPage() {
       closeDrawer();
       loadData();
     } catch (err) {
-      console.error('Save error:', err);
+      logger.error('Save error:', err);
       showToast('Failed to save item', 'error');
     } finally {
       setSaving(false);

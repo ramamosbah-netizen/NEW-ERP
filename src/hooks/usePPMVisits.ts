@@ -2,6 +2,7 @@
 // JEET ERP — PPM Visits React Hooks
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { visitService } from '@/services/visitService';
 import type { PPMVisit, PPMVisitChecklistResult, ChecklistTemplate } from '@/types/ppm.types';
@@ -27,7 +28,7 @@ export function usePPMVisits(filters: PPMVisitFilters = {}) {
       setVisits(data);
       setError(null);
     } catch (err: any) {
-      console.error('Error in usePPMVisits hook:', err);
+      logger.error('Error in usePPMVisits hook:', err);
       setError(err);
     } finally {
       setLoading(false);
@@ -64,7 +65,7 @@ export function usePPMVisit(id?: string) {
       }
       setError(null);
     } catch (err: any) {
-      console.error(`Error in usePPMVisit hook for ${id}:`, err);
+      logger.error(`Error in usePPMVisit hook for ${id}:`, err);
       setError(err);
     } finally {
       setLoading(false);

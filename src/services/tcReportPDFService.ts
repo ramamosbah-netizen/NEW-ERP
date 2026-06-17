@@ -2,6 +2,7 @@
 // JEET ERP — Testing & Commissioning PDF & DMS Service
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { supabase } from '@/lib/supabase';
@@ -316,7 +317,7 @@ export const tcReportPDFService = {
                 doc.addImage(imageStr, 'PNG', pageWidth - margin - 45, y - 2, 35, 12);
               }
             } catch (err) {
-              console.error('Failed to embed witness signature in report:', err);
+              logger.error('Failed to embed witness signature in report:', err);
             }
           }
 
@@ -365,7 +366,7 @@ export const tcReportPDFService = {
 
       return storagePath;
     } catch (error) {
-      console.error('Failed to generate T&C report PDF:', error);
+      logger.error('Failed to generate T&C report PDF:', error);
       throw error;
     }
   }

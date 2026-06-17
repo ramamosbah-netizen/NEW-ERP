@@ -5,6 +5,7 @@
 // Files to DMS category: COMMERCIAL, subcategory: VARIATION_ORDER.
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { supabase } from '@/lib/supabase';
@@ -74,7 +75,7 @@ export const voPDFService = {
         secondaryColor = [37, 99, 235];
       }
     } catch (e) {
-      console.warn('Could not load company settings for VO report:', e);
+      logger.warn('Could not load company settings for VO report:', e);
     }
 
     const grayText: [number, number, number] = [100, 116, 139]; // Slate Gray

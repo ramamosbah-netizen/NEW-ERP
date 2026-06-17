@@ -5,6 +5,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -45,7 +46,7 @@ export default function FinanceDashboard() {
       setKpis(data);
       executiveFinanceService.getDashboard().then(setExec).catch(() => {});
     } catch (err) {
-      console.error('Error fetching finance KPIs:', err);
+      logger.error('Error fetching finance KPIs:', err);
     } finally {
       setLoading(false);
       setRefreshing(false);

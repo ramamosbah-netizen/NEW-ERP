@@ -4,6 +4,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
@@ -184,7 +185,7 @@ export default function CreateQuotationWizard({ params }: { params: Promise<{ bo
         }
 
       } catch (err: any) {
-        console.error('Error loading page details:', err);
+        logger.error('Error loading page details:', err);
         setErrorMsg(err.message || 'Failed to initialize details from BOQ');
       } finally {
         setLoading(false);
@@ -383,7 +384,7 @@ export default function CreateQuotationWizard({ params }: { params: Promise<{ bo
       // Supabase/Postgrest errors don't serialize via the default console.error
       // (they log as "{}"); surface message/details/hint/code explicitly.
       const detail = err?.message || err?.details || err?.hint || err?.code || 'Unknown error';
-      console.error('Error saving quotation:', {
+      logger.error('Error saving quotation:', {
         message: err?.message,
         details: err?.details,
         hint: err?.hint,

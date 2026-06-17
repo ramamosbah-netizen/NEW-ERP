@@ -4,6 +4,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -83,7 +84,7 @@ export default function MeetingsPage() {
       }
       refetch();
     } catch (err) {
-      console.error(err);
+      logger.error(err);
     }
   };
 

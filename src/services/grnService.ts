@@ -2,6 +2,7 @@
 // JEET ERP — Goods Receipt Note (GRN) Service
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 import { eventService } from './eventService';
 import { supplierPerformanceService } from './supplierPerformanceService';
@@ -51,7 +52,7 @@ export const grnService = {
       });
 
       if (error) {
-        console.error('RPC create_grn_transaction failed:', error);
+        logger.error('RPC create_grn_transaction failed:', error);
         throw error;
       }
 
@@ -185,7 +186,7 @@ export const grnService = {
 
       return grnId;
     } catch (err) {
-      console.error('Error in recordGRN service:', err);
+      logger.error('Error in recordGRN service:', err);
       throw err;
     }
   },
@@ -228,7 +229,7 @@ export const grnService = {
         receiver_name: g.profiles?.full_name
       })) as GoodsReceiptNote[];
     } catch (err) {
-      console.error('Error fetching GRNs:', err);
+      logger.error('Error fetching GRNs:', err);
       throw err;
     }
   },
@@ -286,7 +287,7 @@ export const grnService = {
       } as GoodsReceiptNote;
 
     } catch (err) {
-      console.error(`Error loading GRN ${grnId} details:`, err);
+      logger.error(`Error loading GRN ${grnId} details:`, err);
       throw err;
     }
   },
@@ -349,7 +350,7 @@ export const grnService = {
       })) as GRNReturn[];
 
     } catch (err) {
-      console.error('Error fetching GRN returns:', err);
+      logger.error('Error fetching GRN returns:', err);
       throw err;
     }
   },
@@ -413,7 +414,7 @@ export const grnService = {
       }
 
     } catch (err) {
-      console.error(`Error updating return status ${returnId}:`, err);
+      logger.error(`Error updating return status ${returnId}:`, err);
       throw err;
     }
   }

@@ -5,6 +5,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -158,7 +159,7 @@ export default function InvoiceCreatePage() {
       const result = await invoiceService.createInvoiceDraft(invoiceData as any, items);
       router.push(`/finance/ar/${result.id}`);
     } catch (err: any) {
-      console.error(err);
+      logger.error(err);
       alert('Failed to save invoice draft: ' + err.message);
     } finally {
       setLoading(false);

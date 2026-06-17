@@ -4,6 +4,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
@@ -121,7 +122,7 @@ export default function PODetailPage({ params }: PageProps) {
         .eq('id', po.id);
       if (dbErr) {
         // Columns may not exist yet (migration 20260613140000 not applied)
-        console.warn('Proforma uploaded but reference not saved (apply migration 20260613140000):', dbErr.message);
+        logger.warn('Proforma uploaded but reference not saved (apply migration 20260613140000):', dbErr.message);
         alert('Proforma uploaded, but the reference could not be saved — apply migration 20260613140000.');
       }
       await refetch();
@@ -197,7 +198,7 @@ export default function PODetailPage({ params }: PageProps) {
       const pdf = await poPDFService.generatePOPDF(po, po.items || []);
       pdf.save(`JI-LPO-${po.po_number || 'DRAFT'}.pdf`);
     } catch (err) {
-      console.error('Failed to generate PDF:', err);
+      logger.error('Failed to generate PDF:', err);
     }
   };
 

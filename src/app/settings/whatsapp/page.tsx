@@ -4,6 +4,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -64,7 +65,7 @@ export default function WhatsAppSettingsPage() {
         setVerifyToken(config.verify_token || 'jeet_erp_verify_token');
         setGeminiKey(config.gemini_api_key || '');
       } catch (err: any) {
-        console.error('Failed to load settings:', err);
+        logger.error('Failed to load settings:', err);
         setErrorMsg('Failed to load WhatsApp settings from database.');
       } finally {
         setLoading(false);
@@ -92,7 +93,7 @@ export default function WhatsAppSettingsPage() {
       setSuccessMsg('WhatsApp integration settings saved successfully.');
       setTimeout(() => setSuccessMsg(''), 4000);
     } catch (err: any) {
-      console.error(err);
+      logger.error(err);
       setErrorMsg(err.message || 'Failed to save settings.');
     } finally {
       setSaveLoading(false);

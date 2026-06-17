@@ -2,6 +2,7 @@
 // JEET ERP — Stock Count & Reconciliation Service
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 import { stockTransactionService } from './stockTransactionService';
 import { auditService } from './auditService';
@@ -60,7 +61,7 @@ export const stockCountService = {
       auditService.logEvent({ module: 'Warehouse', action: 'CREATE', entity_type: 'stock_count', entity_id: count.id, summary: 'Started stock count' });
       return count.id;
     } catch (err) {
-      console.error('Error starting stock count:', err);
+      logger.error('Error starting stock count:', err);
       throw err;
     }
   },
@@ -190,7 +191,7 @@ export const stockCountService = {
           .eq('stock_item_id', line.stock_item_id);
       }
     } catch (err) {
-      console.error('Error saving count lines:', err);
+      logger.error('Error saving count lines:', err);
       throw err;
     }
   },
@@ -263,7 +264,7 @@ export const stockCountService = {
 
       auditService.logEvent({ module: 'Warehouse', action: 'POST', entity_type: 'stock_count', entity_id: id, summary: `Posted count ${count.count_number} (variance adjustments to ledger)` });
     } catch (err) {
-      console.error('Error posting stock count:', err);
+      logger.error('Error posting stock count:', err);
       throw err;
     }
   }

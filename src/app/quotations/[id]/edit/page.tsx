@@ -4,6 +4,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
@@ -248,7 +249,7 @@ export default function EditQuotationPage({ params }: { params: Promise<{ id: st
       alert('Quotation draft successfully updated!');
       router.push(`/quotations/${id}`);
     } catch (err: any) {
-      console.error('Error updating quotation:', err);
+      logger.error('Error updating quotation:', err);
       setErrorMsg(err.message || 'Failed to update quotation draft');
     } finally {
       setSaving(false);

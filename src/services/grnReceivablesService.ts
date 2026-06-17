@@ -6,6 +6,7 @@
 // and the LPO's payment status (from supplier invoices).
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 
 export type ReceivableSource = 'LPO' | 'PR';
@@ -186,7 +187,7 @@ export const grnReceivablesService = {
       await supabase.from('purchase_orders')
         .update({ status: 'CANCELLED', updated_at: new Date().toISOString() })
         .eq('id', item.po_id)
-        .then(({ error: e }) => { if (e) console.warn('Could not auto-cancel LPO:', e.message); });
+        .then(({ error: e }) => { if (e) logger.warn('Could not auto-cancel LPO:', e.message); });
     }
   },
 
@@ -217,7 +218,7 @@ export const grnReceivablesService = {
       await supabase.from('purchase_requests')
         .update({ status: 'CANCELLED', updated_at: new Date().toISOString() })
         .eq('id', item.pr_id)
-        .then(({ error: e }) => { if (e) console.warn('Could not auto-cancel PR:', e.message); });
+        .then(({ error: e }) => { if (e) logger.warn('Could not auto-cancel PR:', e.message); });
     }
   },
 };

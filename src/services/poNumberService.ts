@@ -5,6 +5,7 @@
 // sequence tables otherwise.
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 import numberingService, { previewNumber } from '@/services/numberingService';
 
@@ -36,7 +37,7 @@ export const poNumberService = {
     try {
       return await legacyPreview('po_number_sequences', 'JI-PO');
     } catch (error) {
-      console.error('Error fetching next PO number preview:', error);
+      logger.error('Error fetching next PO number preview:', error);
       return `JI-PO-${new Date().getFullYear()}-XXX`;
     }
   },
@@ -56,7 +57,7 @@ export const poNumberService = {
     try {
       return await legacyPreview('grn_number_sequences', 'JI-GRN');
     } catch (error) {
-      console.error('Error fetching next GRN number preview:', error);
+      logger.error('Error fetching next GRN number preview:', error);
       return `JI-GRN-${new Date().getFullYear()}-XXX`;
     }
   },

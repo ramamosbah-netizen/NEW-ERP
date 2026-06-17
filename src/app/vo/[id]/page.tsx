@@ -5,6 +5,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -103,7 +104,7 @@ export default function VODetailPage({ params }: VODetailPageProps) {
         await refetch();
       }
     } catch (err: any) {
-      console.error(err);
+      logger.error(err);
       alert('Workflow action failed: ' + err.message);
     } finally {
       setProcessing(false);

@@ -3,6 +3,7 @@
 // Handles task CRUD, comment additions, and workload analytics
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 import type { Task, TaskStatus, TaskPriority, TaskOrigin, TaskComment } from '@/types/task.types';
 
@@ -268,7 +269,7 @@ export const taskService = {
     const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || '';
 
     if (!apiKey) {
-      console.warn('Gemini API key is not configured. Falling back to regex parser.');
+      logger.warn('Gemini API key is not configured. Falling back to regex parser.');
       // Fallback simple parsing
       const isUrgent = /urgent|critical/i.test(promptText);
       const isHigh = /high/i.test(promptText);

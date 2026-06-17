@@ -3,6 +3,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
@@ -89,7 +90,7 @@ export const MinutesEditor: React.FC<Props> = ({ meetingId, onPublished, onCance
 
       setActionItems(prev => [...prev, ...parsedItems]);
     } catch (err: any) {
-      console.error(err);
+      logger.error(err);
       setError(err.message || 'AI extraction failed. Please add items manually.');
     } finally {
       setAiExtracting(false);
@@ -127,7 +128,7 @@ export const MinutesEditor: React.FC<Props> = ({ meetingId, onPublished, onCance
       await meetingService.publishMinutes(meetingId, minutesText.trim(), validItems);
       onPublished();
     } catch (err: any) {
-      console.error(err);
+      logger.error(err);
       setError(err.message || 'Failed to publish minutes');
     } finally {
       setLoading(false);

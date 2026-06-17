@@ -2,6 +2,7 @@
 // JEET ERP — Service Tickets React Hooks
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { ticketService } from '@/services/ticketService';
 import type { ServiceTicket, TicketPartItem, TicketEvent } from '@/types/ticket.types';
@@ -28,7 +29,7 @@ export function useTickets(filters: TicketFilters = {}) {
       setTickets(data);
       setError(null);
     } catch (err: any) {
-      console.error('Error in useTickets hook:', err);
+      logger.error('Error in useTickets hook:', err);
       setError(err);
     } finally {
       setLoading(false);
@@ -58,7 +59,7 @@ export function useTicket(id?: string) {
       setTicket(data);
       setError(null);
     } catch (err: any) {
-      console.error(`Error in useTicket hook for ID ${id}:`, err);
+      logger.error(`Error in useTicket hook for ID ${id}:`, err);
       setError(err);
     } finally {
       setLoading(false);

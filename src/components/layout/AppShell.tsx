@@ -4,6 +4,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { usePathname } from 'next/navigation';
@@ -45,7 +46,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         setEnabledModules(globalModules);
         localStorage.setItem('erp-enabled-modules', JSON.stringify(globalModules));
       } catch (err) {
-        console.error('AppShell failed to fetch global modules config:', err);
+        logger.error('AppShell failed to fetch global modules config:', err);
       }
     };
     

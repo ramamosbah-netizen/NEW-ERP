@@ -4,6 +4,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import { useState, use, useEffect, Suspense } from 'react';
 import Link from 'next/link';
@@ -636,7 +637,7 @@ function AMCVisitsList({ contractId, technicians, onRefetch, status }: { contrac
       if (error) throw error;
       setVisits(data || []);
     } catch (err) {
-      console.error(err);
+      logger.error(err);
     } finally {
       setLoading(false);
     }

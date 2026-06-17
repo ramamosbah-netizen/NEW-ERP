@@ -3,6 +3,7 @@
 // Computes executive COE-level indicators and module stats
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 import { projectFinancialsService } from './projectFinancialsService';
 import { reportingService } from './reportingService';
@@ -74,7 +75,7 @@ export const kpiService = {
           .computeProjectFinancials(p.id)
           .then(f => f.actualCost)
           .catch(err => {
-            console.error(`Error computing financials for project ${p.id}:`, err);
+            logger.error(`Error computing financials for project ${p.id}:`, err);
             return 0;
           })
       )
@@ -120,7 +121,7 @@ export const kpiService = {
       const slaStats = await reportingService.getTicketSLAStats();
       slaComplianceRate = slaStats.sla_compliance_rate;
     } catch (err) {
-      console.error('Error fetching SLA stats:', err);
+      logger.error('Error fetching SLA stats:', err);
     }
 
     // 5. Compliance warnings count
@@ -257,7 +258,7 @@ export const kpiService = {
         weeklyOutflows = forecast[0].outflows.total;
       }
     } catch (err) {
-      console.error('Error computing cashflow forecast:', err);
+      logger.error('Error computing cashflow forecast:', err);
     }
 
     // 5. VAT Liability: Billed Output VAT minus Input VAT
