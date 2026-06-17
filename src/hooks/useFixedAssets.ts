@@ -1,132 +1,86 @@
-import { logger } from '@/lib/logger';
-import { useState, useEffect, useCallback } from 'react';
+// ============================================================
+// Aura ERP — Fixed Assets React Hooks (React Query)
+// ============================================================
+
+import { useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { fixedAssetService } from '@/services/fixedAssetService';
 import { disposalService } from '@/services/disposalService';
-import type { FixedAsset, DepreciationPeriodRow, AssetDisposal } from '@/types/asset.types';
+
+const assetKeys = {
+  lists: ['fixed-assets', 'list'] as const,
+  detail: (id: string) => ['fixed-assets', 'detail', id] as const,
+};
 
 export function useFixedAssets() {
-  const [assets, setAssets] = useState<FixedAsset[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
-
-  const fetchAssets = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await fixedAssetService.getFixedAssets();
-      setAssets(data);
-    } catch (err: any) {
-      logger.error('Failed to load fixed assets:', err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchAssets();
-  }, [fetchAssets]);
+  const qc = useQueryClient();
+  const q = useQuery({ queryKey: assetKeys.lists, queryFn: () => fixedAssetService.getFixedAssets() });
 
   const createAsset = async (assetData: any) => {
     const res = await fixedAssetService.createFixedAsset(assetData);
-    await fetchAssets();
+    await qc.invalidateQueries({ queryKey: assetKeys.lists });
     return res;
   };
 
   return {
-    assets,
-    loading,
-    error,
-    refetch: fetchAssets,
-    createAsset
+    assets: q.data ?? [],
+    loading: q.isPending,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
+    createAsset,
   };
 }
 
 export function useAsset(assetId?: string) {
-  const [asset, setAsset] = useState<FixedAsset | null>(null);
-  const [schedule, setSchedule] = useState<DepreciationPeriodRow[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
-
-  const fetchDetails = useCallback(async () => {
-    if (!assetId) return;
-    try {
-      setLoading(true);
-      setError(null);
-      const res = await fixedAssetService.getFixedAssetById(assetId);
-      if (res) {
-        setAsset(res.asset);
-        setSchedule(res.schedule);
-      }
-    } catch (err: any) {
-      logger.error(`Failed to load details for fixed asset ${assetId}:`, err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [assetId]);
-
-  useEffect(() => {
-    fetchDetails();
-  }, [fetchDetails]);
+  const qc = useQueryClient();
+  const q = useQuery({
+    queryKey: assetKeys.detail(assetId ?? ''),
+    enabled: !!assetId,
+    queryFn: () => fixedAssetService.getFixedAssetById(assetId!),
+  });
 
   const disposeAsset = async (disposalData: any) => {
     if (!assetId) return;
-    const res = await disposalService.disposeAsset({
-      ...disposalData,
-      asset_id: assetId
-    });
-    await fetchDetails();
+    const res = await disposalService.disposeAsset({ ...disposalData, asset_id: assetId });
+    await Promise.all([
+      qc.invalidateQueries({ queryKey: assetKeys.detail(assetId) }),
+      qc.invalidateQueries({ queryKey: assetKeys.lists }),
+    ]);
     return res;
   };
 
   return {
-    asset,
-    schedule,
-    loading,
-    error,
-    refetch: fetchDetails,
-    disposeAsset
+    asset: q.data?.asset ?? null,
+    schedule: q.data?.schedule ?? [],
+    loading: q.isLoading,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
+    disposeAsset,
   };
 }
 
+// Action-only hook (no fetching) — kept on local state.
 export function useDepreciationRun() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
   const runMonthly = async (periodMonth: string) => {
     try {
-      setLoading(true);
-      setError(null);
-      const res = await fixedAssetService.runMonthlyDepreciation(periodMonth);
-      return res;
+      setLoading(true); setError(null);
+      return await fixedAssetService.runMonthlyDepreciation(periodMonth);
     } catch (err: any) {
-      logger.error(`Depreciation run failed for period ${periodMonth}:`, err);
-      setError(err);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
+      setError(err); throw err;
+    } finally { setLoading(false); }
   };
 
   const exportJournalExcel = async (periodMonth: string, filename?: string) => {
     try {
-      setLoading(true);
-      setError(null);
+      setLoading(true); setError(null);
       await fixedAssetService.exportJournalToExcel(periodMonth, filename);
     } catch (err: any) {
-      logger.error(`Journal export failed for period ${periodMonth}:`, err);
-      setError(err);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
+      setError(err); throw err;
+    } finally { setLoading(false); }
   };
 
-  return {
-    runMonthly,
-    exportJournalExcel,
-    loading,
-    error
-  };
+  return { runMonthly, exportJournalExcel, loading, error };
 }

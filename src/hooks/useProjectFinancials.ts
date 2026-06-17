@@ -1,44 +1,23 @@
 // ============================================================
-// JEET ERP — Project Financials React Hook
+// Aura ERP — Project Financials React Hook (React Query)
 // ============================================================
 
-import { logger } from '@/lib/logger';
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { projectFinancialsService } from '@/services/projectFinancialsService';
 
 export function useProjectFinancials(projectId?: string) {
-  const [financials, setFinancials] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
-
-  const fetchFinancials = useCallback(async () => {
-    if (!projectId) {
-      setFinancials(null);
-      return;
-    }
-
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await projectFinancialsService.computeProjectFinancials(projectId);
-      setFinancials(data);
-    } catch (err: any) {
-      logger.error(`Error in useProjectFinancials for ${projectId}:`, err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [projectId]);
-
-  useEffect(() => {
-    fetchFinancials();
-  }, [fetchFinancials]);
+  const q = useQuery({
+    queryKey: ['project-financials', projectId ?? ''],
+    enabled: !!projectId,
+    queryFn: () => projectFinancialsService.computeProjectFinancials(projectId!),
+  });
 
   return {
-    financials,
-    loading,
-    error,
-    refetch: fetchFinancials
+    financials: q.data ?? null,
+    loading: q.isLoading,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
   };
 }
+
 export default useProjectFinancials;

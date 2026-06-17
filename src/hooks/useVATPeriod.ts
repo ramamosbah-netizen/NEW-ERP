@@ -1,103 +1,65 @@
 // ============================================================
-// JEET ERP — VAT Periods and FTA Form 201 React Hook
+// Aura ERP — VAT Periods & FTA Form 201 React Hook (React Query)
 // ============================================================
 
-import { logger } from '@/lib/logger';
-import { useState, useEffect, useCallback } from 'react';
+import { useEffect, useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { vatService } from '@/services/vatService';
-import type { VATPeriod, VATForm201 } from '@/types/vat.types';
+
+const vatKeys = {
+  periods: ['vat', 'periods'] as const,
+  form: (id: string) => ['vat', 'form201', id] as const,
+};
 
 export function useVATPeriod() {
-  const [periods, setPeriods] = useState<VATPeriod[]>([]);
+  const qc = useQueryClient();
   const [selectedPeriodId, setSelectedPeriodId] = useState<string>('');
-  const [form201, setForm201] = useState<VATForm201 | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [computing, setComputing] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
 
-  const fetchPeriods = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await vatService.fetchVATPeriods();
-      setPeriods(data);
-      if (data.length > 0 && !selectedPeriodId) {
-        setSelectedPeriodId(data[0].id); // default to most recent
-      }
-    } catch (err: any) {
-      logger.error('Error fetching VAT periods:', err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [selectedPeriodId]);
+  const periodsQ = useQuery({ queryKey: vatKeys.periods, queryFn: () => vatService.fetchVATPeriods() });
 
-  const computeFiling = useCallback(async () => {
-    if (!selectedPeriodId) {
-      setForm201(null);
-      return;
-    }
-    try {
-      setComputing(true);
-      setError(null);
-      const data = await vatService.computeForm201(selectedPeriodId);
-      setForm201(data);
-    } catch (err: any) {
-      logger.error(`Error computing VAT Form 201 for period ${selectedPeriodId}:`, err);
-      setError(err);
-    } finally {
-      setComputing(false);
-    }
-  }, [selectedPeriodId]);
-
+  // default selection to most recent period
   useEffect(() => {
-    fetchPeriods();
-  }, [fetchPeriods]);
+    if (periodsQ.data && periodsQ.data.length > 0 && !selectedPeriodId) {
+      setSelectedPeriodId(periodsQ.data[0].id);
+    }
+  }, [periodsQ.data, selectedPeriodId]);
 
-  useEffect(() => {
-    computeFiling();
-  }, [computeFiling]);
+  const formQ = useQuery({
+    queryKey: vatKeys.form(selectedPeriodId),
+    queryFn: () => vatService.computeForm201(selectedPeriodId),
+    enabled: !!selectedPeriodId,
+  });
 
   const createPeriod = async (name: string, startDate: string, endDate: string, deadline: string) => {
-    try {
-      const newPeriod = await vatService.createVATPeriod({
-        name,
-        start_date: startDate,
-        end_date: endDate,
-        filing_deadline: deadline
-      });
-      await fetchPeriods();
-      setSelectedPeriodId(newPeriod.id);
-      return newPeriod;
-    } catch (err: any) {
-      logger.error('Error creating VAT period:', err);
-      throw err;
-    }
+    const newPeriod = await vatService.createVATPeriod({
+      name, start_date: startDate, end_date: endDate, filing_deadline: deadline,
+    });
+    await qc.invalidateQueries({ queryKey: vatKeys.periods });
+    setSelectedPeriodId(newPeriod.id);
+    return newPeriod;
   };
 
   const lockPeriod = async (id: string) => {
-    try {
-      await vatService.lockVATPeriod(id);
-      await fetchPeriods();
-      await computeFiling();
-      return true;
-    } catch (err: any) {
-      logger.error('Error locking VAT period:', err);
-      throw err;
-    }
+    await vatService.lockVATPeriod(id);
+    await Promise.all([
+      qc.invalidateQueries({ queryKey: vatKeys.periods }),
+      qc.invalidateQueries({ queryKey: vatKeys.form(selectedPeriodId) }),
+    ]);
+    return true;
   };
 
   return {
-    periods,
+    periods: periodsQ.data ?? [],
     selectedPeriodId,
     setSelectedPeriodId,
-    form201,
-    loading,
-    computing,
-    error,
-    refetch: fetchPeriods,
+    form201: formQ.data ?? null,
+    loading: periodsQ.isPending,
+    computing: formQ.isFetching,
+    error: ((periodsQ.error || formQ.error) as Error | null) ?? null,
+    refetch: periodsQ.refetch,
     createPeriod,
-    lockPeriod
+    lockPeriod,
   };
 }
+
 export default useVATPeriod;
