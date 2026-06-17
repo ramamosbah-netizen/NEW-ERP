@@ -1,9 +1,9 @@
 // ============================================================
-// JEET ERP — Client Invoice React Hooks
+// Aura ERP — Client Invoice React Hooks (React Query)
+// Same public API as before; cached reads + mutations invalidate cache.
 // ============================================================
 
-import { logger } from '@/lib/logger';
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { invoiceService } from '@/services/invoiceService';
 import type { ClientInvoice, ClientInvoiceItem } from '@/types/finance.types';
 
@@ -14,107 +14,63 @@ export interface InvoiceFilters {
   search?: string;
 }
 
-/**
- * Hook to retrieve and filter the list of Client Invoices.
- */
+const invKeys = {
+  lists: ['client-invoices', 'list'] as const,
+  list: (f: InvoiceFilters) => ['client-invoices', 'list', f] as const,
+  detail: (id: string) => ['client-invoices', 'detail', id] as const,
+};
+
+/** List + filter Client Invoices. */
 export function useClientInvoices(filters: InvoiceFilters = {}) {
-  const [invoices, setInvoices] = useState<ClientInvoice[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-
-  const fetchList = useCallback(async () => {
-    try {
-      setLoading(true);
-      const data = await invoiceService.fetchInvoices(filters);
-      setInvoices(data);
-      setError(null);
-    } catch (err: any) {
-      logger.error('Error in useClientInvoices hook:', err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [JSON.stringify(filters)]);
-
-  useEffect(() => {
-    fetchList();
-  }, [fetchList]);
-
-  return { invoices, loading, error, refetch: fetchList };
+  const q = useQuery({
+    queryKey: invKeys.list(filters),
+    queryFn: () => invoiceService.fetchInvoices(filters),
+  });
+  return {
+    invoices: q.data ?? [],
+    loading: q.isPending,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
+  };
 }
 
-/**
- * Hook to retrieve detailed view of a single Client Invoice and perform workflow actions.
- */
+/** Single Client Invoice detail + workflow actions. */
 export function useClientInvoice(id: string) {
-  const [invoice, setInvoice] = useState<(ClientInvoice & { items: ClientInvoiceItem[] }) | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+  const qc = useQueryClient();
+  const q = useQuery({
+    queryKey: invKeys.detail(id),
+    queryFn: () => invoiceService.fetchInvoiceById(id),
+    enabled: !!id,
+  });
 
-  const fetchDetail = useCallback(async () => {
-    if (!id) return;
-    try {
-      setLoading(true);
-      const data = await invoiceService.fetchInvoiceById(id);
-      setInvoice(data);
-      setError(null);
-    } catch (err: any) {
-      logger.error(`Error in useClientInvoice hook for ${id}:`, err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [id]);
+  const invalidate = async () => {
+    await Promise.all([
+      qc.invalidateQueries({ queryKey: invKeys.detail(id) }),
+      qc.invalidateQueries({ queryKey: invKeys.lists }),
+    ]);
+  };
 
-  useEffect(() => {
-    fetchDetail();
-  }, [fetchDetail]);
-
-  // Workflow Actions
   const createDraft = async (
     invoiceData: Omit<Partial<ClientInvoice>, 'id' | 'created_at' | 'updated_at'>,
-    itemsData: Array<Omit<Partial<ClientInvoiceItem>, 'id' | 'invoice_id' | 'created_at'>>
+    itemsData: Array<Omit<Partial<ClientInvoiceItem>, 'id' | 'invoice_id' | 'created_at'>>,
   ): Promise<ClientInvoice> => {
     const doc = await invoiceService.createInvoiceDraft(invoiceData, itemsData);
-    await fetchDetail();
+    await invalidate();
     return doc;
   };
 
-  const submitApproval = async () => {
-    await invoiceService.submitForApproval(id);
-    await fetchDetail();
-  };
-
-  const approve = async () => {
-    await invoiceService.approveInvoice(id);
-    await fetchDetail();
-  };
-
-  const reject = async (reason: string) => {
-    await invoiceService.rejectInvoice(id, reason);
-    await fetchDetail();
-  };
-
-  const markSent = async () => {
-    await invoiceService.markAsSent(id);
-    await fetchDetail();
-  };
-
-  const writeOff = async (reason: string) => {
-    await invoiceService.writeOffInvoice(id, reason);
-    await fetchDetail();
-  };
-
-  const deleteDraft = async () => {
-    await invoiceService.deleteInvoice(id);
-    setInvoice(null);
-  };
+  const submitApproval = async () => { await invoiceService.submitForApproval(id); await invalidate(); };
+  const approve = async () => { await invoiceService.approveInvoice(id); await invalidate(); };
+  const reject = async (reason: string) => { await invoiceService.rejectInvoice(id, reason); await invalidate(); };
+  const markSent = async () => { await invoiceService.markAsSent(id); await invalidate(); };
+  const writeOff = async (reason: string) => { await invoiceService.writeOffInvoice(id, reason); await invalidate(); };
+  const deleteDraft = async () => { await invoiceService.deleteInvoice(id); await invalidate(); };
 
   return {
-    invoice,
-    loading,
-    error,
-    refetch: fetchDetail,
+    invoice: q.data ?? null,
+    loading: q.isPending,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
     createDraft,
     submitApproval,
     approve,

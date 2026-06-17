@@ -1,42 +1,27 @@
 // ============================================================
-// JEET ERP — Cash Flow Forecast React Hook
+// Aura ERP — Cash Flow Forecast React Hook (React Query)
 // ============================================================
 
-import { logger } from '@/lib/logger';
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { cashFlowService } from '@/services/cashFlowService';
 
 export function useCashFlow(initialBalance: number = 500000) {
   const [startingBalance, setStartingBalance] = useState<number>(initialBalance);
-  const [forecast, setForecast] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
 
-  const fetchForecast = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await cashFlowService.get13WeekForecast(startingBalance);
-      setForecast(data);
-    } catch (err: any) {
-      logger.error('Error in useCashFlow hook:', err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [startingBalance]);
-
-  useEffect(() => {
-    fetchForecast();
-  }, [fetchForecast]);
+  const q = useQuery({
+    queryKey: ['cashflow', '13week', startingBalance],
+    queryFn: () => cashFlowService.get13WeekForecast(startingBalance),
+  });
 
   return {
-    forecast,
-    loading,
-    error,
-    refetch: fetchForecast,
+    forecast: q.data ?? [],
+    loading: q.isPending,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
     startingBalance,
-    setStartingBalance
+    setStartingBalance,
   };
 }
+
 export default useCashFlow;
