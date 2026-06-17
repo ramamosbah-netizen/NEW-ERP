@@ -37,11 +37,11 @@ export default function FinancialReportsPage() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      if (tab === 'PL') setPl(await financialReportsService.profitAndLoss(start, end));
-      else if (tab === 'BS') setBs(await financialReportsService.balanceSheet(end));
-      else if (tab === 'TB') setTb(await financialReportsService.trialBalance(start, end));
-      else if (tab === 'GL') setGl(await financialReportsService.generalLedger(start, end));
-      else setProj(await financialReportsService.byProject(start, end, tab === 'COST_PROJ' ? 'COST' : 'REVENUE'));
+      if (tab === 'PL') setPl(await financialReportsService.profitAndLossPosted(start, end));
+      else if (tab === 'BS') setBs(await financialReportsService.balanceSheetPosted(end));
+      else if (tab === 'TB') setTb(await financialReportsService.trialBalancePosted(start, end));
+      else if (tab === 'GL') setGl(await financialReportsService.generalLedgerPosted(start, end));
+      else setProj(await financialReportsService.byProjectPosted(start, end, tab === 'COST_PROJ' ? 'COST' : 'REVENUE'));
     } finally { setLoading(false); }
   }, [tab, start, end]);
   useEffect(() => { load(); }, [load]);
@@ -165,7 +165,7 @@ export default function FinancialReportsPage() {
         )}
       </Card>
 
-      <p className="text-[11px] text-[var(--text-tertiary)]">Trial Balance, General Ledger and Balance Sheet are derived from the accounting posting journal (client/supplier invoices, VAT, payments), classified by account-code range (1=asset, 2=liability, 3=equity, 4=revenue, 5/6=expense). Balance Sheet shows current-year earnings as equity; it balances to the extent the journal is complete.</p>
+      <p className="text-[11px] text-[var(--text-tertiary)]">All statements are sourced from the <strong>posted</strong> double-entry general ledger (journal_entries / journal_lines), classified by account-code range (1=asset, 2=liability, 3=equity, 4=revenue, 5/6=expense). Balance Sheet shows current-year earnings as equity. Only POSTED entries are included — auto-post DRAFTs pending review are visible at <Link href="/finance/ledger" className="underline">General Ledger</Link>.</p>
     </div>
   );
 }
