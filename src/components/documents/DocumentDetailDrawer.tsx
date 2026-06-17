@@ -3,6 +3,7 @@
 // Sidebar panel to view document metadata, AI summary, revisions, activity log, and edit details
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { documentService } from '@/lib/document-service';
@@ -70,7 +71,7 @@ export const DocumentDetailDrawer: React.FC<Props> = ({
           setSignedUrl(url);
         }
       } catch (err: any) {
-        console.error(err);
+        logger.error(err);
         setError('Failed to load document details');
       } finally {
         setLoading(false);
@@ -111,7 +112,7 @@ export const DocumentDetailDrawer: React.FC<Props> = ({
       setDoc(refreshed);
       if (onUpdate) onUpdate();
     } catch (err: any) {
-      console.error(err);
+      logger.error(err);
       setError(err.message || 'Failed to save metadata');
     } finally {
       setSaving(false);

@@ -2,6 +2,7 @@
 // JEET ERP — Leave Management React Hook
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { leaveService } from '@/services/leaveService';
 import { supabase } from '@/lib/supabase';
@@ -30,7 +31,7 @@ export function useLeave(employeeId?: string) {
       setRequests(reqs);
       setBalances(bals || []);
     } catch (err: any) {
-      console.error('Failed to load leave details:', err);
+      logger.error('Failed to load leave details:', err);
       setError(err);
     } finally {
       setLoading(false);
@@ -48,7 +49,7 @@ export function useLeave(employeeId?: string) {
       await fetchLeaveDetails();
       return res;
     } catch (err: any) {
-      console.error('Failed to submit leave request:', err);
+      logger.error('Failed to submit leave request:', err);
       throw err;
     } finally {
       setLoading(false);
@@ -82,7 +83,7 @@ export function useLeaveApprovals() {
       const data = await leaveService.getApprovalsQueue();
       setQueue(data);
     } catch (err: any) {
-      console.error('Failed to load leave approvals queue:', err);
+      logger.error('Failed to load leave approvals queue:', err);
       setError(err);
     } finally {
       setLoading(false);
@@ -99,7 +100,7 @@ export function useLeaveApprovals() {
       await leaveService.approveLeaveRequest(requestId);
       await fetchQueue();
     } catch (err: any) {
-      console.error('Failed to approve leave request:', err);
+      logger.error('Failed to approve leave request:', err);
       throw err;
     } finally {
       setLoading(false);
@@ -112,7 +113,7 @@ export function useLeaveApprovals() {
       await leaveService.rejectLeaveRequest(requestId);
       await fetchQueue();
     } catch (err: any) {
-      console.error('Failed to reject leave request:', err);
+      logger.error('Failed to reject leave request:', err);
       throw err;
     } finally {
       setLoading(false);

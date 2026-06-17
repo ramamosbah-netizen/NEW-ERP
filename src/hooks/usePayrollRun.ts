@@ -2,6 +2,7 @@
 // JEET ERP — Payroll Runs React Hook
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { payrollService } from '@/services/payrollService';
 import { supabase } from '@/lib/supabase';
@@ -26,7 +27,7 @@ export function usePayrollRun(runId?: string) {
       if (err) throw err;
       setPayrollRuns(data || []);
     } catch (err: any) {
-      console.error('Failed to fetch payroll runs list:', err);
+      logger.error('Failed to fetch payroll runs list:', err);
       setError(err);
     } finally {
       setLoading(false);
@@ -60,7 +61,7 @@ export function usePayrollRun(runId?: string) {
       setCurrentRun(runRes.data as PayrollRun);
       setCurrentLines(linesRes.data as any[]);
     } catch (err: any) {
-      console.error(`Failed to fetch run details for ${runId}:`, err);
+      logger.error(`Failed to fetch run details for ${runId}:`, err);
       setError(err);
     } finally {
       setLoading(false);
@@ -82,7 +83,7 @@ export function usePayrollRun(runId?: string) {
       await fetchRuns();
       return data;
     } catch (err: any) {
-      console.error(`Failed to run payroll for ${periodMonth}:`, err);
+      logger.error(`Failed to run payroll for ${periodMonth}:`, err);
       throw err;
     } finally {
       setLoading(false);
@@ -99,7 +100,7 @@ export function usePayrollRun(runId?: string) {
       await fetchRuns();
       return data;
     } catch (err: any) {
-      console.error(`Failed to approve run ${targetRunId}:`, err);
+      logger.error(`Failed to approve run ${targetRunId}:`, err);
       throw err;
     } finally {
       setLoading(false);
@@ -121,7 +122,7 @@ export function usePayrollRun(runId?: string) {
         setCurrentLines([]);
       }
     } catch (err: any) {
-      console.error(`Failed to delete run ${targetRunId}:`, err);
+      logger.error(`Failed to delete run ${targetRunId}:`, err);
       throw err;
     } finally {
       setLoading(false);
@@ -167,7 +168,7 @@ export function usePayrollAdjustments(periodMonth?: string) {
       if (err) throw err;
       setAdjustments(data || []);
     } catch (err: any) {
-      console.error('Failed to load payroll adjustments:', err);
+      logger.error('Failed to load payroll adjustments:', err);
       setError(err);
     } finally {
       setLoading(false);

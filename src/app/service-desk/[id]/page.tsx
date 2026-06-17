@@ -5,6 +5,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
@@ -127,7 +128,7 @@ export default function TicketDetailPage() {
       setActionLoading(true);
       setActionError('');
       await action();
-      if (successMsg) console.log(successMsg);
+      if (successMsg) logger.debug(successMsg);
     } catch (err: any) {
       setActionError(err.message || 'Action failed');
     } finally {

@@ -4,6 +4,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -70,7 +71,7 @@ export default function LeaveCalendarPage() {
       setEmployees(empList);
       setLeaves(leaveList);
     } catch (err: any) {
-      console.error('Failed to load leave calendar data:', err);
+      logger.error('Failed to load leave calendar data:', err);
       setError(err);
     } finally {
       setLoading(false);

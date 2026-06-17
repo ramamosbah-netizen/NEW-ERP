@@ -3,6 +3,7 @@
 // Compiles, uploads, and files signed PPM Visit reports.
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { supabase } from '@/lib/supabase';
@@ -64,7 +65,7 @@ export const visitReportPDFService = {
         else if (templates.accent_color === 'red') accentColor = [239, 68, 68];
         else if (templates.accent_color === 'mint') accentColor = [37, 99, 235];
       } catch (e) {
-        console.warn('Could not load document templates settings, using defaults:', e);
+        logger.warn('Could not load document templates settings, using defaults:', e);
       }
 
       // Header Brand
@@ -248,7 +249,7 @@ export const visitReportPDFService = {
             15
           );
         } catch (imgErr) {
-          console.error('Failed to embed client signature into PDF:', imgErr);
+          logger.error('Failed to embed client signature into PDF:', imgErr);
         }
       }
 
@@ -303,7 +304,7 @@ export const visitReportPDFService = {
 
       return storagePath;
     } catch (error) {
-      console.error('Failed in generateAndFileVisitReport:', error);
+      logger.error('Failed in generateAndFileVisitReport:', error);
       throw error;
     }
   }

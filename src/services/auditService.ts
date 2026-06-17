@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 import type { AuditLog, AuditLogFilter } from '@/types/audit.types';
 
@@ -68,7 +69,7 @@ export const auditService = {
 
       if (error) throw error;
     } catch (err) {
-      console.error('Failed to write audit log entry:', err);
+      logger.error('Failed to write audit log entry:', err);
     }
   },
 

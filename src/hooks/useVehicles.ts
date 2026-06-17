@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { vehicleService } from '@/services/vehicleService';
 import { fineService } from '@/services/fineService';
@@ -17,7 +18,7 @@ export function useVehicles() {
       const data = await vehicleService.getVehicles();
       setVehicles(data);
     } catch (err: any) {
-      console.error('Failed to load vehicles:', err);
+      logger.error('Failed to load vehicles:', err);
       setError(err);
     } finally {
       setLoading(false);
@@ -72,7 +73,7 @@ export function useVehicle(vehicleId?: string) {
       setFuelLogs(fuelData);
       setMaintenance(maintData);
     } catch (err: any) {
-      console.error(`Failed to load details for vehicle ${vehicleId}:`, err);
+      logger.error(`Failed to load details for vehicle ${vehicleId}:`, err);
       setError(err);
     } finally {
       setLoading(false);

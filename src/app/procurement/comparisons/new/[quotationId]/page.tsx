@@ -4,6 +4,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
@@ -76,7 +77,7 @@ export default function CreateComparisonWizard({ params }: { params: Promise<{ q
         setImportedItems(lines || []);
 
       } catch (err: any) {
-        console.error('Error loading wizard details:', err);
+        logger.error('Error loading wizard details:', err);
         setErrorMsg(err.message || 'Failed to initialize details from quotation.');
       } finally {
         setLoading(false);
@@ -96,7 +97,7 @@ export default function CreateComparisonWizard({ params }: { params: Promise<{ q
       alert('Supplier Comparison sheet initialized successfully as DRAFT.');
       router.push(`/procurement/comparisons/${comp.id}`);
     } catch (err: any) {
-      console.error('Error creating comparison:', err);
+      logger.error('Error creating comparison:', err);
       setErrorMsg(err.message || 'Failed to create comparison sheet.');
     } finally {
       setSaving(false);

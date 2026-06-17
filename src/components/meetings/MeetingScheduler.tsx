@@ -3,6 +3,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
@@ -133,7 +134,7 @@ export const MeetingScheduler: React.FC<Props> = ({ onMeetingCreated, projectId 
       onMeetingCreated();
       setIsOpen(false);
     } catch (err: any) {
-      console.error(err);
+      logger.error(err);
       setError(err.message || 'Failed to schedule meeting');
     } finally {
       setLoading(false);

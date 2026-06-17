@@ -4,6 +4,7 @@
 // approvals, and event triggers.
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 import type { SupplierInvoice, SupplierInvoiceItem } from '@/types/finance.types';
 import { performThreeWayMatch } from './threeWayMatchService';
@@ -417,7 +418,7 @@ export const supplierInvoiceService = {
       const { priceUpdateService } = await import('./priceUpdateService');
       await priceUpdateService.applyFromSupplierInvoice(invoice.id);
     } catch (err) {
-      console.warn('Catalogue price auto-update from supplier invoice failed:', err);
+      logger.warn('Catalogue price auto-update from supplier invoice failed:', err);
     }
 
     return invoice as SupplierInvoice;

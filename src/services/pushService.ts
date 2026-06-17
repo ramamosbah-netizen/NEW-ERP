@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 
 // Utility helper to convert base64 VAPID key to Uint8Array
@@ -20,7 +21,7 @@ export const pushService = {
   async registerPushNotifications(): Promise<void> {
     try {
       if (typeof window === 'undefined' || !('serviceWorker' in navigator) || !('PushManager' in window)) {
-        console.warn('Push notifications are not supported in this browser environment.');
+        logger.warn('Push notifications are not supported in this browser environment.');
         return;
       }
 
@@ -74,9 +75,9 @@ export const pushService = {
         }, { onConflict: 'endpoint' });
 
       if (error) throw error;
-      console.log('Push notification subscription linked successfully.');
+      logger.debug('Push notification subscription linked successfully.');
     } catch (err) {
-      console.error('Failed to register for push notifications:', err);
+      logger.error('Failed to register for push notifications:', err);
       throw err;
     }
   },
@@ -102,10 +103,10 @@ export const pushService = {
           
         // Unsubscribe from browser
         await subscription.unsubscribe();
-        console.log('Unsubscribed push notifications successfully.');
+        logger.debug('Unsubscribed push notifications successfully.');
       }
     } catch (err) {
-      console.error('Failed to unsubscribe push notifications:', err);
+      logger.error('Failed to unsubscribe push notifications:', err);
     }
   }
 };

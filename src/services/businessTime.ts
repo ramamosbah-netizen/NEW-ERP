@@ -4,6 +4,7 @@
 // Sunday–Thursday: 08:00 – 18:00 (10 hours/day). Fridays & Saturdays off.
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 
 // Offset in milliseconds for GST (UTC+4)
@@ -163,7 +164,7 @@ export async function fetchCompanyHolidays(): Promise<string[]> {
 
     return (data || []).map(h => h.holiday_date);
   } catch (err) {
-    console.error('Failed to fetch company holidays:', err);
+    logger.error('Failed to fetch company holidays:', err);
     return [];
   }
 }

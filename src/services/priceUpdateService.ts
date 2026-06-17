@@ -6,6 +6,7 @@
 // catalogue stays consistent. (AI-driven market pricing later.)
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 
 export type PriceSource = 'SUPPLIER_INVOICE' | 'PROFORMA' | 'PO' | 'MANUAL';
@@ -64,7 +65,7 @@ export const priceUpdateService = {
       supplier_id: opts.supplierId || null,
       changed_by: user?.id || null,
     }).then(({ error: hErr }) => {
-      if (hErr) console.warn('Price history not recorded (apply migration 20260613180000):', hErr.message);
+      if (hErr) logger.warn('Price history not recorded (apply migration 20260613180000):', hErr.message);
     });
 
     return { changed: true, oldCost, newCost: rounded };

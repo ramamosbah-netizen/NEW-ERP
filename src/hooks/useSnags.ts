@@ -2,6 +2,7 @@
 // JEET ERP — Snag List Management Hook
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { snagService } from '@/services/snagService';
 import { snagExportService } from '@/services/snagExportService';
@@ -20,7 +21,7 @@ export function useSnags(projectId?: string) {
       setSnags(data);
       setError(null);
     } catch (err: any) {
-      console.error('Error fetching snags:', err);
+      logger.error('Error fetching snags:', err);
       setError(err);
     } finally {
       setLoading(false);
@@ -54,7 +55,7 @@ export function useSnags(projectId?: string) {
       await fetchSnags();
       return item;
     } catch (err: any) {
-      console.error('Failed to create snag:', err);
+      logger.error('Failed to create snag:', err);
       throw err;
     }
   };
@@ -74,7 +75,7 @@ export function useSnags(projectId?: string) {
       await fetchSnags();
       return updated;
     } catch (err: any) {
-      console.error('Failed to transition snag status:', err);
+      logger.error('Failed to transition snag status:', err);
       throw err;
     }
   };
@@ -84,7 +85,7 @@ export function useSnags(projectId?: string) {
     try {
       return await snagExportService.exportSnagsToPDF(projectId);
     } catch (err: any) {
-      console.error('Failed to export snag list PDF:', err);
+      logger.error('Failed to export snag list PDF:', err);
       throw err;
     }
   };

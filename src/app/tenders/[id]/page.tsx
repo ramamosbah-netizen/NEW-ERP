@@ -1,4 +1,5 @@
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
@@ -125,7 +126,7 @@ export default function TenderDetail({ params }: { params: Promise<{ id: string 
           .eq('tender_id', tenderId);
 
         if (docError) {
-          console.warn('Could not load documents:', docError);
+          logger.warn('Could not load documents:', docError);
         } else {
           setDocuments(docData as TenderDocument[] || []);
         }
@@ -140,7 +141,7 @@ export default function TenderDetail({ params }: { params: Promise<{ id: string 
           .maybeSingle();
 
         if (boqError) {
-          console.warn('Could not load BOQ:', boqError);
+          logger.warn('Could not load BOQ:', boqError);
         } else if (boqData) {
           setBoq({
             id: boqData.id,
@@ -162,7 +163,7 @@ export default function TenderDetail({ params }: { params: Promise<{ id: string 
         }
 
       } catch (err: any) {
-        console.error('Error fetching tender details:', err);
+        logger.error('Error fetching tender details:', err);
         setErrorMsg(err.message || 'Failed to retrieve tender data.');
       } finally {
         setLoading(false);
@@ -219,7 +220,7 @@ export default function TenderDetail({ params }: { params: Promise<{ id: string 
       setStatusNote('');
       alert(`Status updated successfully to ${selectedStatus}!`);
     } catch (err: any) {
-      console.error('Failed updating status:', err);
+      logger.error('Failed updating status:', err);
       alert(`Error updating status: ${err.message}`);
     } finally {
       setIsUpdatingStatus(false);

@@ -3,6 +3,7 @@
 // Provides single entry point to emit ERP system events
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 import type { SystemEvent } from '@/types/events.types';
 
@@ -43,7 +44,7 @@ export const eventService = {
         .single();
 
       if (error) {
-        console.error('Failed to insert system event:', {
+        logger.error('Failed to insert system event:', {
           message: error.message,
           code: error.code,
           details: error.details,
@@ -57,12 +58,12 @@ export const eventService = {
       supabase.functions.invoke('process-event', {
         body: { event_id: data.id }
       }).catch(err => {
-        console.error('Asynchronous process-event invoke failed:', err);
+        logger.error('Asynchronous process-event invoke failed:', err);
       });
 
       return data as SystemEvent;
     } catch (error) {
-      console.error(`Error emitting event ${eventType}:`, error);
+      logger.error(`Error emitting event ${eventType}:`, error);
       throw error;
     }
   }

@@ -2,6 +2,7 @@
 // JEET ERP — Device Clipboard Import Service
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 import { TCDevice } from '@/types/tc.types';
 
@@ -91,7 +92,7 @@ export const deviceImportService = {
         .select();
 
       if (error) {
-        console.error('Failed to import device chunk:', error);
+        logger.error('Failed to import device chunk:', error);
         throw new Error(`Import failed during insertion: ${error.message}`);
       }
 

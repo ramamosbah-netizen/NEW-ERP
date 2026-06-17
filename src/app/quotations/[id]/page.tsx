@@ -4,6 +4,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import { useState, useEffect, use } from 'react';
 import Link from 'next/link';
@@ -87,7 +88,7 @@ export default function QuotationDetailPage({ params }: { params: Promise<{ id: 
       quotationPDFService.preview(quotation.id).then(url => {
         setPdfUrl(url);
       }).catch(err => {
-        console.error('Error generating PDF preview URL:', err);
+        logger.error('Error generating PDF preview URL:', err);
       });
     }
   }, [quotation]);
@@ -253,7 +254,7 @@ export default function QuotationDetailPage({ params }: { params: Promise<{ id: 
           .update({ client_po_document_path: path, client_po_document_name: lpoFile.name })
           .eq('id', quotation.id);
         if (docErr) {
-          console.warn('LPO document uploaded but reference not saved (apply migration 20260613120000):', docErr.message);
+          logger.warn('LPO document uploaded but reference not saved (apply migration 20260613120000):', docErr.message);
         }
       }
 

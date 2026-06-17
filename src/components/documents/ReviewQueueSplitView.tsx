@@ -3,6 +3,7 @@
 // Iframe file preview side-by-side with AI correction form
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import React, { useState, useEffect } from 'react';
 import { documentService } from '@/lib/document-service';
 import type { Document } from '@/types/document.types';
@@ -61,7 +62,7 @@ export const ReviewQueueSplitView: React.FC<Props> = ({
         setIsConfidential(docItem.is_confidential || false);
 
       } catch (err) {
-        console.error(err);
+        logger.error(err);
         setError('Failed to fetch document signed preview URL');
       } finally {
         setLoading(false);
@@ -92,7 +93,7 @@ export const ReviewQueueSplitView: React.FC<Props> = ({
       await documentService.reviewDocument(docItem.id, action, corrections);
       onReviewed();
     } catch (err: any) {
-      console.error(err);
+      logger.error(err);
       setError(err.message || 'Failed to complete document review decision.');
     } finally {
       setSaving(false);

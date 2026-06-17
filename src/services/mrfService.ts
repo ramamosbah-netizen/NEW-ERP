@@ -2,6 +2,7 @@
 // JEET ERP — Material Requisition Form (MRF) & Issue Service
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 import { stockTransactionService } from './stockTransactionService';
 import { eventService } from './eventService';
@@ -70,7 +71,7 @@ export const mrfService = {
       auditService.logEvent({ module: 'Warehouse', action: 'CREATE', entity_type: 'mrf', entity_id: newMrf.id, summary: `MRF ${newMrf.mrf_number} (${mrf.status || 'DRAFT'})` });
       return newMrf.id;
     } catch (err) {
-      console.error('Error creating MRF:', err);
+      logger.error('Error creating MRF:', err);
       throw err;
     }
   },
@@ -234,7 +235,7 @@ export const mrfService = {
 
       auditService.logEvent({ module: 'Warehouse', action: 'APPROVE', entity_type: 'mrf', entity_id: id, summary: 'Approved requisition (stock reserved)' });
     } catch (err) {
-      console.error('Error approving MRF:', err);
+      logger.error('Error approving MRF:', err);
       throw err;
     }
   },
@@ -385,7 +386,7 @@ export const mrfService = {
 
       auditService.logEvent({ module: 'Warehouse', action: 'ISSUE', entity_type: 'mrf', entity_id: id, summary: `Issued materials (${nextStatus})` });
     } catch (err) {
-      console.error('Error issuing MRF:', err);
+      logger.error('Error issuing MRF:', err);
       throw err;
     }
   },
@@ -440,7 +441,7 @@ export const mrfService = {
 
       return txId;
     } catch (err) {
-      console.error('Error returning from site:', err);
+      logger.error('Error returning from site:', err);
       throw err;
     }
   }

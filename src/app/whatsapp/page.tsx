@@ -4,6 +4,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
@@ -41,7 +42,7 @@ function SafeFilePreview({ storagePath, title, fileExt }: { storagePath: string,
         if (error) throw error;
         setSignedUrl(data.signedUrl);
       } catch (err) {
-        console.error('Error signing document URL:', err);
+        logger.error('Error signing document URL:', err);
       } finally {
         setLoading(false);
       }

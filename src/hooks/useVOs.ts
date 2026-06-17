@@ -3,6 +3,7 @@
 // Location: src/hooks/useVOs.ts
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { voService } from '@/services/voService';
 import type { VariationOrder, VOItem, VOStatus, VOFilters, VOWorkStatus } from '@/types/vo.types';
@@ -20,7 +21,7 @@ export function useVOs(filters: VOFilters = {}) {
       const data = await voService.fetchVOs(filters);
       setVOs(data);
     } catch (err: any) {
-      console.error('Error fetching VOs:', err);
+      logger.error('Error fetching VOs:', err);
       setError(err);
     } finally {
       setLoading(false);
@@ -55,7 +56,7 @@ export function useVO(id: string) {
         setItems([]);
       }
     } catch (err: any) {
-      console.error(`Error fetching VO ${id}:`, err);
+      logger.error(`Error fetching VO ${id}:`, err);
       setError(err);
     } finally {
       setLoading(false);
@@ -147,7 +148,7 @@ export function useProjectVOSummary(projectId: string) {
       const data = await voService.getProjectVOSummary(projectId);
       setSummary(data);
     } catch (err: any) {
-      console.error(`Error loading VO summary for project ${projectId}:`, err);
+      logger.error(`Error loading VO summary for project ${projectId}:`, err);
       setError(err);
     } finally {
       setLoading(false);
@@ -174,7 +175,7 @@ export function useVOApprovalQueue() {
       const data = await voService.fetchApprovalQueue();
       setPendingApprovals(data);
     } catch (err: any) {
-      console.error('Error fetching VO approval queue:', err);
+      logger.error('Error fetching VO approval queue:', err);
       setError(err);
     } finally {
       setLoading(false);

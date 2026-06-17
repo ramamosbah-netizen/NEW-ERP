@@ -3,6 +3,7 @@
 // Custom hooks for document listings, details, metadata updates, and reviews
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { documentService } from '@/lib/document-service';
 import type { Document, DocumentFilters, DocumentStatus } from '@/types/document.types';
@@ -20,7 +21,7 @@ export function useDocuments(filters: DocumentFilters = {}) {
       setDocuments(data);
       setError(null);
     } catch (err: any) {
-      console.error('Error fetching documents list:', err);
+      logger.error('Error fetching documents list:', err);
       setError(err);
     } finally {
       setLoading(false);
@@ -55,7 +56,7 @@ export function useDocument(id: string) {
         setSignedUrl(url);
       }
     } catch (err: any) {
-      console.error('Error fetching document detail:', err);
+      logger.error('Error fetching document detail:', err);
       setError(err);
     } finally {
       setLoading(false);

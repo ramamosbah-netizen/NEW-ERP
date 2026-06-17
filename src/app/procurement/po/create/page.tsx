@@ -4,6 +4,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -173,7 +174,7 @@ function POFormContent() {
           }
         }
       } catch (err) {
-        console.error('Failed to load form data or LPO draft:', err);
+        logger.error('Failed to load form data or LPO draft:', err);
       } finally {
         setLoadingLists(false);
       }
@@ -380,14 +381,14 @@ function POFormContent() {
           const { prService } = await import('@/services/prService');
           await prService.markConverted(prIdParam, newPoId as string);
         } catch (e) {
-          console.warn('Could not mark PR as converted:', e);
+          logger.warn('Could not mark PR as converted:', e);
         }
       }
 
       router.push(`/procurement/po/${newPoId}`);
 
     } catch (err: any) {
-      console.error('Failed to create PO:', err);
+      logger.error('Failed to create PO:', err);
       setErrorMessages([err.message || 'An error occurred while saving the Purchase Order.']);
     } finally {
       setSaving(false);

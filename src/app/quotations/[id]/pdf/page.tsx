@@ -4,6 +4,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import { useState, useEffect, use } from 'react';
 import Link from 'next/link';
@@ -22,7 +23,7 @@ export default function PDFPreviewPage({ params }: { params: Promise<{ id: strin
       quotationPDFService.preview(quotation.id).then(url => {
         setPdfUrl(url);
       }).catch(err => {
-        console.error('Error rendering PDF:', err);
+        logger.error('Error rendering PDF:', err);
       });
     }
   }, [quotation]);

@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { fineService } from '@/services/fineService';
 import { statementImportService } from '@/services/statementImportService';
@@ -15,7 +16,7 @@ export function useFines() {
       const data = await fineService.getFines();
       setFines(data);
     } catch (err: any) {
-      console.error('Failed to load traffic fines:', err);
+      logger.error('Failed to load traffic fines:', err);
       setError(err);
     } finally {
       setLoading(false);

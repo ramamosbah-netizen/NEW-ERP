@@ -3,6 +3,7 @@
 // Multi-step form wizard for manual project registration: Basics → Commercial → Milestones → Review
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
@@ -111,7 +112,7 @@ export const ProjectWizard: React.FC<Props> = ({ quotationId }) => {
           }
         }
       } catch (err) {
-        console.error('Error loading wizard dependencies:', err);
+        logger.error('Error loading wizard dependencies:', err);
       } finally {
         setLoading(false);
       }
@@ -206,7 +207,7 @@ export const ProjectWizard: React.FC<Props> = ({ quotationId }) => {
 
       router.push(`/projects/${created.id}`);
     } catch (err: any) {
-      console.error(err);
+      logger.error(err);
       setError(err.message || 'An error occurred while creating the project.');
     } finally {
       setSaving(false);

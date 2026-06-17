@@ -4,6 +4,7 @@
 // and previously invoiced quantities side-by-side.
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 
@@ -99,7 +100,7 @@ export function useThreeWayMatch(poId?: string) {
 
       setMatchDetails(compiled);
     } catch (err: any) {
-      console.error('Error fetching 3-way match details:', err);
+      logger.error('Error fetching 3-way match details:', err);
       setError(err);
     } finally {
       setLoading(false);

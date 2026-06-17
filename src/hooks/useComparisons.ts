@@ -3,6 +3,7 @@
 // Hooks for data fetching, scoring recomputations, and state updates
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { 
@@ -24,7 +25,7 @@ export function useComparisons(filters: ComparisonFilters = {}) {
       setComparisons(data);
       setError(null);
     } catch (err: any) {
-      console.error('Error fetching comparisons:', err);
+      logger.error('Error fetching comparisons:', err);
       setError(err);
     } finally {
       setLoading(false);
@@ -52,7 +53,7 @@ export function useComparison(id: string) {
       setComparison(data);
       setError(null);
     } catch (err: any) {
-      console.error('Error fetching comparison details:', err);
+      logger.error('Error fetching comparison details:', err);
       setError(err);
     } finally {
       setLoading(false);
@@ -236,7 +237,7 @@ export function useScoringWeights() {
       setWeights(data);
       setError(null);
     } catch (err: any) {
-      console.error('Error fetching scoring weights:', err);
+      logger.error('Error fetching scoring weights:', err);
       setError(err);
     } finally {
       setLoading(false);

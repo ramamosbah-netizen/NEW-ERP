@@ -4,6 +4,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import { useState, use, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -175,7 +176,7 @@ export default function TCWitnessSignOffPage({ params }: PageProps) {
       alert('Witness validation recorded successfully.');
       router.push('/tc');
     } catch (err: any) {
-      console.error(err);
+      logger.error(err);
       alert(`Sign-off failed: ${err.message || err}`);
     } finally {
       setSubmitting(false);

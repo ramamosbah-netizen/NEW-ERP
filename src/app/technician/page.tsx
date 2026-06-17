@@ -5,6 +5,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
@@ -108,7 +109,7 @@ export default function TechnicianHomePage() {
       const myTickets = await ticketService.fetchTickets({ technicianId: user.id });
       setTickets(myTickets.filter(t => ['ASSIGNED', 'IN_PROGRESS', 'ON_HOLD_PARTS'].includes(t.status)));
     } catch (err) {
-      console.error('Failed to load technician dashboard:', err);
+      logger.error('Failed to load technician dashboard:', err);
     } finally {
       setLoading(false);
     }

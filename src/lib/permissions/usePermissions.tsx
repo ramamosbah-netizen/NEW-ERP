@@ -1,4 +1,5 @@
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { createContext, useContext, useEffect, useState, useTransition } from 'react';
 import { supabase } from '@/lib/supabase';
@@ -67,7 +68,7 @@ export const PermissionsProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
       setPermissions(effective);
     } catch (err) {
-      console.error('Failed to load user permissions context:', err);
+      logger.error('Failed to load user permissions context:', err);
     } finally {
       setLoading(false);
     }
@@ -78,8 +79,8 @@ export const PermissionsProvider: React.FC<{ children: React.ReactNode }> = ({ c
     if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
-          .then(reg => console.log('PWA Service Worker registered:', reg.scope))
-          .catch(err => console.error('Service Worker registration failed:', err));
+          .then(reg => logger.debug('PWA Service Worker registered:', reg.scope))
+          .catch(err => logger.error('Service Worker registration failed:', err));
       });
     }
 

@@ -3,6 +3,7 @@
 // Supabase integrations, state machines, business rules, and alerts
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { supabase } from './supabase';
 import { scoreOffers } from './comparison-scoring';
 import { calculateItemMargin, calculateSheetMargin } from './comparison-margin';
@@ -34,7 +35,7 @@ export async function sendNotification(userId: string, message: string) {
       read: false
     });
   if (error) {
-    console.error('Failed to create notification:', error);
+    logger.error('Failed to create notification:', error);
   }
 }
 
@@ -378,12 +379,12 @@ export const comparisonService = {
         .select('id')
         .single();
       if (error) {
-        console.warn(`Could not auto-register supplier '${trimmed}':`, error.message);
+        logger.warn(`Could not auto-register supplier '${trimmed}':`, error.message);
         return null;
       }
       return created.id;
     } catch (err) {
-      console.warn('ensureSupplierByName failed:', err);
+      logger.warn('ensureSupplierByName failed:', err);
       return null;
     }
   },

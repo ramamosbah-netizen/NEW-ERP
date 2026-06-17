@@ -1,4 +1,5 @@
 'use client';
+import { logger } from '@/lib/logger';
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -18,7 +19,7 @@ export default function Home() {
           router.replace('/signin');
         }
       } catch (err) {
-        console.error('Session check failed:', err);
+        logger.error('Session check failed:', err);
         router.replace('/signin');
       }
     };

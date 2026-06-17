@@ -3,6 +3,7 @@
 // Handles live message streams, chat list polling, and subscriptions
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import { 
@@ -33,7 +34,7 @@ export function useWhatsApp(activeChatId: string | null) {
       setChats(data);
       setError(null);
     } catch (err: any) {
-      console.error('Error in useWhatsApp chats:', err);
+      logger.error('Error in useWhatsApp chats:', err);
       setError(err);
     } finally {
       setLoadingChats(false);
@@ -48,7 +49,7 @@ export function useWhatsApp(activeChatId: string | null) {
       setMessages(data);
       setError(null);
     } catch (err: any) {
-      console.error('Error in useWhatsApp messages:', err);
+      logger.error('Error in useWhatsApp messages:', err);
       setError(err);
     } finally {
       setLoadingMessages(false);
@@ -154,7 +155,7 @@ export function useWhatsApp(activeChatId: string | null) {
 
       return sentMsg;
     } catch (err: any) {
-      console.error('Failed to send WhatsApp manual message:', err);
+      logger.error('Failed to send WhatsApp manual message:', err);
       alert(err.message || 'Failed to send message.');
       return null;
     }
@@ -169,7 +170,7 @@ export function useWhatsApp(activeChatId: string | null) {
         prev.map((c) => (c.id === activeChatId ? { ...c, status, assigned_to: agentId !== undefined ? agentId : c.assigned_to } : c))
       );
     } catch (err) {
-      console.error('Failed to update chat status:', err);
+      logger.error('Failed to update chat status:', err);
     }
   };
 
@@ -179,7 +180,7 @@ export function useWhatsApp(activeChatId: string | null) {
       await whatsappService.linkChatToClient(activeChatId, clientId, contractId);
       loadChats();
     } catch (err) {
-      console.error('Failed to link client:', err);
+      logger.error('Failed to link client:', err);
     }
   };
 

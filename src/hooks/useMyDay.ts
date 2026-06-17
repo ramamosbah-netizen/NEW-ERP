@@ -3,6 +3,7 @@
 // Aggregates tasks, meetings, notifications, and compliance alerts
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { taskService } from '@/services/taskService';
@@ -120,7 +121,7 @@ export function useMyDay() {
 
       setError(null);
     } catch (err: any) {
-      console.error('Failed to load My Day feed:', err);
+      logger.error('Failed to load My Day feed:', err);
       setError(err);
     } finally {
       setLoading(false);

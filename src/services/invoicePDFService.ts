@@ -3,6 +3,7 @@
 // Generates: FTA-compliant tax invoices & credit notes
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import type { ClientInvoice, ClientInvoiceItem, CreditNote } from '@/types/finance.types';
@@ -44,7 +45,7 @@ export const invoicePDFService = {
       else if (templates.accent_color === 'red') accentColor = [239, 68, 68];
       else if (templates.accent_color === 'mint') accentColor = [37, 99, 235];
     } catch (e) {
-      console.warn('Could not load document templates settings, using defaults:', e);
+      logger.warn('Could not load document templates settings, using defaults:', e);
     }
 
     // --- Header / Letterhead ---
@@ -286,7 +287,7 @@ export const invoicePDFService = {
       else if (templates.accent_color === 'red') accentColor = [239, 68, 68];
       else if (templates.accent_color === 'mint') accentColor = [37, 99, 235];
     } catch (e) {
-      console.warn('Could not load document templates settings, using defaults:', e);
+      logger.warn('Could not load document templates settings, using defaults:', e);
     }
 
     // --- Header ---

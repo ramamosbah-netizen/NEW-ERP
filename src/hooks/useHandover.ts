@@ -2,6 +2,7 @@
 // JEET ERP — Project Handover & Closeout Hook
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { handoverService } from '@/services/handoverService';
 import { handoverCertPDFService } from '@/services/handoverCertPDFService';
@@ -27,7 +28,7 @@ export function useHandover(projectId?: string) {
       const gates = await handoverService.checkGateStatus(projectId);
       setGateStatus(gates);
     } catch (err: any) {
-      console.error('Error fetching handover details:', err);
+      logger.error('Error fetching handover details:', err);
       setError(err);
     } finally {
       setLoading(false);
@@ -48,7 +49,7 @@ export function useHandover(projectId?: string) {
       await fetchHandoverDetails();
       return pkg;
     } catch (err: any) {
-      console.error('Failed to initialize handover package:', err);
+      logger.error('Failed to initialize handover package:', err);
       throw err;
     } finally {
       setLoading(false);
@@ -68,7 +69,7 @@ export function useHandover(projectId?: string) {
       await fetchHandoverDetails();
       return updated;
     } catch (err: any) {
-      console.error('Failed to update checklist item status:', err);
+      logger.error('Failed to update checklist item status:', err);
       throw err;
     }
   };
@@ -84,7 +85,7 @@ export function useHandover(projectId?: string) {
       await fetchHandoverDetails();
       return res;
     } catch (err: any) {
-      console.error('Failed to submit handover sign-off:', err);
+      logger.error('Failed to submit handover sign-off:', err);
       throw err;
     }
   };
@@ -94,7 +95,7 @@ export function useHandover(projectId?: string) {
     try {
       return await handoverCertPDFService.generateAndFileHandoverCertificate(projectId);
     } catch (err: any) {
-      console.error('Failed to compile handover certificate PDF:', err);
+      logger.error('Failed to compile handover certificate PDF:', err);
       throw err;
     }
   };

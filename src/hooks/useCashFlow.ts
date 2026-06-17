@@ -2,6 +2,7 @@
 // JEET ERP — Cash Flow Forecast React Hook
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { cashFlowService } from '@/services/cashFlowService';
 
@@ -18,7 +19,7 @@ export function useCashFlow(initialBalance: number = 500000) {
       const data = await cashFlowService.get13WeekForecast(startingBalance);
       setForecast(data);
     } catch (err: any) {
-      console.error('Error in useCashFlow hook:', err);
+      logger.error('Error in useCashFlow hook:', err);
       setError(err);
     } finally {
       setLoading(false);

@@ -4,6 +4,7 @@
 // completion, and defect auto-ticket generation.
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 import { eventService } from './eventService';
 import { calculateSLADeadlines } from './slaService';
@@ -161,7 +162,7 @@ export const visitService = {
     }
 
     // Default Seed templates
-    console.log('Seeding default checklist templates...');
+    logger.debug('Seeding default checklist templates...');
     const defaultTemplates = [
       { name: 'Standard CCTV Maintenance', system: 'CCTV', description: 'CCTV & IP Surveillance check list' },
       { name: 'Standard Access Control Maintenance', system: 'ACCESS_CONTROL', description: 'Access control and biometric checklist' },
@@ -334,9 +335,9 @@ export const visitService = {
         .single();
 
       if (ticketErr) {
-        console.error('Failed to auto-create service ticket from PPM defect:', ticketErr);
+        logger.error('Failed to auto-create service ticket from PPM defect:', ticketErr);
       } else {
-        console.log(`Auto-created service ticket ${ticket.ticket_number} for PPM defects.`);
+        logger.debug(`Auto-created service ticket ${ticket.ticket_number} for PPM defects.`);
         
         // Log ticket event
         await supabase.from('ticket_events').insert({
@@ -380,7 +381,7 @@ export const visitService = {
       const { visitReportPDFService } = await import('./visitReportPDFService');
       await visitReportPDFService.generateAndFileVisitReport(visitId);
     } catch (pdfErr) {
-      console.error('Failed to generate and file visit report PDF:', pdfErr);
+      logger.error('Failed to generate and file visit report PDF:', pdfErr);
     }
 
     return updated as PPMVisit;

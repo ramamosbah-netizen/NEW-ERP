@@ -4,6 +4,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -74,7 +75,7 @@ export default function QuotationsListPage() {
       const availableBOQs = (boqs || []).filter(boq => !activeBOQIds.has(boq.id));
       setFinalizedBOQs(availableBOQs);
     } catch (err) {
-      console.error('Error fetching available BOQs:', err);
+      logger.error('Error fetching available BOQs:', err);
     } finally {
       setBoqLoading(false);
     }

@@ -3,6 +3,7 @@
 // Full-text search using Postgres tsvector websearch_to_tsquery
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { supabase } from './supabase';
 import type { Document } from '../types/document.types';
 
@@ -22,7 +23,7 @@ export async function searchDocuments(
   });
 
   if (error) {
-    console.error('Full text search RPC failed, falling back to text match:', error);
+    logger.error('Full text search RPC failed, falling back to text match:', error);
     // Fallback: simple client/server side like query
     const { data: fallbackData, error: fallbackError } = await supabase
       .from('documents')

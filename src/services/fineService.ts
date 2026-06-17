@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 import type { VehicleFine } from '@/types/fleet.types';
 
@@ -78,7 +79,7 @@ export const fineService = {
       .limit(1);
 
     if (error) {
-      console.warn('Error resolving driver for fine date:', error.message);
+      logger.warn('Error resolving driver for fine date:', error.message);
       return null;
     }
 

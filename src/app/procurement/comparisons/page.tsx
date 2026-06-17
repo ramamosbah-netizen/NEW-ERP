@@ -4,6 +4,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -111,7 +112,7 @@ export default function ComparisonsRegistryPage() {
       setAcceptedQuotations(availableQuotes);
 
     } catch (e) {
-      console.error('Error fetching accepted quotations:', e);
+      logger.error('Error fetching accepted quotations:', e);
     } finally {
       setQuoteLoading(false);
     }

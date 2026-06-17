@@ -1,4 +1,5 @@
 'use client';
+import { logger } from '@/lib/logger';
 
 import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
@@ -97,7 +98,7 @@ export default function BOQPrintPage({ params }: { params: Promise<{ id: string 
         }, 800);
 
       } catch (err: any) {
-        console.error('Error loading print page data:', err);
+        logger.error('Error loading print page data:', err);
         setErrorMsg(err.message || 'Error retrieving BOQ data.');
       } finally {
         setLoading(false);

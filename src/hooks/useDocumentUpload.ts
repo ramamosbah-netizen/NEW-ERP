@@ -3,6 +3,7 @@
 // Multi-file queue with state tracking, hash checks, and pipeline execution
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState, useCallback } from 'react';
 import { runUploadPipeline } from '@/lib/document-upload-service';
 import type { UploadQueueItem, DocumentEntityType } from '@/types/document.types';
@@ -94,7 +95,7 @@ export function useDocumentUpload(
       });
 
     } catch (err: any) {
-      console.error(`Upload error for ${item.filename}:`, err);
+      logger.error(`Upload error for ${item.filename}:`, err);
       
       let errorMsg = err.message || 'Upload failed';
       if (errorMsg.startsWith('DUPLICATE_FOUND:')) {

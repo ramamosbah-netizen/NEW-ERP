@@ -197,6 +197,7 @@ export const HUBS: Hub[] = [
       { label: 'Budget & Cost', href: '/finance/budget' },
       { label: 'Commitments', href: '/finance/commitments' },
       { label: 'Profitability', href: '/finance/project-profitability' },
+      { label: 'General Ledger', href: '/finance/ledger' },
       { label: 'Cash Flow', href: '/finance/cashflow' },
       { label: 'Project Cash Flow', href: '/finance/project-cashflow' },
       { label: 'Retentions', href: '/finance/retentions' },

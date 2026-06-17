@@ -2,6 +2,7 @@
 // JEET ERP — PO Generator From Comparison Service
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 import type { PurchaseOrder, POItem } from '@/types/po.types';
 
@@ -157,7 +158,7 @@ export const poFromComparisonService = {
               .select('id')
               .single();
             if (createErr) {
-              console.warn(`Could not auto-create supplier '${name}':`, createErr.message);
+              logger.warn(`Could not auto-create supplier '${name}':`, createErr.message);
               continue;
             }
             resolvedId = created.id;
@@ -276,7 +277,7 @@ export const poFromComparisonService = {
       };
 
     } catch (error) {
-      console.error('Error generating PO proposals from comparison:', error);
+      logger.error('Error generating PO proposals from comparison:', error);
       throw error;
     }
   }

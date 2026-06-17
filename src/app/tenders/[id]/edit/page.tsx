@@ -1,4 +1,5 @@
 'use client';
+import { logger } from '@/lib/logger';
 
 import { useState, useEffect, use, useRef } from 'react';
 import { useRouter } from 'next/navigation';
@@ -166,13 +167,13 @@ export default function EditTender({ params }: { params: Promise<{ id: string }>
           .eq('tender_id', tenderId);
 
         if (docError) {
-          console.warn('Could not load documents:', docError);
+          logger.warn('Could not load documents:', docError);
         } else {
           setExistingFiles(docData as TenderDocument[] || []);
         }
 
       } catch (err: any) {
-        console.error('Failed to load tender:', err);
+        logger.error('Failed to load tender:', err);
         setErrorMsg(err.message || 'Error loading tender details.');
       } finally {
         setLoading(false);
@@ -381,7 +382,7 @@ export default function EditTender({ params }: { params: Promise<{ id: string }>
             .upload(storagePath, f.file, { cacheControl: '3600', upsert: true });
 
           if (uploadError) {
-            console.error(`Storage upload failed for ${f.name}:`, uploadError);
+            logger.error(`Storage upload failed for ${f.name}:`, uploadError);
             failedUploads.push(f.name);
             continue;
           }
@@ -398,7 +399,7 @@ export default function EditTender({ params }: { params: Promise<{ id: string }>
             });
 
           if (fileError) {
-            console.error(`Metadata insert failed for ${f.name}:`, fileError);
+            logger.error(`Metadata insert failed for ${f.name}:`, fileError);
             failedUploads.push(f.name);
           }
         }
@@ -414,7 +415,7 @@ export default function EditTender({ params }: { params: Promise<{ id: string }>
       }, 1200);
 
     } catch (err: any) {
-      console.error('Update failed:', err);
+      logger.error('Update failed:', err);
       setErrorMsg(err.message || 'An unexpected error occurred.');
     } finally {
       setIsSubmitting(false);

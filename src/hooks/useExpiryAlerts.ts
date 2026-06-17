@@ -3,6 +3,7 @@
 // Fetches, groups, and acknowledges expiry alert records
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import type { DocumentExpiryAlert } from '@/types/document.types';
@@ -26,7 +27,7 @@ export function useExpiryAlerts() {
       setAlerts(data || []);
       setError(null);
     } catch (err: any) {
-      console.error('Error fetching expiry alerts:', err);
+      logger.error('Error fetching expiry alerts:', err);
       setError(err);
     } finally {
       setLoading(false);

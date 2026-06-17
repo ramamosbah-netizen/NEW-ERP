@@ -2,6 +2,7 @@
 // JEET ERP — PO Approval Workflow Service
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 import { eventService } from './eventService';
 import { commitmentService } from './commitmentService';
@@ -69,7 +70,7 @@ export const poApprovalService = {
     });
 
     if (error) {
-      console.error('Error verifying permissions via RPC:', error);
+      logger.error('Error verifying permissions via RPC:', error);
       return { allowed: false, reason: 'Failed to verify approval authorization.' };
     }
 
@@ -131,7 +132,7 @@ export const poApprovalService = {
       );
 
     } catch (err) {
-      console.error('Error submitting PO for approval:', err);
+      logger.error('Error submitting PO for approval:', err);
       throw err;
     }
   },
@@ -243,7 +244,7 @@ export const poApprovalService = {
               }
             }
           } catch (commErr) {
-            console.error('Failed to check budget commitments in approval step:', commErr);
+            logger.error('Failed to check budget commitments in approval step:', commErr);
           }
         }
 
@@ -269,7 +270,7 @@ export const poApprovalService = {
           try {
             await supplierInvoiceService.createExpectedFromPO(poId);
           } catch (apErr) {
-            console.warn('Could not auto-create AP draft for approved LPO:', apErr);
+            logger.warn('Could not auto-create AP draft for approved LPO:', apErr);
           }
 
           // Emit approval event
@@ -308,7 +309,7 @@ export const poApprovalService = {
         }
       }
     } catch (err) {
-      console.error('Error processing PO approval:', err);
+      logger.error('Error processing PO approval:', err);
       throw err;
     }
   }

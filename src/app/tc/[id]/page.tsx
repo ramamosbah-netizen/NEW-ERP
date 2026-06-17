@@ -4,6 +4,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import { useState, use, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -69,7 +70,7 @@ export default function TCPackageWorkspacePage({ params }: PageProps) {
       const preview = deviceImportService.parsePasteData(pasteText);
       setParsedPreview(preview);
     } catch (err) {
-      console.error('Failed to parse paste data preview:', err);
+      logger.error('Failed to parse paste data preview:', err);
     }
   }, [pasteText]);
 

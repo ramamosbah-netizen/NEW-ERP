@@ -2,6 +2,7 @@
 // JEET ERP — Stock Transaction Service
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 import { eventService } from './eventService';
 import type { StockTransaction, StockTransactionType, StockBalance, SerialUnit } from '@/types/stock.types';
@@ -235,7 +236,7 @@ export const stockTransactionService = {
 
       return insertedTx.id;
     } catch (err) {
-      console.error('Error in recordTransaction service:', err);
+      logger.error('Error in recordTransaction service:', err);
       throw err;
     }
   }

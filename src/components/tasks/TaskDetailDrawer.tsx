@@ -3,6 +3,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState, useEffect } from 'react';
 import type { Task, TaskStatus, TaskComment } from '@/types/task.types';
@@ -56,7 +57,7 @@ export const TaskDetailDrawer: React.FC<Props> = ({ taskId, onClose, onTaskUpdat
         setBlockerReason(data.blocked_reason || '');
       }
     } catch (err) {
-      console.error('Failed to load task:', err);
+      logger.error('Failed to load task:', err);
     } finally {
       setLoading(false);
     }
@@ -83,7 +84,7 @@ export const TaskDetailDrawer: React.FC<Props> = ({ taskId, onClose, onTaskUpdat
       await loadTaskDetails();
       setShowBlockerInput(false);
     } catch (err) {
-      console.error(err);
+      logger.error(err);
     }
   };
 
@@ -98,7 +99,7 @@ export const TaskDetailDrawer: React.FC<Props> = ({ taskId, onClose, onTaskUpdat
       // Reload detail to fetch new comments list
       await loadTaskDetails();
     } catch (err) {
-      console.error(err);
+      logger.error(err);
     } finally {
       setCommenting(false);
     }
@@ -113,7 +114,7 @@ export const TaskDetailDrawer: React.FC<Props> = ({ taskId, onClose, onTaskUpdat
       onTaskUpdated();
       onClose();
     } catch (err) {
-      console.error(err);
+      logger.error(err);
     }
   };
 

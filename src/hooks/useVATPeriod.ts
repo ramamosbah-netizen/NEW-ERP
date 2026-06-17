@@ -2,6 +2,7 @@
 // JEET ERP — VAT Periods and FTA Form 201 React Hook
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { vatService } from '@/services/vatService';
 import type { VATPeriod, VATForm201 } from '@/types/vat.types';
@@ -24,7 +25,7 @@ export function useVATPeriod() {
         setSelectedPeriodId(data[0].id); // default to most recent
       }
     } catch (err: any) {
-      console.error('Error fetching VAT periods:', err);
+      logger.error('Error fetching VAT periods:', err);
       setError(err);
     } finally {
       setLoading(false);
@@ -42,7 +43,7 @@ export function useVATPeriod() {
       const data = await vatService.computeForm201(selectedPeriodId);
       setForm201(data);
     } catch (err: any) {
-      console.error(`Error computing VAT Form 201 for period ${selectedPeriodId}:`, err);
+      logger.error(`Error computing VAT Form 201 for period ${selectedPeriodId}:`, err);
       setError(err);
     } finally {
       setComputing(false);
@@ -69,7 +70,7 @@ export function useVATPeriod() {
       setSelectedPeriodId(newPeriod.id);
       return newPeriod;
     } catch (err: any) {
-      console.error('Error creating VAT period:', err);
+      logger.error('Error creating VAT period:', err);
       throw err;
     }
   };
@@ -81,7 +82,7 @@ export function useVATPeriod() {
       await computeFiling();
       return true;
     } catch (err: any) {
-      console.error('Error locking VAT period:', err);
+      logger.error('Error locking VAT period:', err);
       throw err;
     }
   };

@@ -4,6 +4,7 @@
 // Previews sequences before database trigger assignment.
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 
 export const voNumberService = {
@@ -25,7 +26,7 @@ export const voNumberService = {
       const nextNum = (data?.last_number || 0) + 1;
       return `JI-VO-${currentYear}-${String(nextNum).padStart(3, '0')}`;
     } catch (error) {
-      console.error('Error fetching next VO number preview:', error);
+      logger.error('Error fetching next VO number preview:', error);
       const fallbackYear = new Date().getFullYear();
       return `JI-VO-${fallbackYear}-XXX`;
     }
@@ -50,7 +51,7 @@ export const voNumberService = {
       const nextSeq = (data && data.length > 0 ? data[0].project_vo_sequence : 0) + 1;
       return `VO-${String(nextSeq).padStart(2, '0')}`;
     } catch (error) {
-      console.error('Error fetching next project VO sequence preview:', error);
+      logger.error('Error fetching next project VO sequence preview:', error);
       return 'VO-XX';
     }
   }

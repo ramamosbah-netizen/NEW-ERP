@@ -5,6 +5,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -130,7 +131,7 @@ function PaymentRecordPageContent() {
       await paymentService.recordPayment(paymentData as any, mappedAllocations);
       router.push('/finance/ar');
     } catch (err: any) {
-      console.error(err);
+      logger.error(err);
       alert('Failed to record payment: ' + err.message);
     } finally {
       setLoading(false);

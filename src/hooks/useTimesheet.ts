@@ -2,6 +2,7 @@
 // JEET ERP — Timesheets React Hook
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { timesheetService } from '@/services/timesheetService';
 import type { Timesheet, TimesheetEntry } from '@/types/timesheet.types';
@@ -22,7 +23,7 @@ export function useTimesheet(employeeId?: string, weekStart?: string) {
       setTimesheet(ts);
       setEntries(ent);
     } catch (err: any) {
-      console.error('Failed to fetch timesheet:', err);
+      logger.error('Failed to fetch timesheet:', err);
       setError(err);
     } finally {
       setLoading(false);
@@ -42,7 +43,7 @@ export function useTimesheet(employeeId?: string, weekStart?: string) {
       setEntries([]);
       return ts;
     } catch (err: any) {
-      console.error('Failed to create timesheet:', err);
+      logger.error('Failed to create timesheet:', err);
       throw err;
     } finally {
       setLoading(false);
@@ -66,7 +67,7 @@ export function useTimesheet(employeeId?: string, weekStart?: string) {
       setTimesheet(updatedTs);
       return saved;
     } catch (err: any) {
-      console.error('Failed to save entries:', err);
+      logger.error('Failed to save entries:', err);
       throw err;
     } finally {
       setLoading(false);
@@ -81,7 +82,7 @@ export function useTimesheet(employeeId?: string, weekStart?: string) {
       setTimesheet(updated);
       return updated;
     } catch (err: any) {
-      console.error('Failed to submit timesheet:', err);
+      logger.error('Failed to submit timesheet:', err);
       throw err;
     } finally {
       setLoading(false);
@@ -118,7 +119,7 @@ export function useTimesheetApprovals() {
       const data = await timesheetService.getApprovalsQueue();
       setQueue(data);
     } catch (err: any) {
-      console.error('Failed to load approvals queue:', err);
+      logger.error('Failed to load approvals queue:', err);
       setError(err);
     } finally {
       setLoading(false);
@@ -135,7 +136,7 @@ export function useTimesheetApprovals() {
       await timesheetService.approveTimesheet(timesheetId);
       await fetchQueue();
     } catch (err: any) {
-      console.error('Failed to approve timesheet:', err);
+      logger.error('Failed to approve timesheet:', err);
       throw err;
     } finally {
       setLoading(false);
@@ -148,7 +149,7 @@ export function useTimesheetApprovals() {
       await timesheetService.rejectTimesheet(timesheetId, reason);
       await fetchQueue();
     } catch (err: any) {
-      console.error('Failed to reject timesheet:', err);
+      logger.error('Failed to reject timesheet:', err);
       throw err;
     } finally {
       setLoading(false);

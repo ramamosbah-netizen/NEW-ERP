@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { fixedAssetService } from '@/services/fixedAssetService';
 import { disposalService } from '@/services/disposalService';
@@ -15,7 +16,7 @@ export function useFixedAssets() {
       const data = await fixedAssetService.getFixedAssets();
       setAssets(data);
     } catch (err: any) {
-      console.error('Failed to load fixed assets:', err);
+      logger.error('Failed to load fixed assets:', err);
       setError(err);
     } finally {
       setLoading(false);
@@ -58,7 +59,7 @@ export function useAsset(assetId?: string) {
         setSchedule(res.schedule);
       }
     } catch (err: any) {
-      console.error(`Failed to load details for fixed asset ${assetId}:`, err);
+      logger.error(`Failed to load details for fixed asset ${assetId}:`, err);
       setError(err);
     } finally {
       setLoading(false);
@@ -100,7 +101,7 @@ export function useDepreciationRun() {
       const res = await fixedAssetService.runMonthlyDepreciation(periodMonth);
       return res;
     } catch (err: any) {
-      console.error(`Depreciation run failed for period ${periodMonth}:`, err);
+      logger.error(`Depreciation run failed for period ${periodMonth}:`, err);
       setError(err);
       throw err;
     } finally {
@@ -114,7 +115,7 @@ export function useDepreciationRun() {
       setError(null);
       await fixedAssetService.exportJournalToExcel(periodMonth, filename);
     } catch (err: any) {
-      console.error(`Journal export failed for period ${periodMonth}:`, err);
+      logger.error(`Journal export failed for period ${periodMonth}:`, err);
       setError(err);
       throw err;
     } finally {

@@ -5,6 +5,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -100,7 +101,7 @@ function VOCreatePageContent() {
               setBoqItems([]);
             }
           } catch (err) {
-            console.error('Failed to load project BOQ:', err);
+            logger.error('Failed to load project BOQ:', err);
             setBoqItems([]);
           } finally {
             setLoadingBOQ(false);
@@ -224,7 +225,7 @@ function VOCreatePageContent() {
       const result = await voService.createVODraft(voData as any, items);
       router.push(`/vo/${result.id}`);
     } catch (err: any) {
-      console.error(err);
+      logger.error(err);
       alert('Failed to save Variation Order Draft: ' + err.message);
     } finally {
       setLoading(false);

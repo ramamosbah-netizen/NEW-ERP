@@ -4,6 +4,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -125,7 +126,7 @@ function CreateAMCForm() {
           }
         }
       } catch (err) {
-        console.error('Error initializing form:', err);
+        logger.error('Error initializing form:', err);
       } finally {
         setLoading(false);
       }
@@ -187,7 +188,7 @@ function CreateAMCForm() {
       }
       router.push(`/amc/${res.id}`);
     } catch (err: any) {
-      console.error(err);
+      logger.error(err);
       alert('Error creating AMC contract: ' + err.message);
     }
   };

@@ -5,6 +5,7 @@
 // uploading, DMS filing, and project BOQ integration.
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 import { calculateVOMargin, calculateContractImpact } from './voContractImpactService';
 import { voPDFService } from './voPDFService';
@@ -674,7 +675,7 @@ export const voService = {
       if (saveError) throw saveError;
       return true;
     } catch (err) {
-      console.error('Failed to apply variation lines to BOQ:', err);
+      logger.error('Failed to apply variation lines to BOQ:', err);
       return false;
     }
   },

@@ -3,6 +3,7 @@
 // Data access, workflow logic, audit logs, and integrations
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { supabase } from './supabase';
 import { amountToWords } from './amount-to-words';
 import { eventService } from '@/services/eventService';
@@ -56,7 +57,7 @@ export async function sendNotification(userId: string, message: string) {
       read: false
     });
   if (error) {
-    console.error('Failed to create notification:', error);
+    logger.error('Failed to create notification:', error);
   }
 }
 
@@ -901,7 +902,7 @@ export const quotationService = {
         })
         .eq('id', id);
 
-      console.error('Error during sendToClient transactional project creation:', err);
+      logger.error('Error during sendToClient transactional project creation:', err);
       throw err;
     }
   },

@@ -3,6 +3,7 @@
 // Handles creation, calendar feeds, responses, minutes, and AI parsing
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 import type { Meeting, MeetingStatus, AttendeeResponse, MeetingAttendee, MeetingActionItem } from '@/types/meeting.types';
 import { documentService } from '@/lib/document-service';
@@ -154,7 +155,7 @@ export const meetingService = {
           attendee_ids: attendees.map(a => a.user_id).filter(Boolean)
         }
       }
-    }).catch(err => console.error(err));
+    }).catch(err => logger.error(err));
 
     return meeting as Meeting;
   },
@@ -179,7 +180,7 @@ export const meetingService = {
     // Trigger calendar-sync integration
     supabase.functions.invoke('calendar-sync', {
       body: { meeting_id: id, action: 'update' }
-    }).catch(err => console.error(err));
+    }).catch(err => logger.error(err));
 
     return true;
   },
@@ -293,7 +294,7 @@ export const meetingService = {
                 assignee_id: item.assignee_id
               }
             }
-          }).catch(err => console.error(err));
+          }).catch(err => logger.error(err));
         }
       }
     }
@@ -315,7 +316,7 @@ export const meetingService = {
           false
         );
       } catch (err) {
-        console.error('Failed to auto-archive minutes to DMS:', err);
+        logger.error('Failed to auto-archive minutes to DMS:', err);
       }
     }
 
@@ -334,7 +335,7 @@ export const meetingService = {
           attendees: attendeeIds
         }
       }
-    }).catch(err => console.error(err));
+    }).catch(err => logger.error(err));
 
     return true;
   }

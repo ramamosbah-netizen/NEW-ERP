@@ -2,6 +2,7 @@
 // JEET ERP — Cost Commitment Tracking Service
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 
 export interface SystemCostSummary {
@@ -143,7 +144,7 @@ export const commitmentService = {
       return summaries.sort((a, b) => b.budgetCost - a.budgetCost || b.committedCost - a.committedCost);
 
     } catch (err) {
-      console.error('Error calculating project commitments:', err);
+      logger.error('Error calculating project commitments:', err);
       throw err;
     }
   }

@@ -3,6 +3,7 @@
 // Subscribes to notifications table and alerts bell on insertion
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { notificationService } from '@/services/notificationService';
@@ -23,7 +24,7 @@ export function useNotifications() {
       setNotifications(data);
       setError(null);
     } catch (err: any) {
-      console.error('Error fetching notifications:', err);
+      logger.error('Error fetching notifications:', err);
       setError(err);
     } finally {
       setLoading(false);

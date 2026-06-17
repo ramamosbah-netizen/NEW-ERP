@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 const DB_NAME = 'jeet_erp_offline';
 const STORE_NAME = 'operations_queue';
 const DB_VERSION = 1;
@@ -57,7 +58,7 @@ export const offlineQueue = {
 
       const request = store.add(op);
       request.onsuccess = () => {
-        console.log(`Enqueued offline operation: ${module}.${action}`);
+        logger.debug(`Enqueued offline operation: ${module}.${action}`);
         resolve();
       };
       request.onerror = () => reject(request.error);
@@ -126,7 +127,7 @@ export const offlineQueue = {
    */
   async syncQueue(onProgress?: (op: QueuedOperation, success: boolean) => void): Promise<void> {
     if (typeof navigator !== 'undefined' && !navigator.onLine) {
-      console.log('Skipping offline sync: Network is currently offline.');
+      logger.debug('Skipping offline sync: Network is currently offline.');
       return;
     }
 
@@ -135,7 +136,7 @@ export const offlineQueue = {
     
     if (pending.length === 0) return;
 
-    console.log(`Starting background sync for ${pending.length} operations...`);
+    logger.debug(`Starting background sync for ${pending.length} operations...`);
 
     for (const op of pending) {
       try {
@@ -158,9 +159,9 @@ export const offlineQueue = {
         // Successfully synced: clear from queue
         await this.deleteOperation(op.id);
         if (onProgress) onProgress(op, true);
-        console.log(`Successfully synced offline operation ${op.id}`);
+        logger.debug(`Successfully synced offline operation ${op.id}`);
       } catch (err: any) {
-        console.error(`Offline sync failed for operation ${op.id}:`, err);
+        logger.error(`Offline sync failed for operation ${op.id}:`, err);
         await this.updateOperationStatus(op.id, 'FAILED', err.message || 'Unknown network error');
         if (onProgress) onProgress(op, false);
       }
@@ -171,7 +172,7 @@ export const offlineQueue = {
 // Bind online events to trigger synchronization automatically
 if (typeof window !== 'undefined') {
   window.addEventListener('online', () => {
-    console.log('Browser online event detected. Running syncQueue...');
+    logger.debug('Browser online event detected. Running syncQueue...');
     offlineQueue.syncQueue();
   });
 }

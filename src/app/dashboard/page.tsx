@@ -1,4 +1,5 @@
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
@@ -109,7 +110,7 @@ export default function Dashboard() {
       setRecentBOQs(boqList || []);
       setPendingApprovals(pendingPOList || []);
     } catch (err) {
-      console.error('Dashboard load error:', err);
+      logger.error('Dashboard load error:', err);
     } finally {
       setLoading(false);
       setRefreshing(false);

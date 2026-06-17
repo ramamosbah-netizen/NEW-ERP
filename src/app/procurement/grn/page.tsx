@@ -4,6 +4,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -84,7 +85,7 @@ export default function GRNRegistryDashboard() {
       setSelectedReturn(null);
       setResolutionNotes('');
     } catch (err) {
-      console.error('Failed to resolve return ticket:', err);
+      logger.error('Failed to resolve return ticket:', err);
     } finally {
       setSignOffLoading(false);
     }

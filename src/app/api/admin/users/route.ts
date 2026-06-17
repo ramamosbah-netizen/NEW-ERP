@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import type { PermissionScope } from '@/types/rbac.types';
@@ -140,7 +141,7 @@ export async function POST(req: Request) {
         .insert(inserts);
 
       if (roleErr) {
-        console.error('Failed to insert user roles:', roleErr);
+        logger.error('Failed to insert user roles:', roleErr);
       }
     }
 
@@ -181,7 +182,7 @@ export async function POST(req: Request) {
       .eq('id', userId);
 
     if (profileErr) {
-      console.error('Failed to update profile details:', profileErr);
+      logger.error('Failed to update profile details:', profileErr);
     }
 
     // 6. Create employee profile if department is specified
@@ -221,7 +222,7 @@ export async function POST(req: Request) {
         });
 
       if (empErr) {
-        console.error('Failed to create employee card:', empErr);
+        logger.error('Failed to create employee card:', empErr);
       }
     }
 

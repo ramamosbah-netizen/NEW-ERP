@@ -3,6 +3,7 @@
 // Fetches documents in NEEDS_REVIEW status
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import type { Document } from '@/types/document.types';
@@ -26,7 +27,7 @@ export function useReviewQueue() {
       setDocuments(data || []);
       setError(null);
     } catch (err: any) {
-      console.error('Error fetching review queue documents:', err);
+      logger.error('Error fetching review queue documents:', err);
       setError(err);
     } finally {
       setLoading(false);

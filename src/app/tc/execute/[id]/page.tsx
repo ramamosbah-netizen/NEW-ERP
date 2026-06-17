@@ -4,6 +4,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import { useState, use, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -71,7 +72,7 @@ export default function TCChecklistRunnerPage({ params }: PageProps) {
           .eq('is_active', true);
         setTools(data || []);
       } catch (err) {
-        console.error('Failed to load test tools:', err);
+        logger.error('Failed to load test tools:', err);
       }
     }
     loadTools();
@@ -199,7 +200,7 @@ export default function TCChecklistRunnerPage({ params }: PageProps) {
 
       await refetch();
     } catch (err: any) {
-      console.error(err);
+      logger.error(err);
       alert(`Error logging result: ${err.message || err}`);
     } finally {
       setSubmitting(false);

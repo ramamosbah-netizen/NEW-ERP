@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 /**
  * Converts a file object to a base64 encoded string.
  */
@@ -44,7 +45,7 @@ export const statementImportService = {
 
       return data.fines || [];
     } catch (error: any) {
-      console.error('Error in statement fine extraction service:', error);
+      logger.error('Error in statement fine extraction service:', error);
       throw error;
     }
   }

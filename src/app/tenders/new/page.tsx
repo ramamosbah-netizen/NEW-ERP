@@ -1,4 +1,5 @@
 'use client';
+import { logger } from '@/lib/logger';
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
@@ -110,7 +111,7 @@ export default function CreateTender() {
         setClientDeliveryExpectations(draft.clientDeliveryExpectations || '');
         setClientWarranty(draft.clientWarranty || '');
       } catch (e) {
-        console.error('Error loading tender draft:', e);
+        logger.error('Error loading tender draft:', e);
       }
     }
   }, []);
@@ -414,7 +415,7 @@ export default function CreateTender() {
             .upload(storagePath, f.file, { cacheControl: '3600', upsert: true });
 
           if (uploadError) {
-            console.error(`Storage upload failed for ${f.name}:`, uploadError);
+            logger.error(`Storage upload failed for ${f.name}:`, uploadError);
             failedUploads.push(f.name);
             continue;
           }
@@ -431,7 +432,7 @@ export default function CreateTender() {
             });
 
           if (fileError) {
-            console.error(`Metadata insert failed for ${f.name}:`, fileError);
+            logger.error(`Metadata insert failed for ${f.name}:`, fileError);
             failedUploads.push(f.name);
           }
         }
@@ -450,7 +451,7 @@ export default function CreateTender() {
       }, 1500);
 
     } catch (err: any) {
-      console.error('Submission failed:', err);
+      logger.error('Submission failed:', err);
       setErrorMsg(err.message || 'An unexpected error occurred during saving.');
     } finally {
       setIsSubmitting(false);

@@ -4,6 +4,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -227,7 +228,7 @@ export default function WalkthroughLoggerPage() {
       alert(`Walkthrough logged! Registered ${parsedSnags.length} punch items.`);
       router.push('/snags');
     } catch (err: any) {
-      console.error(err);
+      logger.error(err);
       alert(`Failed to save walkthrough logs: ${err.message || err}`);
     }
   };

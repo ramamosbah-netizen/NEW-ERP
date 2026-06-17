@@ -1,4 +1,5 @@
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState, useEffect, useCallback, use, useRef } from 'react';
 import { useRouter } from 'next/navigation';
@@ -381,7 +382,7 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
         }
       } catch (err: unknown) {
         const message = err instanceof Error ? err.message : 'Failed to load BOQ data.';
-        console.error('BOQ load error:', err);
+        logger.error('BOQ load error:', err);
         setErrorMsg(message);
       } finally {
         setLoading(false);
@@ -564,7 +565,7 @@ export default function BOQDashboard({ params }: { params: Promise<{ id: string 
         });
 
       if (versionErr) {
-        console.warn('Snapshot warning:', versionErr);
+        logger.warn('Snapshot warning:', versionErr);
       }
 
       // 2. Increment the version and set the status back to Draft

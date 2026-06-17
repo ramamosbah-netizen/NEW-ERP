@@ -5,6 +5,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -59,7 +60,7 @@ export default function VOApprovalQueuePage() {
         await refetch();
       }
     } catch (err: any) {
-      console.error(err);
+      logger.error(err);
       alert('Approval failed: ' + err.message);
     } finally {
       setProcessingId(null);
@@ -78,7 +79,7 @@ export default function VOApprovalQueuePage() {
         await refetch();
       }
     } catch (err: any) {
-      console.error(err);
+      logger.error(err);
       alert('Action failed: ' + err.message);
     } finally {
       setProcessingId(null);

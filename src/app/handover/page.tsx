@@ -4,6 +4,7 @@
 // ============================================================
 
 'use client';
+import { logger } from '@/lib/logger';
 
 import { useState, useRef, useEffect, useMemo } from 'react';
 import Link from 'next/link';
@@ -215,7 +216,7 @@ export default function HandoverGatePage() {
       await refetch();
       alert('Evidence file uploaded and checklist item verified!');
     } catch (err: any) {
-      console.error(err);
+      logger.error(err);
       alert(`Upload failed: ${err.message || err}`);
     } finally {
       setActionLoading(false);
@@ -283,7 +284,7 @@ export default function HandoverGatePage() {
       
       await refetch();
     } catch (err: any) {
-      console.error(err);
+      logger.error(err);
       alert(`Handover execution failed: ${err.message || err}`);
     } finally {
       setActionLoading(false);

@@ -2,6 +2,7 @@
 // JEET ERP — Walkthrough & Rapid Snag Logging Service
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 import { snagService } from './snagService';
 import { Snag, SnagSeverity, SnagSource } from '@/types/snag.types';
@@ -46,7 +47,7 @@ export const walkthroughService = {
         });
 
       if (uploadErr) {
-        console.error('Failed to upload walkthrough signature:', uploadErr);
+        logger.error('Failed to upload walkthrough signature:', uploadErr);
       } else if (uploadData) {
         signaturePath = uploadData.path;
       }
@@ -67,7 +68,7 @@ export const walkthroughService = {
         });
         snagsCreated.push(snag);
       } catch (err) {
-        console.error('Failed to create snag during walkthrough:', err);
+        logger.error('Failed to create snag during walkthrough:', err);
       }
     }
 
@@ -92,7 +93,7 @@ export const walkthroughService = {
         .single();
       
       if (docErr) {
-        console.error('Failed to register walkthrough document in DMS:', docErr);
+        logger.error('Failed to register walkthrough document in DMS:', docErr);
       }
     }
 

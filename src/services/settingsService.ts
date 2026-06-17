@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 import type { 
   SystemSetting, 
@@ -44,7 +45,7 @@ export const settingsService = {
       .maybeSingle();
 
     if (error) {
-      console.error(`Error loading setting ${key}:`, error);
+      logger.error(`Error loading setting ${key}:`, error);
       if (defaultValue !== undefined) return defaultValue;
       throw error;
     }

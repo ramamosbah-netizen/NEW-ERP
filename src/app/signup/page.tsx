@@ -1,4 +1,5 @@
 'use client';
+import { logger } from '@/lib/logger';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -101,7 +102,7 @@ export default function SignUp() {
         }
       }
     } catch (err) {
-      console.error(err);
+      logger.error(err);
       setErrorMsg('An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);

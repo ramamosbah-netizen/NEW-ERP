@@ -3,6 +3,7 @@
 // Interacts with Supabase Edge Functions for token refresh and API pushes
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 
 export const calendarSyncService = {
@@ -20,13 +21,13 @@ export const calendarSyncService = {
       });
 
       if (error) {
-        console.warn('Google Calendar synchronization bypassed or failed:', error.message);
+        logger.warn('Google Calendar synchronization bypassed or failed:', error.message);
         return false; // non-blocking sync failure
       }
 
       return data?.success || false;
     } catch (err) {
-      console.warn('Google Calendar integration connection failure (non-blocking):', err);
+      logger.warn('Google Calendar integration connection failure (non-blocking):', err);
       return false;
     }
   },

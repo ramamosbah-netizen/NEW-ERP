@@ -3,6 +3,7 @@
 // Calculates: Outstanding balances divided into 30-day buckets
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { invoiceService } from '@/services/invoiceService';
 import type { ClientInvoice } from '@/types/finance.types';
@@ -184,7 +185,7 @@ export function useAging(type: 'AR' | 'AP' = 'AR') {
       setClientAging(clientRecords);
       setError(null);
     } catch (err: any) {
-      console.error('Error fetching aging calculations:', err);
+      logger.error('Error fetching aging calculations:', err);
       setError(err);
     } finally {
       setLoading(false);

@@ -2,6 +2,7 @@
 // JEET ERP — Snag List Export Service
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { supabase } from '@/lib/supabase';
@@ -166,7 +167,7 @@ export const snagExportService = {
 
       return storagePath;
     } catch (error) {
-      console.error('Failed to export snags PDF:', error);
+      logger.error('Failed to export snags PDF:', error);
       throw error;
     }
   }

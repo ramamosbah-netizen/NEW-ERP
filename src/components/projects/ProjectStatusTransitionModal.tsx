@@ -3,6 +3,7 @@
 // Dialog to choose next status, type comments, and specify reasons for Hold/Cancel
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import React, { useState, useEffect } from 'react';
 import { getValidTransitions, validateTransition } from '@/lib/project-status-service';
 import type { Project, ProjectStatus } from '@/types/project.types';
@@ -64,7 +65,7 @@ export const ProjectStatusTransitionModal: React.FC<Props> = ({
       await onTransition(selectedStatus, comment);
       onClose();
     } catch (err: any) {
-      console.error(err);
+      logger.error(err);
       setError(err.message || 'Failed to update project status.');
     } finally {
       setIsSubmitting(false);

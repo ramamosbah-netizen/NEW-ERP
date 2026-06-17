@@ -2,6 +2,7 @@
 // JEET ERP — End of Service Benefit (EOSB) React Hook
 // ============================================================
 
+import { logger } from '@/lib/logger';
 import { useState, useEffect, useCallback } from 'react';
 import { gratuityService } from '@/services/gratuityService';
 import { supabase } from '@/lib/supabase';
@@ -76,7 +77,7 @@ export function useEOSB() {
 
       setLiabilityReport(report);
     } catch (err: any) {
-      console.error('Failed to compile gratuity liability report:', err);
+      logger.error('Failed to compile gratuity liability report:', err);
       setError(err);
     } finally {
       setLoading(false);
