@@ -22,21 +22,7 @@ import type {
   WorkflowInstance,
   WorkflowHistoryEntry,
 } from '@/types/platform.types';
-
-// Maker-checker (creator ≠ approver) is enforced ONLY on the most fraud-sensitive
-// modules; other workflows stay flexible so a single operator can still progress
-// routine work. Broad money controls (payments, journal posting, retention release)
-// are enforced separately at the DB layer (triggers / RPC). Edit this set to widen
-// or narrow the policy.
-const MAKER_CHECKER_MODULES = new Set<string>([
-  'INV',          // Client invoice (AR)
-  'SINV',         // Supplier bill (AP)
-  'PROFORMA',     // Proforma invoice
-  'PAYMENT_REQ',  // Payment request
-  'BUDGET',       // Budget approval
-  'PETTY_CASH',   // Petty cash
-  'EXP',          // Expense claim
-]);
+import { getMakerCheckerModules } from '@/lib/security/policy';
 
 async function getCurrentUserWithRoles(): Promise<{ id: string; name: string; roleKeys: string[] }> {
   const { data: { user } } = await supabase.auth.getUser();
@@ -353,8 +339,10 @@ export const workflowService = {
     const toStatus = workflow.statuses.find(s => s.id === transition.to_status_id)!;
 
     // Maker-checker: on fraud-sensitive modules only, the user who created/started
-    // this record cannot also approve it. Operational modules stay flexible.
-    if (MAKER_CHECKER_MODULES.has(moduleKey) && transition.approval && transition.approval.mode !== 'NONE') {
+    // this record cannot also approve it. Operational modules stay flexible. The
+    // enforced set is configurable at runtime (security.maker_checker_modules).
+    const makerCheckerModules = await getMakerCheckerModules();
+    if (makerCheckerModules.has(moduleKey) && transition.approval && transition.approval.mode !== 'NONE') {
       const starter =
         (instance.history || []).find(h => h.action === 'START') || (instance.history || [])[0];
       if (starter?.by && starter.by === me.id) {
