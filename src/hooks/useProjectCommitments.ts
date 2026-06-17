@@ -1,36 +1,22 @@
 // ============================================================
-// JEET ERP — Cost Commitments React Hook
+// Aura ERP — Cost Commitments React Hook (React Query)
 // ============================================================
 
-import { logger } from '@/lib/logger';
-import { useState, useEffect, useCallback } from 'react';
-import { commitmentService, type SystemCostSummary } from '@/services/commitmentService';
+import { useQuery } from '@tanstack/react-query';
+import { commitmentService } from '@/services/commitmentService';
 
 export function useProjectCommitments(projectId: string) {
-  const [commitments, setCommitments] = useState<SystemCostSummary[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-
-  const fetchCommitments = useCallback(async () => {
-    if (!projectId) return;
-    try {
-      setLoading(true);
-      const data = await commitmentService.getProjectCostCommitments(projectId);
-      setCommitments(data);
-      setError(null);
-    } catch (err: any) {
-      logger.error(`Error loading commitments for project ${projectId}:`, err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [projectId]);
-
-  useEffect(() => {
-    fetchCommitments();
-  }, [fetchCommitments]);
-
-  return { commitments, loading, error, refetch: fetchCommitments };
+  const q = useQuery({
+    queryKey: ['project-commitments', projectId],
+    enabled: !!projectId,
+    queryFn: () => commitmentService.getProjectCostCommitments(projectId),
+  });
+  return {
+    commitments: q.data ?? [],
+    loading: q.isPending,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
+  };
 }
 
 export default useProjectCommitments;

@@ -1,190 +1,85 @@
 // ============================================================
-// JEET ERP — Variation Order (VO) React Hooks
-// Location: src/hooks/useVOs.ts
+// Aura ERP — Variation Order (VO) React Hooks (React Query)
 // ============================================================
 
-import { logger } from '@/lib/logger';
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { voService } from '@/services/voService';
-import type { VariationOrder, VOItem, VOStatus, VOFilters, VOWorkStatus } from '@/types/vo.types';
+import type { VariationOrder, VOItem, VOFilters, VOWorkStatus } from '@/types/vo.types';
 
-// 1. Hook to list VOs
+const voKeys = {
+  lists: ['vos', 'list'] as const,
+  list: (f: VOFilters) => ['vos', 'list', f] as const,
+  detail: (id: string) => ['vos', 'detail', id] as const,
+  projectSummary: (pid: string) => ['vos', 'project-summary', pid] as const,
+  approvalQueue: ['vos', 'approval-queue'] as const,
+};
+
+// 1. List
 export function useVOs(filters: VOFilters = {}) {
-  const [vos, setVOs] = useState<VariationOrder[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-
-  const fetchList = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await voService.fetchVOs(filters);
-      setVOs(data);
-    } catch (err: any) {
-      logger.error('Error fetching VOs:', err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [JSON.stringify(filters)]);
-
-  useEffect(() => {
-    fetchList();
-  }, [fetchList]);
-
-  return { vos, loading, error, refetch: fetchList };
+  const q = useQuery({ queryKey: voKeys.list(filters), queryFn: () => voService.fetchVOs(filters) });
+  return {
+    vos: q.data ?? [],
+    loading: q.isPending,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
+  };
 }
 
-// 2. Hook for detailed VO view and status actions
+// 2. Detail + actions
 export function useVO(id: string) {
-  const [vo, setVO] = useState<VariationOrder | null>(null);
-  const [items, setItems] = useState<VOItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+  const qc = useQueryClient();
+  const q = useQuery({ queryKey: voKeys.detail(id), queryFn: () => voService.fetchVOById(id), enabled: !!id });
 
-  const fetchDetail = useCallback(async () => {
-    if (!id) return;
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await voService.fetchVOById(id);
-      if (data) {
-        setVO(data);
-        setItems(data.items || []);
-      } else {
-        setVO(null);
-        setItems([]);
-      }
-    } catch (err: any) {
-      logger.error(`Error fetching VO ${id}:`, err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [id]);
-
-  useEffect(() => {
-    fetchDetail();
-  }, [fetchDetail]);
-
-  const submitInternalReview = async (comment?: string) => {
-    const success = await voService.submitInternalReview(id, comment);
-    if (success) await fetchDetail();
-    return success;
+  const inv = async () => {
+    await Promise.all([
+      qc.invalidateQueries({ queryKey: voKeys.detail(id) }),
+      qc.invalidateQueries({ queryKey: voKeys.lists }),
+    ]);
   };
 
-  const approveInternal = async (comment?: string) => {
-    const success = await voService.approveInternal(id, comment);
-    if (success) await fetchDetail();
-    return success;
-  };
-
-  const submitToClient = async () => {
-    const success = await voService.submitToClient(id);
-    if (success) await fetchDetail();
-    return success;
-  };
-
-  const recordClientApproval = async (approvalRef: string, approvalDate: string, docId?: string | null) => {
-    const success = await voService.recordClientApproval(id, approvalRef, approvalDate, docId);
-    if (success) await fetchDetail();
-    return success;
-  };
-
-  const recordClientRejection = async (reason: string) => {
-    const success = await voService.recordClientRejection(id, reason);
-    if (success) await fetchDetail();
-    return success;
-  };
-
-  const cancelVO = async (reason: string) => {
-    const success = await voService.cancelVO(id, reason);
-    if (success) await fetchDetail();
-    return success;
-  };
-
-  const updateWorkStatus = async (workStatus: VOWorkStatus) => {
-    const success = await voService.updateWorkStatus(id, workStatus);
-    if (success) await fetchDetail();
-    return success;
-  };
+  const submitInternalReview = async (comment?: string) => { const s = await voService.submitInternalReview(id, comment); if (s) await inv(); return s; };
+  const approveInternal = async (comment?: string) => { const s = await voService.approveInternal(id, comment); if (s) await inv(); return s; };
+  const submitToClient = async () => { const s = await voService.submitToClient(id); if (s) await inv(); return s; };
+  const recordClientApproval = async (approvalRef: string, approvalDate: string, docId?: string | null) => { const s = await voService.recordClientApproval(id, approvalRef, approvalDate, docId); if (s) await inv(); return s; };
+  const recordClientRejection = async (reason: string) => { const s = await voService.recordClientRejection(id, reason); if (s) await inv(); return s; };
+  const cancelVO = async (reason: string) => { const s = await voService.cancelVO(id, reason); if (s) await inv(); return s; };
+  const updateWorkStatus = async (workStatus: VOWorkStatus) => { const s = await voService.updateWorkStatus(id, workStatus); if (s) await inv(); return s; };
 
   return {
-    vo,
-    items,
-    loading,
-    error,
-    refetch: fetchDetail,
+    vo: q.data ?? null,
+    items: (q.data?.items ?? []) as VOItem[],
+    loading: q.isPending,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
     actions: {
-      submitInternalReview,
-      approveInternal,
-      submitToClient,
-      recordClientApproval,
-      recordClientRejection,
-      cancelVO,
-      updateWorkStatus
-    }
+      submitInternalReview, approveInternal, submitToClient, recordClientApproval,
+      recordClientRejection, cancelVO, updateWorkStatus,
+    },
   };
 }
 
-// 3. Hook for project VO widget summary
+// 3. Project VO summary widget
 export function useProjectVOSummary(projectId: string) {
-  const [summary, setSummary] = useState<{
-    originalContract: number;
-    approvedVOs: number;
-    pendingVOs: number;
-    atRiskExposure: number;
-    revisedContract: number;
-    voCount: number;
-  } | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-
-  const fetchSummary = useCallback(async () => {
-    if (!projectId) return;
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await voService.getProjectVOSummary(projectId);
-      setSummary(data);
-    } catch (err: any) {
-      logger.error(`Error loading VO summary for project ${projectId}:`, err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [projectId]);
-
-  useEffect(() => {
-    fetchSummary();
-  }, [fetchSummary]);
-
-  return { summary, loading, error, refetch: fetchSummary };
+  const q = useQuery({
+    queryKey: voKeys.projectSummary(projectId),
+    queryFn: () => voService.getProjectVOSummary(projectId),
+    enabled: !!projectId,
+  });
+  return {
+    summary: q.data ?? null,
+    loading: q.isPending,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
+  };
 }
 
-// 4. Hook for approval queue (my day page / approver portal)
+// 4. Approval queue
 export function useVOApprovalQueue() {
-  const [pendingApprovals, setPendingApprovals] = useState<VariationOrder[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-
-  const fetchQueue = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await voService.fetchApprovalQueue();
-      setPendingApprovals(data);
-    } catch (err: any) {
-      logger.error('Error fetching VO approval queue:', err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchQueue();
-  }, [fetchQueue]);
-
-  return { pendingApprovals, loading, error, refetch: fetchQueue };
+  const q = useQuery({ queryKey: voKeys.approvalQueue, queryFn: () => voService.fetchApprovalQueue() });
+  return {
+    pendingApprovals: q.data ?? [],
+    loading: q.isPending,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
+  };
 }

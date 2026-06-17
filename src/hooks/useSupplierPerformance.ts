@@ -1,64 +1,41 @@
 // ============================================================
-// JEET ERP — Supplier Performance React Hook
+// Aura ERP — Supplier Performance React Hook (React Query)
 // ============================================================
 
-import { logger } from '@/lib/logger';
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { supplierPerformanceService } from '@/services/supplierPerformanceService';
 
 export function useSupplierPerformance(supplierId?: string) {
-  const [performance, setPerformance] = useState<any | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+  const qc = useQueryClient();
+  const key = ['supplier-performance', supplierId ?? ''] as const;
 
-  const fetchPerformance = useCallback(async () => {
-    if (!supplierId) {
-      setLoading(false);
-      return;
-    }
-    try {
-      setLoading(true);
-      const { data, error: supErr } = await supabase
+  const q = useQuery({
+    queryKey: key,
+    enabled: !!supplierId,
+    queryFn: async () => {
+      const { data, error } = await supabase
         .from('supplier_performance_history')
         .select('*')
-        .eq('supplier_id', supplierId)
+        .eq('supplier_id', supplierId!)
         .maybeSingle();
+      if (error) throw error;
+      return data || null;
+    },
+  });
 
-      if (supErr) throw supErr;
-      setPerformance(data || null);
-      setError(null);
-    } catch (err: any) {
-      logger.error(`Error loading performance for supplier ${supplierId}:`, err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [supplierId]);
-
-  useEffect(() => {
-    fetchPerformance();
-  }, [fetchPerformance]);
-
-  const recalculatePerformance = async () => {
+  const recalculate = async () => {
     if (!supplierId) return;
-    try {
-      setLoading(true);
-      await supplierPerformanceService.recalculateSupplierPerformance(supplierId);
-      await fetchPerformance();
-    } catch (err: any) {
-      logger.error('Failed to recalculate performance:', err);
-      setError(err);
-      setLoading(false);
-    }
+    await supplierPerformanceService.recalculateSupplierPerformance(supplierId);
+    await qc.invalidateQueries({ queryKey: key });
   };
 
   return {
-    performance,
-    loading,
-    error,
-    refetch: fetchPerformance,
-    recalculate: recalculatePerformance
+    performance: q.data ?? null,
+    loading: q.isLoading,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
+    recalculate,
   };
 }
 

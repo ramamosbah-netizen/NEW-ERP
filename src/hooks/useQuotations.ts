@@ -1,191 +1,86 @@
 // ============================================================
-// JEET ERP — Quotation Module React Hooks
-// Custom hooks for fetching data and executing transitions
+// Aura ERP — Quotation Module React Hooks (React Query)
 // ============================================================
 
-import { logger } from '@/lib/logger';
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
-import { 
-  quotationService, 
-  type QuotationFilters, 
-  type QuotationStatus 
-} from '@/lib/quotation-service';
-import type { QuotationInput } from '@/lib/quotation-validation';
+import { quotationService, type QuotationFilters } from '@/lib/quotation-service';
 
-// 1. Fetch list of quotations
+const qKeys = {
+  lists: ['quotations', 'list'] as const,
+  list: (f: QuotationFilters) => ['quotations', 'list', f] as const,
+  detail: (id: string) => ['quotations', 'detail', id] as const,
+  templates: ['quotations', 'templates'] as const,
+};
+
+// 1. List
 export function useQuotations(filters: QuotationFilters = {}) {
-  const [quotations, setQuotations] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-
-  const fetchList = useCallback(async () => {
-    try {
-      setLoading(true);
-      const data = await quotationService.fetchQuotations(filters);
-      setQuotations(data);
-      setError(null);
-    } catch (err: any) {
-      logger.error('Error fetching quotations:', err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [JSON.stringify(filters)]);
-
-  useEffect(() => {
-    fetchList();
-  }, [fetchList]);
-
-  return { quotations, loading, error, refetch: fetchList };
+  const q = useQuery({ queryKey: qKeys.list(filters), queryFn: () => quotationService.fetchQuotations(filters) });
+  return {
+    quotations: q.data ?? [],
+    loading: q.isPending,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
+  };
 }
 
-// 2. Fetch single quotation details & action triggers
+// 2. Detail + actions
 export function useQuotation(id: string) {
-  const [quotation, setQuotation] = useState<any | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-  const [currentUserId, setCurrentUserId] = useState<string | undefined>(undefined);
+  const qc = useQueryClient();
+  const q = useQuery({
+    queryKey: qKeys.detail(id),
+    enabled: !!id,
+    queryFn: async () => {
+      const { data } = await supabase.auth.getUser();
+      return quotationService.fetchQuotationById(id, data?.user?.id);
+    },
+  });
 
-  // Get current user ID
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      if (data?.user) setCurrentUserId(data.user.id);
-    });
-  }, []);
-
-  const fetchDetail = useCallback(async () => {
-    if (!id) return;
-    try {
-      setLoading(true);
-      const data = await quotationService.fetchQuotationById(id, currentUserId);
-      setQuotation(data);
-      setError(null);
-    } catch (err: any) {
-      logger.error('Error fetching quotation detail:', err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [id, currentUserId]);
-
-  useEffect(() => {
-    fetchDetail();
-  }, [fetchDetail]);
-
-  // Actions wrapped in state refreshers
-  const submitForReview = async () => {
-    const res = await quotationService.submitForReview(id);
-    await fetchDetail();
-    return res;
+  const inv = async () => {
+    await Promise.all([
+      qc.invalidateQueries({ queryKey: qKeys.detail(id) }),
+      qc.invalidateQueries({ queryKey: qKeys.lists }),
+    ]);
   };
 
-  const commercialApprove = async (comment: string) => {
-    const res = await quotationService.commercialApprove(id, comment);
-    await fetchDetail();
-    return res;
-  };
-
-  const commercialReject = async (reason: string) => {
-    const res = await quotationService.commercialReject(id, reason);
-    await fetchDetail();
-    return res;
-  };
-
-  const gmApprove = async (comment: string, signatureRef: string) => {
-    const res = await quotationService.gmApprove(id, comment, signatureRef);
-    await fetchDetail();
-    return res;
-  };
-
-  const gmReject = async (reason: string) => {
-    const res = await quotationService.gmReject(id, reason);
-    await fetchDetail();
-    return res;
-  };
-
-  const sendToClient = async () => {
-    const res = await quotationService.sendToClient(id);
-    await fetchDetail();
-    return res;
-  };
-
-  const markAccepted = async (poNumber: string) => {
-    const res = await quotationService.markAccepted(id, poNumber);
-    await fetchDetail();
-    return res;
-  };
-
-  const markRejected = async (reason: string) => {
-    const res = await quotationService.markRejected(id, reason);
-    await fetchDetail();
-    return res;
-  };
-
-  const createRevision = async () => {
-    const newId = await quotationService.createRevision(id);
-    return newId;
-  };
-
-  const getLinkedProject = async () => {
-    return quotationService.getLinkedProject(id);
-  };
-
-  const linkToProject = async (projectId: string) => {
-    const res = await quotationService.linkToProject(id, projectId);
-    await fetchDetail();
-    return res;
-  };
+  const submitForReview = async () => { const r = await quotationService.submitForReview(id); await inv(); return r; };
+  const commercialApprove = async (comment: string) => { const r = await quotationService.commercialApprove(id, comment); await inv(); return r; };
+  const commercialReject = async (reason: string) => { const r = await quotationService.commercialReject(id, reason); await inv(); return r; };
+  const gmApprove = async (comment: string, signatureRef: string) => { const r = await quotationService.gmApprove(id, comment, signatureRef); await inv(); return r; };
+  const gmReject = async (reason: string) => { const r = await quotationService.gmReject(id, reason); await inv(); return r; };
+  const sendToClient = async () => { const r = await quotationService.sendToClient(id); await inv(); return r; };
+  const markAccepted = async (poNumber: string) => { const r = await quotationService.markAccepted(id, poNumber); await inv(); return r; };
+  const markRejected = async (reason: string) => { const r = await quotationService.markRejected(id, reason); await inv(); return r; };
+  const createRevision = async () => { const newId = await quotationService.createRevision(id); await qc.invalidateQueries({ queryKey: qKeys.lists }); return newId; };
+  const getLinkedProject = async () => quotationService.getLinkedProject(id);
+  const linkToProject = async (projectId: string) => { const r = await quotationService.linkToProject(id, projectId); await inv(); return r; };
 
   return {
-    quotation,
-    loading,
-    error,
-    refetch: fetchDetail,
+    quotation: q.data ?? null,
+    loading: q.isPending,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
     actions: {
-      submitForReview,
-      commercialApprove,
-      commercialReject,
-      gmApprove,
-      gmReject,
-      sendToClient,
-      markAccepted,
-      markRejected,
-      createRevision,
-      getLinkedProject,
-      linkToProject
-    }
+      submitForReview, commercialApprove, commercialReject, gmApprove, gmReject,
+      sendToClient, markAccepted, markRejected, createRevision, getLinkedProject, linkToProject,
+    },
   };
 }
 
-// 3. Fetch reusable templates for clause library
+// 3. Clause-library templates
 export function useQuotationTemplates() {
-  const [templates, setTemplates] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-
-  const fetchTemplates = useCallback(async () => {
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('quotation_templates')
-        .select('*')
-        .order('template_name');
-
+  const q = useQuery({
+    queryKey: qKeys.templates,
+    queryFn: async () => {
+      const { data, error } = await supabase.from('quotation_templates').select('*').order('template_name');
       if (error) throw error;
-      setTemplates(data || []);
-      setError(null);
-    } catch (err: any) {
-      logger.error('Error fetching quotation templates:', err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchTemplates();
-  }, [fetchTemplates]);
-
-  return { templates, loading, error, refetch: fetchTemplates };
+      return data || [];
+    },
+  });
+  return {
+    templates: q.data ?? [],
+    loading: q.isPending,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
+  };
 }

@@ -162,7 +162,7 @@ export default function AMCRegistryPage() {
             ))}
           </select>
 
-          <button type="button" className="quote-btn quote-btn-secondary" onClick={refetch}>
+          <button type="button" className="quote-btn quote-btn-secondary" onClick={() => refetch()}>
             <RefreshCw size={14} /> Refresh
           </button>
         </div>

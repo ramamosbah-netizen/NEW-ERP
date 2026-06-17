@@ -327,7 +327,7 @@ export default function QuotationDetailPage({ params }: { params: Promise<{ id: 
           <ArrowLeft size={16} /> Back to Registry
         </Link>
         <div style={{ display: 'flex', gap: '0.5rem' }}>
-          <button className="quote-btn quote-btn-secondary" onClick={refetch}>
+          <button className="quote-btn quote-btn-secondary" onClick={() => refetch()}>
             <RefreshCw size={14} /> Refresh
           </button>
           <button className="quote-btn quote-btn-secondary" onClick={handleDownloadPDF}>

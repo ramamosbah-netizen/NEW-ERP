@@ -1,54 +1,38 @@
 // ============================================================
-// JEET ERP — Client Receipts & Allocations Hook
+// Aura ERP — Client Receipts & Allocations Hook (React Query)
 // ============================================================
 
-import { logger } from '@/lib/logger';
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { paymentService } from '@/services/paymentService';
 import type { ClientPayment } from '@/types/finance.types';
 
+const paymentKeys = {
+  lists: ['client-payments', 'list'] as const,
+  list: (f: { clientId?: string }) => ['client-payments', 'list', f] as const,
+};
+
 export function usePayments(filters: { clientId?: string } = {}) {
-  const [payments, setPayments] = useState<ClientPayment[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-
-  const fetchList = useCallback(async () => {
-    try {
-      setLoading(true);
-      const data = await paymentService.fetchPayments(filters);
-      setPayments(data);
-      setError(null);
-    } catch (err: any) {
-      logger.error('Error in usePayments hook:', err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [JSON.stringify(filters)]);
-
-  useEffect(() => {
-    fetchList();
-  }, [fetchList]);
+  const qc = useQueryClient();
+  const q = useQuery({ queryKey: paymentKeys.list(filters), queryFn: () => paymentService.fetchPayments(filters) });
 
   const record = async (
     paymentData: Omit<Partial<ClientPayment>, 'id' | 'payment_number' | 'created_by' | 'created_at'>,
-    allocations: Array<{ invoiceId: string; amount: number }>
+    allocations: Array<{ invoiceId: string; amount: number }>,
   ) => {
-    try {
-      const payment = await paymentService.recordPayment(paymentData, allocations);
-      await fetchList();
-      return payment;
-    } catch (err: any) {
-      logger.error('Error recording payment in hook:', err);
-      throw err;
-    }
+    const payment = await paymentService.recordPayment(paymentData, allocations);
+    await Promise.all([
+      qc.invalidateQueries({ queryKey: paymentKeys.lists }),
+      // a receipt changes invoice balances too
+      qc.invalidateQueries({ queryKey: ['client-invoices'] }),
+    ]);
+    return payment;
   };
 
   return {
-    payments,
-    loading,
-    error,
-    refetch: fetchList,
+    payments: q.data ?? [],
+    loading: q.isPending,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
     record,
   };
 }

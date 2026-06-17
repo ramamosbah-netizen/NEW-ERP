@@ -1,131 +1,59 @@
 // ============================================================
-// JEET ERP — Testing & Commissioning Execution Hook
+// Aura ERP — Testing & Commissioning Execution Hook (React Query)
 // ============================================================
 
-import { logger } from '@/lib/logger';
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { tcService } from '@/services/tcService';
 import { deviceImportService } from '@/services/deviceImportService';
 import { tcReportPDFService } from '@/services/tcReportPDFService';
-import { TCPackage, TCTestScript, TCDevice, TCTestResult } from '@/types/tc.types';
+
+const tcExecKey = (id: string) => ['tc-execution', id] as const;
 
 export function useTCExecution(packageId: string) {
-  const [pkg, setPkg] = useState<TCPackage | null>(null);
-  const [scripts, setScripts] = useState<TCTestScript[]>([]);
-  const [devices, setDevices] = useState<TCDevice[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+  const qc = useQueryClient();
+  const q = useQuery({
+    queryKey: tcExecKey(packageId),
+    enabled: !!packageId,
+    queryFn: async () => {
+      const [pkg, scripts, devices] = await Promise.all([
+        tcService.getPackageById(packageId),
+        tcService.getTestScripts(packageId),
+        tcService.getDevices(packageId),
+      ]);
+      return { pkg, scripts, devices };
+    },
+  });
 
-  const fetchDetails = useCallback(async () => {
-    if (!packageId) return;
-    try {
-      setLoading(true);
-      const pkgData = await tcService.getPackageById(packageId);
-      const scriptData = await tcService.getTestScripts(packageId);
-      const deviceData = await tcService.getDevices(packageId);
-      
-      setPkg(pkgData);
-      setScripts(scriptData);
-      setDevices(deviceData);
-      setError(null);
-    } catch (err: any) {
-      logger.error('Error fetching T&C execution details:', err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [packageId]);
-
-  useEffect(() => {
-    fetchDetails();
-  }, [packageId, fetchDetails]);
+  const inv = () => qc.invalidateQueries({ queryKey: tcExecKey(packageId) });
 
   const logTestResult = async (params: {
-    script_id: string;
-    device_id?: string;
-    result: 'PASS' | 'FAIL' | 'NA';
-    measured_value?: string;
-    photo_paths?: string[];
-    retest_of_id?: string;
-    measuring_instrument_id?: string;
-  }) => {
-    try {
-      const res = await tcService.logTestResult(params);
-      await fetchDetails();
-      return res;
-    } catch (err: any) {
-      logger.error('Failed to log test result:', err);
-      throw err;
-    }
-  };
+    script_id: string; device_id?: string; result: 'PASS' | 'FAIL' | 'NA';
+    measured_value?: string; photo_paths?: string[]; retest_of_id?: string; measuring_instrument_id?: string;
+  }) => { const res = await tcService.logTestResult(params); await inv(); return res; };
 
-  const scheduleWitness = async (witnessDate: string) => {
-    try {
-      const updated = await tcService.scheduleWitness(packageId, witnessDate);
-      await fetchDetails();
-      return updated;
-    } catch (err: any) {
-      logger.error('Failed to schedule witness:', err);
-      throw err;
-    }
-  };
+  const scheduleWitness = async (witnessDate: string) => { const u = await tcService.scheduleWitness(packageId, witnessDate); await inv(); return u; };
 
   const submitWitnessSignOff = async (params: {
-    witness_stage: 'INTERNAL' | 'CONSULTANT' | 'CLIENT';
-    witness_name: string;
-    designation: string;
-    company: string;
-    signature_path?: string;
-    result: 'APPROVED' | 'APPROVED_WITH_COMMENTS' | 'REJECTED';
-    comments?: string;
-  }) => {
-    try {
-      const res = await tcService.submitWitnessSignOff({
-        package_id: packageId,
-        ...params
-      });
-      await fetchDetails();
-      return res;
-    } catch (err: any) {
-      logger.error('Failed to submit witness sign-off:', err);
-      throw err;
-    }
-  };
+    witness_stage: 'INTERNAL' | 'CONSULTANT' | 'CLIENT'; witness_name: string; designation: string;
+    company: string; signature_path?: string; result: 'APPROVED' | 'APPROVED_WITH_COMMENTS' | 'REJECTED'; comments?: string;
+  }) => { const res = await tcService.submitWitnessSignOff({ package_id: packageId, ...params }); await inv(); return res; };
 
-  const importDevices = async (pasteText: string) => {
-    try {
-      const res = await deviceImportService.importDevices(packageId, pasteText);
-      await fetchDetails();
-      return res;
-    } catch (err: any) {
-      logger.error('Failed to paste-import devices:', err);
-      throw err;
-    }
-  };
-
-  const generateTCReport = async () => {
-    try {
-      return await tcReportPDFService.generateAndFileTCReport(packageId);
-    } catch (err: any) {
-      logger.error('Failed to compile T&C report PDF:', err);
-      throw err;
-    }
-  };
+  const importDevices = async (pasteText: string) => { const res = await deviceImportService.importDevices(packageId, pasteText); await inv(); return res; };
+  const generateTCReport = async () => tcReportPDFService.generateAndFileTCReport(packageId);
 
   return {
-    pkg,
-    scripts,
-    devices,
-    loading,
-    error,
-    refetch: fetchDetails,
+    pkg: q.data?.pkg ?? null,
+    scripts: q.data?.scripts ?? [],
+    devices: q.data?.devices ?? [],
+    loading: q.isPending,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
     logTestResult,
     scheduleWitness,
     submitWitnessSignOff,
     importDevices,
-    generateTCReport
+    generateTCReport,
   };
 }
 
 export default useTCExecution;
-// 

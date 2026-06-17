@@ -118,7 +118,7 @@ export default function ComplianceDashboardPage() {
         <Link href="/hr" className="quote-btn quote-btn-secondary" style={{ padding: '0.4rem 0.8rem', display: 'inline-flex', gap: '0.4rem', alignItems: 'center', textDecoration: 'none' }}>
           <ArrowLeft size={14} /> Back to Registry
         </Link>
-        <button className="quote-btn quote-btn-secondary" onClick={refetch}>
+        <button className="quote-btn quote-btn-secondary" onClick={() => refetch()}>
           <RefreshCw size={12} /> Recalculate Compliance
         </button>
       </div>

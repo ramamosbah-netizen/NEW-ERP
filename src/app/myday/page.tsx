@@ -179,7 +179,7 @@ export default function MyDayPage() {
           </div>
           <div className="flex gap-2">
             <button
-              onClick={refetch}
+              onClick={() => refetch()}
               className="quote-btn quote-btn-secondary text-xs"
               disabled={loading}
             >

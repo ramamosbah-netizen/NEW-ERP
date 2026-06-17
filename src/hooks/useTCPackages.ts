@@ -1,54 +1,34 @@
 // ============================================================
-// JEET ERP — Testing & Commissioning Packages Hook
+// Aura ERP — Testing & Commissioning Packages Hook (React Query)
 // ============================================================
 
-import { logger } from '@/lib/logger';
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import { tcService } from '@/services/tcService';
-import { TCPackage, TCScriptTemplate, WitnessRequired } from '@/types/tc.types';
+import type { TCScriptTemplate, WitnessRequired } from '@/types/tc.types';
+
+const tcKeys = {
+  packages: (pid: string) => ['tc', 'packages', pid] as const,
+  templates: ['tc', 'templates'] as const,
+};
 
 export function useTCPackages(projectId?: string) {
-  const [packages, setPackages] = useState<TCPackage[]>([]);
-  const [templates, setTemplates] = useState<TCScriptTemplate[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+  const qc = useQueryClient();
 
-  const fetchPackages = useCallback(async () => {
-    if (!projectId) return;
-    try {
-      setLoading(true);
-      const data = await tcService.getPackagesByProject(projectId);
-      setPackages(data);
-      setError(null);
-    } catch (err: any) {
-      logger.error('Error fetching T&C packages:', err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [projectId]);
+  const packagesQ = useQuery({
+    queryKey: tcKeys.packages(projectId ?? ''),
+    enabled: !!projectId,
+    queryFn: () => tcService.getPackagesByProject(projectId!),
+  });
 
-  const fetchTemplates = useCallback(async () => {
-    try {
-      const { data, error: tErr } = await supabase
-        .from('tc_script_templates')
-        .select('*')
-        .order('name', { ascending: true });
-
-      if (tErr) throw tErr;
-      setTemplates(data as TCScriptTemplate[]);
-    } catch (err: any) {
-      logger.error('Error fetching script templates:', err);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (projectId) {
-      fetchPackages();
-    }
-    fetchTemplates();
-  }, [projectId, fetchPackages, fetchTemplates]);
+  const templatesQ = useQuery({
+    queryKey: tcKeys.templates,
+    queryFn: async () => {
+      const { data, error } = await supabase.from('tc_script_templates').select('*').order('name', { ascending: true });
+      if (error) throw error;
+      return (data || []) as TCScriptTemplate[];
+    },
+  });
 
   const createPackage = async (params: {
     system: string;
@@ -59,26 +39,18 @@ export function useTCPackages(projectId?: string) {
     templateId?: string;
   }) => {
     if (!projectId) throw new Error('Project ID is required to create a package');
-    try {
-      const newPkg = await tcService.createPackage({
-        project_id: projectId,
-        ...params
-      });
-      await fetchPackages();
-      return newPkg;
-    } catch (err: any) {
-      logger.error('Failed to create T&C package:', err);
-      throw err;
-    }
+    const newPkg = await tcService.createPackage({ project_id: projectId, ...params });
+    await qc.invalidateQueries({ queryKey: tcKeys.packages(projectId) });
+    return newPkg;
   };
 
   return {
-    packages,
-    templates,
-    loading,
-    error,
-    refetch: fetchPackages,
-    createPackage
+    packages: packagesQ.data ?? [],
+    templates: templatesQ.data ?? [],
+    loading: packagesQ.isPending,
+    error: ((packagesQ.error || templatesQ.error) as Error | null) ?? null,
+    refetch: packagesQ.refetch,
+    createPackage,
   };
 }
 

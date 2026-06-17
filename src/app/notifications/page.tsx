@@ -124,7 +124,7 @@ export default function NotificationsCenterPage() {
             )}
           </div>
           <button
-            onClick={refetch}
+            onClick={() => refetch()}
             className="text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors p-1"
             title="Reload alerts"
           >

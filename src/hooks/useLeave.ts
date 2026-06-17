@@ -1,132 +1,74 @@
 // ============================================================
-// JEET ERP — Leave Management React Hook
+// Aura ERP — Leave Management React Hooks (React Query)
 // ============================================================
 
-import { logger } from '@/lib/logger';
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { leaveService } from '@/services/leaveService';
 import { supabase } from '@/lib/supabase';
-import type { LeaveRequest, LeaveBalance } from '@/types/hr.types';
+import type { LeaveRequest } from '@/types/hr.types';
+
+const leaveKeys = {
+  detail: (id: string) => ['leave', 'employee', id] as const,
+  approvals: ['leave', 'approvals'] as const,
+};
 
 export function useLeave(employeeId?: string) {
-  const [requests, setRequests] = useState<LeaveRequest[]>([]);
-  const [balances, setBalances] = useState<LeaveBalance[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
-
-  const fetchLeaveDetails = useCallback(async () => {
-    if (!employeeId) return;
-    try {
-      setLoading(true);
-      setError(null);
-      
-      const [reqs, { data: bals }] = await Promise.all([
-        leaveService.getLeaveRequests(employeeId),
-        supabase
-          .from('leave_balances')
-          .select('*')
-          .eq('employee_id', employeeId)
+  const qc = useQueryClient();
+  const q = useQuery({
+    queryKey: leaveKeys.detail(employeeId ?? ''),
+    enabled: !!employeeId,
+    queryFn: async () => {
+      const [requests, { data: bals }] = await Promise.all([
+        leaveService.getLeaveRequests(employeeId!),
+        supabase.from('leave_balances').select('*').eq('employee_id', employeeId!),
       ]);
+      return { requests, balances: bals || [] };
+    },
+  });
 
-      setRequests(reqs);
-      setBalances(bals || []);
-    } catch (err: any) {
-      logger.error('Failed to load leave details:', err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [employeeId]);
-
-  useEffect(() => {
-    fetchLeaveDetails();
-  }, [fetchLeaveDetails]);
-
-  const submitRequest = async (params: Omit<LeaveRequest, 'id' | 'status' | 'approver_id' | 'created_at' | 'updated_at'>) => {
-    try {
-      setLoading(true);
-      const res = await leaveService.createLeaveRequest(params);
-      await fetchLeaveDetails();
-      return res;
-    } catch (err: any) {
-      logger.error('Failed to submit leave request:', err);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
+  const submitRequest = async (
+    params: Omit<LeaveRequest, 'id' | 'status' | 'approver_id' | 'created_at' | 'updated_at'>,
+  ) => {
+    const res = await leaveService.createLeaveRequest(params);
+    await qc.invalidateQueries({ queryKey: leaveKeys.detail(employeeId ?? '') });
+    return res;
   };
 
-  const getWorkingDays = async (fromDate: string, toDate: string) => {
-    return leaveService.calculateWorkingDays(fromDate, toDate);
-  };
+  const getWorkingDays = async (fromDate: string, toDate: string) =>
+    leaveService.calculateWorkingDays(fromDate, toDate);
 
   return {
-    requests,
-    balances,
-    loading,
-    error,
-    refetch: fetchLeaveDetails,
+    requests: q.data?.requests ?? [],
+    balances: q.data?.balances ?? [],
+    loading: q.isPending,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
     submitRequest,
-    getWorkingDays
+    getWorkingDays,
   };
 }
 
 export function useLeaveApprovals() {
-  const [queue, setQueue] = useState<LeaveRequest[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
-
-  const fetchQueue = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await leaveService.getApprovalsQueue();
-      setQueue(data);
-    } catch (err: any) {
-      logger.error('Failed to load leave approvals queue:', err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchQueue();
-  }, [fetchQueue]);
+  const qc = useQueryClient();
+  const q = useQuery({ queryKey: leaveKeys.approvals, queryFn: () => leaveService.getApprovalsQueue() });
 
   const approve = async (requestId: string) => {
-    try {
-      setLoading(true);
-      await leaveService.approveLeaveRequest(requestId);
-      await fetchQueue();
-    } catch (err: any) {
-      logger.error('Failed to approve leave request:', err);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
+    await leaveService.approveLeaveRequest(requestId);
+    await qc.invalidateQueries({ queryKey: leaveKeys.approvals });
   };
-
   const reject = async (requestId: string) => {
-    try {
-      setLoading(true);
-      await leaveService.rejectLeaveRequest(requestId);
-      await fetchQueue();
-    } catch (err: any) {
-      logger.error('Failed to reject leave request:', err);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
+    await leaveService.rejectLeaveRequest(requestId);
+    await qc.invalidateQueries({ queryKey: leaveKeys.approvals });
   };
 
   return {
-    queue,
-    loading,
-    error,
-    refetch: fetchQueue,
+    queue: q.data ?? [],
+    loading: q.isPending,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
     approve,
-    reject
+    reject,
   };
 }
+
 export default useLeave;

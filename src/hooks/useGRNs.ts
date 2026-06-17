@@ -1,11 +1,10 @@
 // ============================================================
-// JEET ERP — Goods Receipt Note (GRN) React Hooks
+// Aura ERP — Goods Receipt Note (GRN) React Hooks (React Query)
 // ============================================================
 
-import { logger } from '@/lib/logger';
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { grnService } from '@/services/grnService';
-import type { GoodsReceiptNote, GRNReturn, GRNReturnStatus } from '@/types/grn.types';
+import type { GRNReturnStatus } from '@/types/grn.types';
 
 export interface GRNFilters {
   project_id?: string;
@@ -13,105 +12,50 @@ export interface GRNFilters {
   search?: string;
 }
 
-/**
- * Hook to retrieve the list of Goods Receipt Notes.
- */
+const grnKeys = {
+  list: (f: GRNFilters) => ['grns', 'list', f] as const,
+  detail: (id: string) => ['grns', 'detail', id] as const,
+  returns: (f: unknown) => ['grns', 'returns', f] as const,
+  returnsAll: ['grns', 'returns'] as const,
+};
+
+/** List Goods Receipt Notes. */
 export function useGRNs(filters: GRNFilters = {}) {
-  const [grns, setGrns] = useState<GoodsReceiptNote[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-
-  const fetchList = useCallback(async () => {
-    try {
-      setLoading(true);
-      const data = await grnService.getGRNs(filters);
-      setGrns(data);
-      setError(null);
-    } catch (err: any) {
-      logger.error('Error fetching GRN list:', err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [JSON.stringify(filters)]);
-
-  useEffect(() => {
-    fetchList();
-  }, [fetchList]);
-
-  return { grns, loading, error, refetch: fetchList };
+  const q = useQuery({ queryKey: grnKeys.list(filters), queryFn: () => grnService.getGRNs(filters) });
+  return {
+    grns: q.data ?? [],
+    loading: q.isPending,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
+  };
 }
 
-/**
- * Hook to retrieve details of a single GRN.
- */
+/** Single GRN detail. */
 export function useGRN(id: string) {
-  const [grn, setGrn] = useState<GoodsReceiptNote | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-
-  const fetchDetail = useCallback(async () => {
-    if (!id) return;
-    try {
-      setLoading(true);
-      const data = await grnService.getGRNDetail(id);
-      setGrn(data);
-      setError(null);
-    } catch (err: any) {
-      logger.error(`Error loading GRN ${id} details:`, err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [id]);
-
-  useEffect(() => {
-    fetchDetail();
-  }, [fetchDetail]);
-
-  return { grn, loading, error, refetch: fetchDetail };
+  const q = useQuery({ queryKey: grnKeys.detail(id), queryFn: () => grnService.getGRNDetail(id), enabled: !!id });
+  return {
+    grn: q.data ?? null,
+    loading: q.isPending,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
+  };
 }
 
-/**
- * Hook to fetch and track supplier returns.
- */
+/** Supplier returns + status updates. */
 export function useGRNReturns(filters?: { status?: GRNReturnStatus; project_id?: string }) {
-  const [returns, setReturns] = useState<GRNReturn[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+  const qc = useQueryClient();
+  const q = useQuery({ queryKey: grnKeys.returns(filters ?? {}), queryFn: () => grnService.getReturns(filters) });
 
-  const fetchReturns = useCallback(async () => {
-    try {
-      setLoading(true);
-      const data = await grnService.getReturns(filters);
-      setReturns(data);
-      setError(null);
-    } catch (err: any) {
-      logger.error('Error loading returns:', err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [JSON.stringify(filters)]);
-
-  useEffect(() => {
-    fetchReturns();
-  }, [fetchReturns]);
-
-  const updateReturnStatus = async (
-    returnId: string,
-    status: GRNReturnStatus,
-    resolutionNotes?: string
-  ) => {
+  const updateReturnStatus = async (returnId: string, status: GRNReturnStatus, resolutionNotes?: string) => {
     await grnService.updateReturnStatus(returnId, status, resolutionNotes);
-    await fetchReturns();
+    await qc.invalidateQueries({ queryKey: grnKeys.returnsAll });
   };
 
   return {
-    returns,
-    loading,
-    error,
-    refetch: fetchReturns,
-    updateReturnStatus
+    returns: q.data ?? [],
+    loading: q.isPending,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
+    updateReturnStatus,
   };
 }

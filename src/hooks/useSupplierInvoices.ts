@@ -1,9 +1,8 @@
 // ============================================================
-// JEET ERP — Supplier Invoices React Hooks
+// Aura ERP — Supplier Invoices React Hooks (React Query)
 // ============================================================
 
-import { logger } from '@/lib/logger';
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supplierInvoiceService } from '@/services/supplierInvoiceService';
 import type { SupplierInvoice, SupplierInvoiceItem } from '@/types/finance.types';
 
@@ -14,108 +13,70 @@ export interface SupplierInvoiceFilters {
   projectId?: string;
 }
 
-/**
- * Hook to retrieve and filter the list of Supplier Invoices (AP).
- */
+const sinvKeys = {
+  lists: ['supplier-invoices', 'list'] as const,
+  list: (f: SupplierInvoiceFilters) => ['supplier-invoices', 'list', f] as const,
+  detail: (id: string) => ['supplier-invoices', 'detail', id] as const,
+};
+
+/** List + filter Supplier Invoices (AP). */
 export function useSupplierInvoices(filters: SupplierInvoiceFilters = {}) {
-  const [invoices, setInvoices] = useState<SupplierInvoice[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-
-  const fetchList = useCallback(async () => {
-    try {
-      setLoading(true);
-      const data = await supplierInvoiceService.fetchSupplierInvoices(filters);
-      setInvoices(data);
-      setError(null);
-    } catch (err: any) {
-      logger.error('Error in useSupplierInvoices hook:', err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [JSON.stringify(filters)]);
-
-  useEffect(() => {
-    fetchList();
-  }, [fetchList]);
-
-  return { invoices, loading, error, refetch: fetchList };
+  const q = useQuery({ queryKey: sinvKeys.list(filters), queryFn: () => supplierInvoiceService.fetchSupplierInvoices(filters) });
+  return {
+    invoices: q.data ?? [],
+    loading: q.isPending,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
+  };
 }
 
-/**
- * Hook to retrieve details of a single supplier invoice and perform actions.
- */
+/** Single supplier invoice detail + actions. */
 export function useSupplierInvoice(id: string) {
-  const [invoice, setInvoice] = useState<(SupplierInvoice & { items: SupplierInvoiceItem[] }) | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+  const qc = useQueryClient();
+  const q = useQuery({ queryKey: sinvKeys.detail(id), queryFn: () => supplierInvoiceService.fetchSupplierInvoiceById(id), enabled: !!id });
 
-  const fetchDetail = useCallback(async () => {
-    if (!id) return;
-    try {
-      setLoading(true);
-      const data = await supplierInvoiceService.fetchSupplierInvoiceById(id);
-      setInvoice(data);
-      setError(null);
-    } catch (err: any) {
-      logger.error(`Error in useSupplierInvoice hook for ${id}:`, err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [id]);
-
-  useEffect(() => {
-    fetchDetail();
-  }, [fetchDetail]);
+  const invalidate = async () => {
+    await Promise.all([
+      qc.invalidateQueries({ queryKey: sinvKeys.detail(id) }),
+      qc.invalidateQueries({ queryKey: sinvKeys.lists }),
+    ]);
+  };
 
   const register = async (
     invoiceData: Omit<Partial<SupplierInvoice>, 'id' | 'internal_ref' | 'created_by' | 'created_at' | 'updated_at'>,
     itemsData: Array<Omit<Partial<SupplierInvoiceItem>, 'id' | 'supplier_invoice_id' | 'created_at'>>,
-    trn?: string | null
+    trn?: string | null,
   ) => {
     const doc = await supplierInvoiceService.registerSupplierInvoice(invoiceData, itemsData, trn);
-    await fetchDetail();
+    await invalidate();
     return doc;
   };
 
-  const approve = async () => {
-    await supplierInvoiceService.approveSupplierInvoice(id);
-    await fetchDetail();
-  };
-
-  const overrideException = async (reason: string) => {
-    await supplierInvoiceService.overrideMatchException(id, reason);
-    await fetchDetail();
-  };
+  const approve = async () => { await supplierInvoiceService.approveSupplierInvoice(id); await invalidate(); };
+  const overrideException = async (reason: string) => { await supplierInvoiceService.overrideMatchException(id, reason); await invalidate(); };
 
   const recordPayment = async (
     paymentData: {
-      supplier_id: string;
-      amount: number;
-      payment_date: string;
-      method: string;
-      reference?: string;
-      bank_account?: string;
-      notes?: string;
+      supplier_id: string; amount: number; payment_date: string; method: string;
+      reference?: string; bank_account?: string; notes?: string;
     },
-    allocations: Array<{ invoiceId: string; amount: number }>
+    allocations: Array<{ invoiceId: string; amount: number }>,
   ) => {
     const payment = await supplierInvoiceService.recordSupplierPayment(paymentData, allocations);
-    await fetchDetail();
+    await invalidate();
     return payment;
   };
 
   return {
-    invoice,
-    loading,
-    error,
-    refetch: fetchDetail,
+    invoice: q.data ?? null,
+    loading: q.isPending,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
     register,
     approve,
     overrideException,
-    recordPayment
+    recordPayment,
   };
 }
+
 export default useSupplierInvoices;

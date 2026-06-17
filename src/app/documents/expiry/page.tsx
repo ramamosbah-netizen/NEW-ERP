@@ -52,7 +52,7 @@ export default function DocumentExpiryPage() {
           <h1 className="quote-header-title">Document Expiration Control Board</h1>
           <p className="quote-header-subtitle">Monitor trade licenses, SIRA certificates, and commercial contracts before they expire</p>
         </div>
-        <button className="quote-btn quote-btn-secondary" onClick={refetch}>
+        <button className="quote-btn quote-btn-secondary" onClick={() => refetch()}>
           <RefreshCw size={14} /> Refresh Alerts
         </button>
       </header>

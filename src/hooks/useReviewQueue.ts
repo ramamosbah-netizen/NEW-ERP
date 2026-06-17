@@ -1,42 +1,30 @@
 // ============================================================
-// JEET ERP — Document Review Queue React Hook
-// Fetches documents in NEEDS_REVIEW status
+// Aura ERP — Document Review Queue React Hook (React Query)
 // ============================================================
 
-import { logger } from '@/lib/logger';
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
 import type { Document } from '@/types/document.types';
 
 export function useReviewQueue() {
-  const [documents, setDocuments] = useState<Document[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-
-  const fetchQueue = useCallback(async () => {
-    try {
-      setLoading(true);
-      const { data, error: fetchErr } = await supabase
+  const q = useQuery({
+    queryKey: ['documents', 'review-queue'],
+    queryFn: async () => {
+      const { data, error } = await supabase
         .from('documents')
         .select('*')
         .eq('status', 'NEEDS_REVIEW')
         .eq('is_active', true)
         .order('created_at', { ascending: false });
+      if (error) throw error;
+      return (data || []) as Document[];
+    },
+  });
 
-      if (fetchErr) throw fetchErr;
-      setDocuments(data || []);
-      setError(null);
-    } catch (err: any) {
-      logger.error('Error fetching review queue documents:', err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchQueue();
-  }, [fetchQueue]);
-
-  return { documents, loading, error, refetch: fetchQueue };
+  return {
+    documents: q.data ?? [],
+    loading: q.isPending,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
+  };
 }

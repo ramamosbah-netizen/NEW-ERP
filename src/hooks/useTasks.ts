@@ -1,88 +1,57 @@
 // ============================================================
-// JEET ERP — Tasks List & Kanban Board React Hook
-// Handles task CRUD updates, filtering, and state transitions
+// Aura ERP — Tasks List & Kanban Board React Hook (React Query)
 // ============================================================
 
-import { logger } from '@/lib/logger';
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { taskService } from '@/services/taskService';
 import type { Task, TaskStatus, TaskPriority, TaskOrigin } from '@/types/task.types';
 
-export function useTasks(filters: {
+export interface TaskFilters {
   assignee_id?: string;
   project_id?: string;
   status?: TaskStatus;
   priority?: TaskPriority;
   origin?: TaskOrigin;
   search?: string;
-} = {}) {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+}
 
-  const fetchList = useCallback(async () => {
-    try {
-      setLoading(true);
-      const data = await taskService.fetchTasks(filters);
-      setTasks(data);
-      setError(null);
-    } catch (err: any) {
-      logger.error('Failed to load tasks list:', err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [JSON.stringify(filters)]);
+const taskKeys = {
+  all: ['tasks'] as const,
+  list: (f: TaskFilters) => ['tasks', 'list', f] as const,
+};
 
-  useEffect(() => {
-    fetchList();
-  }, [fetchList]);
+export function useTasks(filters: TaskFilters = {}) {
+  const qc = useQueryClient();
+  const q = useQuery({ queryKey: taskKeys.list(filters), queryFn: () => taskService.fetchTasks(filters) });
+  const invalidate = () => qc.invalidateQueries({ queryKey: taskKeys.all });
 
   const updateStatus = async (taskId: string, toStatus: TaskStatus, blockedReason?: string) => {
-    try {
-      const payload: Partial<Task> = { status: toStatus };
-      if (toStatus === 'BLOCKED') {
-        payload.blocked_reason = blockedReason || 'Unknown blocker';
-      } else {
-        payload.blocked_reason = '';
-      }
-
-      await taskService.updateTask(taskId, payload);
-      
-      // Local state update for instant UI feedback
-      setTasks(prev =>
-        prev.map(t => t.id === taskId ? { 
-          ...t, 
-          status: toStatus, 
-          blocked_reason: payload.blocked_reason, 
-          completed_at: ['DONE', 'DONE_AUTO'].includes(toStatus) ? new Date().toISOString() : undefined 
-        } : t)
-      );
-    } catch (err) {
-      logger.error('Failed to update task status:', err);
-      throw err;
-    }
+    const payload: Partial<Task> = { status: toStatus };
+    payload.blocked_reason = toStatus === 'BLOCKED' ? (blockedReason || 'Unknown blocker') : '';
+    await taskService.updateTask(taskId, payload);
+    await invalidate();
   };
 
   const createTask = async (taskData: Partial<Task>) => {
     const newTask = await taskService.createTask(taskData);
-    setTasks(prev => [newTask, ...prev]);
+    await invalidate();
     return newTask;
   };
 
   const deleteTask = async (taskId: string) => {
     await taskService.deleteTask(taskId);
-    setTasks(prev => prev.filter(t => t.id !== taskId));
+    await invalidate();
   };
 
   return {
-    tasks,
-    loading,
-    error,
-    refetch: fetchList,
+    tasks: q.data ?? [],
+    loading: q.isPending,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
     updateStatus,
     createTask,
-    deleteTask
+    deleteTask,
   };
 }
+
 export default useTasks;
