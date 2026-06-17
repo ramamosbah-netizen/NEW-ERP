@@ -1,38 +1,20 @@
 // ============================================================
-// JEET ERP — Snag List Management Hook
+// Aura ERP — Snag List Management Hook (React Query)
 // ============================================================
 
-import { logger } from '@/lib/logger';
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { snagService } from '@/services/snagService';
 import { snagExportService } from '@/services/snagExportService';
-import { Snag, SnagSeverity, SnagStatus, SnagSource } from '@/types/snag.types';
+import type { SnagSeverity, SnagStatus, SnagSource } from '@/types/snag.types';
 
 export function useSnags(projectId?: string) {
-  const [snags, setSnags] = useState<Snag[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-
-  const fetchSnags = useCallback(async () => {
-    if (!projectId) return;
-    try {
-      setLoading(true);
-      const data = await snagService.getSnagsByProject(projectId);
-      setSnags(data);
-      setError(null);
-    } catch (err: any) {
-      logger.error('Error fetching snags:', err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [projectId]);
-
-  useEffect(() => {
-    if (projectId) {
-      fetchSnags();
-    }
-  }, [projectId, fetchSnags]);
+  const qc = useQueryClient();
+  const key = ['snags', projectId ?? ''] as const;
+  const q = useQuery({
+    queryKey: key,
+    queryFn: () => snagService.getSnagsByProject(projectId!),
+    enabled: !!projectId,
+  });
 
   const createSnag = async (params: {
     source: SnagSource;
@@ -47,57 +29,34 @@ export function useSnags(projectId?: string) {
     tc_test_result_id?: string;
   }) => {
     if (!projectId) throw new Error('Project ID is required to log a snag');
-    try {
-      const item = await snagService.createSnag({
-        project_id: projectId,
-        ...params
-      });
-      await fetchSnags();
-      return item;
-    } catch (err: any) {
-      logger.error('Failed to create snag:', err);
-      throw err;
-    }
+    const item = await snagService.createSnag({ project_id: projectId, ...params });
+    await qc.invalidateQueries({ queryKey: key });
+    return item;
   };
 
   const transitionStatus = async (
     snagId: string,
     newStatus: SnagStatus,
-    params?: {
-      photo_paths?: string[];
-      comments?: string;
-      client_accepted?: boolean;
-      deferral_justification?: string;
-    }
+    params?: { photo_paths?: string[]; comments?: string; client_accepted?: boolean; deferral_justification?: string },
   ) => {
-    try {
-      const updated = await snagService.transitionSnagStatus(snagId, newStatus, params);
-      await fetchSnags();
-      return updated;
-    } catch (err: any) {
-      logger.error('Failed to transition snag status:', err);
-      throw err;
-    }
+    const updated = await snagService.transitionSnagStatus(snagId, newStatus, params);
+    await qc.invalidateQueries({ queryKey: key });
+    return updated;
   };
 
   const exportPDF = async () => {
     if (!projectId) throw new Error('Project ID is required to export snags');
-    try {
-      return await snagExportService.exportSnagsToPDF(projectId);
-    } catch (err: any) {
-      logger.error('Failed to export snag list PDF:', err);
-      throw err;
-    }
+    return snagExportService.exportSnagsToPDF(projectId);
   };
 
   return {
-    snags,
-    loading,
-    error,
-    refetch: fetchSnags,
+    snags: q.data ?? [],
+    loading: q.isPending,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
     createSnag,
     transitionStatus,
-    exportPDF
+    exportPDF,
   };
 }
 
