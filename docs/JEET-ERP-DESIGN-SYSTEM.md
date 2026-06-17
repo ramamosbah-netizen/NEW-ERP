@@ -101,17 +101,24 @@ inline/custom styling with the kit**, one module at a time.
 tenders.css, timesheets.css, handover.css, comparisons.css, whatsapp.css,
 boq.css, settings.css`. Keep `globals.css`, `layout.css`, `auth.css`.
 
-**Rollout order** (highest traffic / worst inconsistency first):
-1. ✅ Shell + tokens + kit (Phase 1–2 — done)
+**Rollout progress:**
+1. ✅ Shell + tokens + kit (Phase 1–2)
 2. ✅ Global cleanup: fixed 418 invalid `text-[var(--text-primary)]0` color
-   classes (a find/replace artifact that rendered with no color) across 44 files
-   → `text-[var(--text-muted)]`. Finance hub page migrated to the standard
-   skeleton (PageHeader + `flex flex-col gap-5`). (Phase 3 — started)
-3. Finance · Procurement (remaining pages; retire "mint terminal" wrappers)
-4. Projects · Sales
-5. HR · Inventory · Fleet
-6. Service · Comms · Admin
-7. Detail/`[id]` pages and dialogs
+   classes across 44 files → `text-[var(--text-muted)]`.
+3. ✅ Fixed the pre-existing **red production build** (`useSearchParams` without
+   `<Suspense>` in `/comms`). Build now green: 218/218 static pages.
+4. ✅ **Legacy "mint terminal" wrapper eliminated app-wide** — every page that
+   used `min-h-screen bg-[var(--bg-dark)]` chrome now sits on the shared shell
+   surface (body canvas is already `--bg-dark`, so visually identical background;
+   removed the redundant declaration + nested full-height scroll + `max-w`
+   centering). Finance AR + AP registries fully migrated to PageHeader + Toolbar + Card.
+
+**Remaining (finer-grained polish, per-page):**
+- Upgrade remaining custom page headers (`h1` + breadcrumb) → `PageHeader`.
+- Retire the 13 module CSS files (replace rules with tokens/kit).
+- Convert bespoke tables → `DataTable`, bespoke filter rows → `Toolbar`.
+- Order: Finance → Procurement → Projects → Sales → HR → Inventory → Fleet →
+  Service → Comms → Admin, then detail/`[id]` pages.
 
 Each module migration is additive and independently shippable; the shell and
 deep links never change, so partial rollout is always in a working state.
