@@ -1,122 +1,77 @@
 // ============================================================
-// JEET ERP — Meetings Module React Hook
-// Handles scheduling lists, RSVPs, and action items extraction
+// Aura ERP — Meetings Module React Hooks (React Query)
 // ============================================================
 
-import { logger } from '@/lib/logger';
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { meetingService } from '@/services/meetingService';
 import type { Meeting, MeetingStatus, AttendeeResponse } from '@/types/meeting.types';
 
-export function useMeetings(filters: {
+interface MeetingFilters {
   project_id?: string;
   organizer_id?: string;
   status?: MeetingStatus;
-} = {}) {
-  const [meetings, setMeetings] = useState<Meeting[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+}
 
-  const fetchList = useCallback(async () => {
-    try {
-      setLoading(true);
-      const data = await meetingService.fetchMeetings(filters);
-      setMeetings(data);
-      setError(null);
-    } catch (err: any) {
-      logger.error('Failed to fetch meetings list:', err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [JSON.stringify(filters)]);
+const mKeys = {
+  lists: ['meetings', 'list'] as const,
+  list: (f: MeetingFilters) => ['meetings', 'list', f] as const,
+  detail: (id: string) => ['meetings', 'detail', id] as const,
+};
 
-  useEffect(() => {
-    fetchList();
-  }, [fetchList]);
+export function useMeetings(filters: MeetingFilters = {}) {
+  const qc = useQueryClient();
+  const q = useQuery({ queryKey: mKeys.list(filters), queryFn: () => meetingService.fetchMeetings(filters) });
 
   const scheduleMeeting = async (
     meetingData: Omit<Meeting, 'id' | 'created_at' | 'attendees' | 'action_items'>,
-    attendees: Array<{ user_id?: string; external_name?: string; external_email?: string }>
+    attendees: Array<{ user_id?: string; external_name?: string; external_email?: string }>,
   ) => {
     const res = await meetingService.createMeeting(meetingData, attendees);
-    await fetchList();
+    await qc.invalidateQueries({ queryKey: mKeys.lists });
     return res;
   };
 
   const respondInvitation = async (meetingId: string, userId: string, response: AttendeeResponse) => {
     await meetingService.respondToInvitation(meetingId, userId, response);
-    // Update local state response
-    setMeetings(prev =>
-      prev.map(m => {
-        if (m.id !== meetingId) return m;
-        const updatedAttendees = (m.attendees || []).map(a => 
-          a.user_id === userId ? { ...a, response } : a
-        );
-        return { ...m, attendees: updatedAttendees };
-      })
-    );
+    await qc.invalidateQueries({ queryKey: mKeys.lists });
   };
 
   return {
-    meetings,
-    loading,
-    error,
-    refetch: fetchList,
+    meetings: q.data ?? [],
+    loading: q.isPending,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
     scheduleMeeting,
-    respondInvitation
+    respondInvitation,
   };
 }
 
-/**
- * Hook for managing details, actions, and publishing minutes for a single meeting.
- */
 export function useMeetingDetail(meetingId: string | null) {
-  const [meeting, setMeeting] = useState<Meeting | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
+  const qc = useQueryClient();
+  const q = useQuery({
+    queryKey: mKeys.detail(meetingId ?? ''),
+    enabled: !!meetingId,
+    queryFn: () => meetingService.fetchMeetingById(meetingId!),
+  });
 
-  const fetchDetails = useCallback(async () => {
-    if (!meetingId) return;
-    try {
-      setLoading(true);
-      const data = await meetingService.fetchMeetingById(meetingId);
-      setMeeting(data);
-      setError(null);
-    } catch (err: any) {
-      logger.error('Failed to load meeting details:', err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [meetingId]);
-
-  useEffect(() => {
-    fetchDetails();
-  }, [fetchDetails]);
-
-  const extractAIActionItems = async (minutesText: string) => {
-    return await meetingService.extractActionItems(minutesText);
-  };
+  const extractAIActionItems = async (minutesText: string) => meetingService.extractActionItems(minutesText);
 
   const publishMinutes = async (
     minutesMarkdown: string,
-    actionItems: Array<{ description: string; assignee_id?: string; due_date?: string }>
+    actionItems: Array<{ description: string; assignee_id?: string; due_date?: string }>,
   ) => {
     if (!meetingId) return false;
     const res = await meetingService.publishMinutes(meetingId, minutesMarkdown, actionItems);
-    if (res) {
-      await fetchDetails();
-    }
+    if (res) await qc.invalidateQueries({ queryKey: mKeys.detail(meetingId) });
     return res;
   };
 
   return {
-    meeting,
-    loading,
-    error,
-    refetch: fetchDetails,
+    meeting: q.data ?? null,
+    loading: q.isLoading,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
     extractAIActionItems,
-    publishMinutes
+    publishMinutes,
   };
 }
