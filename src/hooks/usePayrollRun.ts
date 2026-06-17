@@ -1,249 +1,138 @@
 // ============================================================
-// JEET ERP — Payroll Runs React Hook
+// Aura ERP — Payroll Runs React Hooks (React Query)
 // ============================================================
 
-import { logger } from '@/lib/logger';
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { payrollService } from '@/services/payrollService';
 import { supabase } from '@/lib/supabase';
-import type { PayrollRun, PayrollLine, PayrollAdjustment } from '@/types/payroll.types';
+import type { PayrollRun } from '@/types/payroll.types';
+
+const prKeys = {
+  runs: ['payroll', 'runs'] as const,
+  run: (id: string) => ['payroll', 'run', id] as const,
+  adjustments: (month: string) => ['payroll', 'adjustments', month] as const,
+};
 
 export function usePayrollRun(runId?: string) {
-  const [payrollRuns, setPayrollRuns] = useState<PayrollRun[]>([]);
-  const [currentRun, setCurrentRun] = useState<PayrollRun | null>(null);
-  const [currentLines, setCurrentLines] = useState<PayrollLine[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
+  const qc = useQueryClient();
 
-  const fetchRuns = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const { data, error: err } = await supabase
-        .from('payroll_runs')
-        .select('*')
-        .order('period_month', { ascending: false });
+  const runsQ = useQuery({
+    queryKey: prKeys.runs,
+    queryFn: async () => {
+      const { data, error } = await supabase.from('payroll_runs').select('*').order('period_month', { ascending: false });
+      if (error) throw error;
+      return data || [];
+    },
+  });
 
-      if (err) throw err;
-      setPayrollRuns(data || []);
-    } catch (err: any) {
-      logger.error('Failed to fetch payroll runs list:', err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  const fetchRunDetails = useCallback(async () => {
-    if (!runId) return;
-    try {
-      setLoading(true);
-      setError(null);
-
+  const detailQ = useQuery({
+    queryKey: prKeys.run(runId ?? ''),
+    enabled: !!runId,
+    queryFn: async () => {
       const [runRes, linesRes] = await Promise.all([
-        supabase
-          .from('payroll_runs')
-          .select('*')
-          .eq('id', runId)
-          .single(),
+        supabase.from('payroll_runs').select('*').eq('id', runId!).single(),
         supabase
           .from('payroll_lines')
-          .select(`
-            *,
-            employee:employees(full_name_en, employee_number, designation, department)
-          `)
-          .eq('run_id', runId)
+          .select(`*, employee:employees(full_name_en, employee_number, designation, department)`)
+          .eq('run_id', runId!),
       ]);
-
       if (runRes.error) throw runRes.error;
       if (linesRes.error) throw linesRes.error;
-
-      setCurrentRun(runRes.data as PayrollRun);
-      setCurrentLines(linesRes.data as any[]);
-    } catch (err: any) {
-      logger.error(`Failed to fetch run details for ${runId}:`, err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [runId]);
-
-  useEffect(() => {
-    fetchRuns();
-  }, [fetchRuns]);
-
-  useEffect(() => {
-    fetchRunDetails();
-  }, [fetchRunDetails]);
+      return { run: runRes.data as PayrollRun, lines: (linesRes.data as any[]) };
+    },
+  });
 
   const startRun = async (periodMonth: string) => {
-    try {
-      setLoading(true);
-      const data = await payrollService.runPayrollForMonth(periodMonth);
-      await fetchRuns();
-      return data;
-    } catch (err: any) {
-      logger.error(`Failed to run payroll for ${periodMonth}:`, err);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
+    const data = await payrollService.runPayrollForMonth(periodMonth);
+    await qc.invalidateQueries({ queryKey: prKeys.runs });
+    return data;
   };
-
   const approveRun = async (targetRunId: string) => {
-    try {
-      setLoading(true);
-      const data = await payrollService.approvePayrollRun(targetRunId);
-      if (runId === targetRunId) {
-        await fetchRunDetails();
-      }
-      await fetchRuns();
-      return data;
-    } catch (err: any) {
-      logger.error(`Failed to approve run ${targetRunId}:`, err);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
+    const data = await payrollService.approvePayrollRun(targetRunId);
+    await Promise.all([
+      qc.invalidateQueries({ queryKey: prKeys.runs }),
+      qc.invalidateQueries({ queryKey: prKeys.run(targetRunId) }),
+    ]);
+    return data;
   };
-
   const deleteRun = async (targetRunId: string) => {
-    try {
-      setLoading(true);
-      const { error: delErr } = await supabase
-        .from('payroll_runs')
-        .delete()
-        .eq('id', targetRunId);
-
-      if (delErr) throw delErr;
-      await fetchRuns();
-      if (runId === targetRunId) {
-        setCurrentRun(null);
-        setCurrentLines([]);
-      }
-    } catch (err: any) {
-      logger.error(`Failed to delete run ${targetRunId}:`, err);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
+    const { error } = await supabase.from('payroll_runs').delete().eq('id', targetRunId);
+    if (error) throw error;
+    await Promise.all([
+      qc.invalidateQueries({ queryKey: prKeys.runs }),
+      qc.invalidateQueries({ queryKey: prKeys.run(targetRunId) }),
+    ]);
   };
 
   return {
-    payrollRuns,
-    currentRun,
-    currentLines,
-    loading,
-    error,
-    refetchRuns: fetchRuns,
-    refetchDetails: fetchRunDetails,
+    payrollRuns: runsQ.data ?? [],
+    currentRun: detailQ.data?.run ?? null,
+    currentLines: detailQ.data?.lines ?? [],
+    loading: runsQ.isPending || (!!runId && detailQ.isLoading),
+    error: ((runsQ.error || detailQ.error) as Error | null) ?? null,
+    refetchRuns: runsQ.refetch,
+    refetchDetails: detailQ.refetch,
     startRun,
     approveRun,
-    deleteRun
+    deleteRun,
   };
 }
 
 export function usePayrollAdjustments(periodMonth?: string) {
-  const [adjustments, setAdjustments] = useState<PayrollAdjustment[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
+  const qc = useQueryClient();
+  const formattedMonth = periodMonth ? (periodMonth.length === 7 ? `${periodMonth}-01` : periodMonth) : '';
+  const key = prKeys.adjustments(formattedMonth);
 
-  const fetchAdjustments = useCallback(async () => {
-    if (!periodMonth) return;
-    try {
-      setLoading(true);
-      setError(null);
-
-      const formattedMonth = periodMonth.length === 7 ? `${periodMonth}-01` : periodMonth;
-
-      const { data, error: err } = await supabase
+  const q = useQuery({
+    queryKey: key,
+    enabled: !!periodMonth,
+    queryFn: async () => {
+      const { data, error } = await supabase
         .from('payroll_adjustments')
-        .select(`
-          *,
-          employee:employees(full_name_en, employee_number)
-        `)
+        .select(`*, employee:employees(full_name_en, employee_number)`)
         .eq('period_month', formattedMonth)
         .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data || [];
+    },
+  });
 
-      if (err) throw err;
-      setAdjustments(data || []);
-    } catch (err: any) {
-      logger.error('Failed to load payroll adjustments:', err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  }, [periodMonth]);
-
-  useEffect(() => {
-    fetchAdjustments();
-  }, [fetchAdjustments]);
-
-  const addAdjustment = async (params: {
-    employee_id: string;
-    adjustment_type: string;
-    amount: number;
-    reason: string;
-  }) => {
+  const addAdjustment = async (params: { employee_id: string; adjustment_type: string; amount: number; reason: string }) => {
     if (!periodMonth) return;
     const { data: { user } } = await supabase.auth.getUser();
-
-    const formattedMonth = periodMonth.length === 7 ? `${periodMonth}-01` : periodMonth;
-
-    const { data, error: err } = await supabase
+    const { data, error } = await supabase
       .from('payroll_adjustments')
-      .insert({
-        ...params,
-        period_month: formattedMonth,
-        status: 'PENDING',
-        created_by: user?.id || null
-      })
+      .insert({ ...params, period_month: formattedMonth, status: 'PENDING', created_by: user?.id || null })
       .select()
       .single();
-
-    if (err) throw err;
-    await fetchAdjustments();
+    if (error) throw error;
+    await qc.invalidateQueries({ queryKey: key });
     return data;
   };
 
   const approveAdjustment = async (adjId: string) => {
     const { data: { user } } = await supabase.auth.getUser();
-    
-    const { error: err } = await supabase
-      .from('payroll_adjustments')
-      .update({
-        status: 'APPROVED',
-        approved_by: user?.id || null
-      })
-      .eq('id', adjId);
-
-    if (err) throw err;
-    await fetchAdjustments();
+    const { error } = await supabase.from('payroll_adjustments').update({ status: 'APPROVED', approved_by: user?.id || null }).eq('id', adjId);
+    if (error) throw error;
+    await qc.invalidateQueries({ queryKey: key });
   };
 
   const rejectAdjustment = async (adjId: string) => {
     const { data: { user } } = await supabase.auth.getUser();
-    
-    const { error: err } = await supabase
-      .from('payroll_adjustments')
-      .update({
-        status: 'REJECTED',
-        approved_by: user?.id || null
-      })
-      .eq('id', adjId);
-
-    if (err) throw err;
-    await fetchAdjustments();
+    const { error } = await supabase.from('payroll_adjustments').update({ status: 'REJECTED', approved_by: user?.id || null }).eq('id', adjId);
+    if (error) throw error;
+    await qc.invalidateQueries({ queryKey: key });
   };
 
   return {
-    adjustments,
-    loading,
-    error,
-    refetch: fetchAdjustments,
+    adjustments: q.data ?? [],
+    loading: q.isPending,
+    error: (q.error as Error | null) ?? null,
+    refetch: q.refetch,
     addAdjustment,
     approveAdjustment,
-    rejectAdjustment
+    rejectAdjustment,
   };
 }
+
 export default usePayrollRun;
