@@ -15,6 +15,7 @@
   "dependencies": {
     "@fileforge/react-print": "^0.1.150",
     "@hookform/resolvers": "^5.4.0",
+    "@sentry/browser": "^10.58.0",
     "@supabase/supabase-js": "^2.108.0",
     "@tanstack/react-query": "^5.101.0",
     "@tanstack/react-table": "^8.21.3",

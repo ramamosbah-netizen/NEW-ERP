@@ -22,8 +22,11 @@ export const logger = {
   warn: (...args: unknown[]) => emit('warn', args),
   error: (...args: unknown[]) => {
     emit('error', args);
-    // TODO(observability): forward to an error-reporting service in production.
-    // e.g. Sentry.captureException(args.find(a => a instanceof Error) ?? new Error(String(args[0])));
+    // Forward to Sentry on the client (lazy import keeps it off the server path
+    // and out of the base bundle; no-op until a DSN is configured).
+    if (typeof window !== 'undefined') {
+      void import('@/lib/observability/sentry').then(m => m.captureError(args)).catch(() => {});
+    }
   },
 };
 

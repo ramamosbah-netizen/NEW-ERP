@@ -6,10 +6,14 @@
 // invalidation replace the hand-rolled useState/useEffect fetch hooks.
 // ============================================================
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { initSentry } from '@/lib/observability/sentry';
 
 export default function QueryProvider({ children }: { children: React.ReactNode }) {
+  // Initialise error reporting once on the client (inert without a DSN).
+  useEffect(() => { initSentry(); }, []);
+
   // Keep one client per browser session (lazy init so it's stable across renders).
   const [client] = useState(
     () =>
