@@ -135,7 +135,7 @@ export default function ComplianceDashboardPage() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
         <div className="bg-[var(--status-danger-bg)] border border-[var(--status-danger-border)] rounded p-5 flex items-center justify-between">
           <div>
-            <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Critical Violations</span>
+            <span className="text-[var(--text-muted)] block uppercase font-mono text-[9px]">Critical Violations</span>
             <span className="font-mono text-2xl font-extrabold text-[var(--status-danger-text)] mt-1 block">{expiredCount}</span>
             <span className="text-[10px] text-[var(--status-danger-text)] font-mono mt-1 block">Expired active credentials</span>
           </div>
@@ -144,7 +144,7 @@ export default function ComplianceDashboardPage() {
         
         <div className="bg-[var(--status-warning-bg)] border border-[var(--status-warning-border)] rounded p-5 flex items-center justify-between">
           <div>
-            <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Approaching Expiries (60D)</span>
+            <span className="text-[var(--text-muted)] block uppercase font-mono text-[9px]">Approaching Expiries (60D)</span>
             <span className="font-mono text-2xl font-extrabold text-[var(--status-warning-text)] mt-1 block">{expiring60dCount}</span>
             <span className="text-[10px] text-[var(--status-warning-text)] font-mono mt-1 block">Action required for renewal</span>
           </div>
@@ -153,9 +153,9 @@ export default function ComplianceDashboardPage() {
 
         <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-5 flex items-center justify-between">
           <div>
-            <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Audit Status</span>
+            <span className="text-[var(--text-muted)] block uppercase font-mono text-[9px]">Audit Status</span>
             <span className="font-mono text-xl font-extrabold text-[var(--accent)] mt-1 block">AUDIT-READY</span>
-            <span className="text-[10px] text-[var(--text-primary)]0 font-mono mt-1 block">100% records catalogued</span>
+            <span className="text-[10px] text-[var(--text-muted)] font-mono mt-1 block">100% records catalogued</span>
           </div>
           <CheckCircle className="text-[var(--accent)]" size={32} />
         </div>
@@ -206,7 +206,7 @@ export default function ComplianceDashboardPage() {
                       <td style={{ fontWeight: 600 }}>
                         <Link href={`/hr/${emp.id}`} style={{ color: 'inherit', textDecoration: 'none' }} className="hover:text-primary">
                           {emp.full_name_en}
-                          <span className="block text-[8px] text-[var(--text-primary)]0 font-mono mt-0.5">{emp.employee_number}</span>
+                          <span className="block text-[8px] text-[var(--text-muted)] font-mono mt-0.5">{emp.employee_number}</span>
                         </Link>
                       </td>
                       <td style={{ textAlign: 'center' }}>
@@ -239,7 +239,7 @@ export default function ComplianceDashboardPage() {
           </h3>
 
           {upcomingExpiries.length === 0 ? (
-            <div className="text-center py-12 text-[var(--text-primary)]0 font-mono text-xs">
+            <div className="text-center py-12 text-[var(--text-muted)] font-mono text-xs">
               No upcoming renewals detected. All staff files are compliant.
             </div>
           ) : (
@@ -260,7 +260,7 @@ export default function ComplianceDashboardPage() {
                     </span>
                   </div>
                   <p className="text-[var(--text-secondary)] mt-1">{exp.employeeName} ({exp.employeeNumber})</p>
-                  <div className="flex justify-between mt-1 text-[9px] text-[var(--text-primary)]0">
+                  <div className="flex justify-between mt-1 text-[9px] text-[var(--text-muted)]">
                     <span>Expiry: {new Date(exp.expiryDate).toLocaleDateString('en-GB')}</span>
                     <Link href={`/hr/${exp.employeeId}`} style={{ color: 'var(--secondary)' }}>
                       View Profile

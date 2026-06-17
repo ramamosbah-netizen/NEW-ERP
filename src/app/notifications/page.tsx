@@ -125,7 +125,7 @@ export default function NotificationsCenterPage() {
           </div>
           <button
             onClick={refetch}
-            className="text-[var(--text-primary)]0 hover:text-[var(--accent)] transition-colors p-1"
+            className="text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors p-1"
             title="Reload alerts"
           >
             <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
@@ -143,7 +143,7 @@ export default function NotificationsCenterPage() {
             Failed to sync notification logs: {error.message}
           </div>
         ) : notifications.length === 0 ? (
-          <div className="quote-card py-20 text-center text-[var(--text-primary)]0 text-sm">
+          <div className="quote-card py-20 text-center text-[var(--text-muted)] text-sm">
             <Bell size={48} className="mx-auto mb-4 opacity-10 text-[var(--text-secondary)]" />
             No alerts logged. System channel is healthy.
           </div>
@@ -191,7 +191,7 @@ export default function NotificationsCenterPage() {
                           <div className={`text-xs ${isUnread ? 'text-[var(--text-primary)] font-bold' : 'text-[var(--text-secondary)]'}`}>
                             {n.title}
                           </div>
-                          <div className="text-[10px] text-[var(--text-primary)]0 mt-0.5 leading-normal max-w-2xl">{n.body}</div>
+                          <div className="text-[10px] text-[var(--text-muted)] mt-0.5 leading-normal max-w-2xl">{n.body}</div>
                         </td>
                         <td className="py-4 text-[10px] font-mono text-[var(--text-secondary)]">
                           {n.channel}
@@ -215,7 +215,7 @@ export default function NotificationsCenterPage() {
                         </td>
                         <td className="py-4 text-center">
                           {n.link ? (
-                            <ExternalLink size={12} className="text-[var(--text-primary)]0 hover:text-[var(--accent)] transition-colors mx-auto" />
+                            <ExternalLink size={12} className="text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors mx-auto" />
                           ) : (
                             <Eye size={12} className="text-[var(--text-tertiary)] mx-auto" />
                           )}

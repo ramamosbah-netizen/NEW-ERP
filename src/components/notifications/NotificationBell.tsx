@@ -117,7 +117,7 @@ export const NotificationBell: React.FC = () => {
           {/* List */}
           <div className="max-height-[320px] overflow-y-auto divide-y divide-[var(--border)] custom-scrollbar max-h-[350px]">
             {notifications.length === 0 ? (
-              <div className="px-4 py-8 text-center text-[var(--text-primary)]0 text-sm">
+              <div className="px-4 py-8 text-center text-[var(--text-muted)] text-sm">
                 <Bell size={32} className="mx-auto mb-2 opacity-20 text-[var(--text-secondary)]" />
                 All caught up! No notifications.
               </div>
@@ -156,7 +156,7 @@ export const NotificationBell: React.FC = () => {
                       <p className="text-xs text-[var(--text-secondary)] line-clamp-2 mt-1 leading-relaxed">
                         {n.body}
                       </p>
-                      <span className="text-[10px] text-[var(--text-primary)]0 font-mono mt-1.5 block">
+                      <span className="text-[10px] text-[var(--text-muted)] font-mono mt-1.5 block">
                         {new Date(n.created_at).toLocaleDateString('en-GB')} {new Date(n.created_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
                       </span>
                     </div>

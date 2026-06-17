@@ -65,7 +65,7 @@ export default function AssetDetailPage({ params }: { params: Promise<{ id: stri
   if (!asset) {
     return (
       <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex flex-col items-center justify-center gap-4">
-        <span className="text-xs font-mono text-[var(--text-primary)]0">Asset record not found.</span>
+        <span className="text-xs font-mono text-[var(--text-muted)]">Asset record not found.</span>
         <Link href="/assets" className="text-xs text-[var(--primary)] font-bold flex items-center gap-1.5">
           <ArrowLeft size={14} /> Back to Register
         </Link>
@@ -159,25 +159,25 @@ export default function AssetDetailPage({ params }: { params: Promise<{ id: stri
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <span className="block text-[10px] text-[var(--text-primary)]0 uppercase font-mono">Acquisition Cost</span>
+                  <span className="block text-[10px] text-[var(--text-muted)] uppercase font-mono">Acquisition Cost</span>
                   <span className="text-xs text-[var(--text-primary)] font-mono font-bold mt-1 block">
                     {formatAED(asset.acquisition_cost)}
                   </span>
                 </div>
                 <div>
-                  <span className="block text-[10px] text-[var(--text-primary)]0 uppercase font-mono">Salvage Value</span>
+                  <span className="block text-[10px] text-[var(--text-muted)] uppercase font-mono">Salvage Value</span>
                   <span className="text-xs text-[var(--text-primary)] font-mono font-bold mt-1 block">
                     {formatAED(asset.salvage_value)}
                   </span>
                 </div>
                 <div>
-                  <span className="block text-[10px] text-[var(--text-primary)]0 uppercase font-mono">Useful Life</span>
+                  <span className="block text-[10px] text-[var(--text-muted)] uppercase font-mono">Useful Life</span>
                   <span className="text-xs text-[var(--text-primary)] font-mono mt-1 block">
                     {asset.useful_life_months} months
                   </span>
                 </div>
                 <div>
-                  <span className="block text-[10px] text-[var(--text-primary)]0 uppercase font-mono">Acquisition Date</span>
+                  <span className="block text-[10px] text-[var(--text-muted)] uppercase font-mono">Acquisition Date</span>
                   <span className="text-xs text-[var(--text-primary)] font-mono mt-1 block">
                     {new Date(asset.acquisition_date).toLocaleDateString('en-GB')}
                   </span>
@@ -186,11 +186,11 @@ export default function AssetDetailPage({ params }: { params: Promise<{ id: stri
 
               <div className="border-t border-[var(--border)] pt-4 flex flex-col gap-3">
                 <div className="flex items-center gap-2 text-xs">
-                  <User size={13} className="text-[var(--text-primary)]0" />
+                  <User size={13} className="text-[var(--text-muted)]" />
                   <span className="text-[var(--text-secondary)]">Custodian: {asset.custodian_name || 'Unassigned'}</span>
                 </div>
                 <div className="flex items-center gap-2 text-xs">
-                  <MapPin size={13} className="text-[var(--text-primary)]0" />
+                  <MapPin size={13} className="text-[var(--text-muted)]" />
                   <span className="text-[var(--text-secondary)]">Location: {asset.location || 'Head Office'}</span>
                 </div>
               </div>
@@ -203,19 +203,19 @@ export default function AssetDetailPage({ params }: { params: Promise<{ id: stri
               </h3>
               {asset.linked_vehicle_id ? (
                 <div className="p-3 bg-[var(--bg-card)] border border-[var(--border)] rounded-lg flex flex-col gap-2 text-xs">
-                  <span className="text-[10px] text-[var(--text-primary)]0 uppercase font-mono block">Linked Vehicle Profile</span>
+                  <span className="text-[10px] text-[var(--text-muted)] uppercase font-mono block">Linked Vehicle Profile</span>
                   <Link 
                     href={`/fleet/${asset.linked_vehicle_id}`}
                     className="text-[var(--primary)] font-bold hover:underline font-mono"
                   >
                     Vehicle: {asset.vehicle_code || 'View details'}
                   </Link>
-                  <span className="text-[10px] text-[var(--text-primary)]0 font-mono block mt-1">
+                  <span className="text-[10px] text-[var(--text-muted)] font-mono block mt-1">
                     Notice: Disposing this asset will sync the vehicle status to SOLD/DISPOSED automatically.
                   </span>
                 </div>
               ) : (
-                <div className="text-xs text-[var(--text-primary)]0 font-mono italic">
+                <div className="text-xs text-[var(--text-muted)] font-mono italic">
                   No linked vehicle or high-value tool integrations. Standalone capitalized asset.
                 </div>
               )}
@@ -230,23 +230,23 @@ export default function AssetDetailPage({ params }: { params: Promise<{ id: stri
                 </h3>
                 <div className="grid grid-cols-2 gap-4 text-xs font-mono">
                   <div>
-                    <span className="block text-[10px] text-[var(--text-primary)]0 uppercase">Disposal Date</span>
+                    <span className="block text-[10px] text-[var(--text-muted)] uppercase">Disposal Date</span>
                     <span className="text-[var(--text-secondary)] font-semibold block mt-0.5">
                       {new Date(disposalDetails.disposal_date).toLocaleDateString('en-GB')}
                     </span>
                   </div>
                   <div>
-                    <span className="block text-[10px] text-[var(--text-primary)]0 uppercase">Disposal Method</span>
+                    <span className="block text-[10px] text-[var(--text-muted)] uppercase">Disposal Method</span>
                     <span className="text-[var(--text-secondary)] font-semibold block mt-0.5">{disposalDetails.method}</span>
                   </div>
                   <div>
-                    <span className="block text-[10px] text-[var(--text-primary)]0 uppercase">Proceeds (AED)</span>
+                    <span className="block text-[10px] text-[var(--text-muted)] uppercase">Proceeds (AED)</span>
                     <span className="text-[var(--text-secondary)] font-semibold block mt-0.5">
                       {formatAED(disposalDetails.proceeds)}
                     </span>
                   </div>
                   <div>
-                    <span className="block text-[10px] text-[var(--text-primary)]0 uppercase">Gain / Loss (AED)</span>
+                    <span className="block text-[10px] text-[var(--text-muted)] uppercase">Gain / Loss (AED)</span>
                     <span className={`font-bold block mt-0.5 ${Number(disposalDetails.gain_loss) >= 0 ? 'text-[var(--accent)]' : 'text-[var(--status-danger-text)]'}`}>
                       {formatAED(disposalDetails.gain_loss)}
                     </span>
@@ -254,7 +254,7 @@ export default function AssetDetailPage({ params }: { params: Promise<{ id: stri
                 </div>
                 {disposalDetails.notes && (
                   <div className="text-[11px] text-[var(--text-secondary)] border-t border-[var(--status-danger-border)] pt-3">
-                    <span className="font-semibold block text-[var(--text-primary)]0 mb-1">Notes:</span>
+                    <span className="font-semibold block text-[var(--text-muted)] mb-1">Notes:</span>
                     {disposalDetails.notes}
                   </div>
                 )}
@@ -269,7 +269,7 @@ export default function AssetDetailPage({ params }: { params: Promise<{ id: stri
                 Amortization Depreciation Schedule ({schedule.length} periods)
               </h3>
               {asset.status === 'ACTIVE' && (
-                <span className="text-[10px] font-mono text-[var(--text-primary)]0">
+                <span className="text-[10px] font-mono text-[var(--text-muted)]">
                   {pendingMonths} periods remaining
                 </span>
               )}
@@ -278,7 +278,7 @@ export default function AssetDetailPage({ params }: { params: Promise<{ id: stri
             <div className="overflow-y-auto flex-1 pr-1">
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
-                  <tr className="border-b border-[var(--border)] text-[10px] font-mono text-[var(--text-primary)]0 uppercase tracking-widest bg-[var(--bg-card)] sticky top-0 py-2">
+                  <tr className="border-b border-[var(--border)] text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest bg-[var(--bg-card)] sticky top-0 py-2">
                     <th className="pb-3 pl-2">Period Month</th>
                     <th className="pb-3">Opening NBV</th>
                     <th className="pb-3">Depreciation</th>
@@ -301,7 +301,7 @@ export default function AssetDetailPage({ params }: { params: Promise<{ id: stri
                         <span className={`inline-block px-1.5 py-0.5 rounded text-[9px] uppercase font-bold ${
                           row.posted 
                             ? 'bg-[var(--accent-glow)] text-[var(--accent)] border border-[var(--accent)]' 
-                            : 'bg-[var(--surface-hover)] text-[var(--text-primary)]0 border border-[var(--border)]'
+                            : 'bg-[var(--surface-hover)] text-[var(--text-muted)] border border-[var(--border)]'
                         }`}>
                           {row.posted ? 'Posted GL' : 'Draft'}
                         </span>

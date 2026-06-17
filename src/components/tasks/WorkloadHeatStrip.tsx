@@ -76,7 +76,7 @@ export const WorkloadHeatStrip: React.FC = () => {
         </div>
         <button
           onClick={loadAnalytics}
-          className="text-[var(--text-primary)]0 hover:text-[var(--accent)] transition-colors p-1"
+          className="text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors p-1"
           title="Refresh statistics"
         >
           <RefreshCw size={14} />
@@ -98,7 +98,7 @@ export const WorkloadHeatStrip: React.FC = () => {
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
                   <div className="font-semibold text-xs text-[var(--text-primary)] truncate">{user.full_name}</div>
-                  <div className="text-[10px] text-[var(--text-primary)]0 font-mono truncate">{user.role}</div>
+                  <div className="text-[10px] text-[var(--text-muted)] font-mono truncate">{user.role}</div>
                 </div>
                 <div className="h-6 w-6 rounded bg-[var(--surface-hover)] border border-[var(--border)] flex items-center justify-center text-[var(--text-secondary)]">
                   <User size={12} />
@@ -108,7 +108,7 @@ export const WorkloadHeatStrip: React.FC = () => {
               {/* Capacities */}
               <div className="mt-4 space-y-2">
                 <div className="flex justify-between items-center text-[10px] font-mono">
-                  <span className="text-[var(--text-primary)]0">Active Task Count</span>
+                  <span className="text-[var(--text-muted)]">Active Task Count</span>
                   <span className="font-bold text-[var(--text-secondary)]">{totalActive} open</span>
                 </div>
                 {/* Horizontal bar indicator */}
@@ -126,22 +126,22 @@ export const WorkloadHeatStrip: React.FC = () => {
               {/* Stats Grid */}
               <div className="grid grid-cols-4 gap-1 text-center mt-3 pt-2 border-t border-[var(--border)] font-mono text-[9px]">
                 <div>
-                  <div className="text-[var(--text-primary)]0">TODO</div>
+                  <div className="text-[var(--text-muted)]">TODO</div>
                   <div className="font-bold text-[var(--text-secondary)] mt-0.5">{user.todo_count}</div>
                 </div>
                 <div>
-                  <div className="text-[var(--text-primary)]0">PROG</div>
+                  <div className="text-[var(--text-muted)]">PROG</div>
                   <div className="font-bold text-[var(--text-secondary)] mt-0.5">{user.in_progress_count}</div>
                 </div>
                 <div>
-                  <div className="text-[var(--text-primary)]0">BLCK</div>
-                  <div className={`font-bold mt-0.5 ${user.blocked_count > 0 ? 'text-[var(--status-danger-text)]' : 'text-[var(--text-primary)]0'}`}>
+                  <div className="text-[var(--text-muted)]">BLCK</div>
+                  <div className={`font-bold mt-0.5 ${user.blocked_count > 0 ? 'text-[var(--status-danger-text)]' : 'text-[var(--text-muted)]'}`}>
                     {user.blocked_count}
                   </div>
                 </div>
                 <div>
-                  <div className="text-[var(--text-primary)]0">OVER</div>
-                  <div className={`font-bold mt-0.5 ${user.overdue_count > 0 ? 'text-[var(--status-danger-text)]' : 'text-[var(--text-primary)]0'}`}>
+                  <div className="text-[var(--text-muted)]">OVER</div>
+                  <div className={`font-bold mt-0.5 ${user.overdue_count > 0 ? 'text-[var(--status-danger-text)]' : 'text-[var(--text-muted)]'}`}>
                     {user.overdue_count}
                   </div>
                 </div>
@@ -149,7 +149,7 @@ export const WorkloadHeatStrip: React.FC = () => {
 
               {/* Capacity Badge */}
               <div className="mt-3.5 flex items-center justify-between text-[9px] font-mono">
-                <span className="text-[var(--text-primary)]0">CAPACITY STATUS</span>
+                <span className="text-[var(--text-muted)]">CAPACITY STATUS</span>
                 <span className="font-extrabold tracking-wide" style={{ color: cap.color }}>
                   {cap.label}
                 </span>

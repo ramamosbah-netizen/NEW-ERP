@@ -38,7 +38,7 @@ export default function ClientInvoicesListPage() {
         {/* Breadcrumb & Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <div className="text-[10px] text-[var(--text-primary)]0 font-mono uppercase tracking-widest">
+            <div className="text-[10px] text-[var(--text-muted)] font-mono uppercase tracking-widest">
               <Link href="/finance" className="hover:text-[var(--accent)]">Finance</Link> &gt; <span className="text-[var(--text-secondary)]">Receivables</span>
             </div>
             <h1 className="font-heading font-extrabold text-2xl tracking-tight text-[var(--text-primary)] uppercase mt-1">
@@ -65,7 +65,7 @@ export default function ClientInvoicesListPage() {
         <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4 flex flex-col md:flex-row gap-4 items-center">
           {/* Search bar */}
           <div className="relative flex-1 w-full">
-            <Search className="absolute left-3 top-2.5 text-[var(--text-primary)]0" size={14} />
+            <Search className="absolute left-3 top-2.5 text-[var(--text-muted)]" size={14} />
             <input
               type="text"
               placeholder="Search by Invoice # or Client Name..."
@@ -109,13 +109,13 @@ export default function ClientInvoicesListPage() {
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan={8} className="py-8 text-center text-[var(--text-primary)]0 font-mono">
+                    <td colSpan={8} className="py-8 text-center text-[var(--text-muted)] font-mono">
                       Querying invoices...
                     </td>
                   </tr>
                 ) : invoices.length === 0 ? (
                   <tr>
-                    <td colSpan={8} className="py-8 text-center text-[var(--text-primary)]0 font-mono">
+                    <td colSpan={8} className="py-8 text-center text-[var(--text-muted)] font-mono">
                       No invoices registered.
                     </td>
                   </tr>

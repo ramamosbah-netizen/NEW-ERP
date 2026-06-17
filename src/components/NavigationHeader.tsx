@@ -112,7 +112,7 @@ export const NavigationHeader: React.FC = () => {
           <div className="flex items-center gap-3 border-l border-[var(--border)] pl-4">
             <div className="hidden sm:block text-right">
               <div className="text-xs font-semibold text-[var(--text-primary)]">{userProfile.full_name}</div>
-              <div className="text-[9px] text-[var(--text-primary)]0 font-mono uppercase font-bold tracking-wider">
+              <div className="text-[9px] text-[var(--text-muted)] font-mono uppercase font-bold tracking-wider">
                 {userProfile.role}
               </div>
             </div>

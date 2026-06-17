@@ -117,7 +117,7 @@ export default function TimesheetApprovalsPage() {
         <div style={{ padding: '4rem', textAlign: 'center', color: 'var(--text-muted)' }} className="quote-card">
           <UserCheck size={48} className="text-[var(--accent)]" style={{ margin: '0 auto 1rem auto', opacity: 0.8 }} />
           <h3 className="font-mono text-xs uppercase tracking-widest text-[var(--text-secondary)] font-bold mb-1">Board Cleared</h3>
-          <p className="text-[11px] text-[var(--text-primary)]0">All submitted timesheets have been verified and processed.</p>
+          <p className="text-[11px] text-[var(--text-muted)]">All submitted timesheets have been verified and processed.</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -142,7 +142,7 @@ export default function TimesheetApprovalsPage() {
                       <span className="font-mono text-[9px] text-[var(--accent)] uppercase tracking-tight">
                         Emp Code: {ts.employee?.employee_number}
                       </span>
-                      <span className="font-mono text-[9px] text-[var(--text-primary)]0 uppercase tracking-tight">
+                      <span className="font-mono text-[9px] text-[var(--text-muted)] uppercase tracking-tight">
                         Dept: {ts.employee?.department}
                       </span>
                     </div>
@@ -150,19 +150,19 @@ export default function TimesheetApprovalsPage() {
 
                   <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
                     <div style={{ textAlign: 'right' }}>
-                      <span className="text-[var(--text-primary)]0 uppercase font-mono text-[9px] block">Week start</span>
+                      <span className="text-[var(--text-muted)] uppercase font-mono text-[9px] block">Week start</span>
                       <span className="font-mono text-[11px] font-bold text-[var(--text-secondary)]">
                         {new Date(ts.week_start).toLocaleDateString('en-GB')}
                       </span>
                     </div>
                     <div style={{ textAlign: 'right' }}>
-                      <span className="text-[var(--text-primary)]0 uppercase font-mono text-[9px] block">Regular Hrs</span>
+                      <span className="text-[var(--text-muted)] uppercase font-mono text-[9px] block">Regular Hrs</span>
                       <span className="font-mono text-[11px] font-bold text-[var(--text-secondary)]">
                         {ts.total_regular_hours}
                       </span>
                     </div>
                     <div style={{ textAlign: 'right' }}>
-                      <span className="text-[var(--text-primary)]0 uppercase font-mono text-[9px] block">OT Hrs</span>
+                      <span className="text-[var(--text-muted)] uppercase font-mono text-[9px] block">OT Hrs</span>
                       <span className="font-mono text-[11px] font-bold text-[var(--accent)]">
                         {ts.total_ot_hours}
                       </span>
@@ -239,7 +239,7 @@ export default function TimesheetApprovalsPage() {
                                     {entry.project ? (
                                       <div>
                                         <div className="font-semibold">{entry.project.name}</div>
-                                        <div className="font-mono text-[9px] text-[var(--text-primary)]0">{entry.project.project_number}</div>
+                                        <div className="font-mono text-[9px] text-[var(--text-muted)]">{entry.project.project_number}</div>
                                       </div>
                                     ) : '—'}
                                   </td>

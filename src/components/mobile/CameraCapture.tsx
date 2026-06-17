@@ -97,7 +97,7 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({
       <div className="flex items-center justify-between">
         <div>
           <span className="text-xs font-bold text-[var(--text-primary)] block">Mobile Field Photo Capture</span>
-          <span className="text-[10px] text-[var(--text-primary)]0 font-mono block mt-0.5">EXIF METADATA STRIPPED & COMPRESSED</span>
+          <span className="text-[10px] text-[var(--text-muted)] font-mono block mt-0.5">EXIF METADATA STRIPPED & COMPRESSED</span>
         </div>
 
         <button
@@ -114,7 +114,7 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({
       {compressing ? (
         <div className="h-44 w-full rounded border border-dashed border-[var(--border)] bg-[var(--bg-card)] flex flex-col items-center justify-center">
           <RefreshCw className="text-[var(--accent)] animate-spin mb-2" size={18} />
-          <span className="text-[10px] font-mono text-[var(--text-primary)]0">Processing image...</span>
+          <span className="text-[10px] font-mono text-[var(--text-muted)]">Processing image...</span>
         </div>
       ) : preview ? (
         <div className="relative rounded overflow-hidden border border-[var(--border)] bg-[var(--bg-card)] aspect-video">

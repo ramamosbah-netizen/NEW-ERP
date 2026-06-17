@@ -92,7 +92,7 @@ export default function VOApprovalQueuePage() {
         {/* Title Block */}
         <div className="flex justify-between items-center">
           <div>
-            <div className="text-[10px] text-[var(--text-primary)]0 font-mono uppercase tracking-widest">
+            <div className="text-[10px] text-[var(--text-muted)] font-mono uppercase tracking-widest">
               Commercial Sign-off & Audit
             </div>
             <h1 className="font-heading font-extrabold text-2xl tracking-tight text-[var(--text-primary)] uppercase mt-1">
@@ -123,7 +123,7 @@ export default function VOApprovalQueuePage() {
         {/* Queue table */}
         <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded overflow-hidden">
           {loading ? (
-            <div className="flex flex-col items-center justify-center py-16 text-[var(--text-primary)]0 font-mono text-xs gap-3">
+            <div className="flex flex-col items-center justify-center py-16 text-[var(--text-muted)] font-mono text-xs gap-3">
               <div className="animate-spin rounded-full h-5 w-5 border border-[var(--border)] border-t-emerald-400"></div>
               <span>Scanning review queues...</span>
             </div>
@@ -132,7 +132,7 @@ export default function VOApprovalQueuePage() {
               Error fetching queue: {error.message}
             </div>
           ) : pendingApprovals.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 text-[var(--text-primary)]0 font-mono text-xs gap-2.5">
+            <div className="flex flex-col items-center justify-center py-16 text-[var(--text-muted)] font-mono text-xs gap-2.5">
               <FileCheck size={28} className="text-[var(--text-tertiary)] animate-bounce" />
               <span>Approval queue is completely clear! No variations pending review.</span>
             </div>
@@ -156,7 +156,7 @@ export default function VOApprovalQueuePage() {
                       <tr key={vo.id} className="hover:bg-[var(--surface-hover)] transition-colors">
                         <td className="py-3.5 px-4">
                           <div className="font-semibold text-[var(--text-primary)]">{vo.project_number}</div>
-                          <div className="text-[10px] text-[var(--text-primary)]0 truncate max-w-[150px]" title={vo.project_name}>{vo.project_name}</div>
+                          <div className="text-[10px] text-[var(--text-muted)] truncate max-w-[150px]" title={vo.project_name}>{vo.project_name}</div>
                         </td>
                         <td className="py-3.5 px-4 font-bold text-[var(--text-primary)]">
                           {vo.vo_number}
@@ -168,13 +168,13 @@ export default function VOApprovalQueuePage() {
                         </td>
                         <td className="py-3.5 px-4 max-w-xs truncate" title={vo.title}>
                           <div className="font-semibold text-[var(--text-primary)] truncate">{vo.title}</div>
-                          <div className="text-[10px] text-[var(--text-primary)]0 truncate">Ref: {vo.instruction_reference}</div>
+                          <div className="text-[10px] text-[var(--text-muted)] truncate">Ref: {vo.instruction_reference}</div>
                         </td>
                         <td className="py-3.5 px-4 text-right font-extrabold text-[var(--text-primary)]">
                           {formatAED(vo.sell_amount)}
                         </td>
                         <td className="py-3.5 px-4 text-center">
-                          <span className={`text-[10px] ${vo.work_status === 'COMPLETED' ? 'text-[var(--accent)]' : vo.work_status === 'IN_PROGRESS' ? 'text-[var(--status-warning-text)]' : 'text-[var(--text-primary)]0'}`}>
+                          <span className={`text-[10px] ${vo.work_status === 'COMPLETED' ? 'text-[var(--accent)]' : vo.work_status === 'IN_PROGRESS' ? 'text-[var(--status-warning-text)]' : 'text-[var(--text-muted)]'}`}>
                             {VO_WORK_STATUS_LABELS[vo.work_status] || vo.work_status}
                           </span>
                         </td>

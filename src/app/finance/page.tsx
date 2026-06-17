@@ -66,51 +66,32 @@ export default function FinanceDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[var(--bg-dark)] flex flex-col items-center justify-center text-center p-6">
-        <div className="h-12 w-12 border-2 border-[var(--accent)] border-t-transparent animate-spin rounded-full mb-4"></div>
-        <h2 className="text-xl font-bold font-heading text-[var(--text-primary)]">JEET ERP</h2>
-        <p className="text-[var(--text-secondary)] text-xs mt-1">Aggregating financial ledger data...</p>
+      <div className="flex flex-col items-center justify-center text-center py-24">
+        <div className="h-10 w-10 border-2 border-[var(--accent)] border-t-transparent animate-spin rounded-full mb-4"></div>
+        <p className="text-[var(--text-muted)] text-xs">Aggregating financial ledger data…</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex flex-col font-sans">
-      <main className="flex-1 max-w-7xl w-full mx-auto px-6 py-8 flex flex-col gap-6">
-        
-        {/* Page Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-[var(--border)] pb-4">
-          <div>
-            <h1 className="font-heading font-extrabold text-2xl tracking-tight text-[var(--text-primary)] uppercase">
-              Financial Operations Command
-            </h1>
-            <p className="text-[10px] text-[var(--accent)] font-mono tracking-widest uppercase mt-0.5">
-              Client billing · supplier aging · quarterly vat compliance · rolling forecast
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={loadFinanceData}
-              disabled={refreshing}
-              className="text-[var(--text-secondary)] border-[var(--border)] hover:bg-[var(--surface-hover)] flex items-center gap-1.5"
-            >
-              <RefreshCw size={14} className={refreshing ? 'animate-spin' : ''} />
-              {refreshing ? 'Refreshing...' : 'Refresh'}
+    <div className="flex flex-col gap-5">
+      <PageHeader
+        title="Finance"
+        subtitle="Client billing · supplier aging · VAT compliance · rolling forecast"
+        actions={
+          <>
+            <Button variant="secondary" size="sm" icon={RefreshCw} isLoading={refreshing} onClick={loadFinanceData}>
+              {refreshing ? 'Refreshing…' : 'Refresh'}
             </Button>
             <Link href="/finance/ar/create" className="no-underline">
-              <Button size="sm" className="bg-[var(--accent)] hover:bg-[var(--accent)] text-[var(--text-primary)] font-bold">
-                + Create Client Invoice
-              </Button>
+              <Button variant="primary" size="sm">Create Client Invoice</Button>
             </Link>
             <Link href="/finance/ap/register" className="no-underline">
-              <Button size="sm" variant="secondary" className="text-[var(--text-primary)] border-[var(--border)] hover:bg-[var(--surface-hover)] font-bold">
-                + Register Supplier Bill
-              </Button>
+              <Button variant="secondary" size="sm">Register Supplier Bill</Button>
             </Link>
-          </div>
-        </div>
+          </>
+        }
+      />
 
         {/* KPI Scorecard Strip */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
@@ -225,7 +206,7 @@ export default function FinanceDashboard() {
               { label: 'Projects at risk', value: exec.kpis.projectsAtRisk, count: true, warn: exec.kpis.projectsAtRisk > 0 },
             ].map(k => (
               <div key={k.label} className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-3.5">
-                <div className="text-[10px] text-[var(--text-primary)]0 font-mono uppercase tracking-wider">{k.label}</div>
+                <div className="text-[10px] text-[var(--text-muted)] font-mono uppercase tracking-wider">{k.label}</div>
                 <div className="text-lg font-bold tabular-nums mt-1" style={{ color: k.warn ? 'var(--status-danger-text)' : 'var(--text-primary)' }}>
                   {k.count ? k.value : formatAED(k.value)}
                 </div>
@@ -289,18 +270,18 @@ export default function FinanceDashboard() {
             <h3 className="font-heading font-bold text-sm text-[var(--text-primary)] uppercase tracking-wider">
               13-Week Cash Flow Forecast Trend
             </h3>
-            <p className="text-[10px] text-[var(--text-primary)]0 font-mono mt-0.5">
+            <p className="text-[10px] text-[var(--text-muted)] font-mono mt-0.5">
               Projected rolling cumulative balance & weekly net flows
             </p>
           </div>
 
           <div className="h-[300px] w-full">
             {cfLoading ? (
-              <div className="h-full flex items-center justify-center text-[var(--text-primary)]0 text-xs font-mono">
+              <div className="h-full flex items-center justify-center text-[var(--text-muted)] text-xs font-mono">
                 Calculating cash flow trajectory...
               </div>
             ) : forecast.length === 0 ? (
-              <div className="h-full flex items-center justify-center text-[var(--text-primary)]0 text-xs font-mono">
+              <div className="h-full flex items-center justify-center text-[var(--text-muted)] text-xs font-mono">
                 No cash flow forecast data available
               </div>
             ) : (
@@ -346,7 +327,7 @@ export default function FinanceDashboard() {
               </div>
               <div>
                 <h3 className="font-heading font-bold text-sm uppercase text-[var(--text-primary)]">Accounts Receivable (AR)</h3>
-                <p className="text-[9px] text-[var(--text-primary)]0 font-mono uppercase mt-0.5">Billing claims & aging collections</p>
+                <p className="text-[9px] text-[var(--text-muted)] font-mono uppercase mt-0.5">Billing claims & aging collections</p>
               </div>
             </div>
             <p className="text-xs text-[var(--text-secondary)] leading-relaxed flex-1">
@@ -384,7 +365,7 @@ export default function FinanceDashboard() {
               </div>
               <div>
                 <h3 className="font-heading font-bold text-sm uppercase text-[var(--text-primary)]">Accounts Payable (AP)</h3>
-                <p className="text-[9px] text-[var(--text-primary)]0 font-mono uppercase mt-0.5">Supplier matching & disbursements</p>
+                <p className="text-[9px] text-[var(--text-muted)] font-mono uppercase mt-0.5">Supplier matching & disbursements</p>
               </div>
             </div>
             <p className="text-xs text-[var(--text-secondary)] leading-relaxed flex-1">
@@ -420,7 +401,6 @@ export default function FinanceDashboard() {
           </Card>
 
         </div>
-      </main>
     </div>
   );
 }

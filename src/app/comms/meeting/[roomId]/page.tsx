@@ -31,6 +31,14 @@ function loadJitsi(): Promise<any> {
 }
 
 export default function MeetingRoomPage() {
+  return (
+    <React.Suspense fallback={null}>
+      <MeetingRoomPageInner />
+    </React.Suspense>
+  );
+}
+
+function MeetingRoomPageInner() {
   const params = useParams();
   const search = useSearchParams();
   const router = useRouter();

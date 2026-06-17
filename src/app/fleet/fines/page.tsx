@@ -216,7 +216,7 @@ export default function FinesPage() {
                 <h3 className="font-heading font-bold text-xs uppercase tracking-widest text-[var(--text-primary)]">
                   Import Salik / Traffic Fine Statement (PDF/Excel)
                 </h3>
-                <p className="text-[10px] text-[var(--text-primary)]0 font-mono mt-1">
+                <p className="text-[10px] text-[var(--text-muted)] font-mono mt-1">
                   Upload an RTA Salik statement or Dubai/Abu Dhabi Police fine report. Gemini will parse rows for human review.
                 </p>
               </div>
@@ -225,7 +225,7 @@ export default function FinesPage() {
                   setShowImportPanel(false);
                   setReviewFines([]);
                 }}
-                className="text-[var(--text-primary)]0 hover:text-[var(--text-secondary)]"
+                className="text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
               >
                 <X size={16} />
               </button>
@@ -233,7 +233,7 @@ export default function FinesPage() {
 
             {reviewFines.length === 0 ? (
               <div className="border border-dashed border-[var(--border)] rounded-xl p-8 flex flex-col items-center justify-center bg-[var(--bg-card)]">
-                <Upload size={28} className="text-[var(--text-primary)]0 mb-3" />
+                <Upload size={28} className="text-[var(--text-muted)] mb-3" />
                 <label className="text-xs font-bold text-[var(--text-secondary)] cursor-pointer bg-[var(--surface-hover)] hover:bg-[var(--surface-hover)] border border-[var(--border)] px-4 py-2 rounded-lg transition-all font-mono">
                   {uploading ? 'Parsing File...' : 'Select Statement File'}
                   <input
@@ -252,7 +252,7 @@ export default function FinesPage() {
                 <div className="overflow-x-auto max-h-[300px] border border-[var(--border)] rounded-xl">
                   <table className="w-full text-left border-collapse bg-[var(--bg-card)] text-xs">
                     <thead>
-                      <tr className="border-b border-[var(--border)] text-[10px] font-mono text-[var(--text-primary)]0 uppercase tracking-widest bg-[var(--bg-card)] sticky top-0">
+                      <tr className="border-b border-[var(--border)] text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest bg-[var(--bg-card)] sticky top-0">
                         <th className="p-3 w-8">Import</th>
                         <th className="p-3">Fine No.</th>
                         <th className="p-3">Date</th>
@@ -281,7 +281,7 @@ export default function FinesPage() {
                           <td className="p-3 font-mono font-bold text-[var(--text-primary)]">{f.fine_number}</td>
                           <td className="p-3 font-mono text-[10px] text-[var(--text-secondary)]">{f.fine_date}</td>
                           <td className="p-3 text-[var(--text-secondary)]">{f.violation_type}</td>
-                          <td className="p-3 text-[10px] font-mono text-[var(--text-primary)]0">{f.source}</td>
+                          <td className="p-3 text-[10px] font-mono text-[var(--text-muted)]">{f.source}</td>
                           <td className="p-3 font-mono font-bold text-[var(--text-secondary)]">{formatAED(f.amount)}</td>
                           <td className="p-3">
                             <select
@@ -353,7 +353,7 @@ export default function FinesPage() {
             <div className="flex flex-wrap items-center gap-3">
               {/* Search */}
               <div className="relative">
-                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-primary)]0" />
+                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
                 <input 
                   type="text"
                   placeholder="Search fine, code, driver, location..."
@@ -377,7 +377,7 @@ export default function FinesPage() {
               </select>
 
               {/* Payroll period select */}
-              <div className="flex items-center gap-1 text-[10px] text-[var(--text-primary)]0 font-mono">
+              <div className="flex items-center gap-1 text-[10px] text-[var(--text-muted)] font-mono">
                 Deductions target:
                 <input 
                   type="month"
@@ -390,18 +390,18 @@ export default function FinesPage() {
           </div>
 
           {loading ? (
-            <div className="h-60 flex items-center justify-center text-xs font-mono text-[var(--text-primary)]0">
+            <div className="h-60 flex items-center justify-center text-xs font-mono text-[var(--text-muted)]">
               <RefreshCw className="animate-spin mr-2" size={15} /> Loading traffic fines...
             </div>
           ) : filteredFines.length === 0 ? (
-            <div className="h-60 flex items-center justify-center text-xs font-mono text-[var(--text-primary)]0 border border-dashed border-[var(--border)] rounded-lg">
+            <div className="h-60 flex items-center justify-center text-xs font-mono text-[var(--text-muted)] border border-dashed border-[var(--border)] rounded-lg">
               No traffic fines found matching filters.
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-[var(--border)] text-[10px] font-mono text-[var(--text-primary)]0 uppercase tracking-widest">
+                  <tr className="border-b border-[var(--border)] text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest">
                     <th className="pb-3">Fine Number</th>
                     <th className="pb-3">Date</th>
                     <th className="pb-3">Vehicle Code</th>

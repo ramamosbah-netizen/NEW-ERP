@@ -535,7 +535,7 @@ export default function MyTimesheetPage() {
               <div key={i} className="suggestion-pill">
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                   <span className="text-[10px] text-[var(--text-secondary)] font-semibold">{sug.description}</span>
-                  <span className="font-mono text-[9px] text-[var(--text-primary)]0">
+                  <span className="font-mono text-[9px] text-[var(--text-muted)]">
                     {new Date(sug.work_date).toLocaleDateString('en-GB')} — {sug.allocation_type.replace('_', ' ')}
                   </span>
                 </div>
@@ -719,7 +719,7 @@ export default function MyTimesheetPage() {
                     {!isDisabled && (
                       <button 
                         type="button" 
-                        className="text-[var(--text-primary)]0 hover:text-[var(--status-danger-text)]"
+                        className="text-[var(--text-muted)] hover:text-[var(--status-danger-text)]"
                         style={{ border: 'none', background: 'transparent' }}
                         onClick={() => removeRow(row.id)}
                       >

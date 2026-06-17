@@ -145,7 +145,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 <AlertTriangle className="text-[var(--status-warning-text)] animate-pulse" size={36} />
               </div>
               <h2 className="text-lg font-bold tracking-tight text-[var(--text-primary)]">Module Temporarily Disabled</h2>
-              <p className="text-xs text-[var(--text-primary)]0 leading-relaxed">
+              <p className="text-xs text-[var(--text-muted)] leading-relaxed">
                 This feature module has been globally deactivated by the system administrator. If you require access, please contact your administration desk.
               </p>
               <Link
@@ -176,7 +176,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 <AlertTriangle className="text-[var(--status-danger-text)]" size={36} />
               </div>
               <h2 className="text-lg font-bold tracking-tight text-[var(--text-primary)]">Access Restricted</h2>
-              <p className="text-xs text-[var(--text-primary)]0 leading-relaxed">
+              <p className="text-xs text-[var(--text-muted)] leading-relaxed">
                 Your role ({role}) doesn&apos;t have access to this section. Contact your administrator if you need it.
               </p>
               <Link

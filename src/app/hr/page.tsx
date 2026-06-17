@@ -195,14 +195,14 @@ export default function EmployeesListPage() {
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
         <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4 flex items-center justify-between">
           <div>
-            <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Total Workforce</span>
+            <span className="text-[var(--text-muted)] block uppercase font-mono text-[9px]">Total Workforce</span>
             <span className="font-mono text-xl font-extrabold text-[var(--text-primary)] mt-1 block">{employees.length}</span>
           </div>
           <Users className="text-[var(--accent)] opacity-80" size={24} />
         </div>
         <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4 flex items-center justify-between">
           <div>
-            <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Projects Dept</span>
+            <span className="text-[var(--text-muted)] block uppercase font-mono text-[9px]">Projects Dept</span>
             <span className="font-mono text-xl font-extrabold text-[var(--text-primary)] mt-1 block">
               {employees.filter(e => e.department === 'PROJECTS').length}
             </span>
@@ -211,7 +211,7 @@ export default function EmployeesListPage() {
         </div>
         <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4 flex items-center justify-between">
           <div>
-            <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Active Status</span>
+            <span className="text-[var(--text-muted)] block uppercase font-mono text-[9px]">Active Status</span>
             <span className="font-mono text-xl font-extrabold text-[var(--text-primary)] mt-1 block">
               {employees.filter(e => e.status === 'ACTIVE').length}
             </span>
@@ -220,7 +220,7 @@ export default function EmployeesListPage() {
         </div>
         <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4 flex items-center justify-between">
           <div>
-            <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Compliance Audits</span>
+            <span className="text-[var(--text-muted)] block uppercase font-mono text-[9px]">Compliance Audits</span>
             <span className="font-mono text-xl font-extrabold text-[var(--text-primary)] mt-1 block">Audit Ready</span>
           </div>
           <ShieldAlert className="text-[var(--status-warning-text)]" size={24} />
@@ -350,7 +350,7 @@ export default function EmployeesListPage() {
           <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto flex flex-col">
             <div className="flex justify-between items-center p-6 border-b border-[var(--border)]">
               <h2 className="text-xs font-mono text-[var(--accent)] uppercase tracking-widest font-bold">Onboard New Employee</h2>
-              <button onClick={() => setShowAddModal(false)} className="text-[var(--text-primary)]0 hover:text-[var(--text-primary)]">
+              <button onClick={() => setShowAddModal(false)} className="text-[var(--text-muted)] hover:text-[var(--text-primary)]">
                 <X size={18} />
               </button>
             </div>
@@ -359,7 +359,7 @@ export default function EmployeesListPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Section 1: Basic Info */}
                 <div className="md:col-span-3">
-                  <h3 className="text-[10px] font-mono text-[var(--text-primary)]0 uppercase tracking-widest border-b border-[var(--border)] pb-2 mb-4">1. Personal & Contact Parameters</h3>
+                  <h3 className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest border-b border-[var(--border)] pb-2 mb-4">1. Personal & Contact Parameters</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
                       <label className="block text-[10px] font-mono text-[var(--text-secondary)] uppercase mb-1">Full Name (EN) *</label>
@@ -398,7 +398,7 @@ export default function EmployeesListPage() {
 
                 {/* Section 2: Job parameters */}
                 <div className="md:col-span-3">
-                  <h3 className="text-[10px] font-mono text-[var(--text-primary)]0 uppercase tracking-widest border-b border-[var(--border)] pb-2 mb-4">2. Employment & Designation Parameters</h3>
+                  <h3 className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest border-b border-[var(--border)] pb-2 mb-4">2. Employment & Designation Parameters</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
                       <label className="block text-[10px] font-mono text-[var(--text-secondary)] uppercase mb-1">Designation *</label>
@@ -444,7 +444,7 @@ export default function EmployeesListPage() {
 
                 {/* Section 3: Compliance documents */}
                 <div className="md:col-span-3">
-                  <h3 className="text-[10px] font-mono text-[var(--text-primary)]0 uppercase tracking-widest border-b border-[var(--border)] pb-2 mb-4">3. UAE Document Compliance Parameters</h3>
+                  <h3 className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest border-b border-[var(--border)] pb-2 mb-4">3. UAE Document Compliance Parameters</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
                       <label className="block text-[10px] font-mono text-[var(--text-secondary)] uppercase mb-1">Passport No *</label>
@@ -506,7 +506,7 @@ export default function EmployeesListPage() {
 
                 {/* Section 4: Bank Details */}
                 <div className="md:col-span-3">
-                  <h3 className="text-[10px] font-mono text-[var(--text-primary)]0 uppercase tracking-widest border-b border-[var(--border)] pb-2 mb-4">4. Bank & WPS salary Card Details</h3>
+                  <h3 className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest border-b border-[var(--border)] pb-2 mb-4">4. Bank & WPS salary Card Details</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
                     <div>
                       <label className="block text-[10px] font-mono text-[var(--text-secondary)] uppercase mb-1">Bank Name *</label>

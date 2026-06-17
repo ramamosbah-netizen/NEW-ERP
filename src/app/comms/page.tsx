@@ -26,6 +26,14 @@ const fmtDay = (s: string) => new Date(s).toLocaleDateString('en-AE', { weekday:
 const convIcon = (t: string) => t === 'CHANNEL' ? Hash : t === 'GROUP' ? Users : t === 'PROJECT' ? FolderKanban : MessageSquare;
 
 export default function CommsPage() {
+  return (
+    <React.Suspense fallback={null}>
+      <CommsPageInner />
+    </React.Suspense>
+  );
+}
+
+function CommsPageInner() {
   const router = useRouter();
   const params = useSearchParams();
   const [meId, setMeId] = useState<string | null>(null);

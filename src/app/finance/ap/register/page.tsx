@@ -185,7 +185,7 @@ export function SupplierInvoiceRegisterPage() {
 <main className="flex-1 max-w-6xl w-full mx-auto px-6 py-8 flex flex-col gap-6">
         {/* Header */}
         <div>
-          <div className="text-[10px] text-[var(--text-primary)]0 font-mono uppercase tracking-widest flex items-center gap-1">
+          <div className="text-[10px] text-[var(--text-muted)] font-mono uppercase tracking-widest flex items-center gap-1">
             <Link href="/finance/ap" className="hover:text-[var(--accent)] flex items-center gap-0.5"><ArrowLeft size={10} /> Registry</Link> &gt; <span>Register Supplier Bill</span>
           </div>
           <h1 className="font-heading font-extrabold text-2xl tracking-tight text-[var(--text-primary)] uppercase mt-1">
@@ -363,7 +363,7 @@ export function SupplierInvoiceRegisterPage() {
               </div>
 
               {invoiceType === 'PO_MATCHED' && items.length === 0 && (
-                <p className="text-xs text-[var(--text-primary)]0 font-mono py-4 text-center">Select a Purchase Order to load items for matching.</p>
+                <p className="text-xs text-[var(--text-muted)] font-mono py-4 text-center">Select a Purchase Order to load items for matching.</p>
               )}
 
               {/* Matrix list */}
@@ -383,7 +383,7 @@ export function SupplierInvoiceRegisterPage() {
                     <div className="text-[10px] font-mono flex flex-wrap justify-between gap-2 text-[var(--text-secondary)]">
                       <span className="font-semibold text-[var(--text-primary)]">{item.description}</span>
                       {poMatch && (
-                        <div className="flex gap-3 text-[var(--text-primary)]0">
+                        <div className="flex gap-3 text-[var(--text-muted)]">
                           <span>PO Ordered Qty: <strong className="text-[var(--text-secondary)]">{poMatch.poQty}</strong></span>
                           <span>GRN Received Qty: <strong className="text-[var(--text-secondary)]">{poMatch.qtyReceived}</strong></span>
                           <span>Outstanding to Bill: <strong className="text-[var(--accent)]">{poMatch.qtyOutstandingToInvoice}</strong></span>
@@ -407,7 +407,7 @@ export function SupplierInvoiceRegisterPage() {
                       )}
                       
                       <div className="w-full md:w-32 flex items-center gap-2">
-                        <span className="text-[9px] text-[var(--text-primary)]0 font-mono uppercase">Invoiced Qty:</span>
+                        <span className="text-[9px] text-[var(--text-muted)] font-mono uppercase">Invoiced Qty:</span>
                         <input
                           type="number"
                           step="any"
@@ -419,7 +419,7 @@ export function SupplierInvoiceRegisterPage() {
                       </div>
 
                       <div className="w-full md:w-44 flex items-center gap-2">
-                        <span className="text-[9px] text-[var(--text-primary)]0 font-mono uppercase">Invoiced Price:</span>
+                        <span className="text-[9px] text-[var(--text-muted)] font-mono uppercase">Invoiced Price:</span>
                         <input
                           type="number"
                           step="0.0001"

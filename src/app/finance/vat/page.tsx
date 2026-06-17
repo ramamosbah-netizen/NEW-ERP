@@ -82,7 +82,7 @@ export default function VATPeriodPage() {
         {/* Header */}
         <div className="flex justify-between items-start gap-4 flex-wrap">
           <div>
-            <div className="text-[10px] text-[var(--text-primary)]0 font-mono uppercase tracking-widest flex items-center gap-1">
+            <div className="text-[10px] text-[var(--text-muted)] font-mono uppercase tracking-widest flex items-center gap-1">
               <Link href="/finance" className="hover:text-[var(--accent)] flex items-center gap-0.5"><ArrowLeft size={10} /> Finance Command</Link> &gt; <span className="text-[var(--text-secondary)]">UAE Form 201 VAT Return</span>
             </div>
             <h1 className="font-heading font-extrabold text-2xl tracking-tight text-[var(--text-primary)] uppercase mt-1">
@@ -109,7 +109,7 @@ export default function VATPeriodPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
               <div>
-                <label className="text-[var(--text-primary)]0 uppercase font-mono text-[9px] block mb-1">Period Name</label>
+                <label className="text-[var(--text-muted)] uppercase font-mono text-[9px] block mb-1">Period Name</label>
                 <input
                   type="text"
                   placeholder="e.g. 2026-Q2"
@@ -121,7 +121,7 @@ export default function VATPeriodPage() {
               </div>
 
               <div>
-                <label className="text-[var(--text-primary)]0 uppercase font-mono text-[9px] block mb-1">Filing Deadline</label>
+                <label className="text-[var(--text-muted)] uppercase font-mono text-[9px] block mb-1">Filing Deadline</label>
                 <input
                   type="date"
                   value={deadline}
@@ -132,7 +132,7 @@ export default function VATPeriodPage() {
               </div>
 
               <div>
-                <label className="text-[var(--text-primary)]0 uppercase font-mono text-[9px] block mb-1">Start Date</label>
+                <label className="text-[var(--text-muted)] uppercase font-mono text-[9px] block mb-1">Start Date</label>
                 <input
                   type="date"
                   value={startDate}
@@ -143,7 +143,7 @@ export default function VATPeriodPage() {
               </div>
 
               <div>
-                <label className="text-[var(--text-primary)]0 uppercase font-mono text-[9px] block mb-1">End Date</label>
+                <label className="text-[var(--text-muted)] uppercase font-mono text-[9px] block mb-1">End Date</label>
                 <input
                   type="date"
                   value={endDate}
@@ -176,7 +176,7 @@ export default function VATPeriodPage() {
         {/* Selected Period Stats Banner */}
         <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           <div className="flex flex-col gap-1.5">
-            <span className="text-[var(--text-primary)]0 uppercase font-mono text-[9px] block">Select VAT Period Return</span>
+            <span className="text-[var(--text-muted)] uppercase font-mono text-[9px] block">Select VAT Period Return</span>
             <select
               value={selectedPeriodId}
               onChange={(e) => setSelectedPeriodId(e.target.value)}
@@ -198,7 +198,7 @@ export default function VATPeriodPage() {
           {selectedPeriod && (
             <div className="flex items-center gap-3 self-stretch md:self-auto">
               <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded px-4 py-3 flex flex-col justify-center min-w-32 text-center">
-                <span className="text-[var(--text-primary)]0 uppercase font-mono text-[8px] block">Lock Status</span>
+                <span className="text-[var(--text-muted)] uppercase font-mono text-[8px] block">Lock Status</span>
                 <span className={`text-xs font-mono font-bold mt-1 block ${selectedPeriod.status === 'LOCKED' ? 'text-[var(--status-danger-text)]' : 'text-[var(--accent)]'}`}>
                   {selectedPeriod.status === 'LOCKED' ? '🔒 LOCKED' : '🔓 OPEN'}
                 </span>
@@ -225,11 +225,11 @@ export default function VATPeriodPage() {
 
         {/* VAT Return Form 201 Layout */}
         {computing ? (
-          <div className="py-12 text-center text-[var(--text-primary)]0 font-mono text-xs">
+          <div className="py-12 text-center text-[var(--text-muted)] font-mono text-xs">
             Aggregating output standard tax rules and reverse charge parameters...
           </div>
         ) : !form201 ? (
-          <div className="py-12 text-center text-[var(--text-primary)]0 font-mono text-xs">
+          <div className="py-12 text-center text-[var(--text-muted)] font-mono text-xs">
             No VAT filing data computed for selected period range.
           </div>
         ) : (
@@ -244,7 +244,7 @@ export default function VATPeriodPage() {
                   <h3 className="text-xs font-mono text-[var(--accent)] uppercase tracking-wider font-bold">
                     VAT on Sales and all other Outputs
                   </h3>
-                  <span className="text-[9px] font-mono text-[var(--text-primary)]0">Box 1 &ndash; Box 8</span>
+                  <span className="text-[9px] font-mono text-[var(--text-muted)]">Box 1 &ndash; Box 8</span>
                 </div>
 
                 <div className="divide-y divide-[var(--border)] text-xs">
@@ -292,14 +292,14 @@ export default function VATPeriodPage() {
                   <div className="p-4 grid grid-cols-3 gap-4 font-mono">
                     <span className="text-[var(--text-secondary)] font-sans font-bold">4. Zero-rated supplies</span>
                     <span className="text-right text-[var(--text-secondary)]">{formatAED(form201.box4_zero_rated)}</span>
-                    <span className="text-right text-[var(--text-primary)]0">—</span>
+                    <span className="text-right text-[var(--text-muted)]">—</span>
                   </div>
 
                   {/* Exempt Supplies */}
                   <div className="p-4 grid grid-cols-3 gap-4 font-mono">
                     <span className="text-[var(--text-secondary)] font-sans font-bold">5. Exempt supplies</span>
                     <span className="text-right text-[var(--text-secondary)]">{formatAED(form201.box5_exempt)}</span>
-                    <span className="text-right text-[var(--text-primary)]0">—</span>
+                    <span className="text-right text-[var(--text-muted)]">—</span>
                   </div>
 
                   {/* Box 8: Total Outputs */}
@@ -317,7 +317,7 @@ export default function VATPeriodPage() {
                   <h3 className="text-xs font-mono text-[var(--status-danger-text)] uppercase tracking-wider font-bold">
                     VAT on Expenses and all other Inputs
                   </h3>
-                  <span className="text-[9px] font-mono text-[var(--text-primary)]0">Box 9 &ndash; Box 11</span>
+                  <span className="text-[9px] font-mono text-[var(--text-muted)]">Box 9 &ndash; Box 11</span>
                 </div>
 
                 <div className="divide-y divide-[var(--border)] text-xs">
@@ -361,12 +361,12 @@ export default function VATPeriodPage() {
 
                 <div className="flex flex-col gap-4 text-xs font-mono">
                   <div className="bg-[var(--bg-card)]/40 p-4 rounded border border-[var(--border)]">
-                    <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Total Output VAT (12)</span>
+                    <span className="text-[var(--text-muted)] block uppercase font-mono text-[9px]">Total Output VAT (12)</span>
                     <span className="font-mono text-sm font-bold text-[var(--accent)] mt-1 block">{formatAED(form201.box12_total_output_tax)}</span>
                   </div>
 
                   <div className="bg-[var(--bg-card)]/40 p-4 rounded border border-[var(--border)]">
-                    <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Total Recoverable Input VAT (13)</span>
+                    <span className="text-[var(--text-muted)] block uppercase font-mono text-[9px]">Total Recoverable Input VAT (13)</span>
                     <span className="font-mono text-sm font-bold text-[var(--status-danger-text)] mt-1 block">{formatAED(form201.box13_total_input_tax)}</span>
                   </div>
 

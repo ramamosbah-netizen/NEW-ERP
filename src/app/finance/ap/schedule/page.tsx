@@ -156,7 +156,7 @@ export default function DisbursementSchedulingPage() {
 <main className="flex-1 max-w-5xl w-full mx-auto px-6 py-8 flex flex-col gap-6">
         {/* Header */}
         <div>
-          <div className="text-[10px] text-[var(--text-primary)]0 font-mono uppercase tracking-widest flex items-center gap-1">
+          <div className="text-[10px] text-[var(--text-muted)] font-mono uppercase tracking-widest flex items-center gap-1">
             <Link href="/finance/ap" className="hover:text-[var(--accent)] flex items-center gap-0.5"><ArrowLeft size={10} /> AP Registry</Link> &gt; <span className="text-[var(--text-secondary)]">Schedule Payment</span>
           </div>
           <h1 className="font-heading font-extrabold text-2xl tracking-tight text-[var(--text-primary)] uppercase mt-1">
@@ -194,9 +194,9 @@ export default function DisbursementSchedulingPage() {
                 </label>
 
                 {loading ? (
-                  <p className="text-xs font-mono text-[var(--text-primary)]0">Querying supplier ledger records...</p>
+                  <p className="text-xs font-mono text-[var(--text-muted)]">Querying supplier ledger records...</p>
                 ) : unpaidInvoices.length === 0 ? (
-                  <div className="text-center py-6 text-[var(--text-primary)]0 flex flex-col items-center gap-2">
+                  <div className="text-center py-6 text-[var(--text-muted)] flex flex-col items-center gap-2">
                     <CheckCircle size={24} className="text-[var(--accent)]" />
                     <p className="text-xs font-mono">No outstanding invoices found. Supplier ledger is fully paid.</p>
                   </div>
@@ -210,13 +210,13 @@ export default function DisbursementSchedulingPage() {
                           <div className="flex justify-between items-start text-xs">
                             <div>
                               <span className="font-mono text-[var(--accent)] font-bold block">{inv.supplier_invoice_number}</span>
-                              <span className="text-[10px] text-[var(--text-primary)]0 block">Due Date: {new Date(inv.due_date).toLocaleDateString('en-GB')} ({inv.status})</span>
+                              <span className="text-[10px] text-[var(--text-muted)] block">Due Date: {new Date(inv.due_date).toLocaleDateString('en-GB')} ({inv.status})</span>
                               {inv.projects?.name && (
                                 <span className="text-[9px] text-[var(--text-secondary)] block mt-0.5">Project: {inv.projects.name}</span>
                               )}
                             </div>
                             <div className="text-right">
-                              <span className="text-[10px] text-[var(--text-primary)]0 block">Outstanding Balance</span>
+                              <span className="text-[10px] text-[var(--text-muted)] block">Outstanding Balance</span>
                               <span className="font-mono font-bold block text-[var(--text-primary)]">{formatAED(outstanding)}</span>
                             </div>
                           </div>
@@ -256,14 +256,14 @@ export default function DisbursementSchedulingPage() {
 
               <div className="flex flex-col gap-4 text-xs">
                 <div>
-                  <label className="text-[var(--text-primary)]0 uppercase font-mono text-[9px] block mb-1">Total Payment Amount</label>
+                  <label className="text-[var(--text-muted)] uppercase font-mono text-[9px] block mb-1">Total Payment Amount</label>
                   <div className="font-mono text-xl font-extrabold text-[var(--text-primary)] bg-[var(--surface-hover)] border border-[var(--border)] rounded p-3 text-center">
                     {formatAED(getTotalAllocated())}
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-[var(--text-primary)]0 uppercase font-mono text-[9px] block mb-1">Disbursement Date</label>
+                  <label className="text-[var(--text-muted)] uppercase font-mono text-[9px] block mb-1">Disbursement Date</label>
                   <input
                     type="date"
                     value={paymentDate}
@@ -274,7 +274,7 @@ export default function DisbursementSchedulingPage() {
                 </div>
 
                 <div>
-                  <label className="text-[var(--text-primary)]0 uppercase font-mono text-[9px] block mb-1">Payment Method</label>
+                  <label className="text-[var(--text-muted)] uppercase font-mono text-[9px] block mb-1">Payment Method</label>
                   <select
                     value={paymentMethod}
                     onChange={(e) => setPaymentMethod(e.target.value)}
@@ -289,7 +289,7 @@ export default function DisbursementSchedulingPage() {
                 </div>
 
                 <div>
-                  <label className="text-[var(--text-primary)]0 uppercase font-mono text-[9px] block mb-1">Reference / Cheque Number</label>
+                  <label className="text-[var(--text-muted)] uppercase font-mono text-[9px] block mb-1">Reference / Cheque Number</label>
                   <input
                     type="text"
                     value={reference}
@@ -300,7 +300,7 @@ export default function DisbursementSchedulingPage() {
                 </div>
 
                 <div>
-                  <label className="text-[var(--text-primary)]0 uppercase font-mono text-[9px] block mb-1">Debit Bank Account</label>
+                  <label className="text-[var(--text-muted)] uppercase font-mono text-[9px] block mb-1">Debit Bank Account</label>
                   <input
                     type="text"
                     value={bankAccount}
@@ -311,7 +311,7 @@ export default function DisbursementSchedulingPage() {
                 </div>
 
                 <div>
-                  <label className="text-[var(--text-primary)]0 uppercase font-mono text-[9px] block mb-1">Paid from account (tracks balance)</label>
+                  <label className="text-[var(--text-muted)] uppercase font-mono text-[9px] block mb-1">Paid from account (tracks balance)</label>
                   <select
                     value={paymentAccountId}
                     onChange={(e) => setPaymentAccountId(e.target.value)}
@@ -325,7 +325,7 @@ export default function DisbursementSchedulingPage() {
                 </div>
 
                 <div>
-                  <label className="text-[var(--text-primary)]0 uppercase font-mono text-[9px] block mb-1">Disbursement Notes</label>
+                  <label className="text-[var(--text-muted)] uppercase font-mono text-[9px] block mb-1">Disbursement Notes</label>
                   <textarea
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
@@ -345,7 +345,7 @@ export default function DisbursementSchedulingPage() {
                 <button
                   type="submit"
                   disabled={saving || !selectedSupplierId || getTotalAllocated() === 0}
-                  className="w-full bg-[var(--accent)] hover:bg-[var(--accent)] disabled:bg-[var(--surface-hover)] disabled:text-[var(--text-primary)]0 disabled:border-transparent text-white font-bold uppercase font-mono py-2.5 rounded transition-all shadow-[0_0_15px_var(--accent-glow)] text-center cursor-pointer"
+                  className="w-full bg-[var(--accent)] hover:bg-[var(--accent)] disabled:bg-[var(--surface-hover)] disabled:text-[var(--text-muted)] disabled:border-transparent text-white font-bold uppercase font-mono py-2.5 rounded transition-all shadow-[0_0_15px_var(--accent-glow)] text-center cursor-pointer"
                 >
                   {saving ? 'Recording Disbursement...' : 'Execute Payment'}
                 </button>

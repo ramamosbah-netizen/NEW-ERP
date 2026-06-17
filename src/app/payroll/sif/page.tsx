@@ -257,7 +257,7 @@ export default function SifExportPage() {
                 </div>
 
                 <div className="border border-[var(--border)] rounded bg-[var(--bg-card)] p-4 max-h-[300px] overflow-y-auto">
-                  <h4 className="text-[9px] font-mono uppercase text-[var(--text-primary)]0 mb-2">Errors List</h4>
+                  <h4 className="text-[9px] font-mono uppercase text-[var(--text-muted)] mb-2">Errors List</h4>
                   <ul className="space-y-1.5 font-mono text-[10px] text-[var(--status-danger-text)]">
                     {errors.map((err, idx) => (
                       <li key={idx} className="flex items-start gap-1">
@@ -293,7 +293,7 @@ export default function SifExportPage() {
                         <tr key={line.id}>
                           <td>
                             <div className="font-semibold text-[var(--text-primary)]">{line.employee?.full_name_en}</div>
-                            <div className="font-mono text-[8px] text-[var(--text-primary)]0">{line.employee?.employee_number}</div>
+                            <div className="font-mono text-[8px] text-[var(--text-muted)]">{line.employee?.employee_number}</div>
                           </td>
                           <td className="font-mono text-[var(--text-secondary)]">{line.mohre_person_code}</td>
                           <td className="font-mono text-[var(--text-secondary)]">{line.agent_id}</td>

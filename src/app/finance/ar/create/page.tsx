@@ -170,7 +170,7 @@ export default function InvoiceCreatePage() {
 <main className="flex-1 max-w-5xl w-full mx-auto px-6 py-8 flex flex-col gap-6">
         {/* Header */}
         <div>
-          <div className="text-[10px] text-[var(--text-primary)]0 font-mono uppercase tracking-widest flex items-center gap-1">
+          <div className="text-[10px] text-[var(--text-muted)] font-mono uppercase tracking-widest flex items-center gap-1">
             <Link href="/finance/ar" className="hover:text-[var(--accent)] flex items-center gap-0.5"><ArrowLeft size={10} /> Registry</Link> &gt; <span>New Draft</span>
           </div>
           <h1 className="font-heading font-extrabold text-2xl tracking-tight text-[var(--text-primary)] uppercase mt-1">
@@ -298,7 +298,7 @@ export default function InvoiceCreatePage() {
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-[9px] text-[var(--text-primary)]0 font-mono uppercase mb-1">Advance Recovery Rate (%)</label>
+                    <label className="block text-[9px] text-[var(--text-muted)] font-mono uppercase mb-1">Advance Recovery Rate (%)</label>
                     <input
                       type="number"
                       step="1"
@@ -309,7 +309,7 @@ export default function InvoiceCreatePage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-[9px] text-[var(--text-primary)]0 font-mono uppercase mb-1">Retention Held Rate (%)</label>
+                    <label className="block text-[9px] text-[var(--text-muted)] font-mono uppercase mb-1">Retention Held Rate (%)</label>
                     <input
                       type="number"
                       step="1"
@@ -320,7 +320,7 @@ export default function InvoiceCreatePage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-[9px] text-[var(--text-primary)]0 font-mono uppercase mb-1">Certified Gross Claim (AED)</label>
+                    <label className="block text-[9px] text-[var(--text-muted)] font-mono uppercase mb-1">Certified Gross Claim (AED)</label>
                     <input
                       type="number"
                       step="0.01"

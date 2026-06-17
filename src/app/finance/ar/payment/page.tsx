@@ -142,7 +142,7 @@ function PaymentRecordPageContent() {
 <main className="flex-1 max-w-4xl w-full mx-auto px-6 py-8 flex flex-col gap-6">
         {/* Header */}
         <div>
-          <div className="text-[10px] text-[var(--text-primary)]0 font-mono uppercase tracking-widest flex items-center gap-1">
+          <div className="text-[10px] text-[var(--text-muted)] font-mono uppercase tracking-widest flex items-center gap-1">
             <Link href="/finance/ar" className="hover:text-[var(--accent)] flex items-center gap-0.5"><ArrowLeft size={10} /> Registry</Link> &gt; <span className="text-[var(--text-secondary)]">Record Payment</span>
           </div>
           <h1 className="font-heading font-extrabold text-2xl tracking-tight text-[var(--text-primary)] uppercase mt-1">
@@ -256,17 +256,17 @@ function PaymentRecordPageContent() {
             </h3>
 
             {unpaidInvoices.length === 0 ? (
-              <p className="text-xs text-[var(--text-primary)]0 font-mono py-4 text-center">No outstanding client invoices found for this customer.</p>
+              <p className="text-xs text-[var(--text-muted)] font-mono py-4 text-center">No outstanding client invoices found for this customer.</p>
             ) : (
               <div className="flex flex-col gap-4 max-h-72 overflow-y-auto pr-1">
                 {unpaidInvoices.map(inv => (
                   <div key={inv.id} className="bg-[var(--bg-card)]/30 border border-[var(--border)] p-3 rounded flex flex-col gap-2">
                     <div className="flex justify-between items-center text-xs">
                       <span className="font-mono font-bold text-[var(--text-primary)]">{inv.invoice_number}</span>
-                      <span className="text-[10px] text-[var(--text-primary)]0 font-mono">Due: {inv.outstanding.toFixed(2)} AED</span>
+                      <span className="text-[10px] text-[var(--text-muted)] font-mono">Due: {inv.outstanding.toFixed(2)} AED</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] text-[var(--text-primary)]0 font-mono uppercase">Allocate:</span>
+                      <span className="text-[10px] text-[var(--text-muted)] font-mono uppercase">Allocate:</span>
                       <input
                         type="number"
                         step="0.01"
@@ -282,11 +282,11 @@ function PaymentRecordPageContent() {
             )}
 
             <div className="border-t border-[var(--border)] pt-4 flex flex-col gap-2.5 text-xs font-mono">
-              <div className="flex justify-between text-[var(--text-primary)]0">
+              <div className="flex justify-between text-[var(--text-muted)]">
                 <span>Total Payment:</span>
                 <span>{amount.toFixed(2)} AED</span>
               </div>
-              <div className="flex justify-between text-[var(--text-primary)]0">
+              <div className="flex justify-between text-[var(--text-muted)]">
                 <span>Total Allocated:</span>
                 <span>{allocatedSum.toFixed(2)} AED</span>
               </div>

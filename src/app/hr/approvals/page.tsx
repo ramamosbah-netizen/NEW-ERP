@@ -87,7 +87,7 @@ export default function LeaveApprovalsPage() {
         <div style={{ padding: '4rem', textAlign: 'center', color: 'var(--text-muted)' }} className="quote-card">
           <UserCheck size={48} className="text-[var(--accent)]" style={{ margin: '0 auto 1rem auto', opacity: 0.8 }} />
           <h3 className="font-mono text-xs uppercase tracking-widest text-[var(--text-secondary)] font-bold mb-1">Queue Empty</h3>
-          <p className="text-[11px] text-[var(--text-primary)]0">All submitted employee leave requests have been processed.</p>
+          <p className="text-[11px] text-[var(--text-muted)]">All submitted employee leave requests have been processed.</p>
         </div>
       ) : (
         <div className="quote-card">
@@ -135,7 +135,7 @@ export default function LeaveApprovalsPage() {
                     <td style={{ maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} className="text-[var(--text-secondary)]" title={req.reason || ''}>
                       {req.reason || <span className="text-[var(--text-tertiary)] font-mono italic text-[10px]">No reason provided</span>}
                     </td>
-                    <td className="font-mono text-[10px] text-[var(--text-primary)]0">
+                    <td className="font-mono text-[10px] text-[var(--text-muted)]">
                       {new Date(req.created_at || '').toLocaleDateString('en-GB')}
                     </td>
                     <td>

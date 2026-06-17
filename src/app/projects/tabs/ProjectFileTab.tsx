@@ -222,7 +222,7 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 text-[var(--text-primary)]0 font-mono text-xs gap-3">
+      <div className="flex flex-col items-center justify-center py-16 text-[var(--text-muted)] font-mono text-xs gap-3">
         <div className="animate-spin rounded-full h-5 w-5 border border-[var(--border)] border-t-emerald-400"></div>
         <span>Collecting unified project dossier (Tender through Invoices)...</span>
       </div>
@@ -255,7 +255,7 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
           <div className="flex items-center gap-2">
             <Folder size={14} className="text-[var(--status-warning-text)] fill-amber-500/10" />
             <span>{title}</span>
-            <span className="text-[10px] bg-[var(--surface-hover)] text-[var(--text-primary)]0 px-1.5 py-0.5 rounded font-normal">
+            <span className="text-[10px] bg-[var(--surface-hover)] text-[var(--text-muted)] px-1.5 py-0.5 rounded font-normal">
               {count} items
             </span>
           </div>
@@ -266,7 +266,7 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
         {isExpanded && (
           <div className="p-4 flex flex-col gap-3.5 bg-[var(--bg-card)]">
             {count === 0 ? (
-              <span className="text-[var(--text-primary)]0 text-[11px] italic font-mono pl-4">No records registered in this stage.</span>
+              <span className="text-[var(--text-muted)] text-[11px] italic font-mono pl-4">No records registered in this stage.</span>
             ) : children}
           </div>
         )}
@@ -283,7 +283,7 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
           <h3 className="text-xs font-mono text-[var(--accent)] uppercase tracking-wider font-bold flex items-center gap-2">
             <Briefcase size={16} /> Unified Project Dossier File
           </h3>
-          <span className="text-[10px] text-[var(--text-primary)]0 font-mono mt-0.5 block">
+          <span className="text-[10px] text-[var(--text-muted)] font-mono mt-0.5 block">
             Single-source aggregation for master reference: <strong className="text-[var(--text-secondary)]">{projectNumber}</strong>
           </span>
         </div>
@@ -308,7 +308,7 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
                     <span>Opportunity Tender</span>
                   </div>
                   <h4 className="text-[var(--text-primary)] font-bold mt-1 text-[13px]">{tender.title}</h4>
-                  <div className="text-[var(--text-primary)]0 text-[10px] mt-1">
+                  <div className="text-[var(--text-muted)] text-[10px] mt-1">
                     Client: {tender.client_name} • Deadline: {new Date(tender.deadline_date).toLocaleDateString('en-GB')}
                   </div>
                 </div>
@@ -326,7 +326,7 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
                     <span>Bill of Quantities (BOQ)</span>
                   </div>
                   <h4 className="text-[var(--text-primary)] font-bold mt-1 text-[13px]">BOQ Final Version {boq.version}</h4>
-                  <div className="text-[var(--text-primary)]0 text-[10px] mt-1">
+                  <div className="text-[var(--text-muted)] text-[10px] mt-1">
                     Status: <span className="text-[var(--accent)] font-bold uppercase">{boq.status}</span> • Created: {new Date(boq.created_at).toLocaleDateString('en-GB')}
                   </div>
                 </div>
@@ -344,7 +344,7 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
             {/* Quotations List */}
             {quotations.length > 0 && (
               <div>
-                <span className="text-[10px] text-[var(--text-primary)]0 uppercase font-bold block mb-2">Proposal Revisions Chain</span>
+                <span className="text-[10px] text-[var(--text-muted)] uppercase font-bold block mb-2">Proposal Revisions Chain</span>
                 <div className="border border-[var(--border)] rounded overflow-hidden">
                   <table className="w-full text-left bg-[var(--bg-card)] text-[11px]">
                     <thead>
@@ -362,7 +362,7 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
                         <tr key={q.id} className="hover:bg-[var(--surface-hover)]">
                           <td className="px-4 py-2.5 font-bold text-[var(--text-secondary)]">{q.quotation_number}</td>
                           <td className="px-4 py-2.5 text-[var(--text-secondary)]">{q.revision_label}</td>
-                          <td className="px-4 py-2.5 text-[var(--text-primary)]0">{new Date(q.quotation_date).toLocaleDateString('en-GB')}</td>
+                          <td className="px-4 py-2.5 text-[var(--text-muted)]">{new Date(q.quotation_date).toLocaleDateString('en-GB')}</td>
                           <td className="px-4 py-2.5 text-right text-[var(--text-primary)]">{fmtAED(q.grand_total_with_vat)}</td>
                           <td className="px-4 py-2.5">
                             <span className={`px-2 py-0.5 rounded text-[9px] font-bold ${
@@ -388,7 +388,7 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
             {/* Variation Orders List */}
             {variationOrders.length > 0 && (
               <div>
-                <span className="text-[10px] text-[var(--text-primary)]0 uppercase font-bold block mb-2">Approved Variation Orders (VOs)</span>
+                <span className="text-[10px] text-[var(--text-muted)] uppercase font-bold block mb-2">Approved Variation Orders (VOs)</span>
                 <div className="border border-[var(--border)] rounded overflow-hidden">
                   <table className="w-full text-left bg-[var(--bg-card)] text-[11px]">
                     <thead>
@@ -404,7 +404,7 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
                       {variationOrders.map((v) => (
                         <tr key={v.id} className="hover:bg-[var(--surface-hover)]">
                           <td className="px-4 py-2.5 font-bold text-[var(--text-secondary)]">{v.vo_number}</td>
-                          <td className="px-4 py-2.5 text-[var(--text-primary)]0">{v.approval_date ? new Date(v.approval_date).toLocaleDateString('en-GB') : 'PENDING'}</td>
+                          <td className="px-4 py-2.5 text-[var(--text-muted)]">{v.approval_date ? new Date(v.approval_date).toLocaleDateString('en-GB') : 'PENDING'}</td>
                           <td className="px-4 py-2.5 text-right text-[var(--text-primary)]">{fmtAED(v.total_cost_impact_sell)}</td>
                           <td className="px-4 py-2.5">
                             <span className={`px-2 py-0.5 rounded text-[9px] font-bold ${
@@ -433,7 +433,7 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
             {/* Comparisons List */}
             {comparisons.length > 0 && (
               <div>
-                <span className="text-[10px] text-[var(--text-primary)]0 uppercase font-bold block mb-2">Supplier Bid Comparisons</span>
+                <span className="text-[10px] text-[var(--text-muted)] uppercase font-bold block mb-2">Supplier Bid Comparisons</span>
                 <div className="border border-[var(--border)] rounded overflow-hidden">
                   <table className="w-full text-left bg-[var(--bg-card)] text-[11px]">
                     <thead>
@@ -450,7 +450,7 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
                       {comparisons.map((c) => (
                         <tr key={c.id} className="hover:bg-[var(--surface-hover)]">
                           <td className="px-4 py-2.5 font-bold text-[var(--text-secondary)]">{c.comparison_number} (Rev.{c.revision})</td>
-                          <td className="px-4 py-2.5 text-[var(--text-primary)]0">{new Date(c.comparison_date).toLocaleDateString('en-GB')}</td>
+                          <td className="px-4 py-2.5 text-[var(--text-muted)]">{new Date(c.comparison_date).toLocaleDateString('en-GB')}</td>
                           <td className="px-4 py-2.5 text-right text-[var(--text-primary)]">{fmtAED(c.total_selected_supplier_cost)}</td>
                           <td className="px-4 py-2.5 text-right text-[var(--accent)]">{c.overall_margin_pct}%</td>
                           <td className="px-4 py-2.5">
@@ -475,7 +475,7 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
             {/* Purchase Orders List */}
             {purchaseOrders.length > 0 && (
               <div>
-                <span className="text-[10px] text-[var(--text-primary)]0 uppercase font-bold block mb-2">Committed Local Purchase Orders (LPOs)</span>
+                <span className="text-[10px] text-[var(--text-muted)] uppercase font-bold block mb-2">Committed Local Purchase Orders (LPOs)</span>
                 <div className="border border-[var(--border)] rounded overflow-hidden">
                   <table className="w-full text-left bg-[var(--bg-card)] text-[11px]">
                     <thead>
@@ -516,7 +516,7 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
             {/* GRNs List */}
             {grns.length > 0 && (
               <div>
-                <span className="text-[10px] text-[var(--text-primary)]0 uppercase font-bold block mb-2">Material Goods Receipt Notes (GRNs)</span>
+                <span className="text-[10px] text-[var(--text-muted)] uppercase font-bold block mb-2">Material Goods Receipt Notes (GRNs)</span>
                 <div className="border border-[var(--border)] rounded overflow-hidden">
                   <table className="w-full text-left bg-[var(--bg-card)] text-[11px]">
                     <thead>
@@ -533,7 +533,7 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
                         <tr key={g.id} className="hover:bg-[var(--surface-hover)]">
                           <td className="px-4 py-2.5 font-bold text-[var(--text-secondary)]">{g.grn_number}</td>
                           <td className="px-4 py-2.5 text-[var(--text-secondary)]">{g.delivery_note_ref}</td>
-                          <td className="px-4 py-2.5 text-[var(--text-primary)]0">{new Date(g.received_at).toLocaleDateString('en-GB')}</td>
+                          <td className="px-4 py-2.5 text-[var(--text-muted)]">{new Date(g.received_at).toLocaleDateString('en-GB')}</td>
                           <td className="px-4 py-2.5">
                             <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-[var(--accent-glow)] text-[var(--accent)]">{g.status}</span>
                           </td>
@@ -559,7 +559,7 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* AR Invoices */}
               <div className="border border-[var(--border)] rounded bg-[var(--bg-card)] p-4">
-                <span className="text-[10px] text-[var(--text-primary)]0 uppercase font-bold block mb-2 flex items-center gap-1">
+                <span className="text-[10px] text-[var(--text-muted)] uppercase font-bold block mb-2 flex items-center gap-1">
                   <FileCheck size={12} className="text-[var(--accent)]" />
                   Accounts Receivable (Client Invoices)
                 </span>
@@ -573,7 +573,7 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
                           <Link href={`/finance/ar/${i.id}`} className="font-bold text-[var(--text-primary)] hover:underline">
                             {i.invoice_number}
                           </Link>
-                          <div className="text-[9px] text-[var(--text-primary)]0">{new Date(i.invoice_date).toLocaleDateString('en-GB')}</div>
+                          <div className="text-[9px] text-[var(--text-muted)]">{new Date(i.invoice_date).toLocaleDateString('en-GB')}</div>
                         </div>
                         <div className="text-right">
                           <div className="text-[var(--text-secondary)] font-semibold">{fmtAED(i.total_incl_vat)}</div>
@@ -587,7 +587,7 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
 
               {/* Client Payments */}
               <div className="border border-[var(--border)] rounded bg-[var(--bg-card)] p-4">
-                <span className="text-[10px] text-[var(--text-primary)]0 uppercase font-bold block mb-2 flex items-center gap-1">
+                <span className="text-[10px] text-[var(--text-muted)] uppercase font-bold block mb-2 flex items-center gap-1">
                   <DollarSign size={12} className="text-[var(--accent)]" />
                   Received Cash Receipts (Payments)
                 </span>
@@ -599,13 +599,13 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
                       <div key={idx} className="flex justify-between items-center bg-[var(--bg-card)] p-2 border border-[var(--border)] rounded text-[11px]">
                         <div>
                           <span className="font-bold text-[var(--text-primary)]">{p.payment_number}</span>
-                          <div className="text-[9px] text-[var(--text-primary)]0">
+                          <div className="text-[9px] text-[var(--text-muted)]">
                             {new Date(p.payment_date).toLocaleDateString('en-GB')} • {p.method}
                           </div>
                         </div>
                         <div className="text-right">
                           <div className="text-[var(--accent)] font-bold">+{fmtAED(p.allocated)}</div>
-                          <div className="text-[9px] text-[var(--text-primary)]0">Allocated amount</div>
+                          <div className="text-[9px] text-[var(--text-muted)]">Allocated amount</div>
                         </div>
                       </div>
                     ))}
@@ -618,7 +618,7 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* AP Invoices */}
               <div className="border border-[var(--border)] rounded bg-[var(--bg-card)] p-4">
-                <span className="text-[10px] text-[var(--text-primary)]0 uppercase font-bold block mb-2 flex items-center gap-1">
+                <span className="text-[10px] text-[var(--text-muted)] uppercase font-bold block mb-2 flex items-center gap-1">
                   <FileCheck2 size={12} className="text-[var(--status-warning-text)]" />
                   Accounts Payable (Supplier Bills)
                 </span>
@@ -632,7 +632,7 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
                           <Link href={`/finance/ap/match/${s.id}`} className="font-bold text-[var(--text-primary)] hover:underline text-[11px]">
                             {s.internal_ref}
                           </Link>
-                          <div className="text-[9px] text-[var(--text-primary)]0">Invoice: {s.supplier_invoice_number}</div>
+                          <div className="text-[9px] text-[var(--text-muted)]">Invoice: {s.supplier_invoice_number}</div>
                         </div>
                         <div className="text-right">
                           <div className="text-[var(--text-secondary)] font-semibold">{fmtAED(s.total)}</div>
@@ -646,7 +646,7 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
 
               {/* Supplier Payments */}
               <div className="border border-[var(--border)] rounded bg-[var(--bg-card)] p-4">
-                <span className="text-[10px] text-[var(--text-primary)]0 uppercase font-bold block mb-2 flex items-center gap-1">
+                <span className="text-[10px] text-[var(--text-muted)] uppercase font-bold block mb-2 flex items-center gap-1">
                   <DollarSign size={12} className="text-[var(--status-warning-text)]" />
                   Disbursed Cash Payments
                 </span>
@@ -658,13 +658,13 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
                       <div key={idx} className="flex justify-between items-center bg-[var(--bg-card)] p-2 border border-[var(--border)] rounded text-[11px]">
                         <div>
                           <span className="font-bold text-[var(--text-primary)]">{p.payment_number}</span>
-                          <div className="text-[9px] text-[var(--text-primary)]0">
+                          <div className="text-[9px] text-[var(--text-muted)]">
                             {new Date(p.payment_date).toLocaleDateString('en-GB')} • {p.method}
                           </div>
                         </div>
                         <div className="text-right">
                           <div className="text-[var(--status-danger-text)] font-bold">-{fmtAED(p.allocated)}</div>
-                          <div className="text-[9px] text-[var(--text-primary)]0">Allocated payment</div>
+                          <div className="text-[9px] text-[var(--text-muted)]">Allocated payment</div>
                         </div>
                       </div>
                     ))}
@@ -678,12 +678,12 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
         {/* 5. DMS Document Tree */}
         {renderFolderSection('DMS', '5. Document Management System (DMS)', documents.length, (
           <div className="border border-[var(--border)] rounded overflow-hidden font-mono text-xs">
-            <div className="bg-[var(--bg-card)] px-4 py-2.5 border-b border-[var(--border)] text-[10px] text-[var(--text-primary)]0 font-bold uppercase tracking-wide">
+            <div className="bg-[var(--bg-card)] px-4 py-2.5 border-b border-[var(--border)] text-[10px] text-[var(--text-muted)] font-bold uppercase tracking-wide">
               Folder Structure Tree
             </div>
             <div className="p-4 bg-[var(--bg-card)] flex flex-col gap-3">
               {documents.length === 0 ? (
-                <span className="text-[var(--text-primary)]0 italic text-[11px] pl-4">No documents filed in project directory.</span>
+                <span className="text-[var(--text-muted)] italic text-[11px] pl-4">No documents filed in project directory.</span>
               ) : (
                 // Group by Category and Subcategory
                 Object.entries(
@@ -719,10 +719,10 @@ export default function ProjectFileTab({ projectId, projectNumber, tenderId, boq
                                 <div className="flex items-center gap-1.5 text-[11px]">
                                   <FileText size={12} className="text-[var(--accent)]" />
                                   <span className="text-[var(--text-primary)] font-semibold">{doc.title}</span>
-                                  <span className="text-[9px] text-[var(--text-primary)]0 font-mono">({doc.original_filename})</span>
+                                  <span className="text-[9px] text-[var(--text-muted)] font-mono">({doc.original_filename})</span>
                                 </div>
                                 <div className="flex items-center gap-3 text-[10px]">
-                                  <span className="text-[var(--text-primary)]0">{(doc.file_size_bytes / 1024).toFixed(0)} KB</span>
+                                  <span className="text-[var(--text-muted)]">{(doc.file_size_bytes / 1024).toFixed(0)} KB</span>
                                   <span className={`px-1 rounded text-[8px] font-bold ${
                                     doc.status === 'VERIFIED' ? 'bg-[var(--accent-glow)] text-[var(--accent)]' :
                                     'bg-[var(--surface-hover)] text-[var(--accent)]'

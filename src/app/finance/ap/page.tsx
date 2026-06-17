@@ -119,7 +119,7 @@ export default function SupplierInvoicesListPage() {
         {/* Breadcrumb & Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <div className="text-[10px] text-[var(--text-primary)]0 font-mono uppercase tracking-widest">
+            <div className="text-[10px] text-[var(--text-muted)] font-mono uppercase tracking-widest">
               <Link href="/finance" className="hover:text-[var(--accent)]">Finance</Link> &gt; <span className="text-[var(--text-secondary)]">Payables</span>
             </div>
             <h1 className="font-heading font-extrabold text-2xl tracking-tight text-[var(--text-primary)] uppercase mt-1">
@@ -146,7 +146,7 @@ export default function SupplierInvoicesListPage() {
         <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4 flex flex-col md:flex-row gap-4 items-center">
           {/* Search bar */}
           <div className="relative flex-1 w-full">
-            <Search className="absolute left-3 top-2.5 text-[var(--text-primary)]0" size={14} />
+            <Search className="absolute left-3 top-2.5 text-[var(--text-muted)]" size={14} />
             <input
               type="text"
               placeholder="Search by supplier name, invoice # or internal reference..."
@@ -191,13 +191,13 @@ export default function SupplierInvoicesListPage() {
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan={9} className="py-8 text-center text-[var(--text-primary)]0 font-mono">
+                    <td colSpan={9} className="py-8 text-center text-[var(--text-muted)] font-mono">
                       Querying supplier ledger...
                     </td>
                   </tr>
                 ) : filteredInvoices.length === 0 ? (
                   <tr>
-                    <td colSpan={9} className="py-8 text-center text-[var(--text-primary)]0 font-mono">
+                    <td colSpan={9} className="py-8 text-center text-[var(--text-muted)] font-mono">
                       No registered bills found.
                     </td>
                   </tr>
@@ -277,9 +277,9 @@ export default function SupplierInvoicesListPage() {
           <div className="w-full max-w-lg bg-[var(--bg-card)] border border-[var(--border)] rounded-lg p-5" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-1">
               <h3 className="text-sm font-bold text-[var(--text-primary)] uppercase tracking-wider">Validate supplier invoice</h3>
-              <button onClick={() => setVBill(null)} className="text-[var(--text-primary)]0 hover:text-[var(--text-primary)] cursor-pointer"><X size={16} /></button>
+              <button onClick={() => setVBill(null)} className="text-[var(--text-muted)] hover:text-[var(--text-primary)] cursor-pointer"><X size={16} /></button>
             </div>
-            <p className="text-xs text-[var(--text-primary)]0 mb-4">{vBill.supplier_name || 'Payable'} · {vBill.internal_ref}</p>
+            <p className="text-xs text-[var(--text-muted)] mb-4">{vBill.supplier_name || 'Payable'} · {vBill.internal_ref}</p>
             {vErr && <div className="text-xs text-[var(--status-danger-text)] mb-3">{vErr}</div>}
             <div className="grid grid-cols-2 gap-3">
               <div className="col-span-2 sm:col-span-1">

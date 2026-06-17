@@ -157,8 +157,8 @@ export default function LeaveCalendarPage() {
             <span className="text-[var(--text-secondary)]">Other Leaves</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginLeft: 'auto' }}>
-            <Info size={12} className="text-[var(--text-primary)]0" />
-            <span className="text-[var(--text-primary)]0">UAE weekends (Friday & Saturday) are highlighted in dark shading</span>
+            <Info size={12} className="text-[var(--text-muted)]" />
+            <span className="text-[var(--text-muted)]">UAE weekends (Friday & Saturday) are highlighted in dark shading</span>
           </div>
         </div>
       </div>
@@ -184,7 +184,7 @@ export default function LeaveCalendarPage() {
                     background: isWeekend ? 'rgba(0, 0, 0, 0.3)' : 'transparent'
                   }}
                 >
-                  <span className="text-[var(--text-primary)]0 font-bold text-[8px]">{dayAbbrev}</span>
+                  <span className="text-[var(--text-muted)] font-bold text-[8px]">{dayAbbrev}</span>
                   <span className="font-bold text-[9px] mt-0.5 text-[var(--text-secondary)]">{day}</span>
                 </div>
               );
@@ -224,7 +224,7 @@ export default function LeaveCalendarPage() {
                     >
                       {emp.full_name_en}
                     </Link>
-                    <span className="font-mono text-[9px] text-[var(--text-primary)]0 uppercase tracking-tight block">
+                    <span className="font-mono text-[9px] text-[var(--text-muted)] uppercase tracking-tight block">
                       {emp.designation}
                     </span>
                   </div>

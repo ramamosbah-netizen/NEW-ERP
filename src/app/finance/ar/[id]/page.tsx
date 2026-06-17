@@ -29,7 +29,7 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
   if (loading) {
     return (
       <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex flex-col font-sans">
-<div className="flex-1 flex items-center justify-center font-mono text-[var(--text-primary)]0">
+<div className="flex-1 flex items-center justify-center font-mono text-[var(--text-muted)]">
           Loading invoice details...
         </div>
       </div>
@@ -39,7 +39,7 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
   if (!invoice) {
     return (
       <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex flex-col font-sans">
-<div className="flex-1 flex items-center justify-center font-mono text-[var(--text-primary)]0">
+<div className="flex-1 flex items-center justify-center font-mono text-[var(--text-muted)]">
           Invoice not found or has been deleted.
         </div>
       </div>
@@ -54,7 +54,7 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
         {/* Breadcrumb & Navigation */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <div className="text-[10px] text-[var(--text-primary)]0 font-mono uppercase tracking-widest flex items-center gap-1">
+            <div className="text-[10px] text-[var(--text-muted)] font-mono uppercase tracking-widest flex items-center gap-1">
               <Link href="/finance/ar" className="hover:text-[var(--accent)] flex items-center gap-0.5"><ArrowLeft size={10} /> Registry</Link> &gt; <span className="text-[var(--text-secondary)]">{invoice.invoice_number}</span>
             </div>
             <h1 className="font-heading font-extrabold text-2xl tracking-tight text-[var(--text-primary)] uppercase mt-1">
@@ -155,19 +155,19 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
             {/* Dates & Billing parameters grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
               <div>
-                <span className="text-[var(--text-primary)]0 block">Invoice Date</span>
+                <span className="text-[var(--text-muted)] block">Invoice Date</span>
                 <span className="font-mono text-[var(--text-primary)] mt-0.5 block">{new Date(invoice.invoice_date).toLocaleDateString('en-GB')}</span>
               </div>
               <div>
-                <span className="text-[var(--text-primary)]0 block">Supply Date</span>
+                <span className="text-[var(--text-muted)] block">Supply Date</span>
                 <span className="font-mono text-[var(--text-primary)] mt-0.5 block">{new Date(invoice.supply_date).toLocaleDateString('en-GB')}</span>
               </div>
               <div>
-                <span className="text-[var(--text-primary)]0 block">Due Date</span>
+                <span className="text-[var(--text-muted)] block">Due Date</span>
                 <span className="font-mono text-[var(--text-primary)] mt-0.5 block">{new Date(invoice.due_date).toLocaleDateString('en-GB')}</span>
               </div>
               <div>
-                <span className="text-[var(--text-primary)]0 block">Invoice Type</span>
+                <span className="text-[var(--text-muted)] block">Invoice Type</span>
                 <span className="text-[var(--text-primary)] mt-0.5 block">{INVOICE_TYPE_LABELS[invoice.invoice_type]}</span>
               </div>
             </div>
@@ -175,7 +175,7 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
             {invoice.period_from && invoice.period_to && (
               <div className="text-xs bg-[var(--bg-card)]/30 border border-[var(--border)] p-3 rounded flex gap-4">
                 <div>
-                  <span className="text-[var(--text-primary)]0">Billing Period:</span>
+                  <span className="text-[var(--text-muted)]">Billing Period:</span>
                   <span className="font-mono text-[var(--text-secondary)] ml-1.5">
                     {new Date(invoice.period_from).toLocaleDateString('en-GB')} to {new Date(invoice.period_to).toLocaleDateString('en-GB')}
                   </span>
@@ -204,7 +204,7 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
                       <tr key={item.id} className="border-b border-[var(--border)] text-[var(--text-secondary)]">
                         <td className="py-3 px-3 font-mono">{idx + 1}</td>
                         <td className="py-3 px-3">{item.description}</td>
-                        <td className="py-3 px-3 font-mono text-[var(--text-primary)]0">{item.boq_reference || '—'}</td>
+                        <td className="py-3 px-3 font-mono text-[var(--text-muted)]">{item.boq_reference || '—'}</td>
                         <td className="py-3 px-3 text-right font-mono">{item.quantity} {item.unit}</td>
                         <td className="py-3 px-3 text-right font-mono">{Number(item.unit_price).toFixed(2)}</td>
                         <td className="py-3 px-3 text-right font-mono text-[var(--text-secondary)]">{Number(item.vat_amount).toFixed(2)}</td>
@@ -279,7 +279,7 @@ export default function InvoiceDetailPage({ params }: { params: Promise<{ id: st
               </div>
 
               {invoice.certified_amount && (
-                <div className="text-[10px] text-[var(--text-primary)]0 font-mono">
+                <div className="text-[10px] text-[var(--text-muted)] font-mono">
                   * Billed based on consultant certified amount of {formatAED(invoice.certified_amount)}
                 </div>
               )}

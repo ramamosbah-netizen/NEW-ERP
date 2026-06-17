@@ -125,7 +125,7 @@ export const PreferencesMatrix: React.FC = () => {
               <tr key={mod.key} className="border-b border-[var(--border)]">
                 <td className="py-4">
                   <div className="font-semibold text-[var(--text-primary)]">{mod.label}</div>
-                  <div className="text-xs text-[var(--text-primary)]0 mt-0.5">{mod.desc}</div>
+                  <div className="text-xs text-[var(--text-muted)] mt-0.5">{mod.desc}</div>
                 </td>
                 {CHANNELS.map(ch => {
                   const mode = getPreferenceMode(mod.key, ch.key);
@@ -145,7 +145,7 @@ export const PreferencesMatrix: React.FC = () => {
                           <option value="OFF">🔕 Off</option>
                         </select>
                         <span className="w-4 h-4 inline-flex items-center justify-center">
-                          {state === 'saving' && <RefreshCw size={10} className="animate-spin text-[var(--text-primary)]0" />}
+                          {state === 'saving' && <RefreshCw size={10} className="animate-spin text-[var(--text-muted)]" />}
                           {state === 'saved' && <Check size={10} className="text-[var(--accent)] animate-pulse" />}
                         </span>
                       </div>

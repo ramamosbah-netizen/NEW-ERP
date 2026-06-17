@@ -160,7 +160,7 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
   if (loading) {
     return (
       <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex flex-col font-sans">
-<div className="flex-1 flex items-center justify-center font-mono text-[var(--text-primary)]0">
+<div className="flex-1 flex items-center justify-center font-mono text-[var(--text-muted)]">
           Loading matching audit details...
         </div>
       </div>
@@ -170,7 +170,7 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
   if (!invoice) {
     return (
       <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex flex-col font-sans">
-<div className="flex-1 flex items-center justify-center font-mono text-[var(--text-primary)]0">
+<div className="flex-1 flex items-center justify-center font-mono text-[var(--text-muted)]">
           Supplier bill not found.
         </div>
       </div>
@@ -193,7 +193,7 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <div className="text-[10px] text-[var(--text-primary)]0 font-mono uppercase tracking-widest flex items-center gap-1">
+            <div className="text-[10px] text-[var(--text-muted)] font-mono uppercase tracking-widest flex items-center gap-1">
               <Link href="/finance/ap" className="hover:text-[var(--accent)] flex items-center gap-0.5"><ArrowLeft size={10} /> Registry</Link> &gt; <span className="text-[var(--text-secondary)]">{invoice.internal_ref}</span>
             </div>
             <h1 className="font-heading font-extrabold text-2xl tracking-tight text-[var(--text-primary)] uppercase mt-1">
@@ -264,13 +264,13 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
 
           <div className="flex gap-4 text-xs font-mono">
             <div className="text-center bg-[var(--bg-dark)] px-4 py-2 border border-[var(--border)] rounded">
-              <span className="text-[var(--text-primary)]0 text-[10px] block">LPO Qty Mismatches</span>
+              <span className="text-[var(--text-muted)] text-[10px] block">LPO Qty Mismatches</span>
               <span className={`font-bold mt-0.5 block ${qtyExceptions.length > 0 ? 'text-[var(--status-danger-text)]' : 'text-[var(--text-secondary)]'}`}>
                 {qtyExceptions.length}
               </span>
             </div>
             <div className="text-center bg-[var(--bg-dark)] px-4 py-2 border border-[var(--border)] rounded">
-              <span className="text-[var(--text-primary)]0 text-[10px] block">LPO Price Deltas</span>
+              <span className="text-[var(--text-muted)] text-[10px] block">LPO Price Deltas</span>
               <span className={`font-bold mt-0.5 block ${priceExceptions.length > 0 ? 'text-[var(--status-warning-text)]' : 'text-[var(--text-secondary)]'}`}>
                 {priceExceptions.length}
               </span>
@@ -303,7 +303,7 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
                 <div className="border border-[var(--border)] rounded overflow-hidden">
                   <table className="w-full text-left text-xs border-collapse">
                     <thead>
-                      <tr className="bg-[var(--bg-card)] border-b border-[var(--border)] text-[var(--text-primary)]0 font-mono text-[9px] uppercase tracking-wider">
+                      <tr className="bg-[var(--bg-card)] border-b border-[var(--border)] text-[var(--text-muted)] font-mono text-[9px] uppercase tracking-wider">
                         <th className="py-2.5 px-3">Description</th>
                         <th className="py-2.5 px-3 text-right">GRN Received</th>
                         <th className="py-2.5 px-3 text-right">Prev Invoiced</th>
@@ -337,7 +337,7 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
                 <div className="border border-[var(--border)] rounded overflow-hidden">
                   <table className="w-full text-left text-xs border-collapse">
                     <thead>
-                      <tr className="bg-[var(--bg-card)] border-b border-[var(--border)] text-[var(--text-primary)]0 font-mono text-[9px] uppercase tracking-wider">
+                      <tr className="bg-[var(--bg-card)] border-b border-[var(--border)] text-[var(--text-muted)] font-mono text-[9px] uppercase tracking-wider">
                         <th className="py-2.5 px-3">Description</th>
                         <th className="py-2.5 px-3 text-right">PO Price</th>
                         <th className="py-2.5 px-3 text-right">Invoiced Price</th>
@@ -400,7 +400,7 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
               </button>
             )}
             {!src.po && !isPayroll && !src.sourceDoc && !(invoice as any).proforma_path && (
-              <span className="text-xs text-[var(--text-primary)]0">
+              <span className="text-xs text-[var(--text-muted)]">
                 {(invoice as any).cost_bucket ? `Direct expense · ${(invoice as any).cost_bucket}` : 'No linked source document.'}
                 {(invoice as any).expense_category ? ` · ${(invoice as any).expense_category}` : ''}
               </span>
@@ -414,7 +414,7 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
             <div className="flex items-center gap-2 text-sm font-bold text-[var(--accent)] uppercase tracking-wider mb-1">
               <FileText size={15} /> Validate supplier invoice
             </div>
-            <p className="text-xs text-[var(--text-primary)]0 mb-3">
+            <p className="text-xs text-[var(--text-muted)] mb-3">
               This is a draft payable from the approved LPO. Record the supplier&apos;s actual invoice to register it.
             </p>
             {(invoice as any).proforma_path && (
@@ -426,17 +426,17 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
             {valErr && <div className="text-xs text-[var(--status-danger-text)] mb-3">{valErr}</div>}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               <div>
-                <label className="text-[10px] text-[var(--text-primary)]0 uppercase">Invoice no *</label>
+                <label className="text-[10px] text-[var(--text-muted)] uppercase">Invoice no *</label>
                 <input value={val.number} onChange={e => setVal({ ...val, number: e.target.value })}
                   className="w-full mt-1 bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-[var(--text-primary)]" />
               </div>
               <div>
-                <label className="text-[10px] text-[var(--text-primary)]0 uppercase">Invoice date</label>
+                <label className="text-[10px] text-[var(--text-muted)] uppercase">Invoice date</label>
                 <input type="date" value={val.date} onChange={e => setVal({ ...val, date: e.target.value })}
                   className="w-full mt-1 bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-[var(--text-primary)]" />
               </div>
               <div>
-                <label className="text-[10px] text-[var(--text-primary)]0 uppercase">Amount (excl VAT)</label>
+                <label className="text-[10px] text-[var(--text-muted)] uppercase">Amount (excl VAT)</label>
                 <input type="number" step="any" value={val.amount} onChange={e => setVal({ ...val, amount: e.target.value })}
                   placeholder={String(invoice.taxable_amount || '')}
                   className="w-full mt-1 bg-[var(--bg-card)] border border-[var(--border)] rounded py-2 px-3 text-xs text-[var(--text-primary)] text-right" />
@@ -487,19 +487,19 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs border-b border-[var(--border)] pb-4">
               <div>
-                <span className="text-[var(--text-primary)]0 block">Bill Date</span>
+                <span className="text-[var(--text-muted)] block">Bill Date</span>
                 <span className="font-mono text-[var(--text-primary)] mt-0.5 block">{new Date(invoice.invoice_date).toLocaleDateString('en-GB')}</span>
               </div>
               <div>
-                <span className="text-[var(--text-primary)]0 block">Received Date</span>
+                <span className="text-[var(--text-muted)] block">Received Date</span>
                 <span className="font-mono text-[var(--text-primary)] mt-0.5 block">{new Date(invoice.received_date).toLocaleDateString('en-GB')}</span>
               </div>
               <div>
-                <span className="text-[var(--text-primary)]0 block">Due Date</span>
+                <span className="text-[var(--text-muted)] block">Due Date</span>
                 <span className="font-mono text-[var(--text-primary)] mt-0.5 block">{new Date(invoice.due_date).toLocaleDateString('en-GB')}</span>
               </div>
               <div>
-                <span className="text-[var(--text-primary)]0 block">Register Type</span>
+                <span className="text-[var(--text-muted)] block">Register Type</span>
                 <span className="text-[var(--text-primary)] mt-0.5 block">{SUPPLIER_INVOICE_TYPE_LABELS[invoice.invoice_type]}</span>
               </div>
             </div>
@@ -509,7 +509,7 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
               <div className="border border-[var(--border)] rounded overflow-hidden">
                 <table className="w-full text-left text-xs border-collapse">
                   <thead>
-                    <tr className="bg-[var(--bg-card)] border-b border-[var(--border)] text-[var(--text-primary)]0 font-mono text-[9px] uppercase tracking-wider">
+                    <tr className="bg-[var(--bg-card)] border-b border-[var(--border)] text-[var(--text-muted)] font-mono text-[9px] uppercase tracking-wider">
                       <th className="py-2.5 px-3">No</th>
                       <th className="py-2.5 px-3">Description</th>
                       <th className="py-2.5 px-3 text-right">Quantity</th>
@@ -568,7 +568,7 @@ export function MatchReviewPage({ params }: { params: Promise<{ id: string }> })
               </div>
 
               <div className="flex justify-between font-bold border-b border-[var(--border)] pb-3">
-                <span className="text-[var(--text-primary)]0">Balance due:</span>
+                <span className="text-[var(--text-muted)]">Balance due:</span>
                 <span className="text-[var(--accent)]">
                   {formatAED(Math.max(0, invoice.total - invoice.amount_paid))}
                 </span>

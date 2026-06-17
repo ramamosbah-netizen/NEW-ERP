@@ -45,7 +45,7 @@ export default function CashFlowPage() {
         {/* Header */}
         <div className="flex justify-between items-start gap-4 flex-wrap">
           <div>
-            <div className="text-[10px] text-[var(--text-primary)]0 font-mono uppercase tracking-widest flex items-center gap-1">
+            <div className="text-[10px] text-[var(--text-muted)] font-mono uppercase tracking-widest flex items-center gap-1">
               <Link href="/finance" className="hover:text-[var(--accent)] flex items-center gap-0.5"><ArrowLeft size={10} /> Finance Command</Link> &gt; <span className="text-[var(--text-secondary)]">Cash Flow Forecast</span>
             </div>
             <h1 className="font-heading font-extrabold text-2xl tracking-tight text-[var(--text-primary)] uppercase mt-1">
@@ -55,7 +55,7 @@ export default function CashFlowPage() {
 
           <div className="flex items-center gap-3">
             <form onSubmit={handleUpdateOpeningBalance} className="flex items-center gap-2 bg-[var(--bg-card)] border border-[var(--border)] rounded p-1">
-              <span className="text-[9px] font-mono text-[var(--text-primary)]0 uppercase px-2">Opening Cash Balance:</span>
+              <span className="text-[9px] font-mono text-[var(--text-muted)] uppercase px-2">Opening Cash Balance:</span>
               <input
                 type="number"
                 value={openingInput}
@@ -83,19 +83,19 @@ export default function CashFlowPage() {
         {/* Global Summary Statistics Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4">
-            <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px] mb-1">Peak Cash Position</span>
+            <span className="text-[var(--text-muted)] block uppercase font-mono text-[9px] mb-1">Peak Cash Position</span>
             <span className="font-mono text-base font-extrabold text-[var(--accent)] block">{formatAED(peakCash)}</span>
             <span className="text-[10px] text-[var(--text-secondary)] block mt-0.5">Maximum projected surplus</span>
           </div>
 
           <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4">
-            <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px] mb-1">Min Cash Position</span>
+            <span className="text-[var(--text-muted)] block uppercase font-mono text-[9px] mb-1">Min Cash Position</span>
             <span className="font-mono text-base font-extrabold text-[var(--status-warning-text)] block">{formatAED(minCash)}</span>
             <span className="text-[10px] text-[var(--text-secondary)] block mt-0.5">Maximum projected drawdown</span>
           </div>
 
           <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4">
-            <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px] mb-1">Net Forecasted Flow</span>
+            <span className="text-[var(--text-muted)] block uppercase font-mono text-[9px] mb-1">Net Forecasted Flow</span>
             <span className={`font-mono text-base font-extrabold block ${netForecastedFlow >= 0 ? 'text-[var(--accent)]' : 'text-[var(--status-danger-text)]'}`}>
               {netForecastedFlow >= 0 ? '+' : ''}{formatAED(netForecastedFlow)}
             </span>
@@ -103,7 +103,7 @@ export default function CashFlowPage() {
           </div>
 
           <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4">
-            <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px] mb-1">Projected Ending Cash</span>
+            <span className="text-[var(--text-muted)] block uppercase font-mono text-[9px] mb-1">Projected Ending Cash</span>
             <span className="font-mono text-base font-extrabold text-[var(--text-primary)] block">{formatAED(closingBalance)}</span>
             <span className="text-[10px] text-[var(--text-secondary)] block mt-0.5">Estimated cash on hand in week 13</span>
           </div>
@@ -130,13 +130,13 @@ export default function CashFlowPage() {
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan={10} className="py-8 text-center text-[var(--text-primary)]0 font-mono">
+                    <td colSpan={10} className="py-8 text-center text-[var(--text-muted)] font-mono">
                       Simulating 13-week cash projections...
                     </td>
                   </tr>
                 ) : forecast.length === 0 ? (
                   <tr>
-                    <td colSpan={10} className="py-8 text-center text-[var(--text-primary)]0 font-mono">
+                    <td colSpan={10} className="py-8 text-center text-[var(--text-muted)] font-mono">
                       No billing forecast parameters found.
                     </td>
                   </tr>
@@ -148,7 +148,7 @@ export default function CashFlowPage() {
                         key={week.weekIndex} 
                         className="border-b border-[var(--border)] hover:bg-[var(--bg-card)]/40 transition-all font-mono"
                       >
-                        <td className="py-3 px-4 text-center font-bold text-[var(--text-primary)]0">
+                        <td className="py-3 px-4 text-center font-bold text-[var(--text-muted)]">
                           #{week.weekIndex}
                         </td>
                         <td className="py-3 px-4 text-[var(--text-secondary)] font-sans text-xs">

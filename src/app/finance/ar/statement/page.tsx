@@ -113,7 +113,7 @@ function ClientStatementPageContent() {
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <div className="text-[10px] text-[var(--text-primary)]0 font-mono uppercase tracking-widest flex items-center gap-1">
+            <div className="text-[10px] text-[var(--text-muted)] font-mono uppercase tracking-widest flex items-center gap-1">
               <Link href="/finance/ar" className="hover:text-[var(--accent)] flex items-center gap-0.5"><ArrowLeft size={10} /> Registry</Link> &gt; <span className="text-[var(--text-secondary)]">Customer Statement</span>
             </div>
             <h1 className="font-heading font-extrabold text-2xl tracking-tight text-[var(--text-primary)] uppercase mt-1">
@@ -146,7 +146,7 @@ function ClientStatementPageContent() {
           </div>
 
           <div className="text-right text-xs bg-[var(--bg-card)] border border-[var(--border)] p-3 rounded font-mono">
-            <span className="text-[var(--text-primary)]0 uppercase mr-2 text-[10px]">Current Balance:</span>
+            <span className="text-[var(--text-muted)] uppercase mr-2 text-[10px]">Current Balance:</span>
             <span className="text-[var(--accent)] font-bold text-sm">
               {ledgerEntries.length > 0 ? formatAED(ledgerEntries[ledgerEntries.length - 1].runningBalance) : '0.00 AED'}
             </span>
@@ -169,13 +169,13 @@ function ClientStatementPageContent() {
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan={6} className="py-8 text-center text-[var(--text-primary)]0 font-mono">
+                    <td colSpan={6} className="py-8 text-center text-[var(--text-muted)] font-mono">
                       Querying customer transaction ledger...
                     </td>
                   </tr>
                 ) : ledgerEntries.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="py-8 text-center text-[var(--text-primary)]0 font-mono">
+                    <td colSpan={6} className="py-8 text-center text-[var(--text-muted)] font-mono">
                       No matching records in the statement.
                     </td>
                   </tr>

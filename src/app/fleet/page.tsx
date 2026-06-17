@@ -243,7 +243,7 @@ export default function FleetDashboardPage() {
             </div>
             <div className="flex items-baseline gap-2">
               <span className="text-3xl font-heading font-extrabold text-[var(--text-primary)]">{totalVehicles}</span>
-              <span className="text-xs text-[var(--text-primary)]0">units</span>
+              <span className="text-xs text-[var(--text-muted)]">units</span>
             </div>
             <div className="flex items-center gap-3 mt-4 text-[10px] font-mono text-[var(--text-secondary)] border-t border-[var(--border)] pt-3">
               <div className="flex items-center gap-1">
@@ -276,15 +276,15 @@ export default function FleetDashboardPage() {
             </div>
             <div className="grid grid-cols-3 gap-2 mt-4 text-[9px] font-mono text-[var(--text-secondary)] border-t border-[var(--border)] pt-3">
               <div>
-                <span className="block text-[var(--text-primary)]0">Fuel</span>
+                <span className="block text-[var(--text-muted)]">Fuel</span>
                 <span className="font-bold text-[var(--text-secondary)]">{formatAED(fuelCostMTD)}</span>
               </div>
               <div>
-                <span className="block text-[var(--text-primary)]0">Service</span>
+                <span className="block text-[var(--text-muted)]">Service</span>
                 <span className="font-bold text-[var(--text-secondary)]">{formatAED(maintCostMTD)}</span>
               </div>
               <div>
-                <span className="block text-[var(--text-primary)]0">Fines</span>
+                <span className="block text-[var(--text-muted)]">Fines</span>
                 <span className="font-bold text-[var(--text-secondary)]">{formatAED(finesCostMTD)}</span>
               </div>
             </div>
@@ -319,7 +319,7 @@ export default function FleetDashboardPage() {
             </div>
             <div className="flex items-baseline gap-2">
               <span className="text-3xl font-heading font-extrabold text-[var(--text-primary)]">{expiriesList.length}</span>
-              <span className="text-xs text-[var(--text-primary)]0">vehicles</span>
+              <span className="text-xs text-[var(--text-muted)]">vehicles</span>
             </div>
             <div className="flex justify-between items-center mt-4 text-[10px] font-mono text-[var(--text-secondary)] border-t border-[var(--border)] pt-3">
               <span>Critical Overdue:</span>
@@ -341,7 +341,7 @@ export default function FleetDashboardPage() {
             </h3>
             <div className="overflow-y-auto flex-1 pr-1 gap-3 flex flex-col">
               {expiriesList.length === 0 ? (
-                <div className="h-full flex items-center justify-center text-xs text-[var(--text-primary)]0 font-mono">
+                <div className="h-full flex items-center justify-center text-xs text-[var(--text-muted)] font-mono">
                   No vehicle renewals due in the next 30 days.
                 </div>
               ) : (
@@ -357,7 +357,7 @@ export default function FleetDashboardPage() {
                       <div>
                         <div className="flex items-center gap-2">
                           <span className="text-xs font-bold text-[var(--text-primary)]">{v.vehicle_code}</span>
-                          <span className="text-[10px] font-mono text-[var(--text-primary)]0 bg-[var(--surface-hover)] px-1.5 py-0.5 rounded">
+                          <span className="text-[10px] font-mono text-[var(--text-muted)] bg-[var(--surface-hover)] px-1.5 py-0.5 rounded">
                             {v.plate_number}
                           </span>
                         </div>
@@ -368,13 +368,13 @@ export default function FleetDashboardPage() {
                       
                       <div className="flex items-center gap-4 text-xs">
                         <div className="flex flex-col sm:items-end">
-                          <span className="text-[10px] text-[var(--text-primary)]0 uppercase tracking-widest block">Mulkiya (Reg)</span>
+                          <span className="text-[10px] text-[var(--text-muted)] uppercase tracking-widest block">Mulkiya (Reg)</span>
                           <span className={`mt-1 text-[10px] font-mono font-bold px-2 py-0.5 rounded ${regDays.style}`}>
                             {regDays.text}
                           </span>
                         </div>
                         <div className="flex flex-col sm:items-end">
-                          <span className="text-[10px] text-[var(--text-primary)]0 uppercase tracking-widest block">Insurance</span>
+                          <span className="text-[10px] text-[var(--text-muted)] uppercase tracking-widest block">Insurance</span>
                           <span className={`mt-1 text-[10px] font-mono font-bold px-2 py-0.5 rounded ${insDays.style}`}>
                             {insDays.text}
                           </span>
@@ -398,7 +398,7 @@ export default function FleetDashboardPage() {
               </h3>
               <div className="overflow-y-auto flex-1 pr-1">
                 {blackPointsWatchlist.length === 0 ? (
-                  <div className="h-full flex items-center justify-center text-xs text-[var(--text-primary)]0 font-mono">
+                  <div className="h-full flex items-center justify-center text-xs text-[var(--text-muted)] font-mono">
                     No drivers at risk (12+ points).
                   </div>
                 ) : (
@@ -429,7 +429,7 @@ export default function FleetDashboardPage() {
               </h3>
               <div className="overflow-y-auto flex-1 pr-1">
                 {upcomingServices.length === 0 ? (
-                  <div className="h-full flex items-center justify-center text-xs text-[var(--text-primary)]0 font-mono">
+                  <div className="h-full flex items-center justify-center text-xs text-[var(--text-muted)] font-mono">
                     No upcoming services scheduled.
                   </div>
                 ) : (
@@ -438,7 +438,7 @@ export default function FleetDashboardPage() {
                       <div key={m.id} className="flex justify-between items-center text-xs p-2 bg-[var(--bg-card)] border border-[var(--border)] rounded-lg">
                         <div>
                           <div className="font-bold text-[var(--text-secondary)]">Vehicle: {m.vehicle_code}</div>
-                          <div className="text-[9px] text-[var(--text-primary)]0 mt-0.5">{m.description}</div>
+                          <div className="text-[9px] text-[var(--text-muted)] mt-0.5">{m.description}</div>
                         </div>
                         <div className="text-right">
                           <div className="font-mono text-[10px] text-[var(--text-secondary)]">
@@ -469,7 +469,7 @@ export default function FleetDashboardPage() {
             <div className="flex flex-wrap items-center gap-3">
               {/* Search */}
               <div className="relative">
-                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-primary)]0" />
+                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
                 <input 
                   type="text"
                   placeholder="Search code, plate, driver..."
@@ -510,18 +510,18 @@ export default function FleetDashboardPage() {
 
           {/* Grid table list */}
           {loading ? (
-            <div className="h-60 flex items-center justify-center text-xs font-mono text-[var(--text-primary)]0">
+            <div className="h-60 flex items-center justify-center text-xs font-mono text-[var(--text-muted)]">
               <RefreshCw className="animate-spin mr-2" size={15} /> Loading vehicles ledger...
             </div>
           ) : filteredVehicles.length === 0 ? (
-            <div className="h-60 flex items-center justify-center text-xs font-mono text-[var(--text-primary)]0 border border-dashed border-[var(--border)] rounded-lg">
+            <div className="h-60 flex items-center justify-center text-xs font-mono text-[var(--text-muted)] border border-dashed border-[var(--border)] rounded-lg">
               No vehicles matched your search query.
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-[var(--border)] text-[10px] font-mono text-[var(--text-primary)]0 uppercase tracking-widest">
+                  <tr className="border-b border-[var(--border)] text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest">
                     <th className="pb-3 font-medium">Vehicle Code</th>
                     <th className="pb-3 font-medium">Plate Number</th>
                     <th className="pb-3 font-medium">Emirate</th>
@@ -552,7 +552,7 @@ export default function FleetDashboardPage() {
                       </td>
                       <td className="py-4">
                         <span className="font-semibold text-[var(--text-primary)]">{v.make} {v.model}</span>
-                        <span className="text-[10px] text-[var(--text-primary)]0 ml-1">({v.year})</span>
+                        <span className="text-[10px] text-[var(--text-muted)] ml-1">({v.year})</span>
                       </td>
                       <td className="py-4 font-mono font-semibold text-[var(--text-secondary)]">
                         {v.odometer_km.toLocaleString('en-US')} km

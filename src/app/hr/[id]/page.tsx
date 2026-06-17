@@ -195,7 +195,7 @@ export default function EmployeeDetailPage() {
       <div className="quote-card mb-6" style={{ background: 'linear-gradient(135deg, rgba(13, 17, 39, 0.75) 0%, rgba(6, 8, 20, 0.95) 100%)', borderLeft: '3px solid var(--primary)' }}>
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div className="flex items-center gap-4">
-            <div className="w-16 h-16 bg-[var(--surface-hover)] border border-[var(--border)] rounded-full flex items-center justify-center text-[var(--text-primary)]0 font-bold text-lg">
+            <div className="w-16 h-16 bg-[var(--surface-hover)] border border-[var(--border)] rounded-full flex items-center justify-center text-[var(--text-muted)] font-bold text-lg">
               {employee.full_name_en.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
             </div>
             <div>
@@ -204,7 +204,7 @@ export default function EmployeeDetailPage() {
                 <span className="text-xs text-[var(--text-secondary)] font-mono" dir="rtl">{employee.full_name_ar}</span>
               </div>
               <p className="text-xs text-[var(--text-secondary)] font-semibold">{employee.designation} — <span className="text-[10px] font-mono text-[var(--accent)] uppercase">{employee.department}</span></p>
-              <div className="flex gap-4 text-[10px] text-[var(--text-primary)]0 font-mono mt-1">
+              <div className="flex gap-4 text-[10px] text-[var(--text-muted)] font-mono mt-1">
                 <span>EMP NO: <strong className="text-[var(--text-secondary)]">{employee.employee_number}</strong></span>
                 <span>JOINED: <strong className="text-[var(--text-secondary)]">{new Date(employee.join_date).toLocaleDateString('en-GB')}</strong></span>
                 <span>RATE: <strong className="text-primary">{employee.current_hourly_cost_rate} AED/hr</strong></span>
@@ -250,56 +250,56 @@ export default function EmployeeDetailPage() {
             <h3 className="text-xs font-mono text-[var(--accent)] uppercase tracking-widest font-bold">Employee Record Profile</h3>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-xs font-mono">
               <div>
-                <span className="text-[var(--text-primary)]0 block">Nationality</span>
+                <span className="text-[var(--text-muted)] block">Nationality</span>
                 <span className="text-[var(--text-primary)] mt-1 block">{employee.nationality}</span>
               </div>
               <div>
-                <span className="text-[var(--text-primary)]0 block">Date of Birth</span>
+                <span className="text-[var(--text-muted)] block">Date of Birth</span>
                 <span className="text-[var(--text-primary)] mt-1 block">{new Date(employee.dob).toLocaleDateString('en-GB')}</span>
               </div>
               <div>
-                <span className="text-[var(--text-primary)]0 block">Gender</span>
+                <span className="text-[var(--text-muted)] block">Gender</span>
                 <span className="text-[var(--text-primary)] mt-1 block">{employee.gender}</span>
               </div>
               <div>
-                <span className="text-[var(--text-primary)]0 block">Mobile Connection</span>
+                <span className="text-[var(--text-muted)] block">Mobile Connection</span>
                 <span className="text-[var(--text-primary)] mt-1 block">{employee.mobile}</span>
               </div>
               <div>
-                <span className="text-[var(--text-primary)]0 block">Personal Email</span>
+                <span className="text-[var(--text-muted)] block">Personal Email</span>
                 <span className="text-[var(--text-primary)] mt-1 block">{employee.personal_email}</span>
               </div>
               <div>
-                <span className="text-[var(--text-primary)]0 block">Employment Type</span>
+                <span className="text-[var(--text-muted)] block">Employment Type</span>
                 <span className="text-[var(--text-primary)] mt-1 block">{employee.employment_type.replace('_', ' ')}</span>
               </div>
               <div>
-                <span className="text-[var(--text-primary)]0 block">Visa Sponsor</span>
+                <span className="text-[var(--text-muted)] block">Visa Sponsor</span>
                 <span className="text-[var(--text-primary)] mt-1 block">{employee.visa_sponsor === 'JEET' ? 'JEET Security' : 'Other'}</span>
               </div>
               <div>
-                <span className="text-[var(--text-primary)]0 block">MOHRE Person Code</span>
+                <span className="text-[var(--text-muted)] block">MOHRE Person Code</span>
                 <span className="text-[var(--text-primary)] mt-1 block">{employee.mohre_person_code}</span>
               </div>
             </div>
 
             <div className="border-t border-[var(--border)] pt-6">
-              <h4 className="text-[10px] font-mono text-[var(--text-primary)]0 uppercase tracking-widest mb-4">WPS Salary Transfer Parameters</h4>
+              <h4 className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest mb-4">WPS Salary Transfer Parameters</h4>
               <div className="grid grid-cols-1 sm:grid-cols-4 gap-6 text-xs font-mono">
                 <div>
-                  <span className="text-[var(--text-primary)]0 block">Bank Name</span>
+                  <span className="text-[var(--text-muted)] block">Bank Name</span>
                   <span className="text-[var(--text-primary)] mt-1 block">{employee.bank_name}</span>
                 </div>
                 <div>
-                  <span className="text-[var(--text-primary)]0 block">IBAN</span>
+                  <span className="text-[var(--text-muted)] block">IBAN</span>
                   <span className="text-[var(--text-primary)] mt-1 block text-[var(--accent)]">{employee.iban}</span>
                 </div>
                 <div>
-                  <span className="text-[var(--text-primary)]0 block">Routing Code</span>
+                  <span className="text-[var(--text-muted)] block">Routing Code</span>
                   <span className="text-[var(--text-primary)] mt-1 block">{employee.routing_code}</span>
                 </div>
                 <div>
-                  <span className="text-[var(--text-primary)]0 block">WPS Agent ID</span>
+                  <span className="text-[var(--text-muted)] block">WPS Agent ID</span>
                   <span className="text-[var(--text-primary)] mt-1 block">{employee.agent_id}</span>
                 </div>
               </div>
@@ -318,7 +318,7 @@ export default function EmployeeDetailPage() {
             </div>
 
             {documents.length === 0 ? (
-              <div className="text-center py-12 text-[var(--text-primary)]0 font-mono text-xs">
+              <div className="text-center py-12 text-[var(--text-muted)] font-mono text-xs">
                 No compliance files currently linked to this employee profile.
               </div>
             ) : (
@@ -330,13 +330,13 @@ export default function EmployeeDetailPage() {
                       <h4 className="font-semibold text-xs text-[var(--text-primary)] mt-2">
                         {docLink.document?.title || 'Untitled Document'}
                       </h4>
-                      <p className="text-[10px] text-[var(--text-primary)]0 font-mono mt-1">
+                      <p className="text-[10px] text-[var(--text-muted)] font-mono mt-1">
                         Expiry Date: {docLink.document?.expiry_date ? new Date(docLink.document.expiry_date).toLocaleDateString('en-GB') : 'No Expiry'}
                       </p>
                     </div>
                     <button 
                       onClick={() => unlinkDocument(docLink.id)} 
-                      className="text-[var(--text-primary)]0 hover:text-[var(--status-danger-text)] p-1 rounded hover:bg-[var(--surface-hover)] border border-[var(--border)] hover:border-[var(--status-danger-border)] transition-all"
+                      className="text-[var(--text-muted)] hover:text-[var(--status-danger-text)] p-1 rounded hover:bg-[var(--surface-hover)] border border-[var(--border)] hover:border-[var(--status-danger-border)] transition-all"
                       title="Unlink Document"
                     >
                       <Trash2 size={12} />
@@ -359,7 +359,7 @@ export default function EmployeeDetailPage() {
             </div>
 
             {certifications.length === 0 ? (
-              <div className="text-center py-12 text-[var(--text-primary)]0 font-mono text-xs">
+              <div className="text-center py-12 text-[var(--text-muted)] font-mono text-xs">
                 No active certifications logged. SIRA CCTV/Installation certs are required for field engineers.
               </div>
             ) : (
@@ -374,14 +374,14 @@ export default function EmployeeDetailPage() {
                         </h4>
                       </div>
                       <p className="text-[10px] font-mono text-[var(--text-secondary)] mt-2">No: <strong className="text-[var(--text-primary)]">{cert.cert_number}</strong></p>
-                      <div className="grid grid-cols-2 gap-4 mt-2 text-[9px] font-mono text-[var(--text-primary)]0">
+                      <div className="grid grid-cols-2 gap-4 mt-2 text-[9px] font-mono text-[var(--text-muted)]">
                         <span>Issued: {new Date(cert.issue_date).toLocaleDateString('en-GB')}</span>
                         <span>Expires: <strong className={new Date(cert.expiry_date) < new Date() ? 'text-[var(--status-danger-text)]' : 'text-[var(--text-secondary)]'}>{new Date(cert.expiry_date).toLocaleDateString('en-GB')}</strong></span>
                       </div>
                     </div>
                     <button 
                       onClick={() => deleteCertification(cert.id)} 
-                      className="text-[var(--text-primary)]0 hover:text-[var(--status-danger-text)] p-1 rounded hover:bg-[var(--surface-hover)] border border-[var(--border)] hover:border-[var(--status-danger-border)] transition-all"
+                      className="text-[var(--text-muted)] hover:text-[var(--status-danger-text)] p-1 rounded hover:bg-[var(--surface-hover)] border border-[var(--border)] hover:border-[var(--status-danger-border)] transition-all"
                     >
                       <Trash2 size={12} />
                     </button>
@@ -403,7 +403,7 @@ export default function EmployeeDetailPage() {
             </div>
 
             {compensations.length === 0 ? (
-              <div className="text-center py-12 text-[var(--text-primary)]0 font-mono text-xs">
+              <div className="text-center py-12 text-[var(--text-muted)] font-mono text-xs">
                 No salary parameters configured.
               </div>
             ) : (
@@ -443,7 +443,7 @@ export default function EmployeeDetailPage() {
 
         {/* LEAVE TAB */}
         {activeTab === 'leave' && (
-          <div className="text-center py-12 text-[var(--text-primary)]0 font-mono text-xs">
+          <div className="text-center py-12 text-[var(--text-muted)] font-mono text-xs">
             Leave requests detail log, annual ticket entitlements, and balance balances are integrated under self service.
             Use the top navigation bar to access leave calendars or approvals.
           </div>
@@ -451,7 +451,7 @@ export default function EmployeeDetailPage() {
 
         {/* TIMESHEETS TAB */}
         {activeTab === 'timesheets' && (
-          <div className="text-center py-12 text-[var(--text-primary)]0 font-mono text-xs">
+          <div className="text-center py-12 text-[var(--text-muted)] font-mono text-xs">
             Employee weekly timesheet histories are archived here. Use My Timesheet workspace for logging.
           </div>
         )}

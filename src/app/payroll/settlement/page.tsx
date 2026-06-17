@@ -289,12 +289,12 @@ export default function SettlementPage() {
               <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
                 <div>
                   <h3 className="font-semibold text-[var(--text-primary)] text-sm">{employee.full_name_en}</h3>
-                  <div className="font-mono text-[9px] text-[var(--text-primary)]0 uppercase mt-0.5">
+                  <div className="font-mono text-[9px] text-[var(--text-muted)] uppercase mt-0.5">
                     Date Joined: {new Date(employee.join_date).toLocaleDateString('en-GB')}
                   </div>
                 </div>
                 <div style={{ textAlign: 'right' }}>
-                  <span className="text-[var(--text-primary)]0 uppercase font-mono text-[9px] block">Tenure Period</span>
+                  <span className="text-[var(--text-muted)] uppercase font-mono text-[9px] block">Tenure Period</span>
                   <span className="font-mono text-[11px] font-bold text-[var(--text-secondary)]">
                     {calculationResult.effectiveServiceDays} days ({(calculationResult.effectiveServiceDays / 365).toFixed(2)} yrs)
                   </span>
@@ -364,7 +364,7 @@ export default function SettlementPage() {
             <div className="quote-card flex flex-col items-center justify-center" style={{ padding: '6rem' }}>
               <Layers size={48} className="text-[var(--text-tertiary)] mb-2" style={{ margin: '0 auto 1.5rem auto', opacity: 0.5 }} />
               <h3 className="font-mono text-xs uppercase tracking-widest text-[var(--text-secondary)] font-bold mb-1">Receipt Summary</h3>
-              <p className="text-[11px] text-[var(--text-primary)]0 max-w-sm mx-auto">Select a staff member from the dropdown to audit tenure days and compute final payout details.</p>
+              <p className="text-[11px] text-[var(--text-muted)] max-w-sm mx-auto">Select a staff member from the dropdown to audit tenure days and compute final payout details.</p>
             </div>
           )}
         </div>

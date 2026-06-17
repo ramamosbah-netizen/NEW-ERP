@@ -113,7 +113,7 @@ export default function VODetailPage({ params }: VODetailPageProps) {
   if (loading) {
     return (
       <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex flex-col font-sans">
-<div className="flex-1 flex flex-col items-center justify-center py-20 text-[var(--text-primary)]0 font-mono text-xs gap-3">
+<div className="flex-1 flex flex-col items-center justify-center py-20 text-[var(--text-muted)] font-mono text-xs gap-3">
           <div className="animate-spin rounded-full h-5 w-5 border border-[var(--border)] border-t-emerald-400"></div>
           <span>Loading Variation Order parameters & historical events...</span>
         </div>
@@ -154,7 +154,7 @@ export default function VODetailPage({ params }: VODetailPageProps) {
         {/* Header Navigation */}
         <div className="flex justify-between items-start">
           <div>
-            <div className="text-[10px] text-[var(--text-primary)]0 font-mono uppercase tracking-widest flex items-center gap-1">
+            <div className="text-[10px] text-[var(--text-muted)] font-mono uppercase tracking-widest flex items-center gap-1">
               <Link href="/vo" className="hover:text-[var(--accent)] flex items-center gap-0.5"><ArrowLeft size={10} /> Registry</Link> &gt; <span>{vo.vo_number}</span>
             </div>
             <div className="flex items-center gap-3 mt-1.5 flex-wrap">
@@ -211,28 +211,28 @@ export default function VODetailPage({ params }: VODetailPageProps) {
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-[var(--bg-card)] border border-[var(--border)] p-4 rounded">
           <div>
-            <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Variation Selling Value</span>
+            <span className="text-[var(--text-muted)] block uppercase font-mono text-[9px]">Variation Selling Value</span>
             <span className={`font-mono text-lg font-extrabold mt-1 block ${vo.sell_amount < 0 ? 'text-[var(--status-danger-text)]' : 'text-[var(--text-primary)]'}`}>
               {vo.sell_amount < 0 ? '-' : ''}{formatAED(Math.abs(vo.sell_amount))}
             </span>
           </div>
 
           <div>
-            <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Direct Estimated Cost</span>
+            <span className="text-[var(--text-muted)] block uppercase font-mono text-[9px]">Direct Estimated Cost</span>
             <span className="font-mono text-lg font-extrabold text-[var(--text-primary)] mt-1 block">
               {formatAED(vo.cost_amount)}
             </span>
           </div>
 
           <div>
-            <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Estimated Margin</span>
+            <span className="text-[var(--text-muted)] block uppercase font-mono text-[9px]">Estimated Margin</span>
             <span className={`font-mono text-lg font-extrabold mt-1 block ${marginPct < 20 ? 'text-[var(--status-danger-text)]' : 'text-[var(--accent)]'}`}>
               {marginPct.toFixed(1)}%
             </span>
           </div>
 
           <div>
-            <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Time Impact / Extension</span>
+            <span className="text-[var(--text-muted)] block uppercase font-mono text-[9px]">Time Impact / Extension</span>
             <span className="font-mono text-lg font-extrabold text-[var(--text-primary)] mt-1 block">
               {vo.time_impact_days || 0} work-days
             </span>
@@ -253,31 +253,31 @@ export default function VODetailPage({ params }: VODetailPageProps) {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-sans">
                 <div>
-                  <span className="text-[var(--text-primary)]0 block">Instruction Reference:</span>
+                  <span className="text-[var(--text-muted)] block">Instruction Reference:</span>
                   <strong className="text-[var(--text-primary)] block mt-0.5">{vo.instruction_reference}</strong>
                 </div>
                 <div>
-                  <span className="text-[var(--text-primary)]0 block">Instruction Date:</span>
+                  <span className="text-[var(--text-muted)] block">Instruction Date:</span>
                   <strong className="text-[var(--text-primary)] block mt-0.5">{new Date(vo.instruction_date).toLocaleDateString('en-GB')}</strong>
                 </div>
                 <div>
-                  <span className="text-[var(--text-primary)]0 block">Variation Type:</span>
+                  <span className="text-[var(--text-muted)] block">Variation Type:</span>
                   <strong className="text-[var(--text-primary)] block mt-0.5">{VO_TYPE_LABELS[vo.vo_type] || vo.vo_type}</strong>
                 </div>
                 <div>
-                  <span className="text-[var(--text-primary)]0 block">Pricing Basis:</span>
+                  <span className="text-[var(--text-muted)] block">Pricing Basis:</span>
                   <strong className="text-[var(--text-primary)] block mt-0.5">{VO_PRICING_BASIS_LABELS[vo.pricing_basis] || vo.pricing_basis}</strong>
                 </div>
               </div>
 
               <div className="text-xs font-sans border-t border-[var(--border)] pt-3">
-                <span className="text-[var(--text-primary)]0 block">Scope Details:</span>
+                <span className="text-[var(--text-muted)] block">Scope Details:</span>
                 <p className="text-[var(--text-secondary)] mt-1 leading-relaxed whitespace-pre-line">{vo.description || 'No detailed scope description provided.'}</p>
               </div>
 
               {vo.justification && (
                 <div className="text-xs font-sans border-t border-[var(--border)] pt-3">
-                  <span className="text-[var(--text-primary)]0 block">Justification / Reason:</span>
+                  <span className="text-[var(--text-muted)] block">Justification / Reason:</span>
                   <p className="text-[var(--text-secondary)] mt-1 leading-relaxed whitespace-pre-line">{vo.justification}</p>
                 </div>
               )}
@@ -308,7 +308,7 @@ export default function VODetailPage({ params }: VODetailPageProps) {
                   <tbody className="divide-y divide-[var(--border)] font-mono text-xs text-[var(--text-secondary)]">
                     {items.map((item) => (
                       <tr key={item.id} className="hover:bg-[var(--surface-hover)] transition-colors">
-                        <td className="py-2.5 px-4 text-[var(--text-primary)]0">{item.line_no}</td>
+                        <td className="py-2.5 px-4 text-[var(--text-muted)]">{item.line_no}</td>
                         <td className="py-2.5 px-4">
                           <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${
                             item.action === 'ADD' ? 'bg-[var(--accent-glow)] text-[var(--accent)] border border-[var(--accent)]' : 'bg-[var(--status-danger-bg)] text-[var(--status-danger-text)] border border-[var(--status-danger-border)]'
@@ -319,7 +319,7 @@ export default function VODetailPage({ params }: VODetailPageProps) {
                         <td className="py-2.5 px-4 font-semibold text-[var(--text-primary)]">
                           {item.description}
                           {item.boq_item_ref && (
-                            <div className="text-[9px] text-[var(--text-primary)]0 font-normal">BOQ Line Ref: {item.boq_item_ref}</div>
+                            <div className="text-[9px] text-[var(--text-muted)] font-normal">BOQ Line Ref: {item.boq_item_ref}</div>
                           )}
                         </td>
                         <td className="py-2.5 px-4 text-[10px] text-[var(--text-secondary)]">{item.system || 'OTHER'}</td>
@@ -356,7 +356,7 @@ export default function VODetailPage({ params }: VODetailPageProps) {
                 {(vo.status === 'DRAFT' || vo.status === 'PRICED') && (
                   <div className="flex flex-col gap-2 bg-[var(--bg-card)]/40 border border-[var(--border)] p-3.5 rounded text-xs">
                     <span className="font-mono text-[var(--text-secondary)]">Step 1: Internal Submission</span>
-                    <p className="text-[var(--text-primary)]0 mt-1">Route this draft to the commercial review queue. Margins and values will check threshold authorization logic.</p>
+                    <p className="text-[var(--text-muted)] mt-1">Route this draft to the commercial review queue. Margins and values will check threshold authorization logic.</p>
                     <button
                       onClick={() => handleAction(() => actions.submitInternalReview('Submitted for internal approval review'), 'VO submitted for review successfully.')}
                       disabled={processing}
@@ -394,7 +394,7 @@ export default function VODetailPage({ params }: VODetailPageProps) {
                         </div>
                       </>
                     ) : (
-                      <div className="bg-[var(--surface-hover)] border border-[var(--border)] p-2.5 rounded text-[10px] text-[var(--text-primary)]0 flex gap-2">
+                      <div className="bg-[var(--surface-hover)] border border-[var(--border)] p-2.5 rounded text-[10px] text-[var(--text-muted)] flex gap-2">
                         <Lock size={12} className="shrink-0 mt-0.5" />
                         <div>
                           <span>Approval locked: {approvalPerms.reason || 'Unauthorized for internal threshold.'}</span>
@@ -408,7 +408,7 @@ export default function VODetailPage({ params }: VODetailPageProps) {
                 {vo.status === 'INTERNALLY_APPROVED' && (
                   <div className="flex flex-col gap-2 bg-[var(--bg-card)]/40 border border-[var(--border)] p-3.5 rounded text-xs">
                     <span className="font-mono text-[var(--text-secondary)]">Step 3: Client Distribution</span>
-                    <p className="text-[var(--text-primary)]0 mt-1">Compile the branded Tax/Variation Order PDF sheet and upload/file in DMS under Commercial documents.</p>
+                    <p className="text-[var(--text-muted)] mt-1">Compile the branded Tax/Variation Order PDF sheet and upload/file in DMS under Commercial documents.</p>
                     <button
                       onClick={() => handleAction(() => actions.submitToClient(), 'VO issued to client and compiled in DMS.')}
                       disabled={processing}
@@ -423,7 +423,7 @@ export default function VODetailPage({ params }: VODetailPageProps) {
                 {vo.status === 'SUBMITTED_TO_CLIENT' && (
                   <div className="flex flex-col gap-2 bg-[var(--bg-card)]/40 border border-[var(--border)] p-3.5 rounded text-xs">
                     <span className="font-mono text-[var(--text-secondary)]">Step 4: Client Decision Recording</span>
-                    <p className="text-[var(--text-primary)]0 mt-1">Record client's signature, formal approval date, and link signed document from DMS to revise the project contract value.</p>
+                    <p className="text-[var(--text-muted)] mt-1">Record client's signature, formal approval date, and link signed document from DMS to revise the project contract value.</p>
                     
                     <button
                       onClick={() => setClientApprovalOpen(true)}
@@ -456,7 +456,7 @@ export default function VODetailPage({ params }: VODetailPageProps) {
                 {vo.status !== 'CLIENT_APPROVED' && vo.status !== 'CANCELLED' && (
                   <button
                     onClick={() => setCancelOpen(true)}
-                    className="w-full mt-1.5 py-1.5 bg-[var(--surface-hover)] hover:bg-[var(--surface-hover)] border border-[var(--border)] text-[var(--text-primary)]0 hover:text-[var(--status-danger-text)] text-[10px] font-mono rounded transition-all cursor-pointer"
+                    className="w-full mt-1.5 py-1.5 bg-[var(--surface-hover)] hover:bg-[var(--surface-hover)] border border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--status-danger-text)] text-[10px] font-mono rounded transition-all cursor-pointer"
                   >
                     Cancel Variation Order
                   </button>
@@ -466,7 +466,7 @@ export default function VODetailPage({ params }: VODetailPageProps) {
 
               {/* Work execution updates */}
               <div className="border-t border-[var(--border)] pt-4 mt-1 text-xs">
-                <span className="font-mono text-[var(--text-primary)]0 uppercase tracking-wider block mb-2">Update Physical Site Progress</span>
+                <span className="font-mono text-[var(--text-muted)] uppercase tracking-wider block mb-2">Update Physical Site Progress</span>
                 <select
                   value={vo.work_status}
                   onChange={e => handleAction(() => actions.updateWorkStatus(e.target.value as any), 'Work status updated.')}
@@ -496,14 +496,14 @@ export default function VODetailPage({ params }: VODetailPageProps) {
                         <span className="font-semibold text-[var(--text-primary)]">
                           {log.from_status} &rarr; <span className="text-[var(--accent)]">{log.to_status}</span>
                         </span>
-                        <span className="text-[10px] text-[var(--text-primary)]0 font-mono">
+                        <span className="text-[10px] text-[var(--text-muted)] font-mono">
                           {new Date(log.changed_at).toLocaleString('en-GB')}
                         </span>
                       </div>
                       {log.comment && (
                         <p className="text-[var(--text-secondary)] text-[11px] mt-1 font-mono italic">"{log.comment}"</p>
                       )}
-                      <span className="text-[10px] text-[var(--text-primary)]0 mt-0.5">
+                      <span className="text-[10px] text-[var(--text-muted)] mt-0.5">
                         By: {log.changed_by_name || 'System'}
                       </span>
                     </div>
@@ -528,7 +528,7 @@ export default function VODetailPage({ params }: VODetailPageProps) {
             
             <div className="flex flex-col gap-3.5 text-xs">
               <div>
-                <label className="block text-[10px] text-[var(--text-primary)]0 font-mono uppercase mb-1">Approval Reference / Letter #</label>
+                <label className="block text-[10px] text-[var(--text-muted)] font-mono uppercase mb-1">Approval Reference / Letter #</label>
                 <input
                   type="text"
                   placeholder="e.g. CVO-LTR-09 or Project instruction 42"
@@ -540,7 +540,7 @@ export default function VODetailPage({ params }: VODetailPageProps) {
               </div>
 
               <div>
-                <label className="block text-[10px] text-[var(--text-primary)]0 font-mono uppercase mb-1">Approval Date</label>
+                <label className="block text-[10px] text-[var(--text-muted)] font-mono uppercase mb-1">Approval Date</label>
                 <input
                   type="date"
                   value={approvalDate}
@@ -551,7 +551,7 @@ export default function VODetailPage({ params }: VODetailPageProps) {
               </div>
 
               <div>
-                <label className="block text-[10px] text-[var(--text-primary)]0 font-mono uppercase mb-1">Link Signed Document (DMS)</label>
+                <label className="block text-[10px] text-[var(--text-muted)] font-mono uppercase mb-1">Link Signed Document (DMS)</label>
                 <select
                   value={signedDocId}
                   onChange={e => setSignedDocId(e.target.value)}
@@ -562,7 +562,7 @@ export default function VODetailPage({ params }: VODetailPageProps) {
                     <option key={d.id} value={d.id}>{d.original_filename} ({d.title})</option>
                   ))}
                 </select>
-                <span className="text-[10px] text-[var(--text-primary)]0 block mt-1">Upload the client-signed sheet to the DMS before linking.</span>
+                <span className="text-[10px] text-[var(--text-muted)] block mt-1">Upload the client-signed sheet to the DMS before linking.</span>
               </div>
             </div>
 
@@ -607,7 +607,7 @@ export default function VODetailPage({ params }: VODetailPageProps) {
             
             <div className="flex flex-col gap-3.5 text-xs">
               <div>
-                <label className="block text-[10px] text-[var(--text-primary)]0 font-mono uppercase mb-1">Rejection Reason</label>
+                <label className="block text-[10px] text-[var(--text-muted)] font-mono uppercase mb-1">Rejection Reason</label>
                 <textarea
                   rows={3}
                   placeholder="Enter specific comments or reasons provided by the client..."
@@ -660,7 +660,7 @@ export default function VODetailPage({ params }: VODetailPageProps) {
             
             <div className="flex flex-col gap-3.5 text-xs">
               <div>
-                <label className="block text-[10px] text-[var(--text-primary)]0 font-mono uppercase mb-1">Cancellation Reason</label>
+                <label className="block text-[10px] text-[var(--text-muted)] font-mono uppercase mb-1">Cancellation Reason</label>
                 <textarea
                   rows={2}
                   placeholder="Specify details..."

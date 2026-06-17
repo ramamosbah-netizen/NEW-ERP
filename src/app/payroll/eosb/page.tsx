@@ -47,7 +47,7 @@ export default function GratuityLiabilityPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4 flex items-center justify-between">
           <div>
-            <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Total Gratuity Accrued</span>
+            <span className="text-[var(--text-muted)] block uppercase font-mono text-[9px]">Total Gratuity Accrued</span>
             <span className="font-mono text-2xl font-extrabold text-[var(--accent)] mt-1 block">
               AED {totalLiability.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </span>
@@ -56,7 +56,7 @@ export default function GratuityLiabilityPage() {
         </div>
         <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4 flex items-center justify-between">
           <div>
-            <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Audited Staff Members</span>
+            <span className="text-[var(--text-muted)] block uppercase font-mono text-[9px]">Audited Staff Members</span>
             <span className="font-mono text-2xl font-extrabold text-[var(--text-primary)] mt-1 block">
               {liabilityReport.length}
             </span>
@@ -65,7 +65,7 @@ export default function GratuityLiabilityPage() {
         </div>
         <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4 flex items-center justify-between">
           <div>
-            <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">WPS Registry Status</span>
+            <span className="text-[var(--text-muted)] block uppercase font-mono text-[9px]">WPS Registry Status</span>
             <span className="font-mono text-2xl font-extrabold text-[var(--text-primary)] mt-1 block">
               Compliance Checked
             </span>
@@ -113,7 +113,7 @@ export default function GratuityLiabilityPage() {
                     <tr key={emp.employee_id}>
                       <td style={{ fontWeight: 600 }}>
                         <div className="text-[var(--text-primary)]">{emp.full_name_en}</div>
-                        <div className="font-mono text-[9px] text-[var(--text-primary)]0">{emp.employee_number}</div>
+                        <div className="font-mono text-[9px] text-[var(--text-muted)]">{emp.employee_number}</div>
                       </td>
                       <td className="font-mono text-[var(--text-secondary)]">{emp.department}</td>
                       <td>{emp.designation}</td>

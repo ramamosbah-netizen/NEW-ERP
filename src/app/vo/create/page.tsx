@@ -242,7 +242,7 @@ function VOCreatePageContent() {
         
         {/* Breadcrumb & Title */}
         <div>
-          <div className="text-[10px] text-[var(--text-primary)]0 font-mono uppercase tracking-widest flex items-center gap-1">
+          <div className="text-[10px] text-[var(--text-muted)] font-mono uppercase tracking-widest flex items-center gap-1">
             <Link href="/vo" className="hover:text-[var(--accent)] flex items-center gap-0.5"><ArrowLeft size={10} /> Registry</Link> &gt; <span>Capture Variation Order</span>
           </div>
           <h1 className="font-heading font-extrabold text-2xl tracking-tight text-[var(--text-primary)] uppercase mt-1">
@@ -256,7 +256,7 @@ function VOCreatePageContent() {
           <div className="flex-1 bg-[var(--bg-card)] border border-[var(--border)] rounded p-6 flex flex-col gap-5">
             <h3 className="text-xs font-mono text-[var(--accent)] uppercase tracking-wider border-b border-[var(--border)] pb-2 flex justify-between items-center">
               <span>VO Parameters & Reference Metadata</span>
-              {loadingBOQ && <span className="text-[10px] text-[var(--text-primary)]0 animate-pulse font-normal">Loading project BOQ...</span>}
+              {loadingBOQ && <span className="text-[10px] text-[var(--text-muted)] animate-pulse font-normal">Loading project BOQ...</span>}
             </h3>
 
             {/* Project & Title */}
@@ -489,7 +489,7 @@ function VOCreatePageContent() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-3 items-center">
                     
                     <div>
-                      <label className="block text-[8px] text-[var(--text-primary)]0 font-mono uppercase mb-0.5">Qty</label>
+                      <label className="block text-[8px] text-[var(--text-muted)] font-mono uppercase mb-0.5">Qty</label>
                       <input
                         type="number"
                         step="any"
@@ -504,7 +504,7 @@ function VOCreatePageContent() {
                     </div>
 
                     <div>
-                      <label className="block text-[8px] text-[var(--text-primary)]0 font-mono uppercase mb-0.5">Unit</label>
+                      <label className="block text-[8px] text-[var(--text-muted)] font-mono uppercase mb-0.5">Unit</label>
                       <input
                         type="text"
                         placeholder="Unit"
@@ -516,7 +516,7 @@ function VOCreatePageContent() {
                     </div>
 
                     <div>
-                      <label className="block text-[8px] text-[var(--text-primary)]0 font-mono uppercase mb-0.5">Unit Cost (AED)</label>
+                      <label className="block text-[8px] text-[var(--text-muted)] font-mono uppercase mb-0.5">Unit Cost (AED)</label>
                       <input
                         type="number"
                         step="any"
@@ -529,7 +529,7 @@ function VOCreatePageContent() {
                     </div>
 
                     <div>
-                      <label className="block text-[8px] text-[var(--text-primary)]0 font-mono uppercase mb-0.5">Unit Sell (AED)</label>
+                      <label className="block text-[8px] text-[var(--text-muted)] font-mono uppercase mb-0.5">Unit Sell (AED)</label>
                       <input
                         type="number"
                         step="any"
@@ -542,7 +542,7 @@ function VOCreatePageContent() {
                     </div>
 
                     <div>
-                      <label className="block text-[8px] text-[var(--text-primary)]0 font-mono uppercase mb-0.5">Associated System</label>
+                      <label className="block text-[8px] text-[var(--text-muted)] font-mono uppercase mb-0.5">Associated System</label>
                       <select
                         value={item.system}
                         onChange={e => handleItemChange(idx, 'system', e.target.value)}
@@ -563,7 +563,7 @@ function VOCreatePageContent() {
 
                     <div className="text-right flex items-center justify-between pl-2 self-end">
                       <div className="flex flex-col text-right pr-2">
-                        <span className="text-[8px] text-[var(--text-primary)]0 font-mono uppercase">Line Total</span>
+                        <span className="text-[8px] text-[var(--text-muted)] font-mono uppercase">Line Total</span>
                         <span className={`font-mono text-xs font-bold ${item.quantity * item.unit_sell < 0 ? 'text-[var(--status-danger-text)]' : 'text-[var(--text-primary)]'}`}>
                           {(item.quantity * item.unit_sell).toFixed(2)} AED
                         </span>
@@ -660,7 +660,7 @@ function VOCreatePageContent() {
               <button
                 type="button"
                 onClick={() => { setPickerOpen(false); setPickerTargetIndex(null); }}
-                className="text-[var(--text-primary)]0 hover:text-[var(--text-secondary)] font-mono text-xs uppercase"
+                className="text-[var(--text-muted)] hover:text-[var(--text-secondary)] font-mono text-xs uppercase"
               >
                 Close
               </button>
@@ -668,7 +668,7 @@ function VOCreatePageContent() {
 
             {/* Search Input */}
             <div className="p-4 border-b border-[var(--border)] relative">
-              <span className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none text-[var(--text-primary)]0">
+              <span className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none text-[var(--text-muted)]">
                 <Search size={12} />
               </span>
               <input
@@ -683,7 +683,7 @@ function VOCreatePageContent() {
             {/* List */}
             <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-2 font-mono text-xs">
               {filteredBOQItems.length === 0 ? (
-                <div className="text-[var(--text-primary)]0 text-center py-8">
+                <div className="text-[var(--text-muted)] text-center py-8">
                   {projectId ? 'No items found matching the search.' : 'Please select a Project first to load BOQ lines.'}
                 </div>
               ) : (
@@ -695,7 +695,7 @@ function VOCreatePageContent() {
                   >
                     <div className="flex-1 pr-4">
                       <div className="font-semibold text-[var(--text-primary)]">{bi.name}</div>
-                      <div className="text-[10px] text-[var(--text-primary)]0 flex gap-2.5 mt-1">
+                      <div className="text-[10px] text-[var(--text-muted)] flex gap-2.5 mt-1">
                         <span>System: <strong className="text-[var(--text-secondary)]">{bi.system || 'OTHER'}</strong></span>
                         <span>Original Qty: <strong className="text-[var(--text-secondary)]">{bi.quantity} {bi.unit}</strong></span>
                         <span>Rate: <strong className="text-[var(--text-secondary)]">{(bi.unit_price || bi.unit_sell || bi.material_unit_cost || 0).toFixed(2)} AED</strong></span>

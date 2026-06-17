@@ -116,56 +116,56 @@ export default function ReportsHub() {
           {loading ? (
             <div className="flex-1 flex flex-col items-center justify-center py-12">
               <div className="h-8 w-8 rounded-full border-2 border-[var(--accent)] border-t-transparent animate-spin mb-3"></div>
-              <p className="text-xs text-[var(--text-primary)]0 font-mono">Aggregating transactional registers...</p>
+              <p className="text-xs text-[var(--text-muted)] font-mono">Aggregating transactional registers...</p>
             </div>
           ) : (
             <div className="flex flex-col gap-6">
               {/* Primary KPI Grid */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div className="bg-[var(--surface-hover)] border border-[var(--border)] rounded-lg p-4 flex flex-col gap-1">
-                  <div className="text-[10px] font-mono text-[var(--text-primary)]0 uppercase font-bold flex items-center gap-1">
+                  <div className="text-[10px] font-mono text-[var(--text-muted)] uppercase font-bold flex items-center gap-1">
                     <DollarSign size={12} className="text-[var(--accent)]" /> Accounts Receivable
                   </div>
                   <div className="text-lg font-bold font-mono text-[var(--text-primary)] mt-2">
                     {fmtAED(financials?.receivables || 0)}
                   </div>
-                  <div className="text-[10px] text-[var(--text-primary)]0 flex items-center gap-0.5 mt-1 font-mono">
+                  <div className="text-[10px] text-[var(--text-muted)] flex items-center gap-0.5 mt-1 font-mono">
                     <ArrowUpRight size={12} className="text-[var(--accent)]" /> Client invoices balance
                   </div>
                 </div>
 
                 <div className="bg-[var(--surface-hover)] border border-[var(--border)] rounded-lg p-4 flex flex-col gap-1">
-                  <div className="text-[10px] font-mono text-[var(--text-primary)]0 uppercase font-bold flex items-center gap-1">
+                  <div className="text-[10px] font-mono text-[var(--text-muted)] uppercase font-bold flex items-center gap-1">
                     <DollarSign size={12} className="text-[var(--status-danger-text)]" /> Accounts Payable
                   </div>
                   <div className="text-lg font-bold font-mono text-[var(--text-primary)] mt-2">
                     {fmtAED(financials?.payables || 0)}
                   </div>
-                  <div className="text-[10px] text-[var(--text-primary)]0 flex items-center gap-0.5 mt-1 font-mono">
+                  <div className="text-[10px] text-[var(--text-muted)] flex items-center gap-0.5 mt-1 font-mono">
                     <ArrowDownRight size={12} className="text-[var(--status-danger-text)]" /> Supplier commitments
                   </div>
                 </div>
 
                 <div className="bg-[var(--surface-hover)] border border-[var(--border)] rounded-lg p-4 flex flex-col gap-1">
-                  <div className="text-[10px] font-mono text-[var(--text-primary)]0 uppercase font-bold flex items-center gap-1">
+                  <div className="text-[10px] font-mono text-[var(--text-muted)] uppercase font-bold flex items-center gap-1">
                     <TrendingUp size={12} className="text-[var(--accent)]" /> Avg Profit Margin
                   </div>
                   <div className="text-lg font-bold font-mono text-[var(--text-primary)] mt-2">
                     {financials?.marginAverage || 0}%
                   </div>
-                  <div className="text-[10px] text-[var(--text-primary)]0 flex items-center gap-0.5 mt-1 font-mono">
+                  <div className="text-[10px] text-[var(--text-muted)] flex items-center gap-0.5 mt-1 font-mono">
                     Target gross margin: 20%
                   </div>
                 </div>
 
                 <div className="bg-[var(--surface-hover)] border border-[var(--border)] rounded-lg p-4 flex flex-col gap-1">
-                  <div className="text-[10px] font-mono text-[var(--text-primary)]0 uppercase font-bold flex items-center gap-1">
+                  <div className="text-[10px] font-mono text-[var(--text-muted)] uppercase font-bold flex items-center gap-1">
                     <Clock size={12} className="text-[var(--accent)]" /> Ticket SLA compliance
                   </div>
                   <div className="text-lg font-bold font-mono text-[var(--accent)] mt-2">
                     {slaStats?.sla_compliance_rate || 0}%
                   </div>
-                  <div className="text-[10px] text-[var(--text-primary)]0 flex items-center gap-0.5 mt-1 font-mono">
+                  <div className="text-[10px] text-[var(--text-muted)] flex items-center gap-0.5 mt-1 font-mono">
                     On-time resolved service orders
                   </div>
                 </div>
@@ -210,7 +210,7 @@ export default function ReportsHub() {
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="bg-[var(--surface-hover)] border-b border-[var(--border)] text-[10px] font-mono text-[var(--text-primary)]0 uppercase font-bold tracking-wider">
+                      <tr className="bg-[var(--surface-hover)] border-b border-[var(--border)] text-[10px] font-mono text-[var(--text-muted)] uppercase font-bold tracking-wider">
                         <th className="py-2.5 px-3">Project Ref</th>
                         <th className="py-2.5 px-3 text-right">BOQ Value</th>
                         <th className="py-2.5 px-3 text-right">Committed</th>
@@ -226,7 +226,7 @@ export default function ReportsHub() {
                           <tr key={p.project_id} className="hover:bg-[var(--surface-hover)]">
                             <td className="py-2.5 px-3 font-sans font-semibold text-[var(--text-secondary)]">
                               <div>{p.project_name}</div>
-                              <div className="text-[10px] text-[var(--text-primary)]0 font-mono">{p.project_number}</div>
+                              <div className="text-[10px] text-[var(--text-muted)] font-mono">{p.project_number}</div>
                             </td>
                             <td className="py-2.5 px-3 text-right text-[var(--text-secondary)]">{fmtAED(p.budget_cost)}</td>
                             <td className="py-2.5 px-3 text-right text-[var(--text-secondary)]">{fmtAED(p.committed_cost)}</td>
@@ -256,7 +256,7 @@ export default function ReportsHub() {
             <h3 className="text-sm font-bold tracking-wider uppercase text-[var(--text-secondary)] flex items-center gap-1.5 font-heading">
               <Sparkles className="text-[var(--accent)] animate-pulse" size={15} /> Gemini AI Analyst
             </h3>
-            <p className="text-xs text-[var(--text-primary)]0 leading-relaxed font-sans">
+            <p className="text-xs text-[var(--text-muted)] leading-relaxed font-sans">
               Enter queries in natural language to analyze cash flows, cost variances, or project margin bottlenecks.
             </p>
 
@@ -281,7 +281,7 @@ export default function ReportsHub() {
               {geminiLoading ? (
                 <div className="flex flex-col items-center justify-center py-8">
                   <div className="h-5 w-5 rounded-full border-2 border-[var(--accent)] border-t-transparent animate-spin mb-2"></div>
-                  <p className="text-[10px] text-[var(--text-primary)]0 font-mono">Analyzing database schemas...</p>
+                  <p className="text-[10px] text-[var(--text-muted)] font-mono">Analyzing database schemas...</p>
                 </div>
               ) : geminiResponse ? (
                 <div className="p-3.5 bg-[var(--bg-card)] border border-[var(--border)] rounded font-sans text-xs leading-relaxed text-[var(--text-secondary)] flex flex-col gap-2">
@@ -300,7 +300,7 @@ export default function ReportsHub() {
 
             {/* Quick Prompts Suggestions */}
             <div>
-              <div className="text-[10px] font-mono text-[var(--text-primary)]0 uppercase font-bold mb-2">Suggested Queries</div>
+              <div className="text-[10px] font-mono text-[var(--text-muted)] uppercase font-bold mb-2">Suggested Queries</div>
               <div className="flex flex-col gap-1.5">
                 {[
                   'Show me margin erosion risks',

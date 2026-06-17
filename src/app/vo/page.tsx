@@ -96,7 +96,7 @@ export default function VORegistryPage() {
         {/* Header Title Bar */}
         <div className="flex justify-between items-center">
           <div>
-            <div className="text-[10px] text-[var(--text-primary)]0 font-mono uppercase tracking-widest">
+            <div className="text-[10px] text-[var(--text-muted)] font-mono uppercase tracking-widest">
               Commercial & Billing Operations
             </div>
             <h1 className="font-heading font-extrabold text-2xl tracking-tight text-[var(--text-primary)] uppercase mt-1">
@@ -125,7 +125,7 @@ export default function VORegistryPage() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4 flex flex-col justify-between">
             <div>
-              <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Approved variations</span>
+              <span className="text-[var(--text-muted)] block uppercase font-mono text-[9px]">Approved variations</span>
               <span className="font-mono text-lg font-extrabold text-[var(--accent)] mt-1 block">
                 +{formatAED(totalApprovedAmount)}
               </span>
@@ -137,7 +137,7 @@ export default function VORegistryPage() {
 
           <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4 flex flex-col justify-between">
             <div>
-              <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Pending client sign-off</span>
+              <span className="text-[var(--text-muted)] block uppercase font-mono text-[9px]">Pending client sign-off</span>
               <span className="font-mono text-lg font-extrabold text-[var(--status-warning-text)] mt-1 block">
                 {formatAED(totalPendingAmount)}
               </span>
@@ -149,7 +149,7 @@ export default function VORegistryPage() {
 
           <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4 flex flex-col justify-between">
             <div>
-              <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Proceed At-Risk Exposure</span>
+              <span className="text-[var(--text-muted)] block uppercase font-mono text-[9px]">Proceed At-Risk Exposure</span>
               <span className="font-mono text-lg font-extrabold text-[var(--status-danger-text)] mt-1 block">
                 {formatAED(totalAtRiskExposure)}
               </span>
@@ -161,7 +161,7 @@ export default function VORegistryPage() {
 
           <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4 flex flex-col justify-between">
             <div>
-              <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Average Gross Margin</span>
+              <span className="text-[var(--text-muted)] block uppercase font-mono text-[9px]">Average Gross Margin</span>
               <span className="font-mono text-lg font-extrabold text-[var(--text-primary)] mt-1 block">
                 {averageMargin.toFixed(1)}%
               </span>
@@ -181,7 +181,7 @@ export default function VORegistryPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3.5">
             {/* Search Box */}
             <div className="relative">
-              <span className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-[var(--text-primary)]0">
+              <span className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-[var(--text-muted)]">
                 <Search size={12} />
               </span>
               <input
@@ -265,7 +265,7 @@ export default function VORegistryPage() {
         {/* Master Registry Table */}
         <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded overflow-hidden">
           {loading ? (
-            <div className="flex flex-col items-center justify-center py-16 text-[var(--text-primary)]0 font-mono text-xs gap-3">
+            <div className="flex flex-col items-center justify-center py-16 text-[var(--text-muted)] font-mono text-xs gap-3">
               <div className="animate-spin rounded-full h-5 w-5 border border-[var(--border)] border-t-emerald-400"></div>
               <span>Fetching Variations Ledger...</span>
             </div>
@@ -274,7 +274,7 @@ export default function VORegistryPage() {
               Error fetching records: {error.message}
             </div>
           ) : vos.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 text-[var(--text-primary)]0 font-mono text-xs gap-2">
+            <div className="flex flex-col items-center justify-center py-16 text-[var(--text-muted)] font-mono text-xs gap-2">
               <FileText size={28} className="text-[var(--text-tertiary)]" />
               <span>No Variation Orders found matching the criteria.</span>
             </div>
@@ -304,7 +304,7 @@ export default function VORegistryPage() {
                       <tr key={vo.id} className="hover:bg-[var(--surface-hover)] transition-colors">
                         <td className="py-3 px-4 max-w-xs truncate" title={vo.project_name}>
                           <div className="font-semibold text-[var(--text-primary)]">{vo.project_number}</div>
-                          <div className="text-[10px] text-[var(--text-primary)]0 truncate">{vo.project_name}</div>
+                          <div className="text-[10px] text-[var(--text-muted)] truncate">{vo.project_name}</div>
                         </td>
                         <td className="py-3 px-4 font-bold text-[var(--text-primary)]">
                           {vo.vo_number}
@@ -316,7 +316,7 @@ export default function VORegistryPage() {
                         </td>
                         <td className="py-3 px-4 max-w-xs truncate" title={vo.title}>
                           <div className="font-semibold text-[var(--text-primary)] truncate">{vo.title}</div>
-                          <div className="text-[10px] text-[var(--text-primary)]0 truncate">Ref: {vo.instruction_reference}</div>
+                          <div className="text-[10px] text-[var(--text-muted)] truncate">Ref: {vo.instruction_reference}</div>
                         </td>
                         <td className="py-3 px-4 text-[10px] text-[var(--text-secondary)]">
                           {VO_TYPE_LABELS[vo.vo_type] || vo.vo_type}

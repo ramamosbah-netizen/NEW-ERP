@@ -148,7 +148,7 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
   if (!vehicle) {
     return (
       <div className="min-h-screen bg-[var(--bg-dark)] text-[var(--text-primary)] flex flex-col items-center justify-center gap-4">
-        <span className="text-xs font-mono text-[var(--text-primary)]0">Vehicle record not found or deleted.</span>
+        <span className="text-xs font-mono text-[var(--text-muted)]">Vehicle record not found or deleted.</span>
         <Link href="/fleet" className="text-xs text-[var(--primary)] font-bold flex items-center gap-1.5">
           <ArrowLeft size={14} /> Back to Fleet Directory
         </Link>
@@ -330,7 +330,7 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
                 <FileText size={16} />
               </div>
               <div>
-                <span className="text-[10px] text-[var(--text-primary)]0 uppercase tracking-widest font-mono">Mulkiya Renewal</span>
+                <span className="text-[10px] text-[var(--text-muted)] uppercase tracking-widest font-mono">Mulkiya Renewal</span>
                 <div className="text-xs font-semibold text-[var(--text-primary)] mt-0.5">
                   Expiry: {new Date(vehicle.registration_expiry).toLocaleDateString('en-GB')}
                 </div>
@@ -347,7 +347,7 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
                 <ShieldAlert size={16} />
               </div>
               <div>
-                <span className="text-[10px] text-[var(--text-primary)]0 uppercase tracking-widest font-mono">Insurance Policy</span>
+                <span className="text-[10px] text-[var(--text-muted)] uppercase tracking-widest font-mono">Insurance Policy</span>
                 <div className="text-xs font-semibold text-[var(--text-primary)] mt-0.5">
                   Expiry: {new Date(vehicle.insurance_expiry).toLocaleDateString('en-GB')}
                 </div>
@@ -388,27 +388,27 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
                 </h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
                   <div>
-                    <span className="block text-[10px] text-[var(--text-primary)]0 uppercase font-mono">Make & Model</span>
+                    <span className="block text-[10px] text-[var(--text-muted)] uppercase font-mono">Make & Model</span>
                     <span className="text-xs text-[var(--text-primary)] font-bold mt-1 block">{vehicle.make} {vehicle.model}</span>
                   </div>
                   <div>
-                    <span className="block text-[10px] text-[var(--text-primary)]0 uppercase font-mono">Model Year</span>
+                    <span className="block text-[10px] text-[var(--text-muted)] uppercase font-mono">Model Year</span>
                     <span className="text-xs text-[var(--text-primary)] font-mono mt-1 block">{vehicle.year}</span>
                   </div>
                   <div>
-                    <span className="block text-[10px] text-[var(--text-primary)]0 uppercase font-mono">Vehicle Type</span>
+                    <span className="block text-[10px] text-[var(--text-muted)] uppercase font-mono">Vehicle Type</span>
                     <span className="text-xs text-[var(--text-primary)] font-mono mt-1 block">{vehicle.vehicle_type}</span>
                   </div>
                   <div>
-                    <span className="block text-[10px] text-[var(--text-primary)]0 uppercase font-mono">Chassis Number</span>
+                    <span className="block text-[10px] text-[var(--text-muted)] uppercase font-mono">Chassis Number</span>
                     <span className="text-xs text-[var(--text-primary)] font-mono mt-1 block">{vehicle.chassis_no}</span>
                   </div>
                   <div>
-                    <span className="block text-[10px] text-[var(--text-primary)]0 uppercase font-mono">Engine Number</span>
+                    <span className="block text-[10px] text-[var(--text-muted)] uppercase font-mono">Engine Number</span>
                     <span className="text-xs text-[var(--text-primary)] font-mono mt-1 block">{vehicle.engine_no}</span>
                   </div>
                   <div>
-                    <span className="block text-[10px] text-[var(--text-primary)]0 uppercase font-mono">Seating Capacity</span>
+                    <span className="block text-[10px] text-[var(--text-muted)] uppercase font-mono">Seating Capacity</span>
                     <span className="text-xs text-[var(--text-primary)] font-mono mt-1 block">{vehicle.seating_capacity || 'N/A'}</span>
                   </div>
                 </div>
@@ -418,23 +418,23 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
                 </h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
                   <div>
-                    <span className="block text-[10px] text-[var(--text-primary)]0 uppercase font-mono">Ownership Status</span>
+                    <span className="block text-[10px] text-[var(--text-muted)] uppercase font-mono">Ownership Status</span>
                     <span className="text-xs text-[var(--text-primary)] font-bold mt-1 block">{vehicle.ownership}</span>
                   </div>
                   <div>
-                    <span className="block text-[10px] text-[var(--text-primary)]0 uppercase font-mono">Purchase Date</span>
+                    <span className="block text-[10px] text-[var(--text-muted)] uppercase font-mono">Purchase Date</span>
                     <span className="text-xs text-[var(--text-primary)] font-mono mt-1 block">
                       {vehicle.purchase_date ? new Date(vehicle.purchase_date).toLocaleDateString('en-GB') : 'N/A'}
                     </span>
                   </div>
                   <div>
-                    <span className="block text-[10px] text-[var(--text-primary)]0 uppercase font-mono">Purchase Cost</span>
+                    <span className="block text-[10px] text-[var(--text-muted)] uppercase font-mono">Purchase Cost</span>
                     <span className="text-xs text-[var(--text-primary)] font-mono mt-1 block">
                       {vehicle.purchase_cost ? formatAED(vehicle.purchase_cost) : 'N/A'}
                     </span>
                   </div>
                   <div>
-                    <span className="block text-[10px] text-[var(--text-primary)]0 uppercase font-mono">Linked Asset</span>
+                    <span className="block text-[10px] text-[var(--text-muted)] uppercase font-mono">Linked Asset</span>
                     {vehicle.fixed_asset_id ? (
                       <Link 
                         href={`/assets/${vehicle.fixed_asset_id}`}
@@ -443,7 +443,7 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
                         {vehicle.asset_number || 'View Asset Register'}
                       </Link>
                     ) : (
-                      <span className="text-xs text-[var(--text-primary)]0 italic mt-1 block">Not linked to Asset Register</span>
+                      <span className="text-xs text-[var(--text-muted)] italic mt-1 block">Not linked to Asset Register</span>
                     )}
                   </div>
                 </div>
@@ -455,19 +455,19 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
                   Salik & Insurance Information
                 </h3>
                 <div>
-                  <span className="block text-[10px] text-[var(--text-primary)]0 uppercase font-mono">Salik Tag Number</span>
+                  <span className="block text-[10px] text-[var(--text-muted)] uppercase font-mono">Salik Tag Number</span>
                   <span className="text-xs text-[var(--text-primary)] font-mono mt-1 block">{vehicle.salik_tag_number || 'N/A'}</span>
                 </div>
                 <div>
-                  <span className="block text-[10px] text-[var(--text-primary)]0 uppercase font-mono">Salik Account Link</span>
+                  <span className="block text-[10px] text-[var(--text-muted)] uppercase font-mono">Salik Account Link</span>
                   <span className="text-xs text-[var(--text-primary)] font-mono mt-1 block">{vehicle.salik_account || 'N/A'}</span>
                 </div>
                 <div>
-                  <span className="block text-[10px] text-[var(--text-primary)]0 uppercase font-mono">Insurance Company</span>
+                  <span className="block text-[10px] text-[var(--text-muted)] uppercase font-mono">Insurance Company</span>
                   <span className="text-xs text-[var(--text-primary)] font-semibold mt-1 block">{vehicle.insurance_company}</span>
                 </div>
                 <div>
-                  <span className="block text-[10px] text-[var(--text-primary)]0 uppercase font-mono">Policy Number</span>
+                  <span className="block text-[10px] text-[var(--text-muted)] uppercase font-mono">Policy Number</span>
                   <span className="text-xs text-[var(--text-primary)] font-mono mt-1 block">{vehicle.insurance_policy_no}</span>
                 </div>
               </div>
@@ -484,7 +484,7 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
               </div>
 
               {assignments.length === 0 ? (
-                <div className="h-40 flex items-center justify-center text-xs text-[var(--text-primary)]0 font-mono border border-dashed border-[var(--border)] rounded-lg">
+                <div className="h-40 flex items-center justify-center text-xs text-[var(--text-muted)] font-mono border border-dashed border-[var(--border)] rounded-lg">
                   No custody logs registered for this vehicle.
                 </div>
               ) : (
@@ -503,7 +503,7 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
                             </span>
                           )}
                         </div>
-                        <div className="text-[10px] font-mono text-[var(--text-primary)]0 mt-1.5">
+                        <div className="text-[10px] font-mono text-[var(--text-muted)] mt-1.5">
                           Purpose: {a.purpose} {a.project_name ? `• Project: ${a.project_name}` : ''}
                         </div>
                         <div className="text-[10px] text-[var(--text-secondary)] mt-2 font-mono flex items-center gap-1.5">
@@ -515,12 +515,12 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
 
                       <div className="text-xs sm:text-right flex sm:flex-col justify-between items-baseline sm:justify-start gap-2">
                         <div>
-                          <span className="text-[10px] text-[var(--text-primary)]0 uppercase block">Handover Odo</span>
+                          <span className="text-[10px] text-[var(--text-muted)] uppercase block">Handover Odo</span>
                           <span className="font-mono text-[var(--text-secondary)]">{a.handover_odometer.toLocaleString()} km</span>
                         </div>
                         {a.to_date && (
                           <div className="sm:mt-2">
-                            <span className="text-[10px] text-[var(--text-primary)]0 uppercase block">Return Odo</span>
+                            <span className="text-[10px] text-[var(--text-muted)] uppercase block">Return Odo</span>
                             <span className="font-mono text-[var(--text-secondary)]">{(a.return_odometer || 0).toLocaleString()} km</span>
                           </div>
                         )}
@@ -564,14 +564,14 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
               )}
 
               {fines.length === 0 ? (
-                <div className="h-40 flex items-center justify-center text-xs text-[var(--text-primary)]0 font-mono border border-dashed border-[var(--border)] rounded-lg">
+                <div className="h-40 flex items-center justify-center text-xs text-[var(--text-muted)] font-mono border border-dashed border-[var(--border)] rounded-lg">
                   No traffic violations registered.
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="border-b border-[var(--border)] text-[10px] font-mono text-[var(--text-primary)]0 uppercase tracking-widest">
+                      <tr className="border-b border-[var(--border)] text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest">
                         <th className="pb-3">Fine Number</th>
                         <th className="pb-3">Fine Date</th>
                         <th className="pb-3">Authority</th>
@@ -647,14 +647,14 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
               </div>
 
               {fuelLogs.length === 0 ? (
-                <div className="h-40 flex items-center justify-center text-xs text-[var(--text-primary)]0 font-mono border border-dashed border-[var(--border)] rounded-lg">
+                <div className="h-40 flex items-center justify-center text-xs text-[var(--text-muted)] font-mono border border-dashed border-[var(--border)] rounded-lg">
                   No fuel fill-ups registered.
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="border-b border-[var(--border)] text-[10px] font-mono text-[var(--text-primary)]0 uppercase tracking-widest">
+                      <tr className="border-b border-[var(--border)] text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest">
                         <th className="pb-3">Fill Date</th>
                         <th className="pb-3">Odometer</th>
                         <th className="pb-3">Litres</th>
@@ -713,14 +713,14 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
               </div>
 
               {maintenance.length === 0 ? (
-                <div className="h-40 flex items-center justify-center text-xs text-[var(--text-primary)]0 font-mono border border-dashed border-[var(--border)] rounded-lg">
+                <div className="h-40 flex items-center justify-center text-xs text-[var(--text-muted)] font-mono border border-dashed border-[var(--border)] rounded-lg">
                   No maintenance records found.
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="border-b border-[var(--border)] text-[10px] font-mono text-[var(--text-primary)]0 uppercase tracking-widest">
+                      <tr className="border-b border-[var(--border)] text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest">
                         <th className="pb-3">Service Date</th>
                         <th className="pb-3">Odometer</th>
                         <th className="pb-3">Type</th>
@@ -817,13 +817,13 @@ export default function VehicleDetailPage({ params }: { params: Promise<{ id: st
                   <div className="text-3xl font-heading font-extrabold text-[var(--primary)] font-mono">
                     {formatAED(tco)}
                   </div>
-                  <p className="text-[10px] text-[var(--text-primary)]0 font-mono mt-1.5">
+                  <p className="text-[10px] text-[var(--text-muted)] font-mono mt-1.5">
                     Accumulated costs including running expenses & asset depreciation
                   </p>
                 </div>
 
                 <div className="border-t border-[var(--border)] pt-4">
-                  <div className="text-[10px] text-[var(--text-primary)]0 uppercase tracking-widest font-mono">Running Cost / km</div>
+                  <div className="text-[10px] text-[var(--text-muted)] uppercase tracking-widest font-mono">Running Cost / km</div>
                   <div className="text-lg font-heading font-bold text-[var(--text-primary)] mt-1 font-mono">
                     {costPerKm.toFixed(4)} AED / km
                   </div>

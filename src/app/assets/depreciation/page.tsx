@@ -143,10 +143,10 @@ export default function DepreciationRunPage() {
           {/* Status card */}
           <div className="p-5 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl flex items-center justify-between">
             <div>
-              <span className="text-[10px] font-mono text-[var(--text-primary)]0 uppercase tracking-widest block">Period Lock Status</span>
+              <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest block">Period Lock Status</span>
               <div className="text-lg font-heading font-bold text-[var(--text-primary)] mt-2 flex items-center gap-2">
                 {isPeriodEmpty ? (
-                  <span className="text-[var(--text-primary)]0">No Assets Scheduled</span>
+                  <span className="text-[var(--text-muted)]">No Assets Scheduled</span>
                 ) : isPeriodLocked ? (
                   <>
                     <Lock size={16} className="text-[var(--accent)]" />
@@ -164,7 +164,7 @@ export default function DepreciationRunPage() {
 
           {/* Running totals */}
           <div className="p-5 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl">
-            <span className="text-[10px] font-mono text-[var(--text-primary)]0 uppercase tracking-widest block">Period Depreciation Amount</span>
+            <span className="text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest block">Period Depreciation Amount</span>
             <div className="text-2xl font-heading font-bold text-[var(--text-primary)] mt-2 font-mono">
               {formatAED(totalDeprecationThisMonth)}
             </div>
@@ -207,18 +207,18 @@ export default function DepreciationRunPage() {
           </h3>
 
           {fetching ? (
-            <div className="h-60 flex items-center justify-center text-xs font-mono text-[var(--text-primary)]0">
+            <div className="h-60 flex items-center justify-center text-xs font-mono text-[var(--text-muted)]">
               <RefreshCw className="animate-spin mr-2" size={15} /> Fetching period schedule...
             </div>
           ) : scheduleRows.length === 0 ? (
-            <div className="h-60 flex items-center justify-center text-xs font-mono text-[var(--text-primary)]0 border border-dashed border-[var(--border)] rounded-lg">
+            <div className="h-60 flex items-center justify-center text-xs font-mono text-[var(--text-muted)] border border-dashed border-[var(--border)] rounded-lg">
               No assets scheduled for depreciation in this month.
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-[var(--border)] text-[10px] font-mono text-[var(--text-primary)]0 uppercase tracking-widest">
+                  <tr className="border-b border-[var(--border)] text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest">
                     <th className="pb-3">Asset Number</th>
                     <th className="pb-3">Asset Name</th>
                     <th className="pb-3">Category</th>
@@ -240,7 +240,7 @@ export default function DepreciationRunPage() {
                       <td className="py-4 font-sans font-bold text-[var(--text-primary)]">
                         {row.fixed_assets?.name}
                       </td>
-                      <td className="py-4 text-[10px] text-[var(--text-primary)]0 uppercase">
+                      <td className="py-4 text-[10px] text-[var(--text-muted)] uppercase">
                         {row.fixed_assets?.category.replace(/_/g, ' ')}
                       </td>
                       <td className="py-4 text-[var(--text-secondary)]">{formatAED(row.opening_nbv)}</td>
@@ -251,7 +251,7 @@ export default function DepreciationRunPage() {
                         <span className={`inline-block px-2 py-0.5 rounded text-[9px] uppercase font-bold border ${
                           row.posted
                             ? 'bg-[var(--accent-glow)] text-[var(--accent)] border-[var(--accent)]'
-                            : 'bg-[var(--surface-hover)] text-[var(--text-primary)]0 border-[var(--border)]'
+                            : 'bg-[var(--surface-hover)] text-[var(--text-muted)] border-[var(--border)]'
                         }`}>
                           {row.posted ? 'Locked & Posted' : 'Draft'}
                         </span>

@@ -23,7 +23,7 @@ export default function ProjectFinanceTab({ projectId }: ProjectFinanceTabProps)
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 text-[var(--text-primary)]0 font-mono text-xs gap-3">
+      <div className="flex flex-col items-center justify-center py-12 text-[var(--text-muted)] font-mono text-xs gap-3">
         <div className="animate-spin rounded-full h-5 w-5 border border-[var(--border)] border-t-emerald-400"></div>
         <span>Compiling committed cost ledger & revenue metrics...</span>
       </div>
@@ -96,12 +96,12 @@ export default function ProjectFinanceTab({ projectId }: ProjectFinanceTabProps)
       {/* Primary KPI Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4">
-          <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Contract Value</span>
+          <span className="text-[var(--text-muted)] block uppercase font-mono text-[9px]">Contract Value</span>
           <span className="font-mono text-base font-extrabold text-[var(--text-primary)] mt-1 block">{formatAED(contractValue)}</span>
         </div>
 
         <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4">
-          <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Billed Revenue</span>
+          <span className="text-[var(--text-muted)] block uppercase font-mono text-[9px]">Billed Revenue</span>
           <span className="font-mono text-base font-extrabold text-[var(--text-primary)] mt-1 block">{formatAED(revenueBilled)}</span>
           <span className="text-[10px] text-[var(--accent)] font-mono mt-0.5 block">
             {contractValue > 0 ? ((revenueBilled / contractValue) * 100).toFixed(1) : 0}% of contract
@@ -109,7 +109,7 @@ export default function ProjectFinanceTab({ projectId }: ProjectFinanceTabProps)
         </div>
 
         <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4">
-          <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Cash Collected</span>
+          <span className="text-[var(--text-muted)] block uppercase font-mono text-[9px]">Cash Collected</span>
           <span className="font-mono text-base font-extrabold text-[var(--text-primary)] mt-1 block">{formatAED(revenueCollected)}</span>
           <span className="text-[10px] text-[var(--accent)] font-mono mt-0.5 block">
             {revenueBilled > 0 ? ((revenueCollected / revenueBilled) * 100).toFixed(1) : 0}% of billed
@@ -117,7 +117,7 @@ export default function ProjectFinanceTab({ projectId }: ProjectFinanceTabProps)
         </div>
 
         <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4">
-          <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">BOQ Cost Budget</span>
+          <span className="text-[var(--text-muted)] block uppercase font-mono text-[9px]">BOQ Cost Budget</span>
           <span className="font-mono text-base font-extrabold text-[var(--text-primary)] mt-1 block">{formatAED(budgetCost)}</span>
         </div>
       </div>
@@ -131,7 +131,7 @@ export default function ProjectFinanceTab({ projectId }: ProjectFinanceTabProps)
             <h4 className="text-xs font-mono font-bold text-[var(--text-secondary)] uppercase tracking-wide">
               Realized Margin (Billed vs actual)
             </h4>
-            <span className="text-[10px] text-[var(--text-primary)]0">Based on standard supplier invoice registrations</span>
+            <span className="text-[10px] text-[var(--text-muted)]">Based on standard supplier invoice registrations</span>
           </div>
 
           <div className="flex justify-between items-baseline font-mono mt-1">
@@ -148,11 +148,11 @@ export default function ProjectFinanceTab({ projectId }: ProjectFinanceTabProps)
 
           <div className="grid grid-cols-2 gap-4 text-xs font-mono border-t border-[var(--border)] pt-3 mt-1">
             <div>
-              <span className="text-[var(--text-primary)]0 text-[9px] block uppercase">Billed Revenue</span>
+              <span className="text-[var(--text-muted)] text-[9px] block uppercase">Billed Revenue</span>
               <span className="text-[var(--text-primary)] font-semibold block">{formatAED(revenueBilled)}</span>
             </div>
             <div>
-              <span className="text-[var(--text-primary)]0 text-[9px] block uppercase">Actual Registered Cost</span>
+              <span className="text-[var(--text-muted)] text-[9px] block uppercase">Actual Registered Cost</span>
               <span className="text-[var(--text-primary)] font-semibold block">{formatAED(actualCost)}</span>
             </div>
           </div>
@@ -164,7 +164,7 @@ export default function ProjectFinanceTab({ projectId }: ProjectFinanceTabProps)
             <h4 className="text-xs font-mono font-bold text-[var(--text-secondary)] uppercase tracking-wide">
               Projected Margin (At completion)
             </h4>
-            <span className="text-[10px] text-[var(--text-primary)]0">Includes registered actuals and remaining commitments (LPOs)</span>
+            <span className="text-[10px] text-[var(--text-muted)]">Includes registered actuals and remaining commitments (LPOs)</span>
           </div>
 
           <div className="flex justify-between items-baseline font-mono mt-1">
@@ -185,11 +185,11 @@ export default function ProjectFinanceTab({ projectId }: ProjectFinanceTabProps)
 
           <div className="grid grid-cols-2 gap-4 text-xs font-mono border-t border-[var(--border)] pt-3 mt-1">
             <div>
-              <span className="text-[var(--text-primary)]0 text-[9px] block uppercase">Contract Value</span>
+              <span className="text-[var(--text-muted)] text-[9px] block uppercase">Contract Value</span>
               <span className="text-[var(--text-primary)] font-semibold block">{formatAED(contractValue)}</span>
             </div>
             <div>
-              <span className="text-[var(--text-primary)]0 text-[9px] block uppercase">Projected Cost</span>
+              <span className="text-[var(--text-muted)] text-[9px] block uppercase">Projected Cost</span>
               <span className="text-[var(--text-primary)] font-semibold block">{formatAED(projectedCostAtCompletion)}</span>
             </div>
           </div>
@@ -216,12 +216,12 @@ export default function ProjectFinanceTab({ projectId }: ProjectFinanceTabProps)
           </div>
 
           <div className="flex justify-between border-b border-[var(--border)] pb-2 pl-4">
-            <span className="text-[var(--text-primary)]0">a) Registered Supplier Invoice Actuals (from POs)</span>
+            <span className="text-[var(--text-muted)]">a) Registered Supplier Invoice Actuals (from POs)</span>
             <span className="text-[var(--text-secondary)]">{formatAED(actualCost - actualLabourCost)}</span>
           </div>
 
           <div className="flex justify-between border-b border-[var(--border)] pb-2 pl-4">
-            <span className="text-[var(--text-primary)]0">b) Accrued Unbilled Cost (Received Goods pending Invoice)</span>
+            <span className="text-[var(--text-muted)]">b) Accrued Unbilled Cost (Received Goods pending Invoice)</span>
             <span className="text-[var(--text-secondary)]">{formatAED(accruedUnbilledCost)}</span>
           </div>
 
@@ -231,12 +231,12 @@ export default function ProjectFinanceTab({ projectId }: ProjectFinanceTabProps)
           </div>
 
           <div className="flex justify-between border-b border-[var(--border)] pb-2 pl-4">
-            <span className="text-[var(--text-primary)]0">a) BOQ Labor Budget Allocation</span>
+            <span className="text-[var(--text-muted)]">a) BOQ Labor Budget Allocation</span>
             <span className="text-[var(--text-secondary)]">{formatAED(budgetLabourCost)}</span>
           </div>
 
           <div className="flex justify-between border-b border-[var(--border)] pb-2 pl-4">
-            <span className="text-[var(--text-primary)]0">b) Actual Labour Cost vs Budget Variance</span>
+            <span className="text-[var(--text-muted)]">b) Actual Labour Cost vs Budget Variance</span>
             <span className={`font-bold ${actualLabourCost > budgetLabourCost ? 'text-[var(--status-danger-text)]' : 'text-[var(--accent)]'}`}>
               {formatAED(actualLabourCost - budgetLabourCost)} ({budgetLabourCost > 0 ? ((actualLabourCost / budgetLabourCost) * 100).toFixed(1) : 0}%)
             </span>

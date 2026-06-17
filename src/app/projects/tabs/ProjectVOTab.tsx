@@ -36,7 +36,7 @@ export default function ProjectVOTab({ projectId }: ProjectVOTabProps) {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 text-[var(--text-primary)]0 font-mono text-xs gap-3">
+      <div className="flex flex-col items-center justify-center py-12 text-[var(--text-muted)] font-mono text-xs gap-3">
         <div className="animate-spin rounded-full h-5 w-5 border border-[var(--border)] border-t-emerald-400"></div>
         <span>Compiling Variation Order registries & contract impact metrics...</span>
       </div>
@@ -99,38 +99,38 @@ export default function ProjectVOTab({ projectId }: ProjectVOTabProps) {
       {summary && (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4">
-            <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Original Value</span>
+            <span className="text-[var(--text-muted)] block uppercase font-mono text-[9px]">Original Value</span>
             <span className="font-mono text-base font-extrabold text-[var(--text-primary)] mt-1 block">
               {formatAED(summary.originalContract)}
             </span>
           </div>
 
           <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4">
-            <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Approved variations</span>
+            <span className="text-[var(--text-muted)] block uppercase font-mono text-[9px]">Approved variations</span>
             <span className="font-mono text-base font-extrabold text-[var(--accent)] mt-1 block">
               {summary.approvedVOs >= 0 ? '+' : ''}{formatAED(summary.approvedVOs)}
             </span>
-            <span className="text-[10px] text-[var(--text-primary)]0 font-mono mt-0.5 block">
+            <span className="text-[10px] text-[var(--text-muted)] font-mono mt-0.5 block">
               {summary.voCount} client approved variations
             </span>
           </div>
 
           <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4">
-            <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Revised Value</span>
+            <span className="text-[var(--text-muted)] block uppercase font-mono text-[9px]">Revised Value</span>
             <span className="font-mono text-base font-extrabold text-[var(--text-primary)] mt-1 block">
               {formatAED(summary.revisedContract)}
             </span>
-            <span className="text-[10px] text-[var(--text-primary)]0 font-mono mt-0.5 block">
+            <span className="text-[10px] text-[var(--text-muted)] font-mono mt-0.5 block">
               {summary.originalContract > 0 ? (((summary.revisedContract - summary.originalContract) / summary.originalContract) * 100).toFixed(1) : 0}% contract growth
             </span>
           </div>
 
           <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded p-4">
-            <span className="text-[var(--text-primary)]0 block uppercase font-mono text-[9px]">Pending Value</span>
+            <span className="text-[var(--text-muted)] block uppercase font-mono text-[9px]">Pending Value</span>
             <span className="font-mono text-base font-extrabold text-[var(--status-warning-text)] mt-1 block">
               {formatAED(summary.pendingVOs)}
             </span>
-            <span className="text-[10px] text-[var(--text-primary)]0 font-mono mt-0.5 block">
+            <span className="text-[10px] text-[var(--text-muted)] font-mono mt-0.5 block">
               Awaiting client authorization
             </span>
           </div>
@@ -146,7 +146,7 @@ export default function ProjectVOTab({ projectId }: ProjectVOTabProps) {
         </div>
 
         {vos.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-12 text-[var(--text-primary)]0 font-mono text-xs gap-2">
+          <div className="flex flex-col items-center justify-center py-12 text-[var(--text-muted)] font-mono text-xs gap-2">
             <FileText size={24} className="text-[var(--text-tertiary)]" />
             <span>No Variation Orders have been captured for this project yet.</span>
             <Link
@@ -185,13 +185,13 @@ export default function ProjectVOTab({ projectId }: ProjectVOTabProps) {
                       </td>
                       <td className="py-3 px-4 max-w-xs truncate" title={vo.title}>
                         <div className="font-semibold text-[var(--text-primary)]">{vo.title}</div>
-                        <div className="text-[10px] text-[var(--text-primary)]0 truncate">{vo.instruction_reference}</div>
+                        <div className="text-[10px] text-[var(--text-muted)] truncate">{vo.instruction_reference}</div>
                       </td>
                       <td className="py-3 px-4 text-[10px] text-[var(--text-secondary)]">
                         {VO_TYPE_LABELS[vo.vo_type] || vo.vo_type}
                       </td>
                       <td className="py-3 px-4">
-                        <span className={`text-[10px] ${vo.work_status === 'COMPLETED' ? 'text-[var(--accent)]' : vo.work_status === 'IN_PROGRESS' ? 'text-[var(--status-warning-text)]' : 'text-[var(--text-primary)]0'}`}>
+                        <span className={`text-[10px] ${vo.work_status === 'COMPLETED' ? 'text-[var(--accent)]' : vo.work_status === 'IN_PROGRESS' ? 'text-[var(--status-warning-text)]' : 'text-[var(--text-muted)]'}`}>
                           {VO_WORK_STATUS_LABELS[vo.work_status] || vo.work_status}
                         </span>
                       </td>
