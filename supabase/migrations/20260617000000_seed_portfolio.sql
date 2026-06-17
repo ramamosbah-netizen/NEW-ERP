@@ -7,9 +7,11 @@
 -- ============================================================
 BEGIN;
 
--- admin user drives created_by (NOT NULL). Falls back to the first user.
+-- admin user drives created_by (NOT NULL). Prefer the known admin id, then
+-- email, then the first user — whichever exists.
 SELECT set_config('jeet.admin_id',
-  COALESCE((SELECT id::text FROM auth.users WHERE email='ramma.mosbah@gmail.com' LIMIT 1),
+  COALESCE((SELECT id::text FROM auth.users WHERE id='da475069-0381-42da-b1b2-7af0cadd54d8'),
+           (SELECT id::text FROM auth.users WHERE email='ramma.mosbah@gmail.com' LIMIT 1),
            (SELECT id::text FROM auth.users ORDER BY created_at LIMIT 1)), false);
 
 -- Add-only / idempotent: upserts the real portfolio without deleting anything.
