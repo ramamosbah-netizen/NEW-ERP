@@ -21,7 +21,26 @@ import type {
   WorkflowWithGraph,
   WorkflowInstance,
   WorkflowHistoryEntry,
+  PendingApproval,
 } from '@/types/platform.types';
+import permissionService from '@/services/permissionService';
+
+export interface OpenWorkflowInstance {
+  id: string;
+  workflow_id: string;
+  module: string;
+  workflowName: string;
+  entity_type: string;
+  entity_id: string;
+  status_key: string;
+  status_label: string;
+  pending: PendingApproval[];
+  sla_due_at: string | null;
+  overdue: boolean;
+  ageDays: number;
+}
+
+export type OverrideAction = 'REASSIGN' | 'FORCE_STATUS' | 'CANCEL' | 'RESTART';
 import { getMakerCheckerModules } from '@/lib/security/policy';
 
 async function getCurrentUserWithRoles(): Promise<{ id: string; name: string; roleKeys: string[] }> {
@@ -444,6 +463,77 @@ export const workflowService = {
         ? Math.round(terminalDurations.reduce((a, b) => a + b, 0) / terminalDurations.length)
         : null,
     };
+  },
+
+  // ---------- Admin override (break-glass) ----------
+
+  /** Whether the current user may override workflows (UI gating; the RPC enforces). */
+  async canOverride(): Promise<boolean> {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return false;
+    try {
+      const perms = await permissionService.getUserEffectivePermissions(user.id);
+      if (perms.some(p => p.permission_key === 'workflow.override')) return true;
+    } catch { /* fall through */ }
+    const { data: prof } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle();
+    return prof?.role === 'admin';
+  },
+
+  /** All in-flight (non-terminal) workflow instances, newest/overdue first. */
+  async getOpenInstances(): Promise<OpenWorkflowInstance[]> {
+    const [{ data: insts }, { data: defs }, { data: statuses }] = await Promise.all([
+      supabase.from('workflow_instances').select('*'),
+      supabase.from('workflow_definitions').select('id, module_key, name'),
+      supabase.from('workflow_statuses').select('workflow_id, status_key, label, is_terminal'),
+    ]);
+    const defMap = new Map((defs || []).map((d: any) => [d.id, d]));
+    const stMap = new Map((statuses || []).map((s: any) => [`${s.workflow_id}::${s.status_key}`, s]));
+    const now = Date.now();
+    return (insts || [])
+      .map((i: any) => {
+        const st = stMap.get(`${i.workflow_id}::${i.current_status_key}`);
+        return {
+          id: i.id,
+          workflow_id: i.workflow_id,
+          module: defMap.get(i.workflow_id)?.module_key || i.entity_type,
+          workflowName: defMap.get(i.workflow_id)?.name || '',
+          entity_type: i.entity_type,
+          entity_id: i.entity_id,
+          status_key: i.current_status_key,
+          status_label: st?.label || i.current_status_key,
+          is_terminal: !!st?.is_terminal,
+          pending: Array.isArray(i.pending_approvals) ? i.pending_approvals : [],
+          sla_due_at: i.sla_due_at,
+          overdue: !!i.sla_due_at && new Date(i.sla_due_at).getTime() < now,
+          ageDays: Math.floor((now - new Date(i.created_at).getTime()) / 864e5),
+        };
+      })
+      .filter((r: any) => !r.is_terminal)
+      .map(({ is_terminal, ...r }: any) => r as OpenWorkflowInstance)
+      .sort((a, b) => (b.overdue ? 1 : 0) - (a.overdue ? 1 : 0) || b.ageDays - a.ageDays);
+  },
+
+  /** Break-glass override (enforced + audited by the admin_workflow_override RPC). */
+  async overrideInstance(
+    instanceId: string,
+    action: OverrideAction,
+    reason: string,
+    opts: { toStatus?: string; oldValue?: string; newApprover?: { type: string; value: string } } = {},
+  ): Promise<WorkflowInstance> {
+    const { data, error } = await supabase.rpc('admin_workflow_override', {
+      p_instance_id: instanceId,
+      p_action: action,
+      p_reason: reason,
+      p_to_status: opts.toStatus ?? null,
+      p_old_value: opts.oldValue ?? null,
+      p_new_approver: opts.newApprover ?? null,
+    });
+    if (error) throw error;
+    await recordAudit({
+      action: 'OVERRIDE', entity_type: 'WORKFLOW_INSTANCE', entity_id: instanceId,
+      entity_label: action, summary: `Workflow override ${action}: ${reason}`, module: 'SYSTEM',
+    });
+    return data as WorkflowInstance;
   },
 };
 
