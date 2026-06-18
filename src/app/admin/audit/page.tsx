@@ -1,8 +1,8 @@
 'use client';
 
 // ============================================================
-// JEET ERP — Audit (merged: Log + Activity Analytics + Configuration Audit)
-// One admin page, three tabs. Deep-linkable via ?tab=log|analytics|configuration.
+// JEET ERP — Audit (merged: Log + Investigation + Activity Analytics + Configuration Audit)
+// One admin page, four tabs. Deep-linkable via ?tab=log|investigation|analytics|configuration.
 // (/admin/audit/analytics and /admin/configuration redirect here.)
 // ============================================================
 
@@ -10,11 +10,12 @@ import React, { useState, useEffect } from 'react';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Tabs } from '@/components/ui/Tabs';
 import AuditLogTab from './AuditLogTab';
+import AuditInvestigationTab from './AuditInvestigationTab';
 import AuditAnalyticsTab from './AuditAnalyticsTab';
 import ConfigurationTab from './ConfigurationTab';
 
-type TabKey = 'log' | 'analytics' | 'configuration';
-const VALID: TabKey[] = ['log', 'analytics', 'configuration'];
+type TabKey = 'log' | 'investigation' | 'analytics' | 'configuration';
+const VALID: TabKey[] = ['log', 'investigation', 'analytics', 'configuration'];
 
 export default function AuditPage() {
   const [tab, setTab] = useState<TabKey>('log');
@@ -37,11 +38,14 @@ export default function AuditPage() {
         breadcrumbs={[{ label: 'Administration', href: '/admin/hub' }, { label: 'Audit' }]}
       />
       <Tabs
-        tabs={[{ key: 'log', label: 'Log' }, { key: 'analytics', label: 'Analytics' }, { key: 'configuration', label: 'Configuration' }]}
+        tabs={[{ key: 'log', label: 'Log' }, { key: 'investigation', label: 'Investigation' }, { key: 'analytics', label: 'Analytics' }, { key: 'configuration', label: 'Configuration' }]}
         value={tab}
         onChange={change}
       />
-      {tab === 'log' ? <AuditLogTab /> : tab === 'analytics' ? <AuditAnalyticsTab /> : <ConfigurationTab />}
+      {tab === 'log' ? <AuditLogTab />
+        : tab === 'investigation' ? <AuditInvestigationTab />
+        : tab === 'analytics' ? <AuditAnalyticsTab />
+        : <ConfigurationTab />}
     </div>
   );
 }
