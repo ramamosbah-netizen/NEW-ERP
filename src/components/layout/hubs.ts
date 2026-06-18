@@ -229,6 +229,7 @@ export const HUBS: Hub[] = [
     tabs: [
       { label: 'Hub', href: '/admin/hub' },
       { label: 'Access Control', href: '/admin/access' },
+      { label: 'Security Center', href: '/admin/security' },
       { label: 'Audit', href: '/admin/audit' },
       { label: 'Workflow Analytics', href: '/admin/workflows/analytics' },
       { label: 'Workflow Designer', href: '/admin/workflows' },
