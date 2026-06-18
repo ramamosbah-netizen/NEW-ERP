@@ -6,6 +6,7 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.10.0";
+import { startJobRun, finishJobRun } from "../_shared/jobRun.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -17,6 +18,7 @@ serve(async (req) => {
     return new Response("ok", { headers: corsHeaders });
   }
 
+  const _job = await startJobRun("escalation-check");
   try {
     const supabaseUrl = (Deno.env.get("SUPABASE_URL") ?? "").trim();
     const supabaseServiceKey = (Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "").trim();
@@ -176,8 +178,9 @@ serve(async (req) => {
       }
     }
 
-    return new Response(JSON.stringify({ 
-      success: true, 
+    await finishJobRun(_job, "SUCCESS", { items_processed: fireCount + sentAlertsCount, escalated: fireCount, alerts: sentAlertsCount });
+    return new Response(JSON.stringify({
+      success: true,
       escalated_count: fireCount,
       sent_alerts_count: sentAlertsCount
     }), {
@@ -186,6 +189,7 @@ serve(async (req) => {
 
   } catch (error: any) {
     console.error("Escalation check failed:", error);
+    await finishJobRun(_job, "FAILED", { error: error?.message ?? String(error) });
     return new Response(JSON.stringify({ success: false, error: error.message }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" }

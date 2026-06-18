@@ -238,6 +238,7 @@ export const HUBS: Hub[] = [
       { label: 'Form Builder', href: '/admin/forms' },
       { label: 'Templates', href: '/admin/templates' },
       { label: 'Numbering', href: '/admin/numbering' },
+      { label: 'System Health', href: '/admin/system-health' },
       { label: 'Settings', href: '/admin/settings' },
       { label: 'Documents', href: '/documents' },
       { label: 'Reports', href: '/reports' },

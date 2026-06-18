@@ -69,6 +69,7 @@ const SECTIONS: Section[] = [
       { href: '/admin/templates', label: 'Document Templates', desc: 'Printable PDF templates & variables', icon: FileText },
       { href: '/admin/numbering', label: 'Numbering', desc: 'Document-number sequences per module', icon: Hash },
       { href: '/admin/settings/modules', label: 'Module Toggles', desc: 'Enable / disable modules', icon: Layers },
+      { href: '/admin/system-health', label: 'System Health', desc: 'Scheduled jobs, event pipeline & telemetry', icon: Activity },
     ],
   },
   {
