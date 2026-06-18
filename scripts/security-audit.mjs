@@ -201,6 +201,57 @@ async function run() {
     }
   }
 
+  // 5. DATA-DRIVEN capability path — a custom role whose role_key is NOT in any
+  //    legacy finance list, and whose user's legacy profiles.role is 'engineer',
+  //    granted ONLY the finance.write capability, must still write finance.
+  //    This proves RLS reads role_permissions (not just hardcoded role keys).
+  if (client) {
+    const { data: perm } = await admin.from('permissions').select('id').eq('permission_key', 'finance.write').maybeSingle();
+    if (!perm) {
+      rec('cap', 'data-driven finance.write', 'allow', 'migration not applied', false, 'apply 20260618100000_data_driven_rbac.sql');
+    } else {
+      let { data: role } = await admin.from('roles').select('id').eq('role_key', 'audit_cap_fin').maybeSingle();
+      if (!role) {
+        const ins = await admin.from('roles').insert({ role_key: 'audit_cap_fin', name: 'Audit Capability (Finance)', hierarchy_level: 90, is_system: false, is_active: true }).select('id').maybeSingle();
+        role = ins.data;
+      }
+      if (role) {
+        await admin.from('role_permissions').upsert({ role_id: role.id, permission_id: perm.id, scope: 'ALL' }, { onConflict: 'role_id,permission_id' });
+        const email = 'audit_capfin@auratest.local';
+        const { data: list } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
+        let user = list.users.find(x => x.email?.toLowerCase() === email);
+        if (!user) {
+          const cu = await admin.auth.admin.createUser({ email, password: PW, email_confirm: true, user_metadata: { full_name: 'Audit CapFin', role: 'engineer' } });
+          user = cu.data.user;
+          await new Promise(r => setTimeout(r, 250));
+        } else {
+          await admin.auth.admin.updateUserById(user.id, { password: PW });
+        }
+        await admin.from('user_roles').upsert({ user_id: user.id, role_id: role.id }, { onConflict: 'user_id,role_id' });
+
+        const c = createClient(URL, ANON, { auth: { persistSession: false, autoRefreshToken: false } });
+        const { error: se } = await c.auth.signInWithPassword({ email, password: PW });
+        if (se) {
+          rec('cap', 'data-driven finance.write', 'allow', 'sign-in failed', false, se.message.slice(0, 60));
+        } else {
+          const today = new Date().toISOString().slice(0, 10);
+          const { data: inv, error } = await c.from('client_invoices').insert({
+            invoice_number: `AUDIT-CAP-${Date.now()}`, client_id: client.id, client_name: client.name || 'Audit Client',
+            invoice_type: 'STANDALONE', status: 'DRAFT', invoice_date: today, supply_date: today, due_date: today, created_by: user.id,
+          }).select('id').maybeSingle();
+          if (!error && inv) { rec('cap', 'data-driven finance.write', 'allow', 'allowed', true, 'capability-only role can write finance'); await admin.from('client_invoices').delete().eq('id', inv.id); }
+          else if (isRLS(error)) { rec('cap', 'data-driven finance.write', 'allow', 'denied (RLS)', false, 'capability path NOT effective'); }
+          else { rec('cap', 'data-driven finance.write', 'allow', 'error', false, error?.message?.slice(0, 60) || ''); }
+          await c.auth.signOut();
+        }
+        // cleanup capability-test artifacts (always)
+        if (user) await admin.auth.admin.deleteUser(user.id);
+        await admin.from('role_permissions').delete().eq('role_id', role.id).eq('permission_id', perm.id);
+        await admin.from('roles').delete().eq('id', role.id);
+      }
+    }
+  }
+
   // report
   console.log('\nRESULTS');
   for (const r of results) {
