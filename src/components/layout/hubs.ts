@@ -232,6 +232,7 @@ export const HUBS: Hub[] = [
       { label: 'Audit', href: '/admin/audit' },
       { label: 'Workflow Analytics', href: '/admin/workflows/analytics' },
       { label: 'Workflow Designer', href: '/admin/workflows' },
+      { label: 'Workflow Admin', href: '/admin/workflows/admin' },
       { label: 'Form Builder', href: '/admin/forms' },
       { label: 'Templates', href: '/admin/templates' },
       { label: 'Rules', href: '/admin/rules' },
