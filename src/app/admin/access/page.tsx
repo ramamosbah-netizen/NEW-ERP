@@ -12,15 +12,16 @@ import { PageHeader } from '@/components/ui/PageHeader';
 import { Tabs } from '@/components/ui/Tabs';
 import AccessRolesTab from './AccessRolesTab';
 import PermissionsTab from './PermissionsTab';
+import RoleManagementTab from './RoleManagementTab';
 
-type TabKey = 'roles' | 'permissions';
+type TabKey = 'roles' | 'manage' | 'permissions';
 
 export default function AccessControlPage() {
   const [tab, setTab] = useState<TabKey>('roles');
 
   useEffect(() => {
     const t = new URLSearchParams(window.location.search).get('tab');
-    if (t === 'permissions') setTab('permissions');
+    if (t === 'permissions' || t === 'manage') setTab(t);
   }, []);
 
   const change = (k: string) => {
@@ -36,11 +37,15 @@ export default function AccessControlPage() {
         breadcrumbs={[{ label: 'Administration', href: '/admin/hub' }, { label: 'Access Control' }]}
       />
       <Tabs
-        tabs={[{ key: 'roles', label: 'Roles & Access' }, { key: 'permissions', label: 'Permissions Matrix' }]}
+        tabs={[
+          { key: 'roles', label: 'Roles & Access' },
+          { key: 'manage', label: 'Manage Roles' },
+          { key: 'permissions', label: 'Permissions Matrix' },
+        ]}
         value={tab}
         onChange={change}
       />
-      {tab === 'roles' ? <AccessRolesTab /> : <PermissionsTab />}
+      {tab === 'roles' ? <AccessRolesTab /> : tab === 'manage' ? <RoleManagementTab /> : <PermissionsTab />}
     </div>
   );
 }

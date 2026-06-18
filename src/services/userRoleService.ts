@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase';
+import { recordAudit } from '@/lib/audit/recordAudit';
 import type { Role, UserRole } from '@/types/rbac.types';
 
 export interface UserWithRoles {
@@ -158,22 +159,102 @@ export const userRoleService = {
   },
 
   /**
-   * Toggles role activation status
+   * Toggles role activation status.
    */
   async toggleRoleStatus(roleId: string, isActive: boolean): Promise<Role> {
     const { data, error } = await supabase
       .from('roles')
-      .update({
-        is_active: isActive,
-        updated_at: new Date().toISOString()
-      })
+      .update({ is_active: isActive, updated_at: new Date().toISOString() })
       .eq('id', roleId)
       .select()
       .single();
 
     if (error) throw error;
+    await recordAudit({
+      action: 'UPDATE', entity_type: 'ROLE', entity_id: roleId, entity_label: data.name,
+      summary: `Role '${data.name}' ${isActive ? 'activated' : 'deactivated'}`, module: 'SYSTEM',
+    });
     return data as Role;
-  }
+  },
+
+  /**
+   * Creates a new custom role. role_key is normalised (lowercase, a-z0-9_).
+   */
+  async createRole(input: { role_key: string; name: string; description?: string; hierarchy_level?: number }): Promise<Role> {
+    const role_key = (input.role_key || '').trim().toLowerCase().replace(/[^a-z0-9_]/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
+    if (!role_key) throw new Error('A valid role key is required (letters, numbers, underscore).');
+    if (!input.name?.trim()) throw new Error('Role name is required.');
+
+    const { data: existing } = await supabase.from('roles').select('id').eq('role_key', role_key).maybeSingle();
+    if (existing) throw new Error(`A role with key '${role_key}' already exists.`);
+
+    const { data, error } = await supabase
+      .from('roles')
+      .insert({
+        role_key,
+        name: input.name.trim(),
+        description: input.description?.trim() || null,
+        hierarchy_level: Number.isFinite(input.hierarchy_level) ? input.hierarchy_level : 100,
+        is_system: false,
+        is_active: true,
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+    await recordAudit({
+      action: 'CREATE', entity_type: 'ROLE', entity_id: data.id, entity_label: data.name,
+      summary: `Created role '${data.name}' (${data.role_key}) at hierarchy L${data.hierarchy_level}`,
+      after: data, module: 'SYSTEM',
+    });
+    return data as Role;
+  },
+
+  /**
+   * Updates an editable role's name / description / hierarchy (role_key is immutable).
+   */
+  async updateRole(id: string, patch: { name?: string; description?: string | null; hierarchy_level?: number }): Promise<Role> {
+    const { data: before, error: bErr } = await supabase.from('roles').select('*').eq('id', id).single();
+    if (bErr) throw bErr;
+
+    const update: Record<string, unknown> = { updated_at: new Date().toISOString() };
+    if (patch.name !== undefined) {
+      if (!patch.name.trim()) throw new Error('Role name cannot be empty.');
+      update.name = patch.name.trim();
+    }
+    if (patch.description !== undefined) update.description = patch.description?.trim() || null;
+    if (patch.hierarchy_level !== undefined && Number.isFinite(patch.hierarchy_level)) update.hierarchy_level = patch.hierarchy_level;
+
+    const { data, error } = await supabase.from('roles').update(update).eq('id', id).select().single();
+    if (error) throw error;
+    await recordAudit({
+      action: 'UPDATE', entity_type: 'ROLE', entity_id: id, entity_label: data.name,
+      summary: `Updated role '${data.name}'`, before, after: data, module: 'SYSTEM',
+    });
+    return data as Role;
+  },
+
+  /**
+   * Deletes a custom role. Blocks system roles and roles still assigned to users.
+   * (role_permissions cascade-delete with the role.)
+   */
+  async deleteRole(id: string): Promise<void> {
+    const { data: role, error: rErr } = await supabase.from('roles').select('*').eq('id', id).single();
+    if (rErr) throw rErr;
+    if (role.is_system) throw new Error('System roles cannot be deleted — deactivate it instead.');
+
+    const { count } = await supabase.from('user_roles').select('*', { count: 'exact', head: true }).eq('role_id', id);
+    if ((count ?? 0) > 0) {
+      throw new Error(`Cannot delete: ${count} user(s) still hold this role. Reassign them first.`);
+    }
+
+    const { error } = await supabase.from('roles').delete().eq('id', id);
+    if (error) throw error;
+    await recordAudit({
+      action: 'DELETE', entity_type: 'ROLE', entity_id: id, entity_label: role.name,
+      summary: `Deleted role '${role.name}' (${role.role_key})`, before: role, module: 'SYSTEM',
+    });
+  },
 };
 
 export default userRoleService;
