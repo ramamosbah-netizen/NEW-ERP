@@ -31,16 +31,19 @@ export interface PRInput {
   preferred_supplier_id?: string | null;
   payment_method?: string | null;
   notes?: string;
+  company_id?: string | null;
   items: PRItemInput[];
 }
 
 const round2 = (n: number) => Math.round(n * 100) / 100;
 
 export const prService = {
-  async list(filters: { status?: string; category?: string } = {}) {
+  async list(filters: { status?: string; category?: string; companyId?: string } = {}) {
     let q = supabase.from('purchase_requests').select('*').order('created_at', { ascending: false });
     if (filters.status) q = q.eq('status', filters.status);
     if (filters.category) q = q.eq('category', filters.category);
+    // Multi-company scope (wave 2): active company's PRs + untagged rows.
+    if (filters.companyId) q = q.or(`company_id.eq.${filters.companyId},company_id.is.null`);
     const { data, error } = await q;
     if (error) throw error;
     return data || [];
@@ -81,6 +84,7 @@ export const prService = {
       payment_method: input.payment_method || null,
       estimated_total: estimatedTotal,
       notes: input.notes || null,
+      company_id: input.company_id || null,
       requested_by: user.id,
       requested_by_name: profile?.full_name || user.email || 'Requester',
     };
@@ -93,8 +97,8 @@ export const prService = {
 
     // Degrade gracefully if payment_method column not present yet (migration 20260613280000)
     if (error && error.code === 'PGRST204') {
-      const { payment_method, ...fallback } = headerBase as any;
-      void payment_method;
+      const { payment_method, company_id, ...fallback } = headerBase as any;
+      void payment_method; void company_id;
       ({ data: pr, error } = await supabase
         .from('purchase_requests')
         .insert(fallback)
