@@ -8,6 +8,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import prService, { PRCategory, PRItemInput } from '@/services/prService';
+import { useCompany } from '@/lib/company/useCompany';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -28,6 +29,7 @@ const EMPTY_ITEM: PRItemInput = { description: '', brand: '', unit: 'Pcs', quant
 
 export default function CreatePRPage() {
   const router = useRouter();
+  const { activeCompanyId } = useCompany();
   const [projects, setProjects] = useState<{ id: string; project_number: string; name: string }[]>([]);
   const [suppliers, setSuppliers] = useState<{ id: string; name: string }[]>([]);
   const [saving, setSaving] = useState(false);
@@ -69,6 +71,7 @@ export default function CreatePRPage() {
         required_by_date: requiredBy || null,
         preferred_supplier_id: preferredSupplierId || null,
         payment_method: paymentMethod || null,
+        company_id: activeCompanyId || undefined,
         items: items.filter(i => i.description.trim()),
       });
       if (submit) await prService.submit(id);
