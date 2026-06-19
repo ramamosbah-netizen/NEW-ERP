@@ -37,6 +37,7 @@ const SECTIONS: Section[] = [
   {
     title: 'Access & Identity',
     tiles: [
+      { href: '/admin/companies', label: 'Companies', desc: 'Group structure & operating companies', icon: Building2 },
       { href: '/admin/access', label: 'Roles & Access', desc: 'Role lifecycle, hierarchy & capability grants', icon: Users },
       { href: '/admin/permissions', label: 'Permissions Matrix', desc: 'Who can do what — role × module × scope', icon: KeySquare },
       { href: '/admin/settings/users', label: 'User Accounts', desc: 'Create, assign roles, deactivate', icon: Users },

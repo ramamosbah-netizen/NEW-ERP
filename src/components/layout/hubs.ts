@@ -228,6 +228,7 @@ export const HUBS: Hub[] = [
     match: ['/admin', '/documents', '/reports'],
     tabs: [
       { label: 'Control Center', href: '/admin/hub' },
+      { label: 'Companies', href: '/admin/companies' },
       { label: 'Roles & Access', href: '/admin/access' },
       { label: 'Security Center', href: '/admin/security' },
       { label: 'Audit', href: '/admin/audit' },
