@@ -9,6 +9,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { LogOut, Menu, ChevronRight, Sliders, Command, Sun, Moon, Search, User, Settings as SettingsIcon } from 'lucide-react';
 import NotificationBell from '@/components/notifications/NotificationBell';
+import CompanySwitcher from '@/components/layout/CompanySwitcher';
 
 // Human-readable route labels
 const ROUTE_LABELS: Record<string, string> = {
@@ -246,6 +247,9 @@ export default function AppTopbar({ onMobileMenuToggle }: AppTopbarProps) {
       </div>
 
       <div className="topbar-right flex items-center gap-2 md:gap-3">
+        {/* Active company switcher */}
+        <CompanySwitcher />
+
         {/* Density Toggle */}
         <button
           onClick={toggleDensity}

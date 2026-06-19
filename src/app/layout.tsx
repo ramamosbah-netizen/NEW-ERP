@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { PermissionsProvider } from "@/lib/permissions/usePermissions";
+import { CompanyProvider } from "@/lib/company/useCompany";
 import QueryProvider from "@/lib/query/QueryProvider";
 import AppShell from "@/components/layout/AppShell";
 
@@ -31,9 +32,11 @@ export default function RootLayout({
           <div className="glow-blob blob-3"></div>
           <QueryProvider>
             <PermissionsProvider>
-              <AppShell>
-                {children}
-              </AppShell>
+              <CompanyProvider>
+                <AppShell>
+                  {children}
+                </AppShell>
+              </CompanyProvider>
             </PermissionsProvider>
           </QueryProvider>
         </div>
