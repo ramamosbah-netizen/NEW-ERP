@@ -27,6 +27,7 @@ export type QuotationStatus =
   | 'SUPERSEDED';
 
 export type QuotationFilters = {
+  company_id?: string;
   status?: string;
   project_id?: string;
   client_id?: string;
@@ -87,6 +88,8 @@ export const quotationService = {
     if (filters.status) query = query.eq('status', filters.status);
     if (filters.project_id) query = query.eq('project_id', filters.project_id);
     if (filters.client_id) query = query.eq('client_id', filters.client_id);
+    // Multi-company scope (Phase 0d): active company's quotations + untagged rows.
+    if (filters.company_id) query = query.or(`company_id.eq.${filters.company_id},company_id.is.null`);
     if (filters.prepared_by) query = query.eq('prepared_by', filters.prepared_by);
     
     if (filters.date_from) query = query.gte('quotation_date', filters.date_from);
@@ -163,7 +166,7 @@ export const quotationService = {
   },
 
   // 3. Create a quotation from a BOQ
-  async createFromBOQ(boqId: string, quoteData: Partial<QuotationInput> & { lines: QuotationLineInput[] }) {
+  async createFromBOQ(boqId: string, quoteData: Partial<QuotationInput> & { lines: QuotationLineInput[]; company_id?: string | null }) {
     // Fetch BOQ and Tender details to verify status is FINALIZED
     const { data: boq, error: boqError } = await supabase
       .from('boqs')
@@ -210,6 +213,7 @@ export const quotationService = {
     const { data: newQuote, error: insertQuoteError } = await supabase
       .from('quotations')
       .insert({
+        company_id: quoteData.company_id || null, // multi-company tag (Phase 0d)
         status: 'DRAFT',
         boq_id: boqId,
         project_id: boq.tender_id,

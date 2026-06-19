@@ -21,6 +21,7 @@ import {
   RefreshCw
 } from 'lucide-react';
 import { useQuotations } from '@/hooks/useQuotations';
+import { useCompany } from '@/lib/company/useCompany';
 import './quotations.css';
 
 const fmtAED = (v: number) => {
@@ -35,7 +36,8 @@ export default function QuotationsListPage() {
     date_to: ''
   });
 
-  const { quotations, loading, error, refetch } = useQuotations(filters);
+  const { activeCompanyId } = useCompany();
+  const { quotations, loading, error, refetch } = useQuotations({ ...filters, company_id: activeCompanyId || undefined });
   const [projects, setProjects] = useState<any[]>([]);
   const [showBOQModal, setShowBOQModal] = useState(false);
   const [finalizedBOQs, setFinalizedBOQs] = useState<any[]>([]);

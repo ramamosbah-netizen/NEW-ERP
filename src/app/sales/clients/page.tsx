@@ -11,6 +11,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import clientService, { Client } from '@/services/clientService';
+import { useCompany } from '@/lib/company/useCompany';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
@@ -33,6 +34,7 @@ const empty: Form = { name: '', segment: '', industry: '', owner_name: '', statu
 
 export default function ClientDirectoryPage() {
   const router = useRouter();
+  const { activeCompanyId } = useCompany();
   const [clients, setClients] = useState<Client[]>([]);
   const [quoteByClient, setQuoteByClient] = useState<Map<string, number>>(new Map());
   const [amcByClient, setAmcByClient] = useState<Map<string, number>>(new Map());
@@ -49,7 +51,7 @@ export default function ClientDirectoryPage() {
     setLoading(true);
     try {
       const [list, qt, amc] = await Promise.all([
-        clientService.list(),
+        clientService.list(activeCompanyId || undefined),
         supabase.from('quotations').select('client_id, grand_total_with_vat'),
         supabase.from('amc_contracts').select('client_id, annual_value, status'),
       ]);
@@ -58,7 +60,7 @@ export default function ClientDirectoryPage() {
       const am = new Map<string, number>(); (amc.data || []).forEach((a: any) => { if (a.client_id && a.status === 'ACTIVE') am.set(a.client_id, (am.get(a.client_id) || 0) + Number(a.annual_value || 0)); });
       setQuoteByClient(qm); setAmcByClient(am);
     } finally { setLoading(false); }
-  }, []);
+  }, [activeCompanyId]);
   useEffect(() => { load(); }, [load]);
 
   const openNew = () => { setEditId(null); setForm({ ...empty }); setModal(true); };
@@ -66,7 +68,7 @@ export default function ClientDirectoryPage() {
   const save = async () => {
     if (!form.name.trim()) { alert('Client name is required.'); return; }
     setSaving(true);
-    try { await clientService.save({ ...form, name: form.name.trim() }, editId || undefined); setModal(false); await load(); }
+    try { await clientService.save({ ...form, name: form.name.trim(), company_id: activeCompanyId || undefined }, editId || undefined); setModal(false); await load(); }
     catch (e: any) { alert(e?.message || 'Save failed'); } finally { setSaving(false); }
   };
 

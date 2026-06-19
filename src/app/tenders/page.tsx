@@ -5,7 +5,8 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
-import { 
+import { useCompany } from '@/lib/company/useCompany';
+import {
   Briefcase, 
   Search, 
   Plus, 
@@ -36,6 +37,7 @@ type Tender = {
 
 export default function TendersDashboard() {
   const router = useRouter();
+  const { activeCompanyId } = useCompany();
   const [loading, setLoading] = useState(true);
   const [tenders, setTenders] = useState<Tender[]>([]);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -63,10 +65,13 @@ export default function TendersDashboard() {
         }
 
         // 2. Fetch user-scoped tenders
-        const { data, error } = await supabase
+        let tq = supabase
           .from('tenders')
           .select('id, title, project_name, client_name, location, deadline_date, budget, status, updated_at')
           .order('updated_at', { ascending: false });
+        // Multi-company scope (Phase 0d): active company's tenders + untagged rows.
+        if (activeCompanyId) tq = tq.or(`company_id.eq.${activeCompanyId},company_id.is.null`);
+        const { data, error } = await tq;
 
         if (error) {
           throw error;
@@ -117,7 +122,7 @@ export default function TendersDashboard() {
     };
 
     fetchTenders();
-  }, [router]);
+  }, [router, activeCompanyId]);
 
   // Handle filtering and search
   const filteredTenders = tenders.filter((t) => {

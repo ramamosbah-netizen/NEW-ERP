@@ -26,6 +26,7 @@ export interface Client {
   website?: string | null;
   trn?: string | null;
   notes?: string | null;
+  company_id?: string | null;
   created_at?: string;
 }
 
@@ -39,8 +40,11 @@ function pick(input: any, keys: string[]) {
 }
 
 export const clientService = {
-  async list(): Promise<Client[]> {
-    const { data, error } = await supabase.from('clients').select('*').order('name');
+  async list(companyId?: string): Promise<Client[]> {
+    let q = supabase.from('clients').select('*').order('name');
+    // Multi-company scope (Phase 0d): active company's clients + untagged rows.
+    if (companyId) q = q.or(`company_id.eq.${companyId},company_id.is.null`);
+    const { data, error } = await q;
     if (error) throw error;
     return (data || []) as Client[];
   },
@@ -58,7 +62,8 @@ export const clientService = {
 
     const run = async (payload: any) => {
       if (id) return supabase.from('clients').update({ ...payload, updated_at: new Date().toISOString() }).eq('id', id).select('id').single();
-      return supabase.from('clients').insert(payload).select('id').single();
+      const insertPayload = input.company_id ? { ...payload, company_id: input.company_id } : payload;
+      return supabase.from('clients').insert(insertPayload).select('id').single();
     };
 
     let { data, error } = await run(full);
