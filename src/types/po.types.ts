@@ -33,6 +33,7 @@ export type POApprovalAction = 'APPROVED' | 'REJECTED';
 
 export interface PurchaseOrder {
   id: string;
+  company_id?: string | null;
   po_number: string;
   revision_number: number;
   supersedes_id?: string | null;

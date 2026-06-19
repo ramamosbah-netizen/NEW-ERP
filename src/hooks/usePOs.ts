@@ -12,6 +12,7 @@ export interface POFilters {
   project_id?: string;
   supplier_id?: string;
   search?: string;
+  companyId?: string;
 }
 
 const poKeys = {

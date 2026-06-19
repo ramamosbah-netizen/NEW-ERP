@@ -11,6 +11,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { poService } from '@/services/poService';
+import { useCompany } from '@/lib/company/useCompany';
 import { poFromComparisonService, POProposal } from '@/services/poFromComparisonService';
 import { ALL_PO_TYPES, PO_TYPE_LABELS } from '@/constants/po.constants';
 import { Plus, Trash, ArrowLeft, Save, AlertCircle, RefreshCw, Scale, Download } from 'lucide-react';
@@ -57,6 +58,7 @@ export default function CreatePOPage() {
 
 function POFormContent() {
   const router = useRouter();
+  const { activeCompanyId } = useCompany();
   const searchParams = useSearchParams();
   const poIdParam = searchParams.get('po_id');
   const reviseIdParam = searchParams.get('revise_id');
@@ -307,6 +309,7 @@ function POFormContent() {
 
       // 2. Perform validations
       const poHeader: any = {
+        company_id: activeCompanyId || undefined,
         project_id: poType === 'OVERHEAD' ? null : projectId,
         po_type: poType,
         supplier_id: supplierId,

@@ -8,13 +8,15 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useClientInvoices, InvoiceFilters } from '@/hooks/useClientInvoices';
+import { useCompany } from '@/lib/company/useCompany';
 import { INVOICE_TYPE_LABELS, INVOICE_STATUS_LABELS, INVOICE_STATUS_COLORS } from '@/constants/finance.constants';
 import { PageHeader, Card, Button, Toolbar, SearchInput, SelectFilter } from '@/components/ui';
 import { Plus, ArrowRight, CheckSquare } from 'lucide-react';
 
 export default function ClientInvoicesListPage() {
+  const { activeCompanyId } = useCompany();
   const [filters, setFilters] = useState<InvoiceFilters>({ status: '', search: '' });
-  const { invoices, loading } = useClientInvoices(filters);
+  const { invoices, loading } = useClientInvoices({ ...filters, companyId: activeCompanyId || undefined });
 
   const formatAED = (v: number) =>
     new Intl.NumberFormat('en-AE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(v) + ' AED';
