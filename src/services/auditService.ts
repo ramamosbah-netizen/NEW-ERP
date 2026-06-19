@@ -121,7 +121,99 @@ export const auditService = {
     }
 
     return enrichedLogs;
-  }
+  },
+
+  // --- Audit Center: investigation helpers (read-only over the same ledger) ---
+
+  /**
+   * Users available as investigation subjects (anyone with a profile).
+   * Reused for the actor-timeline picker.
+   */
+  async getActors(): Promise<{ id: string; name: string; role: string | null }[]> {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('id, full_name, role')
+      .order('full_name');
+    if (error) throw error;
+    const rows = (data || []) as { id: string; full_name: string | null; role: string | null }[];
+    return rows.map(p => ({
+      id: p.id,
+      name: p.full_name || 'Unknown user',
+      role: p.role || null,
+    }));
+  },
+
+  /**
+   * Finds entities in the trail by label / summary text, or by exact id.
+   * Returns one row per distinct entity (most-recent first) so an investigator
+   * can pick a subject without typing a UUID.
+   */
+  async searchEntities(term: string): Promise<
+    { entity_type: string; entity_id: string; entity_label: string | null; module: string; last_at: string; events: number }[]
+  > {
+    const t = term.trim();
+    if (!t) return [];
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(t);
+
+    let query = supabase
+      .from('audit_log')
+      .select('entity_type, entity_id, entity_label, module, occurred_at')
+      .order('occurred_at', { ascending: false })
+      .limit(500);
+
+    query = isUuid
+      ? query.eq('entity_id', t)
+      : query.or(`entity_label.ilike.%${t}%,summary.ilike.%${t}%,entity_type.ilike.%${t}%`);
+
+    const { data, error } = await query;
+    if (error) throw error;
+
+    const map = new Map<string, { entity_type: string; entity_id: string; entity_label: string | null; module: string; last_at: string; events: number }>();
+    const searchRows = (data || []) as { entity_type: string; entity_id: string; entity_label: string | null; module: string; occurred_at: string }[];
+    for (const r of searchRows) {
+      const existing = map.get(r.entity_id);
+      if (existing) { existing.events++; continue; }
+      map.set(r.entity_id, {
+        entity_type: r.entity_type,
+        entity_id: r.entity_id,
+        entity_label: r.entity_label,
+        module: r.module,
+        last_at: r.occurred_at,
+        events: 1,
+      });
+    }
+    return Array.from(map.values()).slice(0, 50);
+  },
+
+  /**
+   * Full chronological history for one subject (an entity or an actor),
+   * oldest-first, with actor names batch-resolved.
+   */
+  async getTimeline(opts: { entityId?: string; actorId?: string }, limit = 500): Promise<AuditLog[]> {
+    if (!opts.entityId && !opts.actorId) return [];
+    let query = supabase
+      .from('audit_log')
+      .select('*')
+      .order('occurred_at', { ascending: true })
+      .limit(limit);
+    if (opts.entityId) query = query.eq('entity_id', opts.entityId);
+    if (opts.actorId) query = query.eq('actor_user_id', opts.actorId);
+
+    const { data, error } = await query;
+    if (error) throw error;
+    const rows = (data || []) as AuditLog[];
+
+    const ids = Array.from(new Set(rows.map(r => r.actor_user_id).filter(Boolean))) as string[];
+    const names = new Map<string, string>();
+    if (ids.length) {
+      const { data: profs } = await supabase.from('profiles').select('id, full_name').in('id', ids);
+      ((profs || []) as { id: string; full_name: string }[]).forEach(p => names.set(p.id, p.full_name));
+    }
+    return rows.map(r => ({
+      ...r,
+      actor_name: r.actor_user_id ? (names.get(r.actor_user_id) || 'Unknown user') : 'System',
+    }));
+  },
 };
 
 export default auditService;

@@ -55,9 +55,9 @@ const SECTIONS: Section[] = [
   {
     title: 'Security & Audit',
     tiles: [
-      { href: '/admin/security', label: 'Security Center', desc: 'Maker-checker policy, posture & high-risk feed', icon: ShieldCheck, badge: 'PR #15' },
+      { href: '/admin/security', label: 'Security Center', desc: 'Maker-checker policy, posture & high-risk feed', icon: ShieldCheck },
       { href: '/admin/audit', label: 'Audit Log', desc: 'Immutable, write-once activity ledger', icon: ScrollText },
-      { href: '/admin/audit?tab=investigation', label: 'Investigation', desc: 'Reconstruct a record or user timeline', icon: Search, badge: 'PR #16' },
+      { href: '/admin/audit?tab=investigation', label: 'Investigation', desc: 'Reconstruct a record or user timeline', icon: Search },
       { href: '/admin/audit/analytics', label: 'Audit Analytics', desc: 'Activity by module, action & actor', icon: Activity },
       { href: '/admin/configuration', label: 'Configuration Audit', desc: 'Workflows, forms, templates, rules inventory', icon: SlidersHorizontal },
     ],
