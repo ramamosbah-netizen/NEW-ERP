@@ -198,6 +198,7 @@ export const grnService = {
     project_id?: string;
     po_id?: string;
     search?: string;
+    companyId?: string;
   }): Promise<GoodsReceiptNote[]> {
     try {
       let query = supabase
@@ -211,6 +212,10 @@ export const grnService = {
         .eq('is_active', true)
         .order('created_at', { ascending: false });
 
+      // Multi-company scope (wave 2): active company's GRNs + untagged rows.
+      if (filters?.companyId) {
+        query = query.or(`company_id.eq.${filters.companyId},company_id.is.null`);
+      }
       if (filters?.project_id) {
         query = query.eq('project_id', filters.project_id);
       }

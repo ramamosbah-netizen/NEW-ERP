@@ -10,6 +10,7 @@ export type ExitType = 'RESIGNATION' | 'TERMINATION' | 'CONTRACT_END';
 
 export interface Employee {
   id: string;
+  company_id?: string | null;
   employee_number: string;
   user_id: string | null;
   full_name_en: string;
