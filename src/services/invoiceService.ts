@@ -86,6 +86,7 @@ export const invoiceService = {
     projectId?: string;
     clientId?: string;
     search?: string;
+    companyId?: string;
   } = {}): Promise<ClientInvoice[]> {
     let query = supabase
       .from('client_invoices')
@@ -93,6 +94,8 @@ export const invoiceService = {
       .eq('is_active', true)
       .order('invoice_date', { ascending: false });
 
+    // Multi-company scope (wave 2): active company's invoices + untagged rows.
+    if (filters.companyId) query = query.or(`company_id.eq.${filters.companyId},company_id.is.null`);
     if (filters.status) {
       query = query.eq('status', filters.status);
     }

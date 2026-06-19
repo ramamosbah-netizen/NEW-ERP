@@ -18,6 +18,7 @@ export const poService = {
     project_id?: string;
     supplier_id?: string;
     search?: string;
+    companyId?: string;
   }): Promise<PurchaseOrder[]> {
     try {
       let query = supabase
@@ -39,6 +40,10 @@ export const poService = {
       }
       if (filters?.supplier_id) {
         query = query.eq('supplier_id', filters.supplier_id);
+      }
+      // Multi-company scope (wave 2): active company's POs + untagged rows.
+      if (filters?.companyId) {
+        query = query.or(`company_id.eq.${filters.companyId},company_id.is.null`);
       }
       if (filters?.search) {
         query = query.or(
@@ -158,8 +163,8 @@ export const poService = {
       // Degrade gracefully if the optional payment_method / pr_id columns
       // aren't present yet (migration 20260613280000 / 20260613260000 not applied)
       if (poErr && poErr.code === 'PGRST204') {
-        const { payment_method, pr_id, ...fallback } = headerBase as any;
-        void payment_method; void pr_id;
+        const { payment_method, pr_id, company_id, ...fallback } = headerBase as any;
+        void payment_method; void pr_id; void company_id;
         ({ data: po, error: poErr } = await supabase
           .from('purchase_orders')
           .insert(fallback)

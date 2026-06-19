@@ -9,6 +9,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { usePOs } from '@/hooks/usePOs';
+import { useCompany } from '@/lib/company/useCompany';
 import { PO_STATUS_LABELS, PO_STATUS_COLORS, PO_TYPE_LABELS } from '@/constants/po.constants';
 import { 
   Plus, 
@@ -30,6 +31,7 @@ const fmtAED = (v: number) => {
 };
 
 export default function PORegistryPage() {
+  const { activeCompanyId } = useCompany();
   const [filters, setFilters] = useState<any>({
     status: '',
     search: '',
@@ -37,7 +39,7 @@ export default function PORegistryPage() {
     po_type: ''
   });
 
-  const { pos, loading, error, refetch } = usePOs(filters);
+  const { pos, loading, error, refetch } = usePOs({ ...filters, companyId: activeCompanyId || undefined });
   const [projects, setProjects] = useState<any[]>([]);
   const [kpis, setKpis] = useState({
     totalCount: 0,
