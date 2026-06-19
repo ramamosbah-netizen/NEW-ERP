@@ -21,11 +21,13 @@ import {
 } from 'lucide-react';
 import { useEmployees } from '@/hooks/useEmployees';
 import { employeeService } from '@/services/employeeService';
+import { useCompany } from '@/lib/company/useCompany';
 import { supabase } from '@/lib/supabase';
 import type { Employee } from '@/types/hr.types';
 import './hr.css';
 
 export default function EmployeesListPage() {
+  const { activeCompanyId } = useCompany();
   const [filters, setFilters] = useState({
     department: '',
     status: ''
@@ -40,7 +42,7 @@ export default function EmployeesListPage() {
       .then(({ data }) => setProjects((data || []).map((p: any) => ({ id: p.id, label: `${p.project_number} — ${p.name}` }))));
   }, []);
 
-  const { employees, loading, error, refetch } = useEmployees(filters);
+  const { employees, loading, error, refetch } = useEmployees({ ...filters, companyId: activeCompanyId || undefined });
 
   // Add Employee Form State
   const [form, setForm] = useState({
@@ -105,6 +107,7 @@ export default function EmployeesListPage() {
       };
       // Only send when set (column is added by migration 20260614240000)
       if (assigned_project_id) payload.assigned_project_id = assigned_project_id;
+      payload.company_id = activeCompanyId || undefined; // multi-company tag (wave 2)
 
       await employeeService.createEmployee(payload);
       setShowAddModal(false);

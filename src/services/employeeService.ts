@@ -9,13 +9,17 @@ export const employeeService = {
   /**
    * Retrieves all employees with filters.
    */
-  async getEmployees(filters?: { department?: string; status?: string }): Promise<Employee[]> {
+  async getEmployees(filters?: { department?: string; status?: string; companyId?: string }): Promise<Employee[]> {
     let query = supabase
       .from('employees')
       .select('*')
       .eq('is_active', true)
       .order('employee_number', { ascending: true });
 
+    // Multi-company scope (wave 2): active company's employees + untagged rows.
+    if (filters?.companyId) {
+      query = query.or(`company_id.eq.${filters.companyId},company_id.is.null`);
+    }
     if (filters?.department) {
       query = query.eq('department', filters.department);
     }
