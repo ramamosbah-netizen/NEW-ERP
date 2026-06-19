@@ -9,5 +9,7 @@ export * from './CommandPalette';
 export * from './Modal';
 export * from './Drawer';
 export * from './EmptyState';
+export * from './Skeleton';
+export * from './Tooltip';
 export * from './Tabs';
 export * from './Toolbar';

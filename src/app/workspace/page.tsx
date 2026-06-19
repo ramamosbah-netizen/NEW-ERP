@@ -13,6 +13,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { Card } from '@/components/ui/Card';
+import { Skeleton, SkeletonRows, InfoHint } from '@/components/ui';
 import { useMyDay } from '@/hooks/useMyDay';
 import {
   Sparkles, Plus, CheckSquare, Calendar as CalendarIcon, Clock,
@@ -141,7 +142,7 @@ export default function MyWorkspacePage() {
             <Link key={s.label} href={s.href}>
               <Card className="p-4 h-full hover:border-[var(--accent)] transition-colors">
                 <div className="flex items-center gap-1.5 text-xs text-[var(--text-secondary)]"><Icon size={13} /> {s.label}</div>
-                <div className="text-2xl font-bold mt-1" style={{ color: s.tone }}>{loading ? '—' : s.value}</div>
+                <div className="text-2xl font-bold mt-1" style={{ color: s.tone }}>{loading ? <Skeleton className="h-6 w-10 rounded" /> : s.value}</div>
               </Card>
             </Link>
           );
@@ -158,8 +159,8 @@ export default function MyWorkspacePage() {
             </div>
             <div className="divide-y divide-[var(--border-color)] max-h-[280px] overflow-y-auto">
               {loading ? (
-                <div className="p-4 text-xs text-[var(--text-tertiary)]">Loading…</div>
-              ) : (needsAction.length === 0 && urgentOverdueTasks.length === 0) ? (
+                <div className="p-4"><SkeletonRows rows={4} cols={1} /></div>
+              ) :(needsAction.length === 0 && urgentOverdueTasks.length === 0) ? (
                 <div className="p-6 text-xs text-[var(--text-tertiary)] flex items-center gap-2"><CheckCircle2 size={14} className="text-[var(--status-success-text)]" /> Nothing needs your action.</div>
               ) : (
                 <>
@@ -192,8 +193,8 @@ export default function MyWorkspacePage() {
             </div>
             <div className="divide-y divide-[var(--border-color)] max-h-[280px] overflow-y-auto">
               {loading ? (
-                <div className="p-4 text-xs text-[var(--text-tertiary)]">Loading…</div>
-              ) : (meetingsToday.length === 0 && tasksToday.length === 0) ? (
+                <div className="p-4"><SkeletonRows rows={4} cols={1} /></div>
+              ) :(meetingsToday.length === 0 && tasksToday.length === 0) ? (
                 <div className="p-6 text-xs text-[var(--text-tertiary)]">No meetings or tasks due today.</div>
               ) : (
                 <>
@@ -222,6 +223,7 @@ export default function MyWorkspacePage() {
           <Card className="p-4">
             <div className="flex items-center gap-2 text-sm font-semibold text-[var(--text-primary)] mb-3">
               <Sparkles size={15} className="text-[var(--accent)]" /> Today’s briefing
+              <InfoHint text="Generated from your own tasks, approvals, meetings and document expiries — updated every time this page loads." />
             </div>
             <div className="flex flex-col gap-2.5">
               {briefing.map((b, i) => (
