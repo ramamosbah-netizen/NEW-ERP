@@ -56,6 +56,11 @@ export const projectService = {
     if (filters.client_id) {
       query = query.eq('client_id', filters.client_id);
     }
+    // Multi-company scope (Phase 0c): show the active company's projects, plus any
+    // not-yet-tagged (null) rows so nothing vanishes before backfill is universal.
+    if (filters.company_id) {
+      query = query.or(`company_id.eq.${filters.company_id},company_id.is.null`);
+    }
 
     if (filters.system) {
       // Postgres array contains check
@@ -299,6 +304,7 @@ export const projectService = {
     const { data: newProject, error: createError } = await supabase
       .from('projects')
       .insert({
+        company_id: quote.company_id || null, // inherit the company from the source quotation
         project_number: projectNumber,
         name: quote.subject || `Project for ${quote.client_name}`,
         client_id: quote.client_id,
