@@ -29,6 +29,7 @@ import {
 import { amountToWords } from '@/lib/amount-to-words';
 import { quotationService } from '@/lib/quotation-service';
 import { useQuotationTemplates } from '@/hooks/useQuotations';
+import { useCompany } from '@/lib/company/useCompany';
 import '../../quotations.css';
 
 const fmtAED = (v: number) => {
@@ -37,6 +38,7 @@ const fmtAED = (v: number) => {
 
 export default function CreateQuotationWizard({ params }: { params: Promise<{ boqId: string }> }) {
   const router = useRouter();
+  const { activeCompanyId } = useCompany();
   const { boqId } = use(params);
 
   // Steps state
@@ -375,6 +377,7 @@ export default function CreateQuotationWizard({ params }: { params: Promise<{ bo
       const res = await quotationService.createFromBOQ(boqId, {
         ...quoteHeader,
         client_id: finalClientId,
+        company_id: activeCompanyId || undefined,
         lines: quoteLines
       });
 
