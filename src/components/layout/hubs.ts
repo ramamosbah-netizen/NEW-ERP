@@ -32,16 +32,18 @@ export interface Hub {
 
 export const HUBS: Hub[] = [
   {
-    id: 'home', label: 'Home', icon: LayoutDashboard, href: '/dashboard',
+    id: 'home', label: 'My Workspace', icon: LayoutDashboard, href: '/workspace',
     match: ['/dashboard', '/myday', '/tasks', '/workspace', '/meetings', '/notifications'],
     tabs: [
-      { label: 'Dashboard', href: '/dashboard' },
-      { label: 'My Day', href: '/myday' },
-      { label: 'Tasks', href: '/tasks' },
-      { label: 'Approvals', href: '/workspace/approvals' },
-      { label: 'Calendar', href: '/workspace/calendar' },
-      { label: 'Activity', href: '/workspace/activity' },
-      { label: 'Alerts', href: '/notifications' },
+      { label: 'Overview', href: '/workspace', group: 'Workspace' },
+      { label: 'My Day', href: '/myday', group: 'Workspace' },
+      { label: 'Tasks', href: '/tasks', group: 'Work' },
+      { label: 'Approvals', href: '/workspace/approvals', group: 'Work' },
+      { label: 'Meetings', href: '/meetings', group: 'Schedule' },
+      { label: 'Calendar', href: '/workspace/calendar', group: 'Schedule' },
+      { label: 'Activity', href: '/workspace/activity', group: 'Feed' },
+      { label: 'Notifications', href: '/notifications', group: 'Feed' },
+      { label: 'Dashboard', href: '/dashboard', group: 'Feed' },
     ],
   },
   {
