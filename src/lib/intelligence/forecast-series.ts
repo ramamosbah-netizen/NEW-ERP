@@ -21,9 +21,10 @@ import type { EngineOutput } from '@/types/intelligence.types';
 // ---- event → series mapping (which events feed each kind, and the value key) ----
 interface KindSpec {
   kind: ForecastKind;
-  scope: 'project' | 'company';
+  scope: 'project' | 'company' | 'group';   // 'group' = one group-wide series (no per-entity split)
   eventTypes: string[];
   valueKeys: string[];          // the time-series measurement
+  timeKeys?: string[];          // point time from payload (e.g. statement_date); else created_at
   budgetKeys?: string[];        // reference target (latest non-null wins)
   cashKeys?: string[];
   plannedEndKeys?: string[];
@@ -38,16 +39,20 @@ const SPECS: KindSpec[] = [
   },
   {
     kind: 'BUDGET_OVERRUN_FORECAST', scope: 'project',
-    eventTypes: ['project.progress_updated', 'budget.exceeded', 'project.budget_overrun'],
+    eventTypes: ['project.cost_snapshot', 'project.progress_updated', 'budget.exceeded', 'project.budget_overrun'],
     valueKeys: ['actual_cost', 'actual', 'spent', 'cost_to_date', 'eac'],
     budgetKeys: ['budget', 'approved_budget', 'budget_amount'],
     plannedEndKeys: ['planned_end', 'end_date', 'baseline_end'],
   },
   {
-    kind: 'CASHFLOW_RISK_FORECAST', scope: 'company',
-    eventTypes: ['cash.snapshot', 'payment.recorded', 'invoice.overdue'],
+    // Liquidity = group-level, PURE snapshots only (a completed bank statement's
+    // closing balance). NO transactional inputs (no payment/invoice) — per the
+    // ratified cash-architecture rule. Plotted at statement_date, not emit time.
+    kind: 'CASHFLOW_RISK_FORECAST', scope: 'group',
+    eventTypes: ['cash.snapshot'],
     valueKeys: ['cash_balance', 'balance', 'cash_on_hand', 'net_position'],
     cashKeys: ['cash_balance', 'balance', 'cash_on_hand'],
+    timeKeys: ['statement_date', 'as_of', 'date'],
   },
 ];
 
@@ -74,35 +79,43 @@ async function fetchRows(eventTypes: string[]): Promise<LedgerRow[]> {
   return (data ?? []) as LedgerRow[];
 }
 
+const GROUP_KEY = '__GROUP__';
+
 /** Group rows by scope and turn each group into a ForecastSeries (or drop it if too thin). */
 function buildSeries(spec: KindSpec, rows: LedgerRow[]): ForecastSeries[] {
   const groups = new Map<string, LedgerRow[]>();
   for (const r of rows) {
-    const scopeId = spec.scope === 'project' ? r.project_id : r.company_id;
-    if (!scopeId) continue;
-    let arr = groups.get(scopeId);
-    if (!arr) { arr = []; groups.set(scopeId, arr); }
+    const key = spec.scope === 'project' ? r.project_id
+      : spec.scope === 'company' ? r.company_id
+      : GROUP_KEY;                                         // 'group' → one bucket (group-wide)
+    if (!key) continue;
+    let arr = groups.get(key);
+    if (!arr) { arr = []; groups.set(key, arr); }
     arr.push(r);
   }
 
   const series: ForecastSeries[] = [];
-  for (const [scopeId, grp] of groups) {
+  for (const [key, grp] of groups) {
     const points: ForecastPoint[] = [];
     let budget: number | undefined;
     let cashOnHand: number | undefined;
     let plannedEnd: string | undefined;
     for (const r of grp) {
       const v = pickNum(r.payload, spec.valueKeys);
-      if (v !== undefined) points.push({ t: r.created_at, value: v });
+      if (v !== undefined) {
+        const t = (spec.timeKeys ? pickStr(r.payload, spec.timeKeys) : undefined) ?? r.created_at;
+        points.push({ t, value: v });
+      }
       if (spec.budgetKeys) { const b = pickNum(r.payload, spec.budgetKeys); if (b !== undefined) budget = b; }
       if (spec.cashKeys) { const c = pickNum(r.payload, spec.cashKeys); if (c !== undefined) cashOnHand = c; }
       if (spec.plannedEndKeys) { const p = pickStr(r.payload, spec.plannedEndKeys); if (p) plannedEnd = p; }
     }
     if (points.length < 2) continue;                       // engine also guards; skip early
+    points.sort((a, b) => a.t.localeCompare(b.t));         // chronological (timeKeys may differ from insert order)
     const tip = grp[grp.length - 1];
     series.push({
-      company_id: tip.company_id,
-      scopeId,
+      company_id: spec.scope === 'group' ? null : tip.company_id,
+      scopeId: key === GROUP_KEY ? null : key,
       sourceEventId: tip.id,
       observations: points.length,
       periodStart: points[0].t,

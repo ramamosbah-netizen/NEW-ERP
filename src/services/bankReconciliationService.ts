@@ -8,6 +8,7 @@
 
 import { supabase } from '@/lib/supabase';
 import { auditService } from './auditService';
+import { eventService } from './eventService';
 
 export interface ReconHeader {
   id: string; payment_account_id: string | null; account_name: string | null; statement_date: string;
@@ -96,8 +97,23 @@ export const bankReconciliationService = {
   },
 
   async complete(id: string): Promise<void> {
-    await supabase.from('bank_reconciliations').update({ status: 'COMPLETED' }).eq('id', id);
+    const { data: recon } = await supabase
+      .from('bank_reconciliations').update({ status: 'COMPLETED' }).eq('id', id)
+      .select('id, closing_balance, statement_date').maybeSingle();
     auditService.logEvent({ module: 'FINANCE', action: 'COMPLETE', entity_type: 'BANK_RECONCILIATION', entity_id: id, summary: 'Completed bank reconciliation' });
+
+    // Forecast fuel (Phase 2B): a completed statement's closing balance is a PURE
+    // liquidity snapshot — single source, group-level, NO transactional mixing.
+    // Emit cash.snapshot so CASHFLOW_RISK can build a runway series. Best-effort.
+    try {
+      if (recon && recon.closing_balance != null) {
+        await eventService.emitEvent(
+          'cash.snapshot', 'BANK_RECONCILIATION', recon.id, undefined,
+          { cash_balance: Number(recon.closing_balance) || 0, statement_date: recon.statement_date ?? null },
+          undefined,
+        );
+      }
+    } catch { /* non-fatal: liquidity fuel is optional */ }
   },
 };
 

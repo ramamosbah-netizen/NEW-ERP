@@ -288,6 +288,37 @@ export const poApprovalService = {
             },
             actorUserId
           );
+
+          // Forecast fuel (Phase 2B): emit a project cost snapshot — cumulative
+          // committed-to-date vs budget — so the BUDGET_OVERRUN forecast can build a
+          // time series. Distinct event type (NOT a risk event, so it never fires a
+          // risk alert); best-effort, never blocks approval.
+          if (po.project_id) {
+            try {
+              const sys = await commitmentService.getProjectCostCommitments(po.project_id);
+              const committed = sys.reduce((acc: number, c) => acc + (Number(c.committedCost) || 0), 0);
+              const budget = sys.reduce((acc: number, c) => acc + (Number(c.budgetCost) || 0), 0);
+              if (committed > 0 && budget > 0) {
+                const { data: proj } = await supabase
+                  .from('projects').select('name, planned_end_date').eq('id', po.project_id).maybeSingle();
+                await eventService.emitEvent(
+                  'project.cost_snapshot',
+                  'PROJECT',
+                  po.project_id,
+                  po.project_id,
+                  {
+                    project_name: proj?.name ?? null,
+                    cost_to_date: Math.round(committed),
+                    budget: Math.round(budget),
+                    planned_end: proj?.planned_end_date ?? null,
+                  },
+                  actorUserId
+                );
+              }
+            } catch (snapErr) {
+              logger.warn('Could not emit project cost snapshot:', snapErr);
+            }
+          }
         } else {
           // If first stage of 2-stage approval is done, stay PENDING_APPROVAL and notify GM
           // (the platform handles tasks / notifications dynamically from events)
