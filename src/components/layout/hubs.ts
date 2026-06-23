@@ -8,7 +8,7 @@
 
 import {
   LayoutDashboard, Briefcase, FolderKanban, ShoppingCart, Package,
-  Truck, Wrench, Users, DollarSign, MessageSquare, Settings,
+  Truck, Wrench, Users, DollarSign, MessageSquare, Settings, BrainCircuit,
   type LucideIcon,
 } from 'lucide-react';
 
@@ -44,6 +44,14 @@ export const HUBS: Hub[] = [
       { label: 'Activity', href: '/workspace/activity', group: 'Feed' },
       { label: 'Notifications', href: '/notifications', group: 'Feed' },
       { label: 'Dashboard', href: '/dashboard', group: 'Feed' },
+    ],
+  },
+  {
+    id: 'intelligence', label: 'Intelligence', icon: BrainCircuit, href: '/intelligence/exec',
+    match: ['/intelligence'],
+    tabs: [
+      { label: 'Executive', href: '/intelligence/exec' },
+      { label: 'Risk', href: '/intelligence' },
     ],
   },
   {

@@ -88,6 +88,7 @@ export default function PODetailPage({ params }: PageProps) {
   const [grns, setGrns] = useState<any[]>([]);
   const [actionLoading, setActionLoading] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
+  const [justification, setJustification] = useState('');
   
   // Modal states
   const [showCancelModal, setShowCancelModal] = useState(false);
@@ -202,10 +203,31 @@ export default function PODetailPage({ params }: PageProps) {
     }
   };
 
+  // A manual LPO > 10,000 AED needs a comparison-waiver justification before it
+  // can be submitted (poApprovalService.validatePOSubmission). Capture it INLINE
+  // here so the user doesn't have to detour through the edit form.
+  const justificationRequired = !!po && po.status === 'DRAFT' && po.origin === 'MANUAL'
+    && (po.total || 0) > 10000 && !po.no_comparison_justification;
+
   const handleSubmit = async () => {
+    if (!po) return;
+    if (justificationRequired && !justification.trim()) {
+      setActionError('A justification is required to submit a manual LPO over 10,000 AED. Enter it in the highlighted box below, then Submit again.');
+      return;
+    }
     try {
       setActionLoading(true);
       setActionError(null);
+      // Save just the justification column first (NOT poService.updatePO — that
+      // rewrites line items). purchase_orders has no maker-checker trigger.
+      if (justificationRequired && justification.trim()) {
+        const { error: jErr } = await supabase
+          .from('purchase_orders')
+          .update({ no_comparison_justification: justification.trim(), updated_at: new Date().toISOString() })
+          .eq('id', po.id);
+        if (jErr) throw jErr;
+        await refetch();
+      }
       await submitForApproval(currentUser?.id);
     } catch (err: any) {
       setActionError(err.message || 'Failed to submit Purchase Order.');
@@ -478,13 +500,32 @@ export default function PODetailPage({ params }: PageProps) {
             </div>
           </div>
 
-          {/* Justification check */}
-          {po.no_comparison_justification && (
+          {/* Justification check — display when present, capture inline when required to submit */}
+          {po.no_comparison_justification ? (
             <div className="quote-card" style={{ borderLeft: '4px solid var(--warning)', background: 'rgba(245,158,11,0.03)' }}>
               <h4 style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.3rem' }}>Comparison Sheet Waiver Justification</h4>
               <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', fontStyle: 'italic' }}>"{po.no_comparison_justification}"</p>
             </div>
-          )}
+          ) : justificationRequired ? (
+            <div className="quote-card" style={{ border: '1px solid rgba(245, 158, 11, 0.4)', background: 'rgba(245, 158, 11, 0.05)' }}>
+              <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'flex-start' }}>
+                <AlertCircle size={18} style={{ color: 'var(--warning)', flexShrink: 0, marginTop: '0.1rem' }} />
+                <div style={{ width: '100%' }}>
+                  <h4 style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.3rem' }}>Justification Required to Submit</h4>
+                  <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
+                    This is a manual LPO exceeding 10,000 AED. State why a supplier comparison sheet was bypassed, then click <strong>Submit LPO</strong> — it is saved with the LPO.
+                  </p>
+                  <textarea
+                    className="quote-filter-input"
+                    style={{ width: '100%', minHeight: '64px', padding: '0.6rem', resize: 'vertical' }}
+                    placeholder="Provide justification (ex: Sole distributor of specialized equipment / Client instruction / Urgent emergency site purchase...)"
+                    value={justification}
+                    onChange={(e) => setJustification(e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+          ) : null}
 
           {/* Items detailed grid */}
           <div className="quote-card">

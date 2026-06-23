@@ -5,6 +5,7 @@
 import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 import { eventService } from './eventService';
+import { emitEvent as emitIntelEvent } from '@/lib/events/emit-client';
 import { supplierPerformanceService } from './supplierPerformanceService';
 import { supplierInvoiceService } from './supplierInvoiceService';
 import type { PurchaseOrder, POItem, POStatus } from '@/types/po.types';
@@ -208,6 +209,33 @@ export const poService = {
         },
         user.id
       );
+
+      // ── Intelligence signal (First Real Integration Point) ─────────────
+      // A high-value PO is a risk-relevant FACT. Emit po.high_value through the
+      // CANONICAL server route (company_id resolved server-side; plain insert →
+      // left UNPROCESSED so the intelligence batch can score it). The threshold
+      // is a CORE business fact, not AI logic. Non-fatal — a failed signal must
+      // never block PO creation (emitted AFTER the DB writes committed).
+      const HIGH_VALUE_PO_THRESHOLD = 100_000;
+      if ((po.total ?? 0) >= HIGH_VALUE_PO_THRESHOLD) {
+        try {
+          await emitIntelEvent({
+            eventType: 'po.high_value',
+            entityType: 'PURCHASE_ORDER',
+            entityId: po.id,
+            projectId: po.project_id || undefined,
+            payload: {
+              po_number: po.po_number,
+              value: po.total,
+              supplier_name: po.supplier_name,
+              threshold: HIGH_VALUE_PO_THRESHOLD,
+            },
+            requestedCompanyId: po.company_id ?? null,
+          });
+        } catch (e) {
+          logger.error('po.high_value signal emit failed (non-fatal):', e);
+        }
+      }
 
       return po.id;
     } catch (err) {

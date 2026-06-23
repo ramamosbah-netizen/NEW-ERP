@@ -24,6 +24,14 @@ interface CompanyContextValue {
 const CompanyContext = createContext<CompanyContextValue | undefined>(undefined);
 const STORAGE_KEY = 'erp-active-company';
 
+// Mirror the active company into BOTH localStorage and a cookie, so SERVER
+// components (e.g. the Intelligence board) can scope reads by company without
+// client JS. Cookie is a UI lens only; membership remains the real boundary.
+function persistActiveCompany(id: string) {
+  try { localStorage.setItem(STORAGE_KEY, id); } catch { /* ignore */ }
+  try { document.cookie = `${STORAGE_KEY}=${id}; path=/; max-age=31536000; SameSite=Lax`; } catch { /* ignore */ }
+}
+
 export function CompanyProvider({ children }: { children: React.ReactNode }) {
   const [companies, setCompanies] = useState<Company[]>([]);
   const [activeCompanyId, setActiveId] = useState<string | null>(null);
@@ -36,6 +44,7 @@ export function CompanyProvider({ children }: { children: React.ReactNode }) {
       const next = (stored && cos.some(c => c.id === stored) ? stored : cos[0]?.id) || null;
       setCompanies(cos);
       setActiveId(next);
+      if (next) persistActiveCompany(next);
     } catch {
       setCompanies([]);
       setActiveId(null);
@@ -48,7 +57,7 @@ export function CompanyProvider({ children }: { children: React.ReactNode }) {
 
   const setActiveCompany = useCallback((id: string) => {
     setActiveId(id);
-    try { localStorage.setItem(STORAGE_KEY, id); } catch { /* ignore */ }
+    persistActiveCompany(id);
   }, []);
 
   const activeCompany = companies.find(c => c.id === activeCompanyId) || null;

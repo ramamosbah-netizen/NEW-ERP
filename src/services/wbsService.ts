@@ -6,6 +6,7 @@
 
 import { supabase } from '@/lib/supabase';
 import { auditService } from './auditService';
+import { emitEvent as emitIntelEvent } from '@/lib/events/emit-client';
 
 export interface WbsNode {
   id: string;
@@ -97,6 +98,41 @@ export const wbsService = {
     for (const [k, v] of Object.entries(patch)) clean[k] = v;
     const { error } = await supabase.from('project_wbs').update(clean).eq('id', id);
     if (error) throw new Error(error.message);
+
+    // ── Intelligence signal (Forecast fuel) ────────────────────────────────
+    // When progress changes, emit the project's ROLLED-UP progress so the Forecast
+    // engine (SCHEDULE_DELAY) can build a schedule trend over time. Emitted AFTER
+    // the DB write, via the canonical server route. Non-fatal — a failed signal
+    // must never block the WBS update.
+    if (patch.progress_pct !== undefined) {
+      try {
+        const { data: node } = await supabase.from('project_wbs').select('project_id').eq('id', id).maybeSingle();
+        const projectId = (node?.project_id as string | undefined) ?? undefined;
+        if (projectId) {
+          const roots = (await this.listFlat(projectId)).filter(n => n.level === 0);
+          const totalBudget = roots.reduce((s, n) => s + (Number(n.budget_cost) || 0), 0);
+          const projectProgress = roots.length === 0 ? 0
+            : totalBudget > 0
+              ? roots.reduce((s, n) => s + n.progress_pct * (Number(n.budget_cost) || 0), 0) / totalBudget
+              : roots.reduce((s, n) => s + n.progress_pct, 0) / roots.length;
+          const { data: proj } = await supabase.from('projects')
+            .select('planned_end_date, name, project_number, company_id').eq('id', projectId).maybeSingle();
+          await emitIntelEvent({
+            eventType: 'project.progress_updated',
+            entityType: 'PROJECT',
+            entityId: projectId,
+            projectId,
+            payload: {
+              progress: Math.round(projectProgress * 100) / 100,
+              planned_end: proj?.planned_end_date ?? null,
+              name: proj?.name,
+              project_number: proj?.project_number,
+            },
+            requestedCompanyId: (proj?.company_id as string | null) ?? null,
+          });
+        }
+      } catch { /* non-fatal: progress signal must never block the WBS update */ }
+    }
   },
 
   async remove(id: string): Promise<void> {
