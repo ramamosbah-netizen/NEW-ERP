@@ -12,7 +12,7 @@ const empKeys = {
   detail: (id: string) => ['employees', 'detail', id] as const,
 };
 
-export function useEmployees(filters?: { department?: string; status?: string }) {
+export function useEmployees(filters?: { department?: string; status?: string; companyId?: string }) {
   const q = useQuery({
     queryKey: empKeys.list(filters ?? {}),
     queryFn: () => employeeService.getEmployees(filters),

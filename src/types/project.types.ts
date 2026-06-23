@@ -55,6 +55,7 @@ export type MilestoneStatus = 'PENDING' | 'DONE' | 'DELAYED';
 
 export type Project = {
   id: string;
+  company_id?: string | null;
   project_number: string;
   name: string;
   client_id: string;
@@ -150,6 +151,7 @@ export type ProjectMilestone = {
 };
 
 export type ProjectFilters = {
+  company_id?: string;
   status?: ProjectStatus;
   emirate?: Emirate;
   system?: ProjectSystem;

@@ -5,6 +5,7 @@
 import { logger } from '@/lib/logger';
 import { supabase } from '@/lib/supabase';
 import { eventService } from './eventService';
+import { emitEvent as emitIntelEvent } from '@/lib/events/emit-client';
 import { supplierPerformanceService } from './supplierPerformanceService';
 import { supplierInvoiceService } from './supplierInvoiceService';
 import type { PurchaseOrder, POItem, POStatus } from '@/types/po.types';
@@ -18,6 +19,7 @@ export const poService = {
     project_id?: string;
     supplier_id?: string;
     search?: string;
+    companyId?: string;
   }): Promise<PurchaseOrder[]> {
     try {
       let query = supabase
@@ -39,6 +41,10 @@ export const poService = {
       }
       if (filters?.supplier_id) {
         query = query.eq('supplier_id', filters.supplier_id);
+      }
+      // Multi-company scope (wave 2): active company's POs + untagged rows.
+      if (filters?.companyId) {
+        query = query.or(`company_id.eq.${filters.companyId},company_id.is.null`);
       }
       if (filters?.search) {
         query = query.or(
@@ -158,8 +164,8 @@ export const poService = {
       // Degrade gracefully if the optional payment_method / pr_id columns
       // aren't present yet (migration 20260613280000 / 20260613260000 not applied)
       if (poErr && poErr.code === 'PGRST204') {
-        const { payment_method, pr_id, ...fallback } = headerBase as any;
-        void payment_method; void pr_id;
+        const { payment_method, pr_id, company_id, ...fallback } = headerBase as any;
+        void payment_method; void pr_id; void company_id;
         ({ data: po, error: poErr } = await supabase
           .from('purchase_orders')
           .insert(fallback)
@@ -203,6 +209,33 @@ export const poService = {
         },
         user.id
       );
+
+      // ── Intelligence signal (First Real Integration Point) ─────────────
+      // A high-value PO is a risk-relevant FACT. Emit po.high_value through the
+      // CANONICAL server route (company_id resolved server-side; plain insert →
+      // left UNPROCESSED so the intelligence batch can score it). The threshold
+      // is a CORE business fact, not AI logic. Non-fatal — a failed signal must
+      // never block PO creation (emitted AFTER the DB writes committed).
+      const HIGH_VALUE_PO_THRESHOLD = 100_000;
+      if ((po.total ?? 0) >= HIGH_VALUE_PO_THRESHOLD) {
+        try {
+          await emitIntelEvent({
+            eventType: 'po.high_value',
+            entityType: 'PURCHASE_ORDER',
+            entityId: po.id,
+            projectId: po.project_id || undefined,
+            payload: {
+              po_number: po.po_number,
+              value: po.total,
+              supplier_name: po.supplier_name,
+              threshold: HIGH_VALUE_PO_THRESHOLD,
+            },
+            requestedCompanyId: po.company_id ?? null,
+          });
+        } catch (e) {
+          logger.error('po.high_value signal emit failed (non-fatal):', e);
+        }
+      }
 
       return po.id;
     } catch (err) {

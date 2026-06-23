@@ -12,6 +12,7 @@ export interface InvoiceFilters {
   projectId?: string;
   clientId?: string;
   search?: string;
+  companyId?: string;
 }
 
 const invKeys = {

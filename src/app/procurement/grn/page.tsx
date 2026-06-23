@@ -10,6 +10,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { useGRNs, useGRNReturns } from '@/hooks/useGRNs';
+import { useCompany } from '@/lib/company/useCompany';
 import { GRN_STATUS_LABELS, GRN_STATUS_COLORS, GRN_LOCATION_LABELS, GRN_RETURN_STATUS_LABELS, GRN_RETURN_STATUS_COLORS, GRN_REJECTION_REASONS } from '@/constants/po.constants';
 import { 
   Plus, 
@@ -34,10 +35,11 @@ const fmtAED = (v: number) => {
 };
 
 export default function GRNRegistryDashboard() {
+  const { activeCompanyId } = useCompany();
   const [activeTab, setActiveTab] = useState<'GRN' | 'RETURNS'>('GRN');
   const [searchQuery, setSearchQuery] = useState('');
   
-  const { grns, loading: grnLoading, refetch: refetchGRNs } = useGRNs();
+  const { grns, loading: grnLoading, refetch: refetchGRNs } = useGRNs({ companyId: activeCompanyId || undefined });
   const { returns, loading: retLoading, refetch: refetchReturns, updateReturnStatus } = useGRNReturns();
 
   const [kpis, setKpis] = useState({

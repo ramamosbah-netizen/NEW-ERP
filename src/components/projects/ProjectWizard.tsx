@@ -8,6 +8,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { projectService } from '@/lib/project-service';
+import { useCompany } from '@/lib/company/useCompany';
 import type { ProjectStatus, ProjectType, Emirate, ProjectSystem } from '@/types/project.types';
 import { Plus, Trash2, Calendar, DollarSign, Briefcase } from 'lucide-react';
 
@@ -17,6 +18,7 @@ type Props = {
 
 export const ProjectWizard: React.FC<Props> = ({ quotationId }) => {
   const router = useRouter();
+  const { activeCompanyId } = useCompany();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -168,6 +170,7 @@ export const ProjectWizard: React.FC<Props> = ({ quotationId }) => {
       // Create project
       const created = await projectService.createProject({
         name,
+        company_id: activeCompanyId || undefined,
         client_id: clientId,
         client_name: clientName,
         project_type: projectType,

@@ -8,6 +8,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import prService from '@/services/prService';
+import { useCompany } from '@/lib/company/useCompany';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -24,6 +25,7 @@ const fmtDate = (d?: string | null) => d ? new Date(d).toLocaleDateString('en-AE
 
 export default function PurchaseRequestsPage() {
   const router = useRouter();
+  const { activeCompanyId } = useCompany();
   const [rows, setRows] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -32,7 +34,7 @@ export default function PurchaseRequestsPage() {
   const load = useCallback(async () => {
     try {
       setLoading(true);
-      setRows(await prService.list(statusFilter ? { status: statusFilter } : {}));
+      setRows(await prService.list({ ...(statusFilter ? { status: statusFilter } : {}), companyId: activeCompanyId || undefined }));
       setError(null);
     } catch (err: any) {
       setError(err.message?.includes('relation') || err.message?.includes('does not exist')
@@ -41,7 +43,7 @@ export default function PurchaseRequestsPage() {
     } finally {
       setLoading(false);
     }
-  }, [statusFilter]);
+  }, [statusFilter, activeCompanyId]);
 
   useEffect(() => { load(); }, [load]);
 

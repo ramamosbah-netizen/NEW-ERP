@@ -17,7 +17,9 @@ export const eventService = {
     entityId?: string,
     projectId?: string,
     payload: Record<string, any> = {},
-    actorUserId?: string
+    actorUserId?: string,
+    companyId?: string,
+    eventVersion = 1
   ): Promise<SystemEvent> {
     try {
       // 1. Resolve actor user if not explicitly passed
@@ -38,7 +40,9 @@ export const eventService = {
           entity_id: entityId || null,
           project_id: projectId || null,
           payload,
-          actor_user_id: resolvedActorId || null
+          actor_user_id: resolvedActorId || null,
+          company_id: companyId || null,
+          event_version: eventVersion
         })
         .select()
         .single();

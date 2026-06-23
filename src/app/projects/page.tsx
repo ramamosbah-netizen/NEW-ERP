@@ -21,6 +21,7 @@ import {
   Briefcase
 } from 'lucide-react';
 import { useProjects } from '@/hooks/useProjects';
+import { useCompany } from '@/lib/company/useCompany';
 import { ProjectKPICards } from '@/components/projects/ProjectKPICards';
 import { ProjectsKanban } from '@/components/projects/ProjectsKanban';
 import { ProjectStatusChip } from '@/components/projects/ProjectStatusChip';
@@ -40,7 +41,8 @@ export default function ProjectsListPage() {
     include_pre_award: false
   });
 
-  const { projects, loading, error, refetch } = useProjects(filters);
+  const { activeCompanyId } = useCompany();
+  const { projects, loading, error, refetch } = useProjects({ ...filters, company_id: activeCompanyId || undefined });
   const [pms, setPms] = useState<any[]>([]);
 
   // Fetch list of PMs for dropdown

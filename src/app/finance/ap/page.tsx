@@ -10,6 +10,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { useSupplierInvoices, SupplierInvoiceFilters } from '@/hooks/useSupplierInvoices';
+import { useCompany } from '@/lib/company/useCompany';
 import { supplierInvoiceService } from '@/services/supplierInvoiceService';
 import { runUploadPipeline } from '@/lib/document-upload-service';
 import type { SupplierInvoice } from '@/types/finance.types';
@@ -24,12 +25,13 @@ import { Plus, ArrowRight, ShieldAlert, Receipt, CheckCircle, X, Paperclip } fro
 import { PageHeader, Card, Button, Toolbar, SearchInput, SelectFilter } from '@/components/ui';
 
 export default function SupplierInvoicesListPage() {
+  const { activeCompanyId } = useCompany();
   const [filters, setFilters] = useState<SupplierInvoiceFilters>({
     status: '',
   });
   const [search, setSearch] = useState('');
 
-  const { invoices, loading, refetch } = useSupplierInvoices(filters);
+  const { invoices, loading, refetch } = useSupplierInvoices({ ...filters, companyId: activeCompanyId || undefined });
 
   // Quick-validate a DRAFT bill directly from the register
   const [vBill, setVBill] = useState<SupplierInvoice | null>(null);

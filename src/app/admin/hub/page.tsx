@@ -37,6 +37,7 @@ const SECTIONS: Section[] = [
   {
     title: 'Access & Identity',
     tiles: [
+      { href: '/admin/companies', label: 'Companies', desc: 'Group structure & operating companies', icon: Building2 },
       { href: '/admin/access', label: 'Roles & Access', desc: 'Role lifecycle, hierarchy & capability grants', icon: Users },
       { href: '/admin/permissions', label: 'Permissions Matrix', desc: 'Who can do what — role × module × scope', icon: KeySquare },
       { href: '/admin/settings/users', label: 'User Accounts', desc: 'Create, assign roles, deactivate', icon: Users },
@@ -69,6 +70,7 @@ const SECTIONS: Section[] = [
       { href: '/admin/templates', label: 'Document Templates', desc: 'Printable PDF templates & variables', icon: FileText },
       { href: '/admin/numbering', label: 'Numbering', desc: 'Document-number sequences per module', icon: Hash },
       { href: '/admin/settings/modules', label: 'Module Toggles', desc: 'Enable / disable modules', icon: Layers },
+      { href: '/admin/system-health', label: 'System Health', desc: 'Scheduled jobs, event pipeline & telemetry', icon: Activity },
     ],
   },
   {

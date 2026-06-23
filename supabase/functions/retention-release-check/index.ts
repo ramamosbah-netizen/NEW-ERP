@@ -6,6 +6,7 @@
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.10.0";
+import { startJobRun, finishJobRun } from "../_shared/jobRun.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -17,6 +18,7 @@ serve(async (req) => {
     return new Response("ok", { headers: corsHeaders });
   }
 
+  const _job = await startJobRun("retention-release-check");
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
@@ -108,12 +110,14 @@ serve(async (req) => {
       }
     }
 
+    await finishJobRun(_job, "SUCCESS", { items_processed: tasksCreated });
     return new Response(JSON.stringify({ success: true, processed_count: dlpFinishedProjects?.length || 0, tasks_created: tasksCreated }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" }
     });
 
   } catch (error: any) {
     console.error("Retention release check failed:", error);
+    await finishJobRun(_job, "FAILED", { error: error?.message ?? String(error) });
     return new Response(JSON.stringify({ success: false, error: error.message }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" }

@@ -490,18 +490,87 @@ body.theme-dark .sidebar-item.active::before {
   color: var(--accent);
 }
 
+/* Tab strip + overflow affordances (edge fades + scroll chevrons) */
+.hub-tabs-wrap {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+}
+
+.hub-tabs-wrap::before,
+.hub-tabs-wrap::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 30px;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+.hub-tabs-wrap::before { left: 0; background: linear-gradient(to right, var(--bg-card), transparent); }
+.hub-tabs-wrap::after { right: 0; background: linear-gradient(to left, var(--bg-card), transparent); }
+.hub-tabs-wrap.edge-left::before { opacity: 1; }
+.hub-tabs-wrap.edge-right::after { opacity: 1; }
+
+.hub-scroll-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color 0.12s ease, background 0.12s ease;
+}
+.hub-scroll-btn:hover { color: var(--text-primary); background: var(--bg-card-hover); }
+.hub-scroll-btn.left { left: 0; }
+.hub-scroll-btn.right { right: 0; }
+.hub-tabs-wrap.edge-left .hub-scroll-btn.left { display: inline-flex; }
+.hub-tabs-wrap.edge-right .hub-scroll-btn.right { display: inline-flex; }
+
 .hub-tabs {
   display: flex;
   align-items: stretch;
   gap: 0.1rem;
   flex: 1;
+  min-width: 0;
   overflow-x: auto;
-  scrollbar-width: thin;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
   height: 100%;
 }
+.hub-tabs::-webkit-scrollbar { height: 0; }
 
-.hub-tabs::-webkit-scrollbar { height: 3px; }
-.hub-tabs::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 99px; }
+/* Cluster label that introduces each tab group */
+.hub-tab-group {
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+  height: 56%;
+  padding: 0 0.5rem 0 0.7rem;
+  margin-left: 0.2rem;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted, var(--text-secondary));
+  border-left: 1px solid var(--border-color);
+  white-space: nowrap;
+  user-select: none;
+}
+.hub-tab-group.first { border-left: none; margin-left: 0; padding-left: 0.2rem; }
 
 .hub-tab {
   display: inline-flex;
@@ -530,4 +599,70 @@ body.theme-dark .sidebar-item.active::before {
 @media (max-width: 768px) {
   .hub-header { padding: 0 1rem; }
   .hub-header-title { display: none; }
+}
+
+/* ============================================================
+   Friendly UX primitives — skeleton shimmer + inline help hint
+   ============================================================ */
+.erp-skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-card-hover, rgba(125, 125, 125, 0.12));
+  border-radius: 6px;
+  min-height: 0.5rem;
+}
+.erp-skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(150, 150, 150, 0.18), transparent);
+  animation: erp-shimmer 1.4s ease-in-out infinite;
+}
+@keyframes erp-shimmer { 100% { transform: translateX(100%); } }
+@media (prefers-reduced-motion: reduce) {
+  .erp-skeleton::after { animation: none; }
+}
+
+/* Inline help: a hint icon that reveals a bubble on hover/focus */
+.erp-hint {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-muted, var(--text-secondary));
+  cursor: help;
+  vertical-align: middle;
+  outline: none;
+}
+.erp-hint:hover,
+.erp-hint:focus-visible { color: var(--text-secondary); }
+.erp-hint-bubble {
+  position: absolute;
+  bottom: calc(100% + 7px);
+  left: 50%;
+  transform: translateX(-50%) translateY(3px);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-size: 11px;
+  line-height: 1.45;
+  font-weight: 500;
+  width: max-content;
+  max-width: 240px;
+  white-space: normal;
+  text-align: left;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+  z-index: 200;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.13s ease, transform 0.13s ease;
+  pointer-events: none;
+}
+.erp-hint:hover .erp-hint-bubble,
+.erp-hint:focus-visible .erp-hint-bubble {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
 }

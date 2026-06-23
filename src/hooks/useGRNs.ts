@@ -10,6 +10,7 @@ export interface GRNFilters {
   project_id?: string;
   po_id?: string;
   search?: string;
+  companyId?: string;
 }
 
 const grnKeys = {

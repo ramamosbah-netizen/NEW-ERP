@@ -11,6 +11,7 @@ export interface SupplierInvoiceFilters {
   poId?: string;
   supplierId?: string;
   projectId?: string;
+  companyId?: string;
 }
 
 const sinvKeys = {
