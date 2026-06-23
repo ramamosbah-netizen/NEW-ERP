@@ -14,6 +14,7 @@ import {
   User
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import { PageHeader } from '@/components/ui/PageHeader';
 import { useFixedAssets } from '@/hooks/useFixedAssets';
 import { DEFAULT_USEFUL_LIVES } from '@/constants/fleet.constants';
 import type { Employee } from '@/types/hr.types';
@@ -145,36 +146,29 @@ export default function AssetRegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-bg-dark text-text-primary">
-      <main className="max-w-[1600px] mx-auto px-6 py-8">
-        
-        {/* HEADER */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border-color pb-6 mb-8">
-          <div>
-            <h1 className="font-heading font-extrabold text-2xl tracking-tight text-text-primary">
-              Fixed Asset Register
-            </h1>
-            <p className="text-xs text-text-muted mt-1 uppercase tracking-widest font-mono">
-              Capitalized assets registry, straight-line schedules & external accounting exports
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
+    <div>
+      <PageHeader
+        title="Fixed Asset Register"
+        subtitle="Capitalized assets registry, straight-line schedules & external accounting exports"
+        actions={
+          <>
             <Link
               href="/assets/depreciation"
-              className="flex items-center gap-1.5 px-4 py-2 text-xs font-semibold bg-bg-card border border-border-color text-text-secondary rounded-lg hover:bg-bg-card-hover transition-all font-mono"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-secondary)] rounded-lg hover:bg-[var(--bg-card-hover)] hover:text-[var(--text-primary)] transition-colors"
             >
-              <Calculator size={14} className="text-primary" />
+              <Calculator size={14} />
               Depreciation Run
             </Link>
             <button
               onClick={() => setShowAddModal(true)}
-              className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold bg-primary text-bg-dark hover:bg-primary-hover rounded-lg font-mono transition-all cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-[var(--primary)] text-[var(--bg-dark)] hover:bg-[var(--primary-hover)] rounded-lg transition-colors cursor-pointer"
             >
               <Plus size={14} />
               Capitalize Asset
             </button>
-          </div>
-        </div>
+          </>
+        }
+      />
 
         {/* LEDGER AGGREGATES CARDS */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -529,7 +523,6 @@ export default function AssetRegisterPage() {
           </div>
         )}
 
-      </main>
     </div>
   );
 }

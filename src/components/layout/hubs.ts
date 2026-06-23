@@ -242,7 +242,7 @@ export const HUBS: Hub[] = [
       { label: 'Control Center', href: '/admin/hub', group: 'Governance' },
       { label: 'Companies', href: '/admin/companies', group: 'Governance' },
       { label: 'Roles & Access', href: '/admin/access', group: 'Governance' },
-      { label: 'Security Center', href: '/admin/security', group: 'Governance' },
+      { label: 'Security Center', href: '/admin/settings/security', group: 'Governance' },
       { label: 'Audit', href: '/admin/audit', group: 'Governance' },
       { label: 'Workflow Designer', href: '/admin/workflows', group: 'Workflow' },
       { label: 'Workflow Override', href: '/admin/workflows/admin', group: 'Workflow' },

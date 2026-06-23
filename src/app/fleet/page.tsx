@@ -18,6 +18,7 @@ import {
   Fuel 
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import { PageHeader } from '@/components/ui/PageHeader';
 import type { Vehicle, VehicleFine, FuelLog, VehicleMaintenance } from '@/types/fleet.types';
 
 export default function FleetDashboardPage() {
@@ -172,65 +173,58 @@ export default function FleetDashboardPage() {
   };
 
   return (
-    <div className="text-[var(--text-primary)]">
-<main className="max-w-[1600px] mx-auto px-6 py-8">
-        
-        {/* CRITICAL ALERTS BANNER */}
-        {criticalAlertsCount > 0 && (
-          <div className="mb-8 p-4 bg-[var(--status-danger-bg)] border border-[var(--status-danger-border)] rounded-xl flex items-center justify-between shadow-[0_0_20px_rgba(239,68,68,0.08)]">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 bg-[var(--status-danger-bg)] border border-[var(--status-danger-border)] rounded-lg flex items-center justify-center text-[var(--status-danger-text)] animate-pulse">
-                <ShieldAlert size={20} />
-              </div>
-              <div>
-                <h2 className="font-heading font-bold text-sm text-[var(--text-primary)] uppercase tracking-wider">
-                  Critical Compliance Violation
-                </h2>
-                <p className="text-xs text-[var(--status-danger-text)] mt-0.5">
-                  There are {criticalAlertsCount} ACTIVE vehicle(s) driving with expired Mulkiya registration or insurance. Renew immediately!
-                </p>
-              </div>
-            </div>
-            <Link 
-              href="/fleet?status=ACTIVE" 
-              className="text-xs font-bold text-[var(--text-primary)] bg-[var(--status-danger-bg)] border border-[var(--status-danger-border)] px-3 py-1.5 rounded-lg hover:bg-[var(--status-danger-bg)] transition-all font-mono uppercase tracking-wider"
-              onClick={() => {
-                setStatusFilter('ACTIVE');
-                setSearchQuery('');
-              }}
-            >
-              Resolve Expired
-            </Link>
-          </div>
-        )}
-
-        {/* PAGE HEADER */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-          <div>
-            <h1 className="font-heading font-extrabold text-2xl tracking-tight text-[var(--text-primary)]">
-              Fleet Management
-            </h1>
-            <p className="text-xs text-[var(--text-secondary)] mt-1 uppercase tracking-widest font-mono">
-              Vehicle Logistics, UAE compliance & running cost ledger
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <Link 
+    <div>
+      <PageHeader
+        title="Fleet Management"
+        subtitle="Vehicle logistics, UAE compliance & running-cost ledger"
+        actions={
+          <>
+            <Link
               href="/fleet/fines"
-              className="flex items-center gap-1.5 px-4 py-2 text-xs font-semibold bg-[var(--surface-hover)] border border-[var(--border)] text-[var(--text-primary)] rounded-lg hover:bg-[var(--surface-hover)] transition-all"
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-secondary)] rounded-lg hover:bg-[var(--bg-card-hover)] hover:text-[var(--text-primary)] transition-colors"
             >
-              <AlertTriangle size={14} className="text-[var(--status-warning-text)]" />
+              <AlertTriangle size={14} />
               Manage Fines
             </Link>
-            <button 
+            <button
               onClick={fetchData}
-              className="p-2 bg-[var(--surface-hover)] border border-[var(--border)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] rounded-lg transition-all"
+              className="p-1.5 bg-[var(--bg-card)] border border-[var(--border-color)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] rounded-lg transition-colors"
               title="Refresh Data"
             >
               <RefreshCw size={15} className={loading ? 'animate-spin' : ''} />
             </button>
+          </>
+        }
+      />
+
+      {/* CRITICAL ALERTS BANNER */}
+      {criticalAlertsCount > 0 && (
+        <div className="mb-6 p-4 bg-[var(--status-danger-bg)] border border-[var(--status-danger-border)] rounded-xl flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 bg-[var(--status-danger-bg)] border border-[var(--status-danger-border)] rounded-lg flex items-center justify-center text-[var(--status-danger-text)] animate-pulse">
+              <ShieldAlert size={20} />
+            </div>
+            <div>
+              <h2 className="font-semibold text-sm text-[var(--text-primary)]">
+                Critical Compliance Violation
+              </h2>
+              <p className="text-xs text-[var(--status-danger-text)] mt-0.5">
+                There are {criticalAlertsCount} ACTIVE vehicle(s) driving with expired Mulkiya registration or insurance. Renew immediately!
+              </p>
+            </div>
           </div>
+          <Link
+            href="/fleet?status=ACTIVE"
+            className="text-xs font-medium text-[var(--text-primary)] bg-[var(--bg-card)] border border-[var(--border-color)] px-3 py-1.5 rounded-lg hover:bg-[var(--bg-card-hover)] transition-colors"
+            onClick={() => {
+              setStatusFilter('ACTIVE');
+              setSearchQuery('');
+            }}
+          >
+            Resolve Expired
+          </Link>
         </div>
+      )}
 
         {/* KPI DASHBOARD */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -596,7 +590,6 @@ export default function FleetDashboardPage() {
           )}
         </div>
 
-      </main>
     </div>
   );
 }
